@@ -8,7 +8,7 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
     boot: [
       'i18n',
-      'axios',
+      'axios'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -33,7 +33,7 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: 'material-icons', // Quasar icon set
-      lang: 'zh-hans', // Quasar language pack
+      lang: 'en-us', // Quasar language pack
 
       // Possible values for "all":
       // * 'auto' - Auto-import needed Quasar components & directives
@@ -48,20 +48,7 @@ module.exports = function (ctx) {
       directives: [],
 
       // Quasar plugins
-      plugins: [
-        'Loading',
-        'Notify'
-      ],
-      config: {
-        loading: {
-          delay: 100
-        },
-        notify: {
-          position: 'bottom-right',
-          timeout: 1000,
-          classes: 'ww-nofity'
-        }
-      }
+      plugins: []
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
@@ -69,8 +56,9 @@ module.exports = function (ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
-      vueRouterMode: 'history', // available values: 'hash', 'history'
+      vueRouterMode: 'hash', // available values: 'hash', 'history'
 
+      // rtl: false, // https://quasar.dev/options/rtl-support
       // showProgress: false,
       // gzip: true,
       // analyze: true,
@@ -102,7 +90,7 @@ module.exports = function (ctx) {
 
     // animations: 'all', // --- includes all animations
     // https://quasar.dev/options/animations
-    animations: 'all',
+    animations: [],
 
     // https://quasar.dev/quasar-cli/developing-ssr/configuring-ssr
     ssr: {
@@ -114,9 +102,9 @@ module.exports = function (ctx) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: 'winwinhome',
-        short_name: 'winwinhome',
-        description: 'winwin\'s homepage',
+        name: 'Quasar App',
+        short_name: 'Quasar App',
+        description: 'A Quasar Framework app',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
@@ -154,7 +142,7 @@ module.exports = function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/developing-cordova-apps/configuring-cordova
     cordova: {
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
-      id: 'cn.yujianghao.app'
+      id: 'org.cordova.quasar.app'
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/developing-capacitor-apps/configuring-capacitor
@@ -174,7 +162,6 @@ module.exports = function (ctx) {
         // appCategoryType: '',
         // osxSign: '',
         // protocol: 'myapp://path',
-        electronZipDir: "C:\\Users\\winwin\\AppData\\Local\\electron\\Cache\\httpsnpm.taobao.orgmirrorselectron8.1.1electron-v8.1.1-win32-x64.zip"
 
         // Windows only
         // win32metadata: { ... }
@@ -183,7 +170,7 @@ module.exports = function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'winwinhome'
+        appId: 'hexo-editor-client'
       },
 
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
