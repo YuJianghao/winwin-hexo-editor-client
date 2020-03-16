@@ -1,0 +1,59 @@
+.CodeMirror-lines {
+  padding-bottom: 50vh !important;
+}
+.tui-editor-contents {
+  padding-bottom: 40vh !important;
+}
+.CodeMirror .cm-header-2,
+.CodeMirror .cm-header-3 {
+  font-size: inherit;
+}
+.CodeMirror * {
+  font-family: Consolas, Monaco, Menlo, monospace, "Roboto", "-apple-system", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+}
+.te-md-container .CodeMirror {
+  font-size: inherit;
+  background-image: inherit;
+}
+.tui-editor-defaultUI {
+  border-left: none;
+  border-bottom: none;
+}
+// code color
+.te-md-container div.CodeMirror-selected {
+  background: #e6f1fc;
+}
+.te-md-container .CodeMirror-line::selection,
+.te-md-container .CodeMirror-line > span::selection,
+.te-md-container .CodeMirror-line > span > span::selection {
+  background: #e6f1fc;
+}
+.te-md-container .CodeMirror-line::-moz-selection,
+.te-md-container .CodeMirror-line > span::-moz-selection,
+.te-md-container .CodeMirror-line > span > span::-moz-selection {
+  background: #e6f1fc;
+}
+.tui-editor .CodeMirror {
+  color: #444;
+}
+.CodeMirror .cm-header {
+  color: #4172cf;
+}
+.CodeMirror .cm-quote {
+  color: #999;
+}
+.CodeMirror .cm-comment {
+  color: #4172cf !important;
+  font-weight: bold;
+}
+.CodeMirror .cm-string {
+  color: #4172cf !important;
+  font-weight: bold;
+  text-decoration: underline;
+}
+.CodeMirror .cm-link {
+  color: #e0543c !important;
+  font-weight: bold;
+  font-style: normal;
+}
