@@ -6,7 +6,6 @@
   "productName": "Hexo Editor",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",
-  "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
