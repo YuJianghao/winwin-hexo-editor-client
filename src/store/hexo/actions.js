@@ -10,6 +10,7 @@ import message from '../../utils/message'
  * 从服务器加载标签
  */
 export async function loadTags ({ commit }) {
+  if (process.env.DEV)console.log('action loadTags')
   const res = await apis.hexo.getTags()
   commit('SET_TAGS', res.data.tags)
 }
@@ -18,6 +19,7 @@ export async function loadTags ({ commit }) {
  * 清除本地标签缓存
  */
 export async function clearTags ({ commit }) {
+  if (process.env.DEV)console.log('action clearTags')
   commit('SET_TAGS', [])
 }
 
@@ -25,6 +27,7 @@ export async function clearTags ({ commit }) {
  * 从服务器加载分类
  */
 export async function loadCategories ({ commit }) {
+  if (process.env.DEV)console.log('action loadCategories')
   const res = await apis.hexo.getCategories()
   commit('SET_CATEGORIES', res.data.categories)
 }
@@ -33,6 +36,7 @@ export async function loadCategories ({ commit }) {
  * 清除本地分类缓存
  */
 export async function clearCategories ({ commit }) {
+  if (process.env.DEV)console.log('action clearCategories')
   commit('SET_CATEGORIES', null)
 }
 
@@ -40,6 +44,7 @@ export async function clearCategories ({ commit }) {
  * 从服务器加载文章列表
  */
 export async function loadPosts ({ commit, state, dispatch }) {
+  if (process.env.DEV)console.log('action loadPosts')
   try {
     const res = await apis.hexo.getPosts()
     await dispatch('loadCategories')
@@ -60,6 +65,7 @@ export async function loadPosts ({ commit, state, dispatch }) {
  * 清除本地文章列表缓存
  */
 export async function clearPosts ({ commit }) {
+  if (process.env.DEV)console.log('action clearPosts')
   commit('SET_POSTS', {})
   commit('SET_POST', null)
 }
@@ -68,14 +74,25 @@ export async function clearPosts ({ commit }) {
  * 从服务器加载文章详情
  */
 export async function loadPost ({ commit }, _id) {
-  const res = await apis.hexo.getPost(_id)
-  commit('SET_POST', res.data.post)
+  if (process.env.DEV)console.log('action loadPost')
+  let res
+  try {
+    res = await apis.hexo.getPost(_id)
+    commit('SET_POST', res.data.post)
+  } catch (err) {
+    if (err.status === 404) {
+      message.warning({ message: '列表已更新，请刷新后重试' })
+    } else {
+      message.error({ message: '文件打开失败', caption: err.message })
+    }
+  }
 }
 
 /**
  * 清除本地文章详情缓存
  */
 export async function clearPost ({ commit }, _id) {
+  if (process.env.DEV)console.log('action clearPost')
   commit('SET_POST', null)
 }
 
@@ -83,8 +100,16 @@ export async function clearPost ({ commit }, _id) {
  * 发布文章
  */
 export async function publishPost ({ commit, state, dispatch }) {
+  if (process.env.DEV)console.log('action publishPost')
   try {
-    const res = await apis.hexo.publishPost(state.post._id)
+    let res
+    try {
+      res = await apis.hexo.publishPost(state.post._id)
+    } catch (err) {
+      if (err.status === 404) {
+        message.warning({ message: '列表已更新，请刷新后重试' })
+      } else throw err
+    }
     dispatch('loadPosts')
     commit('SET_POST', res.data.post)
   } catch (err) {
@@ -96,8 +121,16 @@ export async function publishPost ({ commit, state, dispatch }) {
  * 取消发布文章
  */
 export async function unpublishPost ({ commit, state, dispatch }) {
+  if (process.env.DEV)console.log('action unpublishPost')
   try {
-    const res = await apis.hexo.unpublishPost(state.post._id)
+    let res
+    try {
+      res = await apis.hexo.unpublishPost(state.post._id)
+    } catch (err) {
+      if (err.status === 404) {
+        message.warning({ message: '列表已更新，请刷新后重试' })
+      } else throw err
+    }
     dispatch('loadPosts')
     commit('SET_POST', res.data.post)
   } catch (err) {
@@ -109,6 +142,7 @@ export async function unpublishPost ({ commit, state, dispatch }) {
  * 新建文章
  */
 export async function addPost ({ commit, state }) {
+  if (process.env.DEV)console.log('action addPost')
   try {
     const res = await apis.hexo.addPost({ title: '新文章', slug: random(16), layout: 'draft' })
     commit('UPDATE_POSTS', res.data.post)
@@ -123,6 +157,7 @@ export async function addPost ({ commit, state }) {
  * 保存文章
  */
 export async function savePost ({ commit, state, dispatch }) {
+  if (process.env.DEV)console.log('action savePost')
   try {
     const res = await apis.hexo.updatePost(state.post._id, state.post)
     dispatch('loadCategories')
@@ -140,16 +175,22 @@ export async function savePost ({ commit, state, dispatch }) {
  * @param {String} [_id=state.post._id] - 文章id
  */
 export async function deletePost ({ commit, state, dispatch }, _id) {
-  if (!_id && !(state.post && state.post._id)) {
-    throw new Error('_id is required : both _id and store.post._id are empty')
+  try {
+    if (process.env.DEV)console.log('action deletePost')
+    if (!_id && !(state.post && state.post._id)) {
+      throw new Error('_id is required : both _id and store.post._id are empty')
+    }
+    try {
+      await apis.hexo.deletePost(_id || state.post._id)
+    } catch (err) {
+      if (err.status === 404) {
+        message.warning({ message: '列表已更新，请刷新后重试' })
+      } else throw err
+    }
+    await dispatch('loadPosts')
+  } catch (err) {
+    message.error({ message: '删除失败', caption: err.message })
   }
-  const res = await apis.hexo.deletePost(_id || state.post._id)
-  await dispatch('loadPosts')
-  dispatch('loadCategories')
-  dispatch('loadTags')
-  console.log(_id)
-  console.log(state.post)
-  commit('DELETE_POSTS', res.data.post._id)
 }
 
 /**
@@ -158,12 +199,19 @@ export async function deletePost ({ commit, state, dispatch }, _id) {
  * @param {Boolean} reload - 是否强制重载文章详情，`true`则重载
  */
 export async function viewPost ({ commit, state, dispatch }, _id, reload) {
+  if (process.env.DEV)console.log('action viewPost')
   if (!_id && !(state.post && state.post._id)) {
     throw new Error('_id is required : both _id and store.post._id are empty')
   }
   // 如果没有选中文章，或者更换了文章，或者强制重载
   if (!state.post || (_id && state.post._id !== _id) || reload) {
-    await dispatch('loadPost', _id)
+    try {
+      await dispatch('loadPost', _id)
+    } catch (err) {
+      if (err.status === 404) {
+        message.warning({ message: '列表已更新，请刷新后重试' })
+      } else throw err
+    }
   }
   commit('SET_EDITING', false)
 }
@@ -174,6 +222,7 @@ export async function viewPost ({ commit, state, dispatch }, _id, reload) {
  * @param {Boolean} reload - 是否强制重载文章详情，`true`则重载
  */
 export async function editPost ({ commit, state, dispatch }, _id, reload) {
+  if (process.env.DEV)console.log('action editPost')
   if (!_id && !(state.post && state.post._id)) {
     throw new Error('_id is required : both _id and store.post._id are empty')
   }
@@ -189,6 +238,7 @@ export async function editPost ({ commit, state, dispatch }, _id, reload) {
  * @param {String[][]} cats - 以二维数组方式存储的分类
  */
 export async function setCategoriesArray2d ({ commit }, cats) {
+  if (process.env.DEV)console.log('action setCategoriesArray2d')
   if (cats.length === 1) {
     if (cats[0].length === 1) {
       commit('SET_POST_CATS', cats[0][0])
@@ -204,6 +254,7 @@ export async function setCategoriesArray2d ({ commit }, cats) {
  * 切换编辑器占比
  */
 export async function toggleFull ({ commit, state }) {
+  if (process.env.DEV)console.log('action toggleFull')
   commit('SET_FULL', !state.full)
 }
 

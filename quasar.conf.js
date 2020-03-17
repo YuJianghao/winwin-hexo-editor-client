@@ -48,7 +48,17 @@ module.exports = function (ctx) {
       directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+        'Notify'
+      ],
+
+      config: {
+        notify: {
+          position: 'bottom-right',
+          timeout: 1000,
+          classes: 'ww-nofity'
+        }
+      }
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie

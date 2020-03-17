@@ -14,8 +14,6 @@
         <q-toolbar-title>
           Hexo Editor Client
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
@@ -37,6 +35,50 @@
           :key="link.title"
           v-bind="link"
         />
+        <q-item>
+          <q-item-section avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>
+              <q-chip
+                square
+                size="10px"
+                class="q-ml-none no-border-radius"
+                color="primary"
+                text-color="white"
+                style="font-family:consolas"
+              >
+                <q-avatar
+                  color="grey-8"
+                  style="width:auto;"
+                  class="no-border-radius"
+                >
+                  <span style="padding: 0 6px;">
+                    hexo-editor-client
+                  </span>
+                </q-avatar>
+                <span style="padding-left:3px;">
+                  v{{currentVersion}}
+                </span>
+              </q-chip>
+            </q-item-label>
+            <q-item-label
+              caption
+              lines="2"
+            >当前版本</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item>
+          <q-item-section avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label><img src="https://img.shields.io/npm/v/@winwin/hexo-editor-client?style=flat-square"></q-item-label>
+            <q-item-label
+              caption
+              lines="2"
+            >最新版本</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -47,7 +89,8 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink'
+import packageJson from '../../package.json'
+import EssentialLink from '../components/EssentialLink'
 
 export default {
   name: 'MainLayout',
@@ -55,7 +98,6 @@ export default {
   components: {
     EssentialLink
   },
-
   data () {
     return {
       leftDrawerOpen: false,
@@ -97,6 +139,11 @@ export default {
           link: 'https://chat.quasar.dev'
         }
       ]
+    }
+  },
+  computed: {
+    currentVersion () {
+      return packageJson.version
     }
   }
 }
