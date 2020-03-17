@@ -72,8 +72,6 @@ export default {
   },
   mounted () {
     this.loadPosts()
-    this.loadTags()
-    this.loadCategories()
   }
 }
 </script>
