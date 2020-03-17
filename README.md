@@ -25,8 +25,10 @@ A Hexo Editor App
 - [x] Markdown editor
 - [ ] Front-matter support
 - [ ] Post sort
-- ~~[ ] Image CDN support~~
+- [ ] ~~Image CDN support~~
 - [ ] let me know what you need ...
+
+See also [hexo-editor-server](https://github.com/YuJianghao/winwin-hexo-editor-server) and [hexo-editor-sdk](https://github.com/YuJianghao/winwin-hexo-editor-sdk)
 
 ## Installation
 

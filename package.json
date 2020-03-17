@@ -18,6 +18,15 @@
   ],
   "author": "winwin2011",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+git@github.com:YuJianghao/winwin-hexo-editor-client.git"
+  },
+  "homepage": "https://github.com/YuJianghao/winwin-hexo-editor-client",
+  "bugs": {
+    "email": "yjh2011@live.com",
+    "url": "https://github.com/YuJianghao/winwin-hexo-editor-client/issues"
+  },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "@winwin/hexo-editor-sdk": "^0.1.0",
