@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header :elevated="!isLoginPage">
       <q-toolbar>
         <q-btn
           flat
@@ -14,6 +14,12 @@
         <q-toolbar-title>
           Hexo Editor Client
         </q-toolbar-title>
+        <q-btn
+          v-show="!isLoginPage"
+          flat
+          label="退出"
+          @click="onLogout"
+        />
       </q-toolbar>
     </q-header>
 
@@ -91,6 +97,7 @@
 <script>
 import packageJson from '../../package.json'
 import EssentialLink from '../components/EssentialLink'
+import { saveLoginToken } from '../utils/storage'
 
 export default {
   name: 'MainLayout',
@@ -144,6 +151,17 @@ export default {
   computed: {
     currentVersion () {
       return packageJson.version
+    },
+    isLoginPage () {
+      // return Object.keys(this.$route)
+      return this.$route.path === '/login'
+    }
+  },
+  methods: {
+    onLogout () {
+      this.$store.commit('SET_LOGIN', false)
+      saveLoginToken(undefined)
+      this.$router.push('/login')
     }
   }
 }

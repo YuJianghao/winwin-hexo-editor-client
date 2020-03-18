@@ -2,9 +2,11 @@
 const routes = [
   {
     path: '/',
+    redirect: '/home',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Hexo.vue') }
+      { path: 'home', component: () => import('pages/Hexo.vue') },
+      { path: 'login', component: () => import('pages/Login.vue') }
     ]
   }
 ]
