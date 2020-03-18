@@ -5,7 +5,15 @@ import hexo from './hexo'
 // import example from './module-example'
 
 Vue.use(Vuex)
+const state = {
+  isLoggedIn: false
+}
 
+const mutations = {
+  SET_LOGIN (state, isLoggedIn) {
+    state.isLoggedIn = isLoggedIn
+  }
+}
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -17,6 +25,8 @@ Vue.use(Vuex)
 
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
+    state,
+    mutations,
     modules: {
       hexo
       // example
