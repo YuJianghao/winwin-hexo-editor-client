@@ -216,22 +216,22 @@ export async function deletePost ({ commit, state, dispatch }, _id) {
 //   commit('SET_EDITING', false)
 // }
 
-/**
- * 编辑文章
- * @param {String} [_id=state.post._id] - 文章id
- * @param {Boolean} reload - 是否强制重载文章详情，`true`则重载
- */
-export async function editPost ({ commit, state, dispatch }, _id, reload) {
-  if (process.env.DEV)console.log('action editPost')
-  if (!_id && !(state.post && state.post._id)) {
-    throw new Error('_id is required : both _id and store.post._id are empty')
-  }
-  // 如果没有选中文章，或者更换了文章，或者强制重载
-  if (!state.post || (_id && state.post._id !== _id) || reload) {
-    await dispatch('loadPost', _id)
-  }
-  commit('SET_EDITING', true)
-}
+// /**
+//  * 编辑文章
+//  * @param {String} [_id=state.post._id] - 文章id
+//  * @param {Boolean} reload - 是否强制重载文章详情，`true`则重载
+//  */
+// export async function editPost ({ commit, state, dispatch }, _id, reload) {
+//   if (process.env.DEV)console.log('action editPost')
+//   if (!_id && !(state.post && state.post._id)) {
+//     throw new Error('_id is required : both _id and store.post._id are empty')
+//   }
+//   // 如果没有选中文章，或者更换了文章，或者强制重载
+//   if (!state.post || (_id && state.post._id !== _id) || reload) {
+//     await dispatch('loadPost', _id)
+//   }
+//   commit('SET_EDITING', true)
+// }
 
 /**
  * 从给定值更新文章分类

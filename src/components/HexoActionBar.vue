@@ -79,7 +79,7 @@
         <q-btn
           stretch
           flat
-          @click="editPost()"
+          @click="editPostById()"
         >
           分类：
           {{categories.length?'':'无'}}
@@ -94,7 +94,7 @@
         <q-btn
           stretch
           flat
-          @click="editPost()"
+          @click="editPostById()"
         >
           标签：
           {{tags.length?'':'无'}}
@@ -164,6 +164,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
 import { hexoEditorCore } from '../stores/editorStore'
+import { editorUiState } from '../stores/editorUiStore'
 export default {
   name: 'HexoActionBar',
   components: {
@@ -183,8 +184,11 @@ export default {
     async reload () {
       await hexoEditorCore.reload()
     },
+    async editPostById () {
+      await hexoEditorCore.loadPostById(null, true)
+      await editorUiState.editPost()
+    },
     ...mapActions({
-      editPost: 'hexo/editPost',
       deletePost: 'hexo/deletePost',
       savePost: 'hexo/savePost',
       publishPost: 'hexo/publishPost',
