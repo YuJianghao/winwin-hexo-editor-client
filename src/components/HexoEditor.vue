@@ -1,7 +1,7 @@
 <template>
   <div
     class="col column"
-    v-if="editorUiState.editing"
+    v-if="editorUiStore.editing"
   >
     <div style="height:42px;">
       <q-input
@@ -26,7 +26,7 @@
 
 <script>
 import { Editor } from './VueTuiEditor/index'
-import { editorUiState } from '../stores/editorUiStore'
+import { editorUiStore } from '../stores/editorUiStore'
 import { hexoEditorCore } from '../stores/editorStore'
 export default {
   name: 'HexoEditor',
@@ -47,7 +47,7 @@ export default {
         ]
       },
       state: hexoEditorCore.state,
-      editorUiState: editorUiState.state
+      editorUiStore: editorUiStore.state
     }
   },
   methods: {

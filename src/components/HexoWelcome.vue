@@ -2,7 +2,7 @@
   <div
     class="col column flex-center bg-blue-1"
     style="user-select:none"
-    v-if="editorUiState.unselect"
+    v-if="editorUiStore.unselect"
     @dblclick="addPostByDefault"
   >
     <h2>
@@ -13,13 +13,13 @@
 
 <script>
 import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiState } from '../stores/editorUiStore'
+import { editorUiStore } from '../stores/editorUiStore'
 export default {
   name: 'HexoWelcome',
   data () {
     return {
       state: hexoEditorCore.state,
-      editorUiState: editorUiState.state
+      editorUiStore: editorUiStore.state
     }
   },
   methods: {

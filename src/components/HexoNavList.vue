@@ -108,13 +108,13 @@
 
 <script>
 import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiState } from '../stores/editorUiStore'
+import { editorUiStore } from '../stores/editorUiStore'
 export default {
   name: 'HexoNavList',
   data () {
     return {
       state: hexoEditorCore.state,
-      uiState: editorUiState.state
+      uiState: editorUiStore.state
     }
   },
   computed: {

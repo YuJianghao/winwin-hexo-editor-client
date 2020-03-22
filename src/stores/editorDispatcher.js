@@ -2,7 +2,7 @@
 import hexo from '@winwin/hexo-editor-sdk'
 import { hexoEditorCore } from '../stores/editorStore'
 import request from '../api/request'
-import { editorUiState } from './editorUiStore'
+import { editorUiStore } from './editorUiStore'
 
 export async function init () {
   await hexoEditorCore.init({
@@ -12,20 +12,20 @@ export async function init () {
     }),
     debug: process.env.DEV
   })
-  await editorUiState.init()
+  await editorUiStore.init()
 }
 
 export async function editPostById (_id, force = false) {
   await hexoEditorCore.loadPostById(_id, force)
-  await editorUiState.editPost()
+  await editorUiStore.editPost()
 }
 
 export async function deletePostById (_id) {
   try {
-    await editorUiState.deletePost()
+    await editorUiStore.deletePost()
     await hexoEditorCore.deletePostById(_id)
   } catch (err) {
-    if (hexoEditorCore.state.post) { await editorUiState.viewPost() }
+    if (hexoEditorCore.state.post) { await editorUiStore.viewPost() }
   }
 }
 
@@ -48,10 +48,10 @@ export async function savePost () {
   await hexoEditorCore.savePost()
 }
 export async function toggleFull () {
-  await editorUiState.toggleFull()
+  await editorUiStore.toggleFull()
 }
 
 export async function destroy () {
   await hexoEditorCore.destory()
-  await editorUiState.destory()
+  await editorUiStore.destory()
 }

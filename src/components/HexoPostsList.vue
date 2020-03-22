@@ -74,30 +74,30 @@
 <script>
 import { date } from 'quasar'
 import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiState } from '../stores/editorUiStore'
+import { editorUiStore } from '../stores/editorUiStore'
 export default {
   name: 'HexoPostsList',
   data () {
     return {
       state: hexoEditorCore.state,
-      uiState: editorUiState.state
+      uiState: editorUiStore.state
     }
   },
   methods: {
     async viewPostById (_id) {
       await hexoEditorCore.loadPostById(_id, true)
-      await editorUiState.viewPost()
+      await editorUiStore.viewPost()
     },
     async editPostById (_id) {
       await hexoEditorCore.loadPostById(_id, true)
-      await editorUiState.editPost()
+      await editorUiStore.editPost()
     },
     async deletePostById (_id) {
       try {
-        await editorUiState.deletePost(_id)
+        await editorUiStore.deletePost(_id)
         await hexoEditorCore.deletePostById(_id)
       } catch (err) {
-        if (hexoEditorCore.state.post) { await editorUiState.viewPost() }
+        if (hexoEditorCore.state.post) { await editorUiStore.viewPost() }
       }
     },
     getDateString (d) {

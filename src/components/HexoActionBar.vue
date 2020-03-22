@@ -163,7 +163,7 @@
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
 import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiState } from '../stores/editorUiStore'
+import { editorUiStore } from '../stores/editorUiStore'
 import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoActionBar',
@@ -176,7 +176,7 @@ export default {
       showCatsMenu: false,
       showTagsMenu: false,
       state: hexoEditorCore.state,
-      editorUiState: editorUiState.state
+      editorUiStore: editorUiStore.state
     }
   },
   methods: {
@@ -213,16 +213,16 @@ export default {
       return this.state.post.published
     },
     showLeft () {
-      return !this.editorUiState.full
+      return !this.editorUiStore.full
     },
     showRight () {
       return !!this.state.post
     },
     showEdit () {
-      return this.editorUiState.editing
+      return this.editorUiStore.editing
     },
     showView () {
-      return !this.editorUiState.editing
+      return !this.editorUiStore.editing
     },
     tags () {
       return this.state.post ? this.state.post.tags || [] : []

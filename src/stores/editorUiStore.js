@@ -1,7 +1,7 @@
 import { hexoEditorCore } from './editorStore'
 
 // TODO 添加dispatcher，避免代码分散
-export const editorUiState = {
+export const editorUiStore = {
   state: {
     post: 'unselect',
     full: false,

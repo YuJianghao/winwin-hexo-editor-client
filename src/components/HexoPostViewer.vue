@@ -1,7 +1,7 @@
 <template>
   <div
     class="col"
-    v-if="editorUiState.viewing"
+    v-if="editorUiStore.viewing"
     @dblclick="editPostById"
   >
     <q-scroll-area class="full-height">
@@ -39,14 +39,14 @@ const md = MarkdownIt({
     return '<pre class="hljs"><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
   }
 })
-import { editorUiState } from '../stores/editorUiStore'
+import { editorUiStore } from '../stores/editorUiStore'
 import { hexoEditorCore } from '../stores/editorStore'
 export default {
   name: 'HexoPostViewer',
   data () {
     return {
       state: hexoEditorCore.state,
-      editorUiState: editorUiState.state
+      editorUiStore: editorUiStore.state
     }
   },
   computed: {
@@ -58,7 +58,7 @@ export default {
   methods: {
     async editPostById () {
       await hexoEditorCore.loadPostById(null, true)
-      await editorUiState.editPost()
+      await editorUiStore.editPost()
     },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')
