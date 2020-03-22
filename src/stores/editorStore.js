@@ -312,40 +312,40 @@ class HexoEditorCore extends EventEmitter {
   //   }
   // }
 
-  // async setPostByPost (post) {
-  //   if (!post) throw new Error('post is required')
-  //   this._update('set-post-post')
-  //   await this._markChanged()
-  //   await this._setPost(post)
-  // }
+  async setPostByPost (post) {
+    if (!post) throw new Error('post is required')
+    this._update('set-post-post')
+    await this._markChanged()
+    await this._setPost(post)
+  }
 
-  // async setPostByCategories (categories) {
-  //   if (!categories) throw new Error('categories is required')
-  //   this._update('set-post-categories')
-  //   await this._markChanged()
-  //   await this._setPost({ ...this._post, ...{ categories } })
-  // }
+  async setPostByCategories (categories) {
+    if (!categories) throw new Error('categories is required')
+    this._update('set-post-categories')
+    await this._markChanged()
+    await this._setPost({ ...this.state.post, ...{ categories } })
+  }
 
-  // async setPostByTitle (title) {
-  //   if (!title) throw new Error('title is required')
-  //   this._update('set-post-title')
-  //   await this._markChanged()
-  //   await this._setPost({ ...this._post, ...{ title } })
-  // }
+  async setPostByTitle (title = '新文章') {
+    if (!title && this.debug) console.warn('no title given, using default')
+    this._update('set-post-title')
+    await this._markChanged()
+    await this._setPost({ ...this.state.post, ...{ title } })
+  }
 
-  // async setPostByContent (_content) {
-  //   if (!_content) throw new Error('_content is required')
-  //   this._update('set-post-_content')
-  //   await this._markChanged()
-  //   await this._setPost({ ...this._post, ...{ _content } })
-  // }
+  async setPostByContent (_content = '') {
+    if (!_content && this.debug) console.warn('no _content given, using default')
+    this._update('set-post-_content')
+    await this._markChanged()
+    await this._setPost({ ...this.state.post, ...{ _content } })
+  }
 
-  // async setPostByTags (tags) {
-  //   if (!tags) throw new Error('tags is required')
-  //   this._update('set-post-tags')
-  //   await this._markChanged()
-  //   await this._setPost({ ...this._post, ...{ tags } })
-  // }
+  async setPostByTags (tags) {
+    if (!tags) throw new Error('tags is required')
+    this._update('set-post-tags')
+    await this._markChanged()
+    await this._setPost({ ...this.state.post, ...{ tags } })
+  }
 
   async addPostByDefault () {
     await this.addPostByTitle('新文章')
