@@ -18,15 +18,18 @@ export const editorUiState = {
     this.state.post = 'unselect'
   },
   editPost () {
+    if (process.env.DEV)console.log('set editor ui post editing')
     this.state.post = 'editing'
   },
   viewPost () {
+    if (process.env.DEV)console.log('set editor ui post viewing')
     this.state.post = 'viewing'
   },
   closePost () {
+    if (process.env.DEV)console.log('set editor ui post unselect')
     this.state.post = 'unselect'
   },
-  deletePost () {
-    if (!hexoEditorCore.state.post) { this.closePost() }
+  deletePost (_id) {
+    if (hexoEditorCore.state.post && hexoEditorCore.state.post._id === _id) { this.closePost() }
   }
 }

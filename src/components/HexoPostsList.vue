@@ -99,8 +99,12 @@ export default {
       await editorUiState.editPost()
     },
     async deletePostById (_id) {
-      await hexoEditorCore.deletePostById(_id)
-      await editorUiState.deletePost()
+      try {
+        await editorUiState.deletePost(_id)
+        await hexoEditorCore.deletePostById(_id)
+      } catch (err) {
+        if (hexoEditorCore.state.post) { await editorUiState.viewPost() }
+      }
     },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')
