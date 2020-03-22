@@ -448,6 +448,54 @@ class HexoEditorCore extends EventEmitter {
     }
   }
 
+  async deploy () {
+    this._start('deploy-start')
+    try {
+      await this.api.deploy()
+      this._success('deploy-success')
+    } catch (err) {
+      if (err.status === 503) {
+        this._fail('deploy-fail', err.data)
+      } else {
+        this._fail('deploy-fail', err)
+      }
+    } finally {
+      this._info('deploy-end')
+    }
+  }
+
+  async syncGit () {
+    this._start('syncGit-start')
+    try {
+      await this.api.syncGit()
+      this._success('syncGit-success')
+    } catch (err) {
+      if (err.status === 503) {
+        this._fail('syncGit-fail', err.data)
+      } else {
+        this._fail('syncGit-fail', err)
+      }
+    } finally {
+      this._info('syncGit-end')
+    }
+  }
+
+  async saveGit () {
+    this._start('saveGit-start')
+    try {
+      await this.api.saveGit()
+      this._success('saveGit-success')
+    } catch (err) {
+      if (err.status === 503) {
+        this._fail('saveGit-fail', err.data)
+      } else {
+        this._fail('saveGit-fail', err)
+      }
+    } finally {
+      this._info('saveGit-end')
+    }
+  }
+
   _info (eventName, data) {
     this.emit(eventName, data)
     if (this.debug) {

@@ -107,7 +107,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import { hexoEditorCore } from '../stores/editorStore'
 import { editorUiState } from '../stores/editorUiStore'
 export default {
@@ -141,11 +140,15 @@ export default {
     async filterByUnCategorized () {
       await hexoEditorCore.filterByUnCategorized()
     },
-    ...mapActions({
-      deploy: 'hexo/deploy',
-      syncGit: 'hexo/syncGit',
-      saveGit: 'hexo/saveGit'
-    })
+    async deploy () {
+      await hexoEditorCore.deploy()
+    },
+    async syncGit () {
+      await hexoEditorCore.syncGit()
+    },
+    async saveGit () {
+      await hexoEditorCore.saveGit()
+    }
   }
 }
 </script>
