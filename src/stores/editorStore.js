@@ -44,6 +44,12 @@ class HexoEditorCore extends EventEmitter {
       get tagsList () {
         return Helper.objectToList(this.tags)
       },
+      get categoriesNameList () {
+        return this.categoriesList.map(item => item.name)
+      },
+      get tagsNameList () {
+        return this.tagsList.map(item => item.name)
+      },
       get filteredPostsList () {
         try {
           if (this.filterBy.type === 'all') return this.postsList
@@ -327,6 +333,19 @@ class HexoEditorCore extends EventEmitter {
     this._update('set-post-categories')
     await this._markChanged()
     await this._setPost({ ...this.state.post, ...{ categories } })
+  }
+
+  async setPostByCategoriesArray2d (categories) {
+    if (!categories) throw new Error('categories is required')
+    if (categories.length === 1) {
+      if (categories[0].length === 1) {
+        await this.setPostByCategories(categories[0][0])
+      } else {
+        await this.setPostByCategories(categories[0])
+      }
+    } else {
+      await this.setPostByCategories(categories)
+    }
   }
 
   async setPostByTitle (title = '新文章') {
