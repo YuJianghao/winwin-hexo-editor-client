@@ -55,21 +55,19 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { hexoEditorCore } from '../stores/editorStore'
 export default {
   name: 'HexoTagSelector',
   data () {
     return {
-      text: ''
+      text: '',
+      state: hexoEditorCore.state
     }
   },
   computed: {
-    ...mapState({
-      allTags: state => state.hexo.tags.map(cat => cat.name)
-    }),
     availableTags () {
       const at = []
-      at.push.apply(at, this.allTags)
+      at.push.apply(at, this.state.tagsNameList)
       this.postTags.map(tag => {
         if (!at.includes(tag)) at.push(tag)
       })
@@ -77,10 +75,10 @@ export default {
     },
     postTags: {
       get () {
-        return this.$store.state.hexo.post.tags || []
+        return this.state.postTags || []
       },
       set (v) {
-        this.$store.commit('hexo/SET_POST_TAGS', v)
+        hexoEditorCore.setPostByTags(v)
       }
     }
   },

@@ -72,9 +72,6 @@ class HexoEditorCore extends EventEmitter {
         if (!this.post) return null
         return this.post.tags
       },
-      get postTagsList () {
-        return this.postTags.map(item => item.name)
-      },
       get postCategories () {
         if (!this.post) return null
         return this.post.categories
