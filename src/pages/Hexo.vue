@@ -26,7 +26,6 @@ import HexoNavList from '../components/HexoNavList'
 import HexoWelcome from '../components/HexoWelcome'
 import HexoEditor from '../components/HexoEditor'
 import HexoActionBar from '../components/HexoActionBar'
-import { mapState, mapActions } from 'vuex'
 import hexo from '@winwin/hexo-editor-sdk'
 import request from '../api/request'
 import { hexoEditorCore } from '../stores/editorStore'
@@ -49,28 +48,7 @@ export default {
       state: hexoEditorCore.state
     }
   },
-  computed: {
-    ...mapState({
-      posts: state => state.hexo.posts,
-      post: state => state.hexo.post,
-      editing: state => state.hexo.editing
-    }),
-    actionBarType () {
-      if (this.editing) return 'edit'
-      if (this.post) return 'view'
-      return ''
-    }
-  },
   methods: {
-    ...mapActions({
-      loadTags: 'hexo/loadTags',
-      loadCategories: 'hexo/loadCategories',
-      clearPosts: 'hexo/clearPosts',
-      loadPost: 'hexo/loadPost',
-      publishPost: 'hexo/publishPost',
-      unpublishPost: 'hexo/unpublishPost',
-      updatePost: 'hexo/updatePost'
-    }),
     pageStyle (offset, height) {
       return 'height:' + (window.innerHeight - offset) + 'px'
     }

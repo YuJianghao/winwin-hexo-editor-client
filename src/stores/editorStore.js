@@ -32,6 +32,9 @@ class HexoEditorCore extends EventEmitter {
     this.state = {
       ready: false,
       posts: {},
+      get empty () {
+        return this.postsCount === 0
+      },
       get postsCount () {
         return this.postsList.length
       },

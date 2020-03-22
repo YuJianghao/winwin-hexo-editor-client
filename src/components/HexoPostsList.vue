@@ -1,14 +1,14 @@
 <template>
   <div
     class="col"
-    v-show="!full"
+    v-show="!uiState.full"
   >
     <q-scroll-area
       class="full-height"
       style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
     >
       <q-list>
-        <q-item v-if="empty">
+        <q-item v-if="state.empty">
           <q-item-section>
             <q-item-label>没有文章</q-item-label>
           </q-item-section>
@@ -74,20 +74,14 @@
 <script>
 import { date } from 'quasar'
 import { hexoEditorCore } from '../stores/editorStore'
-import { mapState } from 'vuex'
 import { editorUiState } from '../stores/editorUiStore'
 export default {
   name: 'HexoPostsList',
   data () {
     return {
-      state: hexoEditorCore.state
+      state: hexoEditorCore.state,
+      uiState: editorUiState.state
     }
-  },
-  computed: {
-    ...mapState({
-      full: state => state.hexo.full,
-      empty: state => !Object.keys(state.hexo.posts).length
-    })
   },
   methods: {
     async viewPostById (_id) {
