@@ -14,7 +14,7 @@
           </q-item-section>
         </q-item>
         <q-slide-item
-          v-for="(item,key) in filteredPosts"
+          v-for="(item,key) in state.filteredPostsList"
           left-color="blue"
           right-color="red"
           :key="key"
@@ -73,9 +73,15 @@
 
 <script>
 import { date } from 'quasar'
+import { hexoEditorCore } from '../stores/editorStore'
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'HexoPostsList',
+  data () {
+    return {
+      state: hexoEditorCore.state
+    }
+  },
   computed: {
     ...mapState({
       posts: state => {

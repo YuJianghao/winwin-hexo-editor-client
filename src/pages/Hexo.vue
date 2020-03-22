@@ -3,6 +3,7 @@
     class="column overflow-hidden"
     :style-fn="pageStyle"
   >
+    <!-- {{state.postsList}} -->
     <hexo-action-bar></hexo-action-bar>
     <div
       class="row"
@@ -26,6 +27,11 @@ import HexoWelcome from '../components/HexoWelcome'
 import HexoEditor from '../components/HexoEditor'
 import HexoActionBar from '../components/HexoActionBar'
 import { mapState, mapActions } from 'vuex'
+import hexo from '@winwin/hexo-editor-sdk'
+import request from '../api/request'
+import { hexoEditorCore } from '../stores/editorStore'
+import message from '../utils/message'
+import { Loading } from 'quasar'
 export default {
   name: 'Hexo',
   components: {
@@ -39,7 +45,8 @@ export default {
   data () {
     return {
       editorData: '',
-      full: false
+      full: false,
+      state: hexoEditorCore.state
     }
   },
   computed: {
@@ -70,8 +77,23 @@ export default {
       return 'height:' + (window.innerHeight - offset) + 'px'
     }
   },
-  mounted () {
+  async mounted () {
     this.loadPosts()
+    // when hexo-editor started, init hexoEditorCore
+    try {
+      Loading.show()
+      await hexoEditorCore.init({
+        api: hexo({
+          baseUrl: process.env.HEXO_SERVER_BASE,
+          axios: request
+        }),
+        debug: process.env.DEV
+      })
+    } catch (err) {
+      message.error({ message: '初始化失败', caption: err.message })
+    } finally {
+      Loading.hide()
+    }
   }
 }
 </script>

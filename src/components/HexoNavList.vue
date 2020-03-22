@@ -42,8 +42,9 @@
         <q-item
           clickable
           v-ripple
+          @click="filterByAll"
         >
-          <q-item-section @click="SELECT_ALL">全部</q-item-section>
+          <q-item-section>全部</q-item-section>
           <q-item-section avatar>
             <q-badge :label="count" />
           </q-item-section>
@@ -54,11 +55,11 @@
           expand-separator
         >
           <q-item
-            v-for="(item,key) in categories"
+            v-for="(item,key) in state.categoriesList"
             :key="key"
             clickable
             v-ripple
-            @click="SELECT_CATEGORIES(item)"
+            @click="filterByCategoriesId(item._id)"
           >
             <q-item-section>
               {{item.name}}
@@ -70,7 +71,7 @@
           <q-item
             clickable
             v-ripple
-            @click="SELECT_CATEGORIES({posts:unCategorizedPosts.map(post=>post._id)})"
+            @click="filterByUnCategorized"
           >
             <q-item-section>
               未分类
@@ -86,11 +87,11 @@
           expand-separator
         >
           <q-item
-            v-for="(item,key) in tags"
+            v-for="(item,key) in state.tagsList"
             :key="key"
             clickable
             v-ripple
-            @click="SELECT_TAGS(item)"
+            @click="filterByTagsId(item._id)"
           >
             <q-item-section>
               {{item.name}}
@@ -107,8 +108,14 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+import { hexoEditorCore } from '../stores/editorStore'
 export default {
   name: 'HexoNavList',
+  data () {
+    return {
+      state: hexoEditorCore.state
+    }
+  },
   computed: {
     ...mapState({
       count: state => Object.keys(state.hexo.posts).length,
@@ -126,6 +133,18 @@ export default {
     }
   },
   methods: {
+    async filterByCategoriesId (_id) {
+      await hexoEditorCore.filterByCategoriesId(_id)
+    },
+    async filterByTagsId (_id) {
+      await hexoEditorCore.filterByTagsId(_id)
+    },
+    async filterByAll () {
+      await hexoEditorCore.filterByAll()
+    },
+    async filterByUnCategorized () {
+      await hexoEditorCore.filterByUnCategorized()
+    },
     ...mapMutations({
       SELECT_CATEGORIES: 'hexo/SELECT_CATEGORIES',
       SELECT_TAGS: 'hexo/SELECT_TAGS',
