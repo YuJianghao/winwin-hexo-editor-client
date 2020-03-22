@@ -17,6 +17,11 @@ export const editorUiState = {
   },
   init () {
     this.state.post = 'unselect'
+    this.full = false
+  },
+  destory () {
+    this.state.post = 'unselect'
+    this.full = false
   },
   editPost () {
     if (process.env.DEV)console.log('set editor ui post editing')

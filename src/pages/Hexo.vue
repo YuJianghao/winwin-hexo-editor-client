@@ -26,9 +26,8 @@ import HexoNavList from '../components/HexoNavList'
 import HexoWelcome from '../components/HexoWelcome'
 import HexoEditor from '../components/HexoEditor'
 import HexoActionBar from '../components/HexoActionBar'
-import hexo from '@winwin/hexo-editor-sdk'
-import request from '../api/request'
 import { hexoEditorCore } from '../stores/editorStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
 import message from '../utils/message'
 import { Loading } from 'quasar'
 export default {
@@ -57,18 +56,15 @@ export default {
     // when hexo-editor started, init hexoEditorCore
     try {
       Loading.show()
-      await hexoEditorCore.init({
-        api: hexo({
-          baseUrl: process.env.HEXO_SERVER_BASE,
-          axios: request
-        }),
-        debug: process.env.DEV
-      })
+      await editorDispatcher.init()
     } catch (err) {
       message.error({ message: '初始化失败', caption: err.message })
     } finally {
       Loading.hide()
     }
+  },
+  async beforeDestory () {
+    await editorDispatcher.destroy()
   }
 }
 </script>
