@@ -2,7 +2,7 @@
   <div
     class="col"
     v-if="editorUiState.viewing"
-    @dblclick="editPost(null)"
+    @dblclick="editPostById"
   >
     <q-scroll-area class="full-height">
       <div
@@ -39,7 +39,6 @@ const md = MarkdownIt({
     return '<pre class="hljs"><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
   }
 })
-import { mapState, mapActions } from 'vuex'
 import { editorUiState } from '../stores/editorUiStore'
 import { hexoEditorCore } from '../stores/editorStore'
 export default {
@@ -51,19 +50,16 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      post: state => state.hexo.post,
-      editing: state => state.hexo.editing
-    }),
     html () {
       if (!this.state.post._content) return ''
       return md.render(this.state.post._content)
     }
   },
   methods: {
-    ...mapActions({
-      editPost: 'hexo/editPost'
-    }),
+    async editPostById () {
+      await hexoEditorCore.loadPostById(null, true)
+      await editorUiState.editPost()
+    },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')
     }

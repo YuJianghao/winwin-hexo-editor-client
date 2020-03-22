@@ -437,10 +437,11 @@ class HexoEditorCore extends EventEmitter {
 
   async loadPostById (id, force) {
     if (!force && !this._saved) throw new Error('Unsaved file, use force=true to override')
+    if (!id && !this.state.post) throw new Error('id is required!')
+    if (!id && this.state.post) return
+    if (this.state.post && this.state.post._id === id) return
     this._start('load-post-id-start')
     try {
-      if (!id && this._post) return
-      if (this._post && this._post._id && this._post._id === id) return
       const res = await this.api.getPost(id)
       await this._setPost(res.data.post)
       this._success('load-post-id-success')
