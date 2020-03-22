@@ -68,7 +68,6 @@ export default {
       loadCategories: 'hexo/loadCategories',
       clearPosts: 'hexo/clearPosts',
       loadPost: 'hexo/loadPost',
-      addPost: 'hexo/addPost',
       publishPost: 'hexo/publishPost',
       unpublishPost: 'hexo/unpublishPost',
       updatePost: 'hexo/updatePost'

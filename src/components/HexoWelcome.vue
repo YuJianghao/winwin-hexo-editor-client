@@ -3,7 +3,7 @@
     class="col column flex-center bg-blue-1"
     style="user-select:none"
     v-if="!post&&!editing"
-    @dblclick="addPost"
+    @dblclick="addPostByDefault"
   >
     <h2>
       {{empty?'':'选择或'}}新建一篇文章
@@ -12,7 +12,8 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
+import { hexoEditorCore } from '../stores/editorStore'
 export default {
   name: 'HexoWelcome',
   computed: {
@@ -23,9 +24,9 @@ export default {
     })
   },
   methods: {
-    ...mapActions({
-      addPost: 'hexo/addPost'
-    })
+    async addPostByDefault () {
+      await hexoEditorCore.addPostByDefault('新文章')
+    }
   }
 }
 </script>

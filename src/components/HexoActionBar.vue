@@ -23,7 +23,7 @@
         color="primary"
         icon="add"
         label="新建"
-        @click="addPost"
+        @click="addPostByDefault"
       />
       <q-btn
         flat
@@ -163,6 +163,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
+import { hexoEditorCore } from '../stores/editorStore'
 export default {
   name: 'HexoActionBar',
   components: {
@@ -176,8 +177,10 @@ export default {
     }
   },
   methods: {
+    async addPostByDefault () {
+      await hexoEditorCore.addPostByDefault('新文章')
+    },
     ...mapActions({
-      addPost: 'hexo/addPost',
       editPost: 'hexo/editPost',
       loadPosts: 'hexo/loadPosts',
       deletePost: 'hexo/deletePost',

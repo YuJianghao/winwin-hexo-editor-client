@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-// import random from 'string-random'
+import random from 'string-random'
 // import Vue from 'vue'
 
 class Helper {
@@ -81,7 +81,7 @@ class HexoEditorCore extends EventEmitter {
     await this.loadPosts()
     await this.loadCategories()
     await this.loadTags()
-    // await this._markReset()
+    await this._markReset()
     this.state.ready = true
     this._start('ready')
     // await new Promise(resolve => {
@@ -265,22 +265,22 @@ class HexoEditorCore extends EventEmitter {
   //   this._post = null
   // }
 
-  // async _markChanged () {
-  //   this._update('markChanged')
-  //   this.change = true
-  //   this._saved = false
-  // }
+  async _markChanged () {
+    this._update('markChanged')
+    this.change = true
+    this._saved = false
+  }
 
-  // async _markReset () {
-  //   this._info('markReset')
-  //   this._changed = false
-  //   this._saved = true
-  // }
+  async _markReset () {
+    this._info('markReset')
+    this._changed = false
+    this._saved = true
+  }
 
-  // async _markSaved () {
-  //   this._success('markSaved')
-  //   this._saved = true
-  // }
+  async _markSaved () {
+    this._success('markSaved')
+    this._saved = true
+  }
 
   async _setPost (post) {
     this.state.post = post
@@ -340,22 +340,32 @@ class HexoEditorCore extends EventEmitter {
   //   await this._setPost({ ...this._post, ...{ tags } })
   // }
 
-  // async addPostByOptions (options, force) {
-  //   if (!force && !this._saved) throw new Error('Unsaved file, use force=true to override')
-  //   if (!options.title) throw new Error('options.title is required')
-  //   if (!options.slug) options.slug = random(16)
-  //   this._start('add-post-start')
-  //   try {
-  //     const res = await this.api.addPost(options)
-  //     await this._setPost(res.data.post)
-  //     await this._markReset()
-  //     this._success('add-post-success')
-  //     await this.loadPosts()
-  //   } catch (err) {
-  //     this._fail('add-post-fail', err)
-  //   }
-  //   this._info('add-post-end')
-  // }
+  async addPostByDefault () {
+    await this.addPostByTitle('新文章')
+  }
+
+  async addPostByTitle (title) {
+    await this.addPostByOptions({ title })
+  }
+
+  async addPostByOptions (options, force) {
+    if (!force && !this._saved) throw new Error('Unsaved file, use force=true to override')
+    if (!options.title) throw new Error('options.title is required')
+    if (!options.slug) options.slug = random(16)
+    this._start('add-post-start')
+    try {
+      const res = await this.api.addPost(options)
+      await this._setPost(res.data.post)
+      await this._markReset()
+      this._success('add-post-success')
+      await this.loadPosts()
+      if (options.categories) await this.loadCategories()
+      if (options.tags) await this.loadTags()
+    } catch (err) {
+      this._fail('add-post-fail', err)
+    }
+    this._info('add-post-end')
+  }
 
   // async deletePostById (id) {
   //   if (!id && !this._post) throw new Error('id is required!')
