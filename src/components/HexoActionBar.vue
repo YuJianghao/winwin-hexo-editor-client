@@ -160,7 +160,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
 import { hexoEditorCore } from '../stores/editorStore'
@@ -190,6 +190,12 @@ export default {
       await hexoEditorCore.loadPostById(null, true)
       await editorUiState.editPost()
     },
+    async publishPostById () {
+      await hexoEditorCore.publishPostById()
+    },
+    async unpublishPostById () {
+      await hexoEditorCore.unpublishPostById()
+    },
     async toggleFull () {
       await editorUiState.toggleFull()
     },
@@ -204,12 +210,8 @@ export default {
     async savePost () {
       await hexoEditorCore.savePost()
     },
-    ...mapActions({
-      publishPost: 'hexo/publishPost',
-      unpublishPost: 'hexo/unpublishPost'
-    }),
     onPublish () {
-      this.published ? this.unpublishPost() : this.publishPost()
+      this.state.post.published ? this.unpublishPostById() : this.publishPostById()
     }
   },
   computed: {

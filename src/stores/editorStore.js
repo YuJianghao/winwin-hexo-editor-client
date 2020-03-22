@@ -399,41 +399,41 @@ class HexoEditorCore extends EventEmitter {
     this._info('delete-post-id-end')
   }
 
-  // async publishPostById (id) {
-  //   if (!id && !this._post) throw new Error('id is required!')
-  //   this._start('publish-post-id-start')
-  //   try {
-  //     const res = await this.api.publishPost(id || this._post._id)
-  //     await this._setPost(res.data.post)
-  //     this._success('publish-post-id-success')
-  //   } catch (err) {
-  //     if (err.status === 404) {
-  //       this._fail('publish-post-id-fail', err.data)
-  //     } else {
-  //       this._fail('publish-post-id-fail', err)
-  //     }
-  //   } finally {
-  //     this._info('publish-post-id-end')
-  //   }
-  // }
+  async publishPostById (id) {
+    if (!id && !this.state.post) throw new Error('id is required!')
+    this._start('publish-post-id-start')
+    try {
+      const res = await this.api.publishPost(id || this.state.post._id)
+      await this._setPost(res.data.post)
+      this._success('publish-post-id-success')
+    } catch (err) {
+      if (err.status === 404) {
+        this._fail('publish-post-id-fail', err.data)
+      } else {
+        this._fail('publish-post-id-fail', err)
+      }
+    } finally {
+      this._info('publish-post-id-end')
+    }
+  }
 
-  // async unpublishPostById (id) {
-  //   if (!id && !this._post) throw new Error('id is required!')
-  //   this._start('unpublish-post-id-start')
-  //   try {
-  //     const res = await this.api.unpublishPost(id || this._post._id)
-  //     await this._setPost(res.data.post)
-  //     this._success('unpublish-post-id-success')
-  //   } catch (err) {
-  //     if (err.status === 404) {
-  //       this._fail('unpublish-post-id-fail', err.data)
-  //     } else {
-  //       this._fail('unpublish-post-id-fail', err)
-  //     }
-  //   } finally {
-  //     this._info('unpublish-post-id-end')
-  //   }
-  // }
+  async unpublishPostById (id) {
+    if (!id && !this.state.post) throw new Error('id is required!')
+    this._start('unpublish-post-id-start')
+    try {
+      const res = await this.api.unpublishPost(id || this.state.post._id)
+      await this._setPost(res.data.post)
+      this._success('unpublish-post-id-success')
+    } catch (err) {
+      if (err.status === 404) {
+        this._fail('unpublish-post-id-fail', err.data)
+      } else {
+        this._fail('unpublish-post-id-fail', err)
+      }
+    } finally {
+      this._info('unpublish-post-id-end')
+    }
+  }
 
   async loadPostById (id, force) {
     if (!force && !this._saved) throw new Error('Unsaved file, use force=true to override')
