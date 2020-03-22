@@ -4,6 +4,7 @@ import { hexoEditorCore } from './editorStore'
 export const editorUiState = {
   state: {
     post: 'unselect',
+    full: false,
     get unselect () {
       return this.post === 'unselect'
     },
@@ -30,6 +31,11 @@ export const editorUiState = {
     this.state.post = 'unselect'
   },
   deletePost (_id) {
+    if (!_id) this.closePost()
     if (hexoEditorCore.state.post && hexoEditorCore.state.post._id === _id) { this.closePost() }
+  },
+  toggleFull (full) {
+    if (typeof full === 'undefined') this.state.full = !this.state.full
+    else this.state.full = !!full
   }
 }

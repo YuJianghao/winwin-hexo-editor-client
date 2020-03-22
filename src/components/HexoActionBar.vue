@@ -62,7 +62,7 @@
           stretch
           :icon="published?'close':'publish'"
           :color="published?'red':'primary'"
-          v-if="post"
+          v-if="state.post"
           :label="published?'取消发布':'发布'"
           @click="onPublish"
         />
@@ -72,14 +72,14 @@
           color="red"
           icon="delete"
           label="删除"
-          @click="deletePost(post._id)"
+          @click="deletePostById"
         />
       </template>
       <template v-if="showView && showRight">
         <q-btn
           stretch
           flat
-          @click="editPostById()"
+          @click="editPostById"
         >
           分类：
           {{categories.length?'':'无'}}
@@ -94,7 +94,7 @@
         <q-btn
           stretch
           flat
-          @click="editPostById()"
+          @click="editPostById"
         >
           标签：
           {{tags.length?'':'无'}}
@@ -160,7 +160,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
 import { hexoEditorCore } from '../stores/editorStore'
@@ -174,7 +174,9 @@ export default {
   data () {
     return {
       showCatsMenu: false,
-      showTagsMenu: false
+      showTagsMenu: false,
+      state: hexoEditorCore.state,
+      editorUiState: editorUiState.state
     }
   },
   methods: {
@@ -188,23 +190,27 @@ export default {
       await hexoEditorCore.loadPostById(null, true)
       await editorUiState.editPost()
     },
+    async toggleFull () {
+      await editorUiState.toggleFull()
+    },
+    async deletePostById () {
+      try {
+        await editorUiState.deletePost()
+        await hexoEditorCore.deletePostById()
+      } catch (err) {
+        if (hexoEditorCore.state.post) { await editorUiState.viewPost() }
+      }
+    },
     ...mapActions({
-      deletePost: 'hexo/deletePost',
       savePost: 'hexo/savePost',
       publishPost: 'hexo/publishPost',
-      unpublishPost: 'hexo/unpublishPost',
-      toggleFull: 'hexo/toggleFull'
+      unpublishPost: 'hexo/unpublishPost'
     }),
     onPublish () {
       this.published ? this.unpublishPost() : this.publishPost()
     }
   },
   computed: {
-    ...mapState({
-      post: state => state.hexo.post,
-      full: state => state.hexo.full,
-      editing: state => state.hexo.editing
-    }),
     ...mapGetters({
       categoriesArray2d: 'hexo/categoriesArray2d'
     }),
@@ -212,22 +218,22 @@ export default {
       return this.categoriesArray2d[0]
     },
     published () {
-      return this.post.published
+      return this.state.post.published
     },
     showLeft () {
-      return !this.full
+      return !this.editorUiState.full
     },
     showRight () {
-      return !!this.post
+      return !!this.state.post
     },
     showEdit () {
-      return this.editing
+      return this.editorUiState.editing
     },
     showView () {
-      return !this.editing
+      return !this.editorUiState.editing
     },
     tags () {
-      return this.post ? this.post.tags || [] : []
+      return this.state.post ? this.state.post.tags || [] : []
     },
     navStyle () {
       return {
