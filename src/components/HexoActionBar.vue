@@ -31,7 +31,7 @@
         color="primary"
         icon="refresh"
         label="刷新"
-        @click="loadPosts"
+        @click="reload"
       />
     </q-toolbar>
     <q-toolbar
@@ -178,11 +178,13 @@ export default {
   },
   methods: {
     async addPostByDefault () {
-      await hexoEditorCore.addPostByDefault('新文章')
+      await hexoEditorCore.addPostByDefault()
+    },
+    async reload () {
+      await hexoEditorCore.reload()
     },
     ...mapActions({
       editPost: 'hexo/editPost',
-      loadPosts: 'hexo/loadPosts',
       deletePost: 'hexo/deletePost',
       savePost: 'hexo/savePost',
       publishPost: 'hexo/publishPost',

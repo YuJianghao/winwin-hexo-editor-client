@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     async addPostByDefault () {
-      await hexoEditorCore.addPostByDefault('新文章')
+      await hexoEditorCore.addPostByDefault()
     }
   }
 }

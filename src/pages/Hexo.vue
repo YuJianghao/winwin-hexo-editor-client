@@ -63,7 +63,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      loadPosts: 'hexo/loadPosts',
       loadTags: 'hexo/loadTags',
       loadCategories: 'hexo/loadCategories',
       clearPosts: 'hexo/clearPosts',
@@ -77,7 +76,6 @@ export default {
     }
   },
   async mounted () {
-    this.loadPosts()
     // when hexo-editor started, init hexoEditorCore
     try {
       Loading.show()

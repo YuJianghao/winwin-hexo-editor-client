@@ -91,6 +91,13 @@ class HexoEditorCore extends EventEmitter {
     // })
   }
 
+  async reload () {
+    if (this.state.post) await this.loadPostById(this.state.post._id)
+    await this.loadPosts()
+    await this.loadCategories()
+    await this.loadTags()
+  }
+
   /**
    * 载入文章列表
    */
