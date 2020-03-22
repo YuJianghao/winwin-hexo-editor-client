@@ -193,28 +193,28 @@ export async function deletePost ({ commit, state, dispatch }, _id) {
   }
 }
 
-/**
- * 查看文章详情
- * @param {String} [_id=state.post._id] - 文章id
- * @param {Boolean} reload - 是否强制重载文章详情，`true`则重载
- */
-export async function viewPost ({ commit, state, dispatch }, _id, reload) {
-  if (process.env.DEV)console.log('action viewPost')
-  if (!_id && !(state.post && state.post._id)) {
-    throw new Error('_id is required : both _id and store.post._id are empty')
-  }
-  // 如果没有选中文章，或者更换了文章，或者强制重载
-  if (!state.post || (_id && state.post._id !== _id) || reload) {
-    try {
-      await dispatch('loadPost', _id)
-    } catch (err) {
-      if (err.status === 404) {
-        message.warning({ message: '列表已更新，请刷新后重试' })
-      } else throw err
-    }
-  }
-  commit('SET_EDITING', false)
-}
+// /**
+//  * 查看文章详情
+//  * @param {String} [_id=state.post._id] - 文章id
+//  * @param {Boolean} reload - 是否强制重载文章详情，`true`则重载
+//  */
+// export async function viewPost ({ commit, state, dispatch }, _id, reload) {
+//   if (process.env.DEV)console.log('action viewPost')
+//   if (!_id && !(state.post && state.post._id)) {
+//     throw new Error('_id is required : both _id and store.post._id are empty')
+//   }
+//   // 如果没有选中文章，或者更换了文章，或者强制重载
+//   if (!state.post || (_id && state.post._id !== _id) || reload) {
+//     try {
+//       await dispatch('loadPost', _id)
+//     } catch (err) {
+//       if (err.status === 404) {
+//         message.warning({ message: '列表已更新，请刷新后重试' })
+//       } else throw err
+//     }
+//   }
+//   commit('SET_EDITING', false)
+// }
 
 /**
  * 编辑文章

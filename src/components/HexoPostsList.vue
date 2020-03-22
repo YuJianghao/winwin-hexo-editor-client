@@ -20,7 +20,7 @@
           :key="key"
           @right="(e)=>{onRight(e,item._id)}"
           @left="(e)=>{onLeft(e,item._id)}"
-          @click="viewPost(item._id,true)"
+          @click="viewPostById(item._id)"
         >
           <template v-slot:left>
             <div class="row items-center">
@@ -74,7 +74,7 @@
 <script>
 import { date } from 'quasar'
 import { hexoEditorCore } from '../stores/editorStore'
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'HexoPostsList',
   data () {
@@ -84,28 +84,25 @@ export default {
   },
   computed: {
     ...mapState({
-      posts: state => {
-        const posts = state.hexo.posts
-        return Object.keys(posts).map(key => posts[key])
-      },
       full: state => state.hexo.full,
       empty: state => !Object.keys(state.hexo.posts).length
-    }),
-    ...mapGetters({
-      filteredPosts: 'hexo/filteredPosts'
     })
   },
   methods: {
+    async viewPostById (_id) {
+      await hexoEditorCore.loadPostById(_id, true)
+    },
+    async editPostById (_id) {
+      await hexoEditorCore.loadPostById(_id, true)
+    },
     ...mapActions({
-      deletePost: 'hexo/deletePost',
-      viewPost: 'hexo/viewPost',
-      editPost: 'hexo/editPost'
+      deletePost: 'hexo/deletePost'
     }),
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')
     },
     onLeft ({ reset }, _id) {
-      this.editPost(_id)
+      this.editPostById(_id)
       this.finalize(reset, 1)
     },
     onRight ({ reset }, _id) {

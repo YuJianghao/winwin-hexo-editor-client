@@ -282,10 +282,10 @@ class HexoEditorCore extends EventEmitter {
   //   this._saved = true
   // }
 
-  // async _setPost (post) {
-  //   this._post = post
-  //   this._update('post-update', this._post)
-  // }
+  async _setPost (post) {
+    this.state.post = post
+    this._update('post-update', this.state.post)
+  }
 
   // async savePost () {
   //   if (!this._post || this._saved) return
@@ -416,25 +416,25 @@ class HexoEditorCore extends EventEmitter {
   //   }
   // }
 
-  // async loadPostById (id, force) {
-  //   if (!force && !this._saved) throw new Error('Unsaved file, use force=true to override')
-  //   this._start('load-post-id-start')
-  //   try {
-  //     if (!id && this._post) return
-  //     if (this._post && this._post._id && this._post._id === id) return
-  //     const res = await this.api.getPost(id)
-  //     await this._setPost(res.data.post)
-  //     this._success('load-post-id-success')
-  //   } catch (err) {
-  //     if (err.status === 404) {
-  //       this._fail('load-post-id-fail', err.data)
-  //     } else {
-  //       this._fail('load-post-id-fail', err)
-  //     }
-  //   } finally {
-  //     this._info('load-post-id-end')
-  //   }
-  // }
+  async loadPostById (id, force) {
+    if (!force && !this._saved) throw new Error('Unsaved file, use force=true to override')
+    this._start('load-post-id-start')
+    try {
+      if (!id && this._post) return
+      if (this._post && this._post._id && this._post._id === id) return
+      const res = await this.api.getPost(id)
+      await this._setPost(res.data.post)
+      this._success('load-post-id-success')
+    } catch (err) {
+      if (err.status === 404) {
+        this._fail('load-post-id-fail', err.data)
+      } else {
+        this._fail('load-post-id-fail', err)
+      }
+    } finally {
+      this._info('load-post-id-end')
+    }
+  }
 
   _info (eventName, data) {
     this.emit(eventName, data)
