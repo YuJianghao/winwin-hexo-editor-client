@@ -374,28 +374,30 @@ class HexoEditorCore extends EventEmitter {
     this._info('add-post-end')
   }
 
-  // async deletePostById (id) {
-  //   if (!id && !this._post) throw new Error('id is required!')
-  //   this._start('delete-post-id-start')
-  //   try {
-  //     const res = await this.api.deletePost(id || this._post._id)
-  //     if ((this._post && this._post._id === id) || !id) {
-  //       await this._setPost(null)
-  //       await this._markReset()
-  //     }
-  //     this._success('delete-post-id-success', res.data.post)
-  //     await this.loadPosts()
-  //     await this.loadCategories()
-  //     await this.loadTags()
-  //   } catch (err) {
-  //     if (err.status === 404) {
-  //       this._fail('delete-post-id-fail', err.data)
-  //     } else {
-  //       this._fail('delete-post-id-fail', err)
-  //     }
-  //   }
-  //   this._info('delete-post-id-end')
-  // }
+  async deletePostById (id) {
+    if (!id && !this.state.post) throw new Error('id is required!')
+    this._start('delete-post-id-start')
+    try {
+      const res = await this.api.deletePost(id || this.state.post._id)
+      // TODO 可不可以写成  !id || this.state.post._id === id
+      if ((this.state.post && this.state.post._id === id) || !id) {
+        await this._setPost(null)
+        await this._markReset()
+      }
+      this._success('delete-post-id-success', res.data.post)
+      await this.loadPosts()
+      // TODO 某些情况下可以不加载 cats 和 tags
+      await this.loadCategories()
+      await this.loadTags()
+    } catch (err) {
+      if (err.status === 404) {
+        this._fail('delete-post-id-fail', err.data)
+      } else {
+        this._fail('delete-post-id-fail', err)
+      }
+    }
+    this._info('delete-post-id-end')
+  }
 
   // async publishPostById (id) {
   //   if (!id && !this._post) throw new Error('id is required!')

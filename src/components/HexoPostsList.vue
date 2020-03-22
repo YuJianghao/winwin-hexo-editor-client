@@ -74,7 +74,7 @@
 <script>
 import { date } from 'quasar'
 import { hexoEditorCore } from '../stores/editorStore'
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 export default {
   name: 'HexoPostsList',
   data () {
@@ -95,9 +95,9 @@ export default {
     async editPostById (_id) {
       await hexoEditorCore.loadPostById(_id, true)
     },
-    ...mapActions({
-      deletePost: 'hexo/deletePost'
-    }),
+    async deletePostById (_id) {
+      await hexoEditorCore.deletePostById(_id)
+    },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')
     },
@@ -106,7 +106,7 @@ export default {
       this.finalize(reset, 1)
     },
     onRight ({ reset }, _id) {
-      this.deletePost(_id)
+      this.deletePostById(_id)
       this.finalize(reset, 1)
     },
     finalize (reset, duration) {
