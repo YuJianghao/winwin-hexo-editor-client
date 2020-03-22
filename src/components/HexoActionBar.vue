@@ -82,9 +82,9 @@
           @click="editPostById"
         >
           分类：
-          {{categories.length?'':'无'}}
+          {{state.postCategoriesList.length?'':'无'}}
           <q-badge
-            v-for="(item,key) in categories"
+            v-for="(item,key) in state.postCategoriesList"
             :key="key"
             color="primary"
             text-color="white"
@@ -117,9 +117,9 @@
         >
           <template slot="label">
             分类：
-            {{categories.length?'':'无'}}
+            {{state.postCategoriesList.length?'':'无'}}
             <q-badge
-              v-for="(item,key) in categories"
+              v-for="(item,key) in state.postCategoriesList"
               :key="key"
               color="primary"
               text-color="white"
@@ -160,7 +160,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
 import { hexoEditorCore } from '../stores/editorStore'
@@ -215,12 +214,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      categoriesArray2d: 'hexo/categoriesArray2d'
-    }),
-    categories () {
-      return this.categoriesArray2d[0]
-    },
     published () {
       return this.state.post.published
     },

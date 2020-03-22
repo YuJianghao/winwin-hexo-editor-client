@@ -61,6 +61,25 @@ class HexoEditorCore extends EventEmitter {
       filterBy: {
         type: 'all',
         _id: null
+      },
+      get postTags () {
+        if (!this.post) return null
+        return this.post.tags
+      },
+      get postTagsList () {
+        return this.postTags.map(item => item.name)
+      },
+      get postCategories () {
+        if (!this.post) return null
+        return this.post.categories
+      },
+      get postCategoriesList () {
+        return this.postCategoriesArray2d[0]
+      },
+      get postCategoriesArray2d () {
+        if (!this.post) return [[null]]
+        if (!this.post.categories) return [[]]
+        return Helper.postCategoriesArray2d(this.post.categories)
       }
     }
   }
@@ -239,22 +258,6 @@ class HexoEditorCore extends EventEmitter {
 
   // get post () {
   //   return this._post
-  // }
-
-  // get postTags () {
-  //   if (!this._post) return null
-  //   return this._post.tags
-  // }
-
-  // get postCategories () {
-  //   if (!this._post) return null
-  //   return this._post.categories
-  // }
-
-  // get postCategoriesArray2d () {
-  //   if (!this._post) return [[null]]
-  //   if (!this.post.categories) return [[]]
-  //   return Helper.postCategoriesArray2d(this.post.categories)
   // }
 
   // get saved () {
