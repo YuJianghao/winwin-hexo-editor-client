@@ -2,7 +2,7 @@
   <div
     class="col column flex-center bg-blue-1"
     style="user-select:none"
-    v-if="!post&&!editing"
+    v-if="editorUiState.unselect"
     @dblclick="addPostByDefault"
   >
     <h2>
@@ -14,8 +14,14 @@
 <script>
 import { mapState } from 'vuex'
 import { hexoEditorCore } from '../stores/editorStore'
+import { editorUiState } from '../stores/editorUiStore'
 export default {
   name: 'HexoWelcome',
+  data () {
+    return {
+      editorUiState: editorUiState.state
+    }
+  },
   computed: {
     ...mapState({
       post: state => state.hexo.post,

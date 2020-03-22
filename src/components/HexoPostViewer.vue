@@ -1,7 +1,7 @@
 <template>
   <div
     class="col"
-    v-if="post&&!editing"
+    v-if="editorUiState.viewing"
     @dblclick="editPost(null)"
   >
     <q-scroll-area class="full-height">
@@ -9,8 +9,8 @@
         class="full-height q-mx-auto q-pa-lg article-entry"
         style="max-width:900px"
       >
-        <h1>{{post.title}}</h1>
-        <sub v-if="post.date">{{getDateString(post.date)}}</sub>
+        <h1>{{state.post.title}}</h1>
+        <sub v-if="state.post.date">{{getDateString(state.post.date)}}</sub>
         <div v-html="html"></div>
       </div>
     </q-scroll-area>
@@ -40,20 +40,25 @@ const md = MarkdownIt({
   }
 })
 import { mapState, mapActions } from 'vuex'
+import { editorUiState } from '../stores/editorUiStore'
+import { hexoEditorCore } from '../stores/editorStore'
 export default {
   name: 'HexoPostViewer',
+  data () {
+    return {
+      state: hexoEditorCore.state,
+      editorUiState: editorUiState.state
+    }
+  },
   computed: {
     ...mapState({
       post: state => state.hexo.post,
       editing: state => state.hexo.editing
     }),
     html () {
-      if (!this.post._content) return ''
-      return md.render(this.post._content)
+      if (!this.state.post._content) return ''
+      return md.render(this.state.post._content)
     }
-  },
-  data () {
-    return {}
   },
   methods: {
     ...mapActions({
