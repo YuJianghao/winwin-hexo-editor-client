@@ -201,8 +201,10 @@ export default {
         if (hexoEditorCore.state.post) { await editorUiState.viewPost() }
       }
     },
+    async savePost () {
+      await hexoEditorCore.savePost()
+    },
     ...mapActions({
-      savePost: 'hexo/savePost',
       publishPost: 'hexo/publishPost',
       unpublishPost: 'hexo/unpublishPost'
     }),

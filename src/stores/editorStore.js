@@ -294,23 +294,23 @@ class HexoEditorCore extends EventEmitter {
     this._update('post-update', this.state.post)
   }
 
-  // async savePost () {
-  //   if (!this._post || this._saved) return
-  //   this._success('save-post-start')
-  //   try {
-  //     const res = await this.api.updatePost(this._post._id, this._post)
-  //     await this._setPost(res.data.post)
-  //     await this._markSaved()
-  //     this._success('save-post-success', this._post)
-  //     await this.loadPosts()
-  //     await this.loadCategories()
-  //     await this.loadTags()
-  //   } catch (err) {
-  //     this._fail('save-post-fail', err)
-  //   } finally {
-  //     this._info('save-post-end')
-  //   }
-  // }
+  async savePost () {
+    if (!this.state.post || this._saved) return
+    this._success('save-post-start')
+    try {
+      const res = await this.api.updatePost(this.state.post._id, this.state.post)
+      await this._setPost(res.data.post)
+      await this._markSaved()
+      this._success('save-post-success', this.state.post)
+      await this.loadPosts()
+      await this.loadCategories()
+      await this.loadTags()
+    } catch (err) {
+      this._fail('save-post-fail', err)
+    } finally {
+      this._info('save-post-end')
+    }
+  }
 
   async setPostByPost (post) {
     if (!post) throw new Error('post is required')
