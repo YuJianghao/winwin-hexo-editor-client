@@ -32,6 +32,12 @@ class HexoEditorCore extends EventEmitter {
     this.state = {
       ready: false,
       posts: {},
+      get postsCount () {
+        return this.postsList.length
+      },
+      get uncategorizedPostsCount () {
+        return this.postsList.filter(post => !post.categories).length
+      },
       categories: {},
       tags: {},
       post: null,
@@ -235,48 +241,12 @@ class HexoEditorCore extends EventEmitter {
     this.state.filterBy._id = _id
   }
 
-  // get posts () {
-  //   return this._posts
-  // }
-
-  // get postsList () {
-  //   return Helper.objectToList(this.state.posts)
-  // }
-
-  // get categories () {
-  //   return this._categories
-  // }
-
-  // get categoriesList () {
-  //   return Helper.objectToList(this._categories)
-  // }
-
-  // get tags () {
-  //   return this._tags
-  // }
-
-  // get tagsList () {
-  //   return Helper.objectToList(this._tags)
-  // }
-
-  // get post () {
-  //   return this._post
-  // }
-
-  // get saved () {
-  //   return this._saved
-  // }
-
-  // get changed () {
-  //   return this._changed
-  // }
-
-  // async destory () {
-  //   this._posts = {}
-  //   this._categories = {}
-  //   this._tags = {}
-  //   this._post = null
-  // }
+  async destory () {
+    this.state.posts = {}
+    this.state.categories = {}
+    this.state.tags = {}
+    this.state.post = null
+  }
 
   async _markChanged () {
     this._update('markChanged')

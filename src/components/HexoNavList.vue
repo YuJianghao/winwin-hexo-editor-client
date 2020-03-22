@@ -46,7 +46,7 @@
         >
           <q-item-section>全部</q-item-section>
           <q-item-section avatar>
-            <q-badge :label="count" />
+            <q-badge :label="state.postsCount" />
           </q-item-section>
         </q-item>
         <q-expansion-item
@@ -77,7 +77,7 @@
               未分类
             </q-item-section>
             <q-item-section avatar="">
-              <q-badge :label="unCategorizedPosts.length" />
+              <q-badge :label="state.uncategorizedPostsCount" />
             </q-item-section>
           </q-item>
         </q-expansion-item>
@@ -107,29 +107,25 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 import { hexoEditorCore } from '../stores/editorStore'
+import { editorUiState } from '../stores/editorUiStore'
 export default {
   name: 'HexoNavList',
   data () {
     return {
-      state: hexoEditorCore.state
+      state: hexoEditorCore.state,
+      uiState: editorUiState.state
     }
   },
   computed: {
-    ...mapState({
-      count: state => Object.keys(state.hexo.posts).length,
-      post: state => state.hexo.post,
-      full: state => state.hexo.full,
-      categories: state => state.hexo.categories,
-      tags: state => state.hexo.tags
-    }),
-    ...mapGetters({
-      unCategorizedPosts: 'hexo/unCategorizedPosts'
-    }),
+    full () {
+      return this.uiState.full
+    },
     published () {
-      if (!this.post) return false
-      else return this.post.published
+      // TODO 这个想办法挪到store里面去
+      if (!this.state.post) return false
+      else return this.state.post.published
     }
   },
   methods: {
@@ -145,11 +141,6 @@ export default {
     async filterByUnCategorized () {
       await hexoEditorCore.filterByUnCategorized()
     },
-    ...mapMutations({
-      SELECT_CATEGORIES: 'hexo/SELECT_CATEGORIES',
-      SELECT_TAGS: 'hexo/SELECT_TAGS',
-      SELECT_ALL: 'hexo/SELECT_ALL'
-    }),
     ...mapActions({
       deploy: 'hexo/deploy',
       syncGit: 'hexo/syncGit',
