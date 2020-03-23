@@ -39,6 +39,8 @@
               size="lg"
               class="full-width"
               label="登录"
+              :loading="logging"
+              @keydown.enter="onLogin"
               @click="onLogin"
             />
           </q-card-actions>
@@ -59,12 +61,14 @@ export default {
   data () {
     return {
       username: '',
-      password: ''
+      password: '',
+      logging: false
     }
   },
   methods: {
     async onLogin () {
       try {
+        this.logging = true
         await users.getLoginToken(this.username, this.password)
         this.$store.commit('SET_LOGIN', true)
         this.$router.push('/')
@@ -72,8 +76,10 @@ export default {
         if (err.status === 401) {
           message.error({ message: '用户名或密码错误', position: 'top' })
         } else {
-          message.error({ message: err.message, position: 'top' })
+          message.error({ message: '登陆失败', caption: err.message, position: 'top' })
         }
+      } finally {
+        this.logging = false
       }
     }
   }

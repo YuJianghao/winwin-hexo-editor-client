@@ -18,6 +18,7 @@
       style="flex:1;height:0;max-width:100%"
       :value="state.post._content"
       @input="updateContent"
+      @on-save="savePost"
     ></monaco-editor>
   </div>
 </template>
@@ -45,6 +46,9 @@ export default {
     },
     updateContent (e) {
       editorDispatcher.setPostByContent(e)
+    },
+    savePost () {
+      editorDispatcher.savePost()
     }
   }
 }

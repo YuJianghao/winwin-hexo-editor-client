@@ -3,6 +3,8 @@ import hexo from '@winwin/hexo-editor-sdk'
 import { hexoEditorCore } from '../stores/editorStore'
 import request from '../api/request'
 import { editorUiStore } from './editorUiStore'
+import message from 'src/utils/message'
+import { Loading } from 'quasar'
 
 export async function init () {
   await hexoEditorCore.init({
@@ -77,22 +79,63 @@ export async function filterByUnCategorized () {
 }
 
 export async function deploy () {
-  await hexoEditorCore.deploy()
+  try {
+    Loading.show({ message: '正在部署' })
+    await hexoEditorCore.deploy()
+  } catch (err) {
+    message.error({ message: '部署失败', caption: err.message })
+  } finally {
+    Loading.hide()
+  }
 }
 
 export async function syncGit () {
-  await hexoEditorCore.syncGit()
+  try {
+    Loading.show({ message: '正在从GIT同步' })
+    await hexoEditorCore.syncGit()
+  } catch (err) {
+    message.error({ message: '同步失败', caption: err.message })
+  } finally {
+    Loading.hide()
+  }
 }
 
 export async function saveGit () {
   await hexoEditorCore.saveGit()
+  try {
+    Loading.show({ message: '正在同步到GIT' })
+    await hexoEditorCore.saveGit()
+  } catch (err) {
+    message.error({ message: '同步失败', caption: err.message })
+  } finally {
+    Loading.hide()
+  }
 }
 
 export async function reload (force = false) {
-  await hexoEditorCore.reload(force)
+  try {
+    Loading.show()
+    await hexoEditorCore.reload(force)
+  } catch (err) {
+    if (err.status === 404) {
+      await editorUiStore.closePost()
+      await hexoEditorCore.closePost()
+    }
+    message.error({ message: '重载失败', caption: err.message })
+  } finally {
+    Loading.hide()
+  }
 }
 export async function savePost () {
-  await hexoEditorCore.savePost()
+  try {
+    await hexoEditorCore.savePost()
+    message.success({ message: '保存成功' })
+  } catch (err) {
+    if (err.status === 404) {
+      err.message = '列表已更新，请刷新'
+    }
+    message.error({ message: '保存失败', caption: err.message })
+  }
 }
 export async function toggleFull () {
   await editorUiStore.toggleFull()
