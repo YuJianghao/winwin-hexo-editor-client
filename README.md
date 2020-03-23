@@ -62,47 +62,6 @@ Customize the configuration
 
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 
-### Use as a Quasar & Vue Page Component
-
-Download throuth npm.
-
-```bash
-npm i @winwin/hexo-editor-client
-mv ./node_modules/@winwin/hexo-editor-client ./src
-npm install
-```
-
-Add hexo-editor-client to your `.gitignore`.
-
-```.gitignore
-# ...
-hexo-editor-client
-```
-
-Use `./hexo-editor-client/src/pages/Hexo.vue` as common Vue page component.
-
-Mount `./hexo-editor-client/src/store/hexo` as vuex module with name `hexo`, **NAME IS IMPORTANT**. If you want to use another module name you may have to change source files.
-
-I know it's some kind of hack to quasar. But other than me, nobody will use this as a Vue Page Component :p.
-
-```js
-// ./src/store/index.js
-import hexo from '../hexo-editor-client/src/store/hexo'
-// ...
-export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    // ...
-    modules: {
-      // ...
-      hexo // must mount as submoudle named `hexo`
-    },
-    // ...
-  })
-  return Store
-}
-
-```
-
 ### Configure .env file
 
 This project use `./.env` as env file for dev and prod. You need to setup as follow
@@ -123,10 +82,10 @@ All kinds of PR are welcomed, including crazy change!
 
 ## Acknowledgement
 
-[hexo-client](https://github.com/gaoyoubo/hexo-client) by [gaoyoubo](https://github.com/gaoyoubo), [homepage](https://www.mspring.org/tags/HexoClient/)
+- [hexo-client](https://github.com/gaoyoubo/hexo-client) by [gaoyoubo](https://github.com/gaoyoubo) ([homepage](https://www.mspring.org/tags/HexoClient/)) and [hexo-admin](https://github.com/jaredly/hexo-admin) by [jaredly](https://github.com/jaredly) ([homepage](https://jaredforsyth.com/hexo-admin/)). I learnt a lot about hexo usage from them!
 
-[hexo-admin](https://github.com/jaredly/hexo-admin) by [jaredly](https://github.com/jaredly), [homepage](https://jaredforsyth.com/hexo-admin/)
+- [gridea - A static blog writing client](https://github.com/getgridea/gridea) ([honepage](https://gridea.dev/)). Gridea shows me how to use monaco editor!
 
-I learnt a lot about hexo usage from them!
+- [Qusar Login Form Card Component](https://gist.github.com/justinatack/39ec7f37064b2e9fa61fbd450cba3826) by [justinatack](https://gist.github.com/justinatack/)
 
-[Qusar Login Form Card Component](https://gist.github.com/justinatack/39ec7f37064b2e9fa61fbd450cba3826) by [justinatack](https://gist.github.com/justinatack/)
+- [koel - A personal music streaming server that works](https://github.com/phanan/koel) ([homepage](https://koel.phanan.net/)). Koel shows me how to use stores to manage data!
