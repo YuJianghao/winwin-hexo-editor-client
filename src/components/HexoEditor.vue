@@ -7,9 +7,9 @@
       <q-input
         borderless
         :value="state.post.title"
-        input-class="text-left"
-        style="height:42px;"
-        class="q-ml-md"
+        style="height:42px;overflow-y:hidden"
+        input-class="text-left q-pa-none bg-grey-2"
+        input-style="font-size:1.2rem;text-indent:1rem;font-weight:lighter;"
         @input="updateTitle"
       >
       </q-input>
@@ -19,13 +19,6 @@
       :value="state.post._content"
       @input="updateContent"
     ></monaco-editor>
-    <!-- <editor
-      style="flex:1;height:0;"
-      previewStyle="vertical"
-      :value="state.post._content"
-      :options="options"
-      @input="updateContent"
-    /> -->
   </div>
 </template>
 
@@ -42,17 +35,6 @@ export default {
   },
   data () {
     return {
-      // options: {
-      //   minHeight: '200px',
-      //   language: 'zh_CN',
-      //   useCommandShortcut: true,
-      //   useDefaultHTMLSanitizer: true,
-      //   usageStatistics: true,
-      //   hideModeSwitch: true,
-      //   exts: [
-      //     'scrollSync'
-      //   ]
-      // },
       state: hexoEditorCore.state,
       editorUiStore: editorUiStore.state
     }
