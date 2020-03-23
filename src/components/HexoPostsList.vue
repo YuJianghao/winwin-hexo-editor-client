@@ -1,26 +1,26 @@
 <template>
   <div
     class="col"
-    v-show="!full"
+    v-show="!uiState.full"
   >
     <q-scroll-area
       class="full-height"
       style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
     >
       <q-list>
-        <q-item v-if="empty">
+        <q-item v-if="state.empty">
           <q-item-section>
             <q-item-label>没有文章</q-item-label>
           </q-item-section>
         </q-item>
         <q-slide-item
-          v-for="(item,key) in filteredPosts"
+          v-for="(item,key) in state.filteredPostsList"
           left-color="blue"
           right-color="red"
           :key="key"
           @right="(e)=>{onRight(e,item._id)}"
           @left="(e)=>{onLeft(e,item._id)}"
-          @click="viewPost(item._id,true)"
+          @click="viewPostById(item._id)"
         >
           <template v-slot:left>
             <div class="row items-center">
@@ -73,37 +73,36 @@
 
 <script>
 import { date } from 'quasar'
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { hexoEditorCore } from '../stores/editorStore'
+import { editorUiStore } from '../stores/editorUiStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoPostsList',
-  computed: {
-    ...mapState({
-      posts: state => {
-        const posts = state.hexo.posts
-        return Object.keys(posts).map(key => posts[key])
-      },
-      full: state => state.hexo.full,
-      empty: state => !Object.keys(state.hexo.posts).length
-    }),
-    ...mapGetters({
-      filteredPosts: 'hexo/filteredPosts'
-    })
+  data () {
+    return {
+      state: hexoEditorCore.state,
+      uiState: editorUiStore.state
+    }
   },
   methods: {
-    ...mapActions({
-      deletePost: 'hexo/deletePost',
-      viewPost: 'hexo/viewPost',
-      editPost: 'hexo/editPost'
-    }),
+    async viewPostById (_id) {
+      await editorDispatcher.viewPostById(_id, true)
+    },
+    async editPostById (_id) {
+      await editorDispatcher.editPostById(_id, true)
+    },
+    async deletePostById (_id) {
+      await editorDispatcher.deletePostById(_id)
+    },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')
     },
     onLeft ({ reset }, _id) {
-      this.editPost(_id)
+      this.editPostById(_id)
       this.finalize(reset, 1)
     },
     onRight ({ reset }, _id) {
-      this.deletePost(_id)
+      this.deletePostById(_id)
       this.finalize(reset, 1)
     },
     finalize (reset, duration) {

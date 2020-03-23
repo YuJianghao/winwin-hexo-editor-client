@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import hexo from './hexo'
 // import example from './module-example'
 
 Vue.use(Vuex)
@@ -28,7 +27,6 @@ export default function (/* { ssrContext } */) {
     state,
     mutations,
     modules: {
-      hexo
       // example
     },
 

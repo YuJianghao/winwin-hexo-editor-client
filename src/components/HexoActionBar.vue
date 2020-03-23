@@ -23,7 +23,7 @@
         color="primary"
         icon="add"
         label="新建"
-        @click="addPost"
+        @click="addPostByDefault"
       />
       <q-btn
         flat
@@ -31,7 +31,7 @@
         color="primary"
         icon="refresh"
         label="刷新"
-        @click="loadPosts"
+        @click="reload"
       />
     </q-toolbar>
     <q-toolbar
@@ -62,7 +62,7 @@
           stretch
           :icon="published?'close':'publish'"
           :color="published?'red':'primary'"
-          v-if="post"
+          v-if="state.post"
           :label="published?'取消发布':'发布'"
           @click="onPublish"
         />
@@ -72,19 +72,19 @@
           color="red"
           icon="delete"
           label="删除"
-          @click="deletePost(post._id)"
+          @click="deletePostById"
         />
       </template>
       <template v-if="showView && showRight">
         <q-btn
           stretch
           flat
-          @click="editPost()"
+          @click="editPostById"
         >
           分类：
-          {{categories.length?'':'无'}}
+          {{state.postCategoriesList.length?'':'无'}}
           <q-badge
-            v-for="(item,key) in categories"
+            v-for="(item,key) in state.postCategoriesList"
             :key="key"
             color="primary"
             text-color="white"
@@ -94,7 +94,7 @@
         <q-btn
           stretch
           flat
-          @click="editPost()"
+          @click="editPostById"
         >
           标签：
           {{tags.length?'':'无'}}
@@ -117,9 +117,9 @@
         >
           <template slot="label">
             分类：
-            {{categories.length?'':'无'}}
+            {{state.postCategoriesList.length?'':'无'}}
             <q-badge
-              v-for="(item,key) in categories"
+              v-for="(item,key) in state.postCategoriesList"
               :key="key"
               color="primary"
               text-color="white"
@@ -160,9 +160,11 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
+import { hexoEditorCore } from '../stores/editorStore'
+import { editorUiStore } from '../stores/editorUiStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoActionBar',
   components: {
@@ -172,53 +174,58 @@ export default {
   data () {
     return {
       showCatsMenu: false,
-      showTagsMenu: false
+      showTagsMenu: false,
+      state: hexoEditorCore.state,
+      editorUiStore: editorUiStore.state
     }
   },
   methods: {
-    ...mapActions({
-      addPost: 'hexo/addPost',
-      editPost: 'hexo/editPost',
-      loadPosts: 'hexo/loadPosts',
-      deletePost: 'hexo/deletePost',
-      savePost: 'hexo/savePost',
-      publishPost: 'hexo/publishPost',
-      unpublishPost: 'hexo/unpublishPost',
-      toggleFull: 'hexo/toggleFull'
-    }),
+    async addPostByDefault () {
+      await editorDispatcher.addPostByDefault()
+    },
+    async reload () {
+      await editorDispatcher.reload(true)
+    },
+    async editPostById () {
+      await editorDispatcher.editPostById(null, true)
+    },
+    async publishPostById () {
+      await editorDispatcher.publishPostById()
+    },
+    async unpublishPostById () {
+      await editorDispatcher.unpublishPostById()
+    },
+    async toggleFull () {
+      await editorDispatcher.toggleFull()
+    },
+    async deletePostById () {
+      await editorDispatcher.deletePostById()
+    },
+    async savePost () {
+      await editorDispatcher.savePost()
+    },
     onPublish () {
-      this.published ? this.unpublishPost() : this.publishPost()
+      this.state.post.published ? this.unpublishPostById() : this.publishPostById()
     }
   },
   computed: {
-    ...mapState({
-      post: state => state.hexo.post,
-      full: state => state.hexo.full,
-      editing: state => state.hexo.editing
-    }),
-    ...mapGetters({
-      categoriesArray2d: 'hexo/categoriesArray2d'
-    }),
-    categories () {
-      return this.categoriesArray2d[0]
-    },
     published () {
-      return this.post.published
+      return this.state.post.published
     },
     showLeft () {
-      return !this.full
+      return !this.editorUiStore.full
     },
     showRight () {
-      return !!this.post
+      return !!this.state.post
     },
     showEdit () {
-      return this.editing
+      return this.editorUiStore.editing
     },
     showView () {
-      return !this.editing
+      return !this.editorUiStore.editing
     },
     tags () {
-      return this.post ? this.post.tags || [] : []
+      return this.state.post ? this.state.post.tags || [] : []
     },
     navStyle () {
       return {

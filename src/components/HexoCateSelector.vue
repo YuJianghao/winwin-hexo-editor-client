@@ -78,7 +78,9 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+// TODO 把这个做成公共组件，不要和store交互
+import { hexoEditorCore } from '../stores/editorStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoCateSelector',
   props: {
@@ -89,29 +91,22 @@ export default {
   },
   data () {
     return {
+      state: hexoEditorCore.state,
       text: '',
       editing: false,
       showMenu: false
     }
   },
   computed: {
-    ...mapState({
-      allCategories: state => state.hexo.categories.map(cat => cat.name)
-    }),
-    ...mapGetters({
-
-      categoriesArray2d: 'hexo/categoriesArray2d'
-    }),
     postCategories () {
-      return this.categoriesArray2d[0]
+      return this.state.postCategoriesList
     },
     showChild () {
-      // if (this.level === this.postCategories.length - 1) return this.showChild
       return this.level < this.postCategories.length
     },
     availableCategories () {
       const ac = []
-      ac.push.apply(ac, this.allCategories)
+      ac.push.apply(ac, this.state.categoriesNameList)
       this.postCategories.map(pc => {
         if (!ac.includes(pc)) { ac.push(pc) }
       })
@@ -119,9 +114,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      setCategoriesArray2d: 'hexo/setCategoriesArray2d'
-    }),
+    async setPostByCategoriesArray2d (cats) {
+      await editorDispatcher.setPostByCategoriesArray2d(cats)
+    },
     selected (item) {
       return item === this.postCategories[this.level]
     },
@@ -130,8 +125,7 @@ export default {
       if (item) {
         cats.push(item)
       }
-      console.log(cats)
-      this.setCategoriesArray2d(cats)
+      this.setPostByCategoriesArray2d([cats])
     },
     onNewCate () {
       this.editing = true
@@ -140,7 +134,7 @@ export default {
       if (this.text) {
         const cats = this.postCategories.slice(0, this.level)
         cats.push(this.text)
-        this.setCategoriesArray2d(cats)
+        this.setPostByCategoriesArray2d([cats])
         this.editing = false
         this.text = ''
       }

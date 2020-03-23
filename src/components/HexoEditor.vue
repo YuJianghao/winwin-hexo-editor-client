@@ -1,71 +1,54 @@
 <template>
   <div
     class="col column"
-    v-if="editing"
+    v-if="editorUiStore.editing"
   >
-    <div style="height:42px;">
+    <div style="height:42px;max-width:100%">
       <q-input
         borderless
-        :value="post.title"
-        input-class="text-left"
-        style="height:42px;"
-        class="q-ml-md"
+        :value="state.post.title"
+        style="height:42px;overflow-y:hidden"
+        input-class="text-left q-pa-none bg-grey-2"
+        input-style="font-size:1.2rem;text-indent:1rem;font-weight:lighter;"
         @input="updateTitle"
       >
       </q-input>
     </div>
-    <editor
-      style="flex:1;height:0;"
-      previewStyle="vertical"
-      :value="post._content"
-      :options="options"
+    <monaco-editor
+      style="flex:1;height:0;max-width:100%"
+      :value="state.post._content"
       @input="updateContent"
-    />
+      @on-save="savePost"
+    ></monaco-editor>
   </div>
 </template>
 
 <script>
-import { Editor } from './VueTuiEditor/index'
+// import { Editor } from './VueTuiEditor/index'
+import MonacoEditor from './MonacoEditor'
+import { editorUiStore } from '../stores/editorUiStore'
+import { hexoEditorCore } from '../stores/editorStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoEditor',
   components: {
-    Editor
+    MonacoEditor
   },
   data () {
     return {
-      options: {
-        minHeight: '200px',
-        language: 'zh_CN',
-        useCommandShortcut: true,
-        useDefaultHTMLSanitizer: true,
-        usageStatistics: true,
-        hideModeSwitch: true,
-        exts: [
-          'scrollSync'
-        ]
-      }
+      state: hexoEditorCore.state,
+      editorUiStore: editorUiStore.state
     }
   },
   methods: {
     updateTitle (e) {
-      const post = {}
-      Object.assign(post, this.post)
-      Object.assign(post, { title: e })
-      this.$store.commit('hexo/SET_POST', post)
+      editorDispatcher.setPostByTitle(e)
     },
     updateContent (e) {
-      const post = {}
-      Object.assign(post, this.post)
-      Object.assign(post, { _content: e })
-      this.$store.commit('hexo/SET_POST', post)
-    }
-  },
-  computed: {
-    editing () {
-      return this.$store.state.hexo.editing
+      editorDispatcher.setPostByContent(e)
     },
-    post () {
-      return this.$store.state.hexo.post
+    savePost () {
+      editorDispatcher.savePost()
     }
   }
 }
