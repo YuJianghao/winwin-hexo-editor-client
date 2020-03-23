@@ -50,27 +50,24 @@ function toggleCodeSpan (editor) {
 }
 
 function toggleWrap (editor, start, end = start) {
+  console.log(start, end)
   const selections = editor.getSelections()
   const textModel = editor.getModel()
-  const newSelections = []
-  const ops = []
-  selections.forEach((selection, i) => {
+  const ops = selections.map(selection => {
     let restext
     const range = TypeConverters.Range.fromSelection(selection)
     const text = TypeConverters.Value.fromTextModelRange(textModel, range)
     if (isWrap(text, start, end)) {
       restext = text.slice(start.length, text.length - end.length)
-      newSelections[i] = selection
     } else {
       restext = start + text + end
-      newSelections[i] = selection
     }
-    ops[i] = {
+    return {
       range: range,
       text: restext
     }
   })
-  textModel.pushEditOperations(newSelections, ops, () => { return null })
+  textModel.pushEditOperations(selections, ops, () => { return null })
 }
 
 function isWrap (text, start, end = start) {

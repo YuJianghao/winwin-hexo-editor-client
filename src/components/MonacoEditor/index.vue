@@ -14,7 +14,7 @@ export default {
   },
   watch: {
     value (v) {
-      this.editor.setValue(v)
+      if (this.editor.getValue() !== v) { this.editor.setValue(v) }
     }
   },
   mounted () {

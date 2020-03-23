@@ -122,8 +122,8 @@ class HexoEditorCore extends EventEmitter {
     // })
   }
 
-  async reload () {
-    if (this.state.post) await this.loadPostById(this.state.post._id)
+  async reload (force = false) {
+    if (this.state.post) await this.loadPostById(this.state.post._id, force)
     await this.loadPosts()
     await this.loadCategories()
     await this.loadTags()
@@ -430,8 +430,8 @@ class HexoEditorCore extends EventEmitter {
   async loadPostById (id, force) {
     if (!force && !this._saved) throw new Error('Unsaved file, use force=true to override')
     if (!id && !this.state.post) throw new Error('id is required!')
-    if (!id && this.state.post) return
-    if (this.state.post && this.state.post._id === id) return
+    if (!force && !id && this.state.post) return
+    if (!force && this.state.post && this.state.post._id === id) return
     this._start('load-post-id-start')
     try {
       const res = await this.api.getPost(id)
