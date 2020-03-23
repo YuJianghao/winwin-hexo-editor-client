@@ -28,6 +28,7 @@
 import { Editor } from './VueTuiEditor/index'
 import { editorUiStore } from '../stores/editorUiStore'
 import { hexoEditorCore } from '../stores/editorStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoEditor',
   components: {
@@ -52,10 +53,10 @@ export default {
   },
   methods: {
     updateTitle (e) {
-      hexoEditorCore.setPostByTitle(e)
+      editorDispatcher.setPostByTitle(e)
     },
     updateContent (e) {
-      hexoEditorCore.setPostByContent(e)
+      editorDispatcher.setPostByContent(e)
     }
   }
 }

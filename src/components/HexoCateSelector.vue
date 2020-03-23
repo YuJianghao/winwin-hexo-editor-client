@@ -80,6 +80,7 @@
 <script>
 // TODO 把这个做成公共组件，不要和store交互
 import { hexoEditorCore } from '../stores/editorStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoCateSelector',
   props: {
@@ -114,7 +115,7 @@ export default {
   },
   methods: {
     async setPostByCategoriesArray2d (cats) {
-      await hexoEditorCore.setPostByCategoriesArray2d(cats)
+      await editorDispatcher.setPostByCategoriesArray2d(cats)
     },
     selected (item) {
       return item === this.postCategories[this.level]

@@ -20,6 +20,11 @@ export async function editPostById (_id, force = false) {
   await editorUiStore.editPost()
 }
 
+export async function viewPostById (_id, force = false) {
+  await hexoEditorCore.loadPostById(_id, force)
+  await editorUiStore.viewPost()
+}
+
 export async function deletePostById (_id) {
   try {
     await editorUiStore.deletePost()
@@ -31,6 +36,7 @@ export async function deletePostById (_id) {
 
 export async function addPostByDefault () {
   await hexoEditorCore.addPostByDefault()
+  await editorUiStore.editPost()
 }
 
 export async function publishPostById (_id) {
@@ -39,6 +45,47 @@ export async function publishPostById (_id) {
 
 export async function unpublishPostById (_id) {
   await hexoEditorCore.unpublishPostById(_id)
+}
+
+export async function setPostByCategoriesArray2d (cats) {
+  await hexoEditorCore.setPostByCategoriesArray2d(cats)
+}
+export async function setPostByTitle (title) {
+  await hexoEditorCore.setPostByTitle(title)
+}
+export async function setPostByContent (content) {
+  await hexoEditorCore.setPostByContent(content)
+}
+export async function setPostByTags (tags) {
+  await hexoEditorCore.setPostByTags(tags)
+}
+
+export async function filterByCategoriesId (_id) {
+  await hexoEditorCore.filterByCategoriesId(_id)
+}
+
+export async function filterByTagsId (_id) {
+  await hexoEditorCore.filterByTagsId(_id)
+}
+
+export async function filterByAll () {
+  await hexoEditorCore.filterByAll()
+}
+
+export async function filterByUnCategorized () {
+  await hexoEditorCore.filterByUnCategorized()
+}
+
+export async function deploy () {
+  await hexoEditorCore.deploy()
+}
+
+export async function syncGit () {
+  await hexoEditorCore.syncGit()
+}
+
+export async function saveGit () {
+  await hexoEditorCore.saveGit()
 }
 
 export async function reload () {

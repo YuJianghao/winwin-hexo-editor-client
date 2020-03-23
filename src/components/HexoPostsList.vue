@@ -75,6 +75,7 @@
 import { date } from 'quasar'
 import { hexoEditorCore } from '../stores/editorStore'
 import { editorUiStore } from '../stores/editorUiStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoPostsList',
   data () {
@@ -85,20 +86,13 @@ export default {
   },
   methods: {
     async viewPostById (_id) {
-      await hexoEditorCore.loadPostById(_id, true)
-      await editorUiStore.viewPost()
+      await editorDispatcher.viewPostById(_id, true)
     },
     async editPostById (_id) {
-      await hexoEditorCore.loadPostById(_id, true)
-      await editorUiStore.editPost()
+      await editorDispatcher.editPostById(_id, true)
     },
     async deletePostById (_id) {
-      try {
-        await editorUiStore.deletePost(_id)
-        await hexoEditorCore.deletePostById(_id)
-      } catch (err) {
-        if (hexoEditorCore.state.post) { await editorUiStore.viewPost() }
-      }
+      await editorDispatcher.deletePostById(_id)
     },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')
