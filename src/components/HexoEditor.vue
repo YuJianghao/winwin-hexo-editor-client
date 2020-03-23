@@ -3,7 +3,7 @@
     class="col column"
     v-if="editorUiStore.editing"
   >
-    <div style="height:42px;">
+    <div style="height:42px;max-width:100%">
       <q-input
         borderless
         :value="state.post.title"
@@ -14,39 +14,45 @@
       >
       </q-input>
     </div>
-    <editor
+    <monaco-editor
+      style="flex:1;height:0;max-width:100%"
+      :value="state.post._content"
+      @input="updateContent"
+    ></monaco-editor>
+    <!-- <editor
       style="flex:1;height:0;"
       previewStyle="vertical"
       :value="state.post._content"
       :options="options"
       @input="updateContent"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
-import { Editor } from './VueTuiEditor/index'
+// import { Editor } from './VueTuiEditor/index'
+import MonacoEditor from './MonacoEditor'
 import { editorUiStore } from '../stores/editorUiStore'
 import { hexoEditorCore } from '../stores/editorStore'
 import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoEditor',
   components: {
-    Editor
+    MonacoEditor
   },
   data () {
     return {
-      options: {
-        minHeight: '200px',
-        language: 'zh_CN',
-        useCommandShortcut: true,
-        useDefaultHTMLSanitizer: true,
-        usageStatistics: true,
-        hideModeSwitch: true,
-        exts: [
-          'scrollSync'
-        ]
-      },
+      // options: {
+      //   minHeight: '200px',
+      //   language: 'zh_CN',
+      //   useCommandShortcut: true,
+      //   useDefaultHTMLSanitizer: true,
+      //   usageStatistics: true,
+      //   hideModeSwitch: true,
+      //   exts: [
+      //     'scrollSync'
+      //   ]
+      // },
       state: hexoEditorCore.state,
       editorUiStore: editorUiStore.state
     }
