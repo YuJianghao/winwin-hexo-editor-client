@@ -49,6 +49,34 @@ export default {
       fontFamily: 'Consolas,Roboto, -apple-system, Helvetica Neue, Helvetica, Arial, sans-serif'
     })
 
+    this.editor.addAction({
+      // An unique identifier of the contributed action.
+      id: 'winwin.save',
+
+      // A label of the action that will be presented to the user.
+      label: 'Save file',
+
+      // An optional array of keybindings for the action.
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S],
+
+      // A precondition for this action.
+      precondition: null,
+
+      // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
+      keybindingContext: null,
+
+      contextMenuGroupId: 'navigation',
+
+      contextMenuOrder: 1.5,
+
+      // Method that will be executed when the action is triggered.
+      // @param editor The editor instance is passed in as a convinience
+      run: (editor) => {
+        this.$emit('on-save')
+        return null
+      }
+    })
+
     MarkdownExtension.activate(this.editor)
 
     this.editor.onDidChangeModelContent(() => {

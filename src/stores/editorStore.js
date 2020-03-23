@@ -428,10 +428,11 @@ class HexoEditorCore extends EventEmitter {
   }
 
   async loadPostById (id, force) {
+    // TODO 整理保存逻辑
+    if (!force && this.state.post && (this.state.post._id === id)) return
+    if (!force && !id && this.state.post) return
     if (!force && !this._saved) throw new Error('Unsaved file, use force=true to override')
     if (!id && !this.state.post) throw new Error('id is required!')
-    if (!force && !id && this.state.post) return
-    if (!force && this.state.post && this.state.post._id === id) return
     this._start('load-post-id-start')
     try {
       const res = await this.api.getPost(id)
@@ -446,6 +447,10 @@ class HexoEditorCore extends EventEmitter {
     } finally {
       this._info('load-post-id-end')
     }
+  }
+
+  async closePost () {
+    await this._setPost(null)
   }
 
   async deploy () {
@@ -510,6 +515,7 @@ class HexoEditorCore extends EventEmitter {
       console.log('%c' + eventName, 'color: #fff; background: #f44336; padding: 0 5px; ')
       if (data) console.log(data)
     }
+    throw data
   }
 
   _success (eventName, data) {
