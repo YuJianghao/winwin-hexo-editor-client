@@ -1,16 +1,16 @@
 <template>
   <div
     class="col"
-    v-if="post&&!editing"
-    @dblclick="editPost(null)"
+    v-if="editorUiStore.viewing"
+    @dblclick="editPostById"
   >
     <q-scroll-area class="full-height">
       <div
         class="full-height q-mx-auto q-pa-lg article-entry"
         style="max-width:900px"
       >
-        <h1>{{post.title}}</h1>
-        <sub v-if="post.date">{{getDateString(post.date)}}</sub>
+        <h1>{{state.post.title}}</h1>
+        <sub v-if="state.post.date">{{getDateString(state.post.date)}}</sub>
         <div v-html="html"></div>
       </div>
     </q-scroll-area>
@@ -39,26 +39,27 @@ const md = MarkdownIt({
     return '<pre class="hljs"><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
   }
 })
-import { mapState, mapActions } from 'vuex'
+import { editorUiStore } from '../stores/editorUiStore'
+import { hexoEditorCore } from '../stores/editorStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoPostViewer',
-  computed: {
-    ...mapState({
-      post: state => state.hexo.post,
-      editing: state => state.hexo.editing
-    }),
-    html () {
-      if (!this.post._content) return ''
-      return md.render(this.post._content)
+  data () {
+    return {
+      state: hexoEditorCore.state,
+      editorUiStore: editorUiStore.state
     }
   },
-  data () {
-    return {}
+  computed: {
+    html () {
+      if (!this.state.post._content) return ''
+      return md.render(this.state.post._content)
+    }
   },
   methods: {
-    ...mapActions({
-      editPost: 'hexo/editPost'
-    }),
+    async editPostById () {
+      await editorDispatcher.editPostById(null, true)
+    },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')
     }

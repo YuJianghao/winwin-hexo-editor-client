@@ -3,6 +3,7 @@
     class="column overflow-hidden"
     :style-fn="pageStyle"
   >
+    <!-- {{state.postsList}} -->
     <hexo-action-bar></hexo-action-bar>
     <div
       class="row"
@@ -25,7 +26,10 @@ import HexoNavList from '../components/HexoNavList'
 import HexoWelcome from '../components/HexoWelcome'
 import HexoEditor from '../components/HexoEditor'
 import HexoActionBar from '../components/HexoActionBar'
-import { mapState, mapActions } from 'vuex'
+import { hexoEditorCore } from '../stores/editorStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
+import message from '../utils/message'
+import { Loading } from 'quasar'
 export default {
   name: 'Hexo',
   components: {
@@ -39,39 +43,28 @@ export default {
   data () {
     return {
       editorData: '',
-      full: false
-    }
-  },
-  computed: {
-    ...mapState({
-      posts: state => state.hexo.posts,
-      post: state => state.hexo.post,
-      editing: state => state.hexo.editing
-    }),
-    actionBarType () {
-      if (this.editing) return 'edit'
-      if (this.post) return 'view'
-      return ''
+      full: false,
+      state: hexoEditorCore.state
     }
   },
   methods: {
-    ...mapActions({
-      loadPosts: 'hexo/loadPosts',
-      loadTags: 'hexo/loadTags',
-      loadCategories: 'hexo/loadCategories',
-      clearPosts: 'hexo/clearPosts',
-      loadPost: 'hexo/loadPost',
-      addPost: 'hexo/addPost',
-      publishPost: 'hexo/publishPost',
-      unpublishPost: 'hexo/unpublishPost',
-      updatePost: 'hexo/updatePost'
-    }),
     pageStyle (offset, height) {
       return 'height:' + (window.innerHeight - offset) + 'px'
     }
   },
-  mounted () {
-    this.loadPosts()
+  async mounted () {
+    // when hexo-editor started, init hexoEditorCore
+    try {
+      Loading.show()
+      await editorDispatcher.init()
+    } catch (err) {
+      message.error({ message: '初始化失败', caption: err.message })
+    } finally {
+      Loading.hide()
+    }
+  },
+  async beforeDestory () {
+    await editorDispatcher.destroy()
   }
 }
 </script>

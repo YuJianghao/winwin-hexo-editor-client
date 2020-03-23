@@ -1,12 +1,12 @@
 <template>
   <div
     class="col column"
-    v-if="editing"
+    v-if="editorUiStore.editing"
   >
     <div style="height:42px;">
       <q-input
         borderless
-        :value="post.title"
+        :value="state.post.title"
         input-class="text-left"
         style="height:42px;"
         class="q-ml-md"
@@ -17,7 +17,7 @@
     <editor
       style="flex:1;height:0;"
       previewStyle="vertical"
-      :value="post._content"
+      :value="state.post._content"
       :options="options"
       @input="updateContent"
     />
@@ -26,6 +26,9 @@
 
 <script>
 import { Editor } from './VueTuiEditor/index'
+import { editorUiStore } from '../stores/editorUiStore'
+import { hexoEditorCore } from '../stores/editorStore'
+import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoEditor',
   components: {
@@ -43,29 +46,17 @@ export default {
         exts: [
           'scrollSync'
         ]
-      }
+      },
+      state: hexoEditorCore.state,
+      editorUiStore: editorUiStore.state
     }
   },
   methods: {
     updateTitle (e) {
-      const post = {}
-      Object.assign(post, this.post)
-      Object.assign(post, { title: e })
-      this.$store.commit('hexo/SET_POST', post)
+      editorDispatcher.setPostByTitle(e)
     },
     updateContent (e) {
-      const post = {}
-      Object.assign(post, this.post)
-      Object.assign(post, { _content: e })
-      this.$store.commit('hexo/SET_POST', post)
-    }
-  },
-  computed: {
-    editing () {
-      return this.$store.state.hexo.editing
-    },
-    post () {
-      return this.$store.state.hexo.post
+      editorDispatcher.setPostByContent(e)
     }
   }
 }
