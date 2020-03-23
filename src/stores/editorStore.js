@@ -325,11 +325,11 @@ class HexoEditorCore extends EventEmitter {
     await this._setPost({ ...this.state.post, ...{ title } })
   }
 
-  async setPostByContent (_content = '') {
-    if (!_content && this.debug) console.warn('no _content given, using default')
+  async setPostByContent (_content) {
+    if (!_content && this.debug) console.warn('no _content given, using default:`\\n`')
     this._update('set-post-_content')
     await this._markChanged()
-    await this._setPost({ ...this.state.post, ...{ _content } })
+    await this._setPost({ ...this.state.post, ...{ _content: _content || '\n' } })
   }
 
   async setPostByTags (tags) {
