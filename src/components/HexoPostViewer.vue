@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     async editPostById () {
-      await editorDispatcher.editPostById(null, true)
+      await editorDispatcher.editPostById(null)
     },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')

@@ -184,7 +184,7 @@ export default {
       await editorDispatcher.addPostByDefault()
     },
     async reload () {
-      await editorDispatcher.reload()
+      await editorDispatcher.reload(true)
     },
     async editPostById () {
       await editorDispatcher.editPostById(null, true)

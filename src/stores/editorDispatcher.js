@@ -88,8 +88,8 @@ export async function saveGit () {
   await hexoEditorCore.saveGit()
 }
 
-export async function reload () {
-  await hexoEditorCore.reload()
+export async function reload (force = false) {
+  await hexoEditorCore.reload(force)
 }
 export async function savePost () {
   await hexoEditorCore.savePost()

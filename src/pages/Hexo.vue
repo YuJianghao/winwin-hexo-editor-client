@@ -9,11 +9,11 @@
       class="row"
       style="flex:1;height:0;"
     >
-      <hexo-nav-list style="max-width:200px"></hexo-nav-list>
-      <hexo-posts-list style="max-width:300px"></hexo-posts-list>
-      <hexo-editor></hexo-editor>
-      <hexo-post-viewer></hexo-post-viewer>
-      <hexo-welcome></hexo-welcome>
+      <hexo-nav-list style="max-width:200px;max-height:100%"></hexo-nav-list>
+      <hexo-posts-list style="max-width:300px;max-height:100%"></hexo-posts-list>
+      <hexo-editor style="max-height:100%"></hexo-editor>
+      <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
+      <hexo-welcome style="max-height:100%"></hexo-welcome>
     </div>
   </q-page>
 </template>
