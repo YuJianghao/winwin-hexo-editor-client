@@ -1,6 +1,7 @@
 <template>
   <div
     class="col column"
+    style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
     v-if="editorUiStore.editing"
   >
     <div style="height:42px;max-width:100%">
@@ -19,6 +20,7 @@
       :value="state.post._content"
       @input="updateContent"
       @on-save="savePost"
+      @on-toggle-preview="togglePreview"
     ></monaco-editor>
   </div>
 </template>
@@ -49,6 +51,9 @@ export default {
     },
     savePost () {
       editorDispatcher.savePost()
+    },
+    togglePreview () {
+      editorUiStore.togglePreview()
     }
   }
 }

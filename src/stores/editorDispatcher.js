@@ -126,6 +126,7 @@ export async function reload (force = false) {
     Loading.hide()
   }
 }
+
 export async function savePost () {
   try {
     await hexoEditorCore.savePost()
@@ -137,8 +138,13 @@ export async function savePost () {
     message.error({ message: '保存失败', caption: err.message })
   }
 }
+
 export async function toggleFull () {
   await editorUiStore.toggleFull()
+}
+
+export async function togglePreview () {
+  await editorUiStore.togglePreview()
 }
 
 export async function destroy () {
