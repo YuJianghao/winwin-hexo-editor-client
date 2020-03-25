@@ -36,7 +36,7 @@ A Hexo Editor Client by winwin2011
 
 ```bash
 git clone git@github.com:YuJianghao/winwin-hexo-editor-client.git
-npm install -g quasar
+sudo npm install -g @quasar/cli
 npm install
 ```
 
