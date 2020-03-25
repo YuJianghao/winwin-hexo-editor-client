@@ -4,7 +4,7 @@ import { hexoEditorCore } from '../stores/editorStore'
 import request from '../api/request'
 import { editorUiStore } from './editorUiStore'
 import message from 'src/utils/message'
-import { Loading, Dialog } from 'quasar'
+import { Loading } from 'quasar'
 
 export async function init () {
   await hexoEditorCore.init({
@@ -28,33 +28,15 @@ export async function viewPostById (_id, force = false) {
 }
 
 export async function deletePostById (_id) {
-  return new Promise(resolve => {
-    Dialog.create({
-      title: '确认',
-      message: '你确认要删除么？',
-      ok: {
-        label: '删除',
-        color: 'red',
-        flat: true
-      },
-      cancel: {
-        label: '取消',
-        flat: true
-      }
-    }).onOk(async () => {
-      try {
-        await editorUiStore.deletePost()
-        await hexoEditorCore.deletePostById(_id)
-      } catch (err) {
-        if (hexoEditorCore.state.post) { await editorUiStore.viewPost() }
-      } finally {
-        resolve()
-      }
-    }).onCancel(() => {
+  return editorUiStore.confirm(null, '你确认要删除么', '删除', 'red', null, 'primary', async resolve => {
+    try {
+      await editorUiStore.deletePost()
+      await hexoEditorCore.deletePostById(_id)
+    } catch (err) {
+      if (hexoEditorCore.state.post) { await editorUiStore.viewPost() }
+    } finally {
       resolve()
-    }).onDismiss(() => {
-      resolve()
-    })
+    }
   })
 }
 

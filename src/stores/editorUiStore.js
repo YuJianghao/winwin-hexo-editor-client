@@ -1,4 +1,5 @@
 import { hexoEditorCore } from './editorStore'
+import { Dialog } from 'quasar'
 
 // TODO 添加dispatcher，避免代码分散
 export const editorUiStore = {
@@ -47,5 +48,30 @@ export const editorUiStore = {
   togglePreview (preview) {
     if (typeof preview === 'undefined') this.state.preview = !this.state.preview
     else this.state.preview = !!preview
+  },
+  confirm (title, message, okLabel, okColor, cancelLabel, cancelColor, onOk, onCancel, onDismiss) {
+    if (!message) throw new Error('message is required')
+    return new Promise(resolve => {
+      Dialog.create({
+        title: title || '确认',
+        message: message,
+        ok: {
+          label: okLabel || '确定',
+          color: okColor || 'primary',
+          flat: true
+        },
+        cancel: {
+          label: cancelLabel || '取消',
+          color: cancelColor || 'grey',
+          flat: true
+        }
+      }).onOk(async () => {
+        if (onOk) { onOk(resolve) } else resolve()
+      }).onCancel(() => {
+        if (onCancel) { onCancel(resolve) } else resolve()
+      }).onDismiss(() => {
+        if (onDismiss) { onDismiss(resolve) } else resolve()
+      })
+    })
   }
 }
