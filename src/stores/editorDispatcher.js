@@ -64,7 +64,10 @@ export async function publishPostById (_id) {
 }
 
 export async function unpublishPostById (_id) {
-  await hexoEditorCore.unpublishPostById(_id)
+  return editorUiStore.confirm(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
+    await hexoEditorCore.unpublishPostById(_id)
+    resolve()
+  })
 }
 
 export async function setPostByCategoriesArray2d (cats) {
@@ -99,7 +102,7 @@ export async function filterByUnCategorized () {
 export async function deploy () {
   await editorUiStore.confirm(null, '确定部署博客么？', null, null, null, null, 'ok', async resolve => {
     try {
-      Loading.show({ message: '正在部署' })
+      Loading.show({ message: '正在部署', delay: 100 })
       await hexoEditorCore.deploy()
       message.success({ message: '部署完成' })
     } catch (err) {
@@ -114,7 +117,7 @@ export async function deploy () {
 export async function syncGit () {
   await editorUiStore.confirm(null, '确定从git同步么？未保存到git的文件将丢失', '放弃文件并同步', 'red', '返回', 'primary', 'cancel', async resolve => {
     try {
-      Loading.show({ message: '正在从GIT同步' })
+      Loading.show({ message: '正在从GIT同步', delay: 100 })
       await hexoEditorCore.syncGit()
       message.success({ message: '同步完成' })
     } catch (err) {
@@ -128,7 +131,7 @@ export async function syncGit () {
 
 export async function saveGit () {
   try {
-    Loading.show({ message: '正在同步到GIT' })
+    Loading.show({ message: '正在同步到GIT', delay: 100 })
     await hexoEditorCore.saveGit()
     message.error({ message: '同步完成' })
   } catch (err) {
@@ -143,10 +146,6 @@ export async function reload (force = false) {
     Loading.show({ delay: 500 })
     await hexoEditorCore.reload(force)
   } catch (err) {
-    if (err.status === 404) {
-      await editorUiStore.closePost()
-      await hexoEditorCore.closePost()
-    }
     message.error({ message: '重载失败', caption: err.message })
   } finally {
     Loading.hide()
@@ -155,7 +154,11 @@ export async function reload (force = false) {
 
 export async function savePost () {
   try {
+    const timer = window.setTimeout(() => {
+      message.info({ message: '正在保存' })
+    }, 500)
     await hexoEditorCore.savePost()
+    window.clearTimeout(timer)
     message.success({ message: '保存成功' })
   } catch (err) {
     if (err.status === 404) {

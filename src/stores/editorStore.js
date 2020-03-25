@@ -125,7 +125,6 @@ class HexoEditorCore extends EventEmitter {
   }
 
   async reload (force = false) {
-    if (this.state.post) await this.loadPostById(this.state.post._id, force)
     await this.loadPosts()
     await this.loadCategories()
     await this.loadTags()

@@ -61,7 +61,7 @@ export const editorUiStore = {
           flat: true
         },
         cancel: {
-          label: cancelLabel || '取消',
+          label: cancelLabel || '返回',
           color: cancelColor || 'grey',
           flat: true
         },
