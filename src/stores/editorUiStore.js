@@ -49,7 +49,7 @@ export const editorUiStore = {
     if (typeof preview === 'undefined') this.state.preview = !this.state.preview
     else this.state.preview = !!preview
   },
-  confirm (title, message, okLabel, okColor, cancelLabel, cancelColor, onOk, onCancel, onDismiss) {
+  confirm (title, message, okLabel, okColor, cancelLabel, cancelColor, focus = 'ok', onOk, onCancel, onDismiss) {
     if (!message) throw new Error('message is required')
     return new Promise(resolve => {
       Dialog.create({
@@ -64,7 +64,8 @@ export const editorUiStore = {
           label: cancelLabel || '取消',
           color: cancelColor || 'grey',
           flat: true
-        }
+        },
+        focus
       }).onOk(async () => {
         if (onOk) { onOk(resolve) } else resolve()
       }).onCancel(() => {

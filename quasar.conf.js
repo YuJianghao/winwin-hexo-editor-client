@@ -60,10 +60,6 @@ module.exports = function (ctx) {
           timeout: 1000,
           classes: 'ww-nofity'
         }
-      },
-
-      loading: {
-        delay: 500
       }
     },
 
