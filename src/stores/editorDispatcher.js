@@ -18,13 +18,27 @@ export async function init () {
 }
 
 export async function editPostById (_id, force = false) {
-  await hexoEditorCore.loadPostById(_id, force)
-  await editorUiStore.editPost()
+  if (!force && !hexoEditorCore.state.saved && !await hexoEditorCore.isCurrentPost(_id)) {
+    await editorUiStore.confirm(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', async resolve => {
+      await hexoEditorCore.loadPostById(_id, true)
+      await editorUiStore.editPost()
+    })
+  } else {
+    await hexoEditorCore.loadPostById(_id, force)
+    await editorUiStore.editPost()
+  }
 }
 
 export async function viewPostById (_id, force = false) {
-  await hexoEditorCore.loadPostById(_id, force)
-  await editorUiStore.viewPost()
+  if (!force && !hexoEditorCore.state.saved) {
+    await editorUiStore.confirm(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', async resolve => {
+      await hexoEditorCore.loadPostById(_id, true)
+      await editorUiStore.viewPost()
+    })
+  } else {
+    await hexoEditorCore.loadPostById(_id, force)
+    await editorUiStore.viewPost()
+  }
 }
 
 export async function deletePostById (_id) {

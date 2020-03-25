@@ -86,10 +86,10 @@ export default {
   },
   methods: {
     async viewPostById (_id) {
-      await editorDispatcher.viewPostById(_id, true)
+      await editorDispatcher.viewPostById(_id)
     },
     async editPostById (_id) {
-      await editorDispatcher.editPostById(_id, true)
+      await editorDispatcher.editPostById(_id)
     },
     async deletePostById (_id) {
       await editorDispatcher.deletePostById(_id)
