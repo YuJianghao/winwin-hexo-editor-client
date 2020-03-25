@@ -77,6 +77,34 @@ export default {
       }
     })
 
+    this.editor.addAction({
+      // An unique identifier of the contributed action.
+      id: 'winwin.togglepreview',
+
+      // A label of the action that will be presented to the user.
+      label: 'Toggle Preview',
+
+      // An optional array of keybindings for the action.
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KEY_V],
+
+      // A precondition for this action.
+      precondition: null,
+
+      // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
+      keybindingContext: null,
+
+      contextMenuGroupId: 'navigation',
+
+      contextMenuOrder: 1.5,
+
+      // Method that will be executed when the action is triggered.
+      // @param editor The editor instance is passed in as a convinience
+      run: (editor) => {
+        this.$emit('on-toggle-preview')
+        return null
+      }
+    })
+
     MarkdownExtension.activate(this.editor)
 
     this.editor.onDidChangeModelContent(() => {

@@ -1,9 +1,9 @@
 import * as monaco from 'monaco-editor'
 class MarkdownExtension {
   static activate (editor) {
-    addKeyBinding(editor, [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_B], 'Toggle text bold', toggleBlod)
-    addKeyBinding(editor, [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_I], 'Toggle text italic', toggleItalic)
-    addKeyBinding(editor, [monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_BACKTICK], 'Toggle text code span', toggleCodeSpan)
+    addKeyBinding(editor, [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_B], 'Toggle bold', toggleBlod)
+    addKeyBinding(editor, [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_I], 'Toggle italic', toggleItalic)
+    addKeyBinding(editor, [monaco.KeyMod.CtrlCmd | monaco.KeyCode.US_BACKTICK], 'Toggle code span', toggleCodeSpan)
   }
 }
 

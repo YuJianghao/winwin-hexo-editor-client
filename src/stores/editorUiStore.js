@@ -4,6 +4,7 @@ import { hexoEditorCore } from './editorStore'
 export const editorUiStore = {
   state: {
     post: 'unselect',
+    preview: true,
     full: false,
     get unselect () {
       return this.post === 'unselect'
@@ -12,7 +13,7 @@ export const editorUiStore = {
       return this.post === 'editing'
     },
     get viewing () {
-      return this.post === 'viewing'
+      return this.post === 'viewing' || this.preview
     }
   },
   init () {
@@ -42,5 +43,9 @@ export const editorUiStore = {
   toggleFull (full) {
     if (typeof full === 'undefined') this.state.full = !this.state.full
     else this.state.full = !!full
+  },
+  togglePreview (preview) {
+    if (typeof preview === 'undefined') this.state.preview = !this.state.preview
+    else this.state.preview = !!preview
   }
 }
