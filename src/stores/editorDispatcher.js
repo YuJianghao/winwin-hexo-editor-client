@@ -4,7 +4,7 @@ import { hexoEditorCore } from '../stores/editorStore'
 import request from '../api/request'
 import { editorUiStore } from './editorUiStore'
 import message from 'src/utils/message'
-import { Loading } from 'quasar'
+import { Loading, Dialog } from 'quasar'
 
 export async function init () {
   await hexoEditorCore.init({
@@ -28,12 +28,34 @@ export async function viewPostById (_id, force = false) {
 }
 
 export async function deletePostById (_id) {
-  try {
-    await editorUiStore.deletePost()
-    await hexoEditorCore.deletePostById(_id)
-  } catch (err) {
-    if (hexoEditorCore.state.post) { await editorUiStore.viewPost() }
-  }
+  return new Promise(resolve => {
+    Dialog.create({
+      title: '确认',
+      message: '你确认要删除么？',
+      ok: {
+        label: '删除',
+        color: 'red',
+        flat: true
+      },
+      cancel: {
+        label: '取消',
+        flat: true
+      }
+    }).onOk(async () => {
+      try {
+        await editorUiStore.deletePost()
+        await hexoEditorCore.deletePostById(_id)
+      } catch (err) {
+        if (hexoEditorCore.state.post) { await editorUiStore.viewPost() }
+      } finally {
+        resolve()
+      }
+    }).onCancel(() => {
+      resolve()
+    }).onDismiss(() => {
+      resolve()
+    })
+  })
 }
 
 export async function addPostByDefault () {
@@ -82,6 +104,7 @@ export async function deploy () {
   try {
     Loading.show({ message: '正在部署' })
     await hexoEditorCore.deploy()
+    message.error({ message: '部署完成' })
   } catch (err) {
     message.error({ message: '部署失败', caption: err.message })
   } finally {
@@ -93,6 +116,7 @@ export async function syncGit () {
   try {
     Loading.show({ message: '正在从GIT同步' })
     await hexoEditorCore.syncGit()
+    message.error({ message: '同步完成' })
   } catch (err) {
     message.error({ message: '同步失败', caption: err.message })
   } finally {
@@ -105,6 +129,7 @@ export async function saveGit () {
   try {
     Loading.show({ message: '正在同步到GIT' })
     await hexoEditorCore.saveGit()
+    message.error({ message: '同步完成' })
   } catch (err) {
     message.error({ message: '同步失败', caption: err.message })
   } finally {
