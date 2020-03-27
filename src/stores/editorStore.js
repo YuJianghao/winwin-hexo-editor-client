@@ -30,6 +30,8 @@ class HexoEditorCore extends EventEmitter {
     super()
     const ctx = this
     this.state = {
+      saved: true,
+      changed: false,
       ready: false,
       posts: {},
       get empty () {
@@ -123,7 +125,6 @@ class HexoEditorCore extends EventEmitter {
   }
 
   async reload (force = false) {
-    if (this.state.post) await this.loadPostById(this.state.post._id, force)
     await this.loadPosts()
     await this.loadCategories()
     await this.loadTags()
@@ -253,19 +254,19 @@ class HexoEditorCore extends EventEmitter {
 
   async _markChanged () {
     this._update('markChanged')
-    this.change = true
-    this._saved = false
+    this.state.changed = true
+    this.state.saved = false
   }
 
   async _markReset () {
     this._info('markReset')
-    this._changed = false
-    this._saved = true
+    this.state.changed = false
+    this.state.saved = true
   }
 
   async _markSaved () {
     this._success('markSaved')
-    this._saved = true
+    this.state.saved = true
   }
 
   async _setPost (post) {
@@ -274,7 +275,7 @@ class HexoEditorCore extends EventEmitter {
   }
 
   async savePost () {
-    if (!this.state.post || this._saved) return
+    if (!this.state.post || this.state.saved) return
     this._success('save-post-start')
     try {
       const res = await this.api.updatePost(this.state.post._id, this.state.post)
@@ -348,7 +349,7 @@ class HexoEditorCore extends EventEmitter {
   }
 
   async addPostByOptions (options, force) {
-    if (!force && !this._saved) throw new Error('Unsaved file, use force=true to override')
+    if (!force && !this.state.saved) throw new Error('Unsaved file, use force=true to override')
     if (!options.title) throw new Error('options.title is required')
     if (!options.slug) options.slug = random(16)
     this._start('add-post-start')
@@ -431,12 +432,13 @@ class HexoEditorCore extends EventEmitter {
     // TODO 整理保存逻辑
     if (!force && this.state.post && (this.state.post._id === id)) return
     if (!force && !id && this.state.post) return
-    if (!force && !this._saved) throw new Error('Unsaved file, use force=true to override')
+    if (!force && !this.state.saved) throw new Error('Unsaved file, use force=true to override')
     if (!id && !this.state.post) throw new Error('id is required!')
     this._start('load-post-id-start')
     try {
       const res = await this.api.getPost(id)
       await this._setPost(res.data.post)
+      await this._markReset()
       this._success('load-post-id-success')
     } catch (err) {
       if (err.status === 404) {
@@ -499,6 +501,12 @@ class HexoEditorCore extends EventEmitter {
     } finally {
       this._info('saveGit-end')
     }
+  }
+
+  async isCurrentPost (_id) {
+    if (!_id) return true
+    if (this.state.post && this.state.post._id === _id) return true
+    return false
   }
 
   _info (eventName, data) {
