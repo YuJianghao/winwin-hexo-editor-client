@@ -50,7 +50,8 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+        'Dialog'
       ],
 
       config: {
@@ -59,10 +60,6 @@ module.exports = function (ctx) {
           timeout: 1000,
           classes: 'ww-nofity'
         }
-      },
-
-      loading: {
-        delay: 500
       }
     },
 
