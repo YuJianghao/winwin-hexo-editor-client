@@ -19,7 +19,10 @@
                 v-model="username"
                 type="text"
                 label="用户名"
+                ref="username"
                 hint="默认: admin"
+                :rules="[val => !!val || '请填写用户名']"
+                @keydown.enter="onLogin"
               />
               <q-input
                 square
@@ -28,7 +31,10 @@
                 v-model="password"
                 type="password"
                 label="密码"
+                ref="password"
                 hint="默认: admin"
+                :rules="[val => !!val || '请填写密码']"
+                @keydown.enter="onLogin"
               />
             </q-form>
           </q-card-section>
@@ -45,7 +51,10 @@
             />
           </q-card-actions>
           <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Login Form Card By <a href="https://gist.github.com/justinatack/39ec7f37064b2e9fa61fbd450cba3826">justinatack</a> STAR HIM ❤</p>
+            <p class="text-grey-6">
+              Login Form Card By
+              <a href="https://gist.github.com/justinatack/39ec7f37064b2e9fa61fbd450cba3826">justinatack</a> STAR HIM ❤
+            </p>
           </q-card-section>
         </q-card>
       </div>
@@ -67,6 +76,11 @@ export default {
   },
   methods: {
     async onLogin () {
+      this.$refs.username.validate()
+      this.$refs.password.validate()
+      if (this.$refs.username.hasError || this.$refs.password.hasError) {
+        return
+      }
       try {
         this.logging = true
         await users.getLoginToken(this.username, this.password)
@@ -76,7 +90,11 @@ export default {
         if (err.status === 401) {
           message.error({ message: '用户名或密码错误', position: 'top' })
         } else {
-          message.error({ message: '登陆失败', caption: err.message, position: 'top' })
+          message.error({
+            message: '登陆失败',
+            caption: err.message,
+            position: 'top'
+          })
         }
       } finally {
         this.logging = false
