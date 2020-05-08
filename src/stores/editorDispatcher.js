@@ -133,7 +133,7 @@ export async function saveGit () {
   try {
     Loading.show({ message: '正在同步到GIT', delay: 100 })
     await hexoEditorCore.saveGit()
-    message.error({ message: '同步完成' })
+    message.success({ message: '同步完成' })
   } catch (err) {
     message.error({ message: '同步失败', caption: err.message })
   } finally {
