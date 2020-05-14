@@ -3,7 +3,7 @@ import users from 'src/api/users'
 
 export const loginStore = {
   state: {
-    isLoggedIn: false
+    isLoggedIn: undefined
   },
   async init () {
     this.state.isLoggedIn = !!loadLoginToken()
