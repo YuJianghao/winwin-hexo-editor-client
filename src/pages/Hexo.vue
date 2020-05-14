@@ -58,6 +58,7 @@ export default {
       Loading.show()
       await editorDispatcher.init()
     } catch (err) {
+      if (err.status === 401) return
       message.error({ message: '初始化失败', caption: err.message })
     } finally {
       Loading.hide()

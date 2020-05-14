@@ -55,8 +55,13 @@ export async function deletePostById (_id) {
 }
 
 export async function addPostByDefault () {
-  await hexoEditorCore.addPostByDefault()
-  await editorUiStore.editPost()
+  try {
+    await hexoEditorCore.addPostByDefault()
+    await editorUiStore.editPost()
+  } catch (err) {
+    if (err.status === 401) return
+    message.error({ message: '新建失败', caption: err.message })
+  }
 }
 
 export async function publishPostById (_id) {
@@ -146,6 +151,7 @@ export async function reload (force = false) {
     Loading.show({ delay: 500 })
     await hexoEditorCore.reload(force)
   } catch (err) {
+    if (err.status === 401) return
     message.error({ message: '重载失败', caption: err.message })
   } finally {
     Loading.hide()
