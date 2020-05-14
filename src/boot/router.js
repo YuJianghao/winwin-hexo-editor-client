@@ -1,13 +1,12 @@
+import { loadLoginToken } from 'src/utils/storage'
+
 export default async ({ router, app }) => {
   router.beforeEach((to, from, next) => {
-    if (to.path === '/login')next()
+    const isLoggedIn = app.store.state.isLoggedIn || !!loadLoginToken()
+    if (!isLoggedIn) next('/login')
     else {
-      const isLoggedIn = app.store.state.isLoggedIn
-      if (!isLoggedIn) {
-        next('/login')
-      } else {
-        next()
-      }
+      if (to.path === '/login') next('/home')
+      else next()
     }
   })
 }

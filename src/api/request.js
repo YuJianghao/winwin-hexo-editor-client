@@ -14,7 +14,7 @@ request.interceptors.request.use((config) => {
 request.interceptors.response.use((res) => {
   return Promise.resolve(res.data)
 }, (err) => {
-  if (err.response)err.response.message = err.response.data.message
+  if (err.response) err.response.message = err.response.data.message
   return Promise.reject(err.response || err)
 })
 
