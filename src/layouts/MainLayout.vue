@@ -96,7 +96,7 @@
 <script>
 import packageJson from '../../package.json'
 import EssentialLink from '../components/EssentialLink'
-import { saveLoginToken } from '../utils/storage'
+import * as editorDispatcher from '../stores/editorDispatcher'
 
 export default {
   name: 'MainLayout',
@@ -157,9 +157,8 @@ export default {
     }
   },
   methods: {
-    onLogout () {
-      this.$store.commit('SET_LOGIN', false)
-      saveLoginToken(undefined)
+    async onLogout () {
+      await editorDispatcher.logout()
       this.$router.push('/login')
     }
   }
