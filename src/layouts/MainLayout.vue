@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          Hexo Editor Client
+          Hexo Editor
         </q-toolbar-title>
         <q-btn-dropdown
           flat
@@ -39,6 +39,7 @@
     <q-drawer
       v-model="leftDrawerOpen"
       bordered
+      behavior="mobile"
       content-class="bg-grey-1"
     >
       <q-list>
