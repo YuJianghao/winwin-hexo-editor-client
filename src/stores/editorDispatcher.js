@@ -5,8 +5,11 @@ import request from '../api/request'
 import { editorUiStore } from './editorUiStore'
 import message from 'src/utils/message'
 import { Loading } from 'quasar'
+import { loginStore } from './loginStore'
 
 export async function init () {
+  console.log('init')
+  await loginStore.init()
   await hexoEditorCore.init({
     api: hexo({
       baseUrl: process.env.HEXO_SERVER_BASE,
@@ -15,6 +18,22 @@ export async function init () {
     debug: process.env.DEV
   })
   await editorUiStore.init()
+}
+
+export async function login (username, password) {
+  await loginStore.login(username, password)
+}
+
+export async function logout () {
+  console.log('logout')
+  if (!hexoEditorCore.state.saved) {
+    await editorUiStore.confirm(null, '要退出么，未保存的文件会丢失', '退出', 'red', '返回', 'primary', 'cancel', async resolve => {
+      await loginStore.logout()
+    })
+  } else {
+    await destroy()
+    await loginStore.logout()
+  }
 }
 
 export async function editPostById (_id, force = false) {
@@ -182,7 +201,8 @@ export async function togglePreview () {
   await editorUiStore.togglePreview()
 }
 
-export async function destroy () {
-  await hexoEditorCore.destory()
+export const destroy = async () => {
+  console.log('destroy')
   await editorUiStore.destory()
+  await hexoEditorCore.destory()
 }

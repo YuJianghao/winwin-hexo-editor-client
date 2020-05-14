@@ -1,8 +1,8 @@
-import { loadLoginToken } from 'src/utils/storage'
+import { loginStore } from 'src/stores/loginStore'
 
 export default async ({ router, app }) => {
   router.beforeEach((to, from, next) => {
-    const isLoggedIn = app.store.state.isLoggedIn || !!loadLoginToken()
+    const isLoggedIn = loginStore.state.isLoggedIn
     const toLogin = to.path === '/login'
     // 真值表干的漂亮啊！
     //                     toLogin
