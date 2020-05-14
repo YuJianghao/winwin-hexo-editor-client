@@ -159,7 +159,7 @@ export default {
   methods: {
     onLogout () {
       this.$store.commit('SET_LOGIN', false)
-      saveLoginToken(undefined)
+      saveLoginToken('')
       this.$router.push('/login')
     }
   }
