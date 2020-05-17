@@ -18,24 +18,26 @@ export const editorUiStore = {
     }
   },
   init () {
-    this.state.post = 'unselect'
     this.full = false
+    this.state.post = 'unselect'
+    this.state.preview = false
   },
   destory () {
-    this.state.post = 'unselect'
     this.full = false
+    this.state.post = 'unselect'
+    this.state.preview = false
   },
   editPost () {
-    if (process.env.DEV)console.log('set editor ui post editing')
+    if (process.env.DEV) console.log('set editor ui post editing')
     this.state.post = 'editing'
     this.state.preview = true
   },
   viewPost () {
-    if (process.env.DEV)console.log('set editor ui post viewing')
+    if (process.env.DEV) console.log('set editor ui post viewing')
     this.state.post = 'viewing'
   },
   closePost () {
-    if (process.env.DEV)console.log('set editor ui post unselect')
+    if (process.env.DEV) console.log('set editor ui post unselect')
     this.state.post = 'unselect'
     this.state.preview = false
   },

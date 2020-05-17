@@ -86,3 +86,12 @@ All kinds of PR are welcomed, including crazy change!
 - [Qusar Login Form Card Component](https://gist.github.com/justinatack/39ec7f37064b2e9fa61fbd450cba3826) by [justinatack](https://gist.github.com/justinatack/)
 
 - [koel - A personal music streaming server that works](https://github.com/phanan/koel) ([homepage](https://koel.phanan.net/)). Koel shows me how to use stores to manage data!
+
+## Release Note
+
+### 0.1.6
+
+- add pwa support
+- update app icon
+- show server address QRCode
+- fix auth bugs

@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import users from '../api/users'
+import * as editorDispatcher from '../stores/editorDispatcher'
 import message from '../utils/message'
 export default {
   name: 'Login',
@@ -83,8 +83,7 @@ export default {
       }
       try {
         this.logging = true
-        await users.getLoginToken(this.username, this.password)
-        this.$store.commit('SET_LOGIN', true)
+        await editorDispatcher.login(this.username, this.password)
         this.$router.push('/')
       } catch (err) {
         if (err.status === 401) {

@@ -1,4 +1,4 @@
-const loginToken = process.env.APP_NAME + '_LOGIN_TOKEN'
+const loginToken = 'WINWIN_HEXO_EDITOR_LOGIN_TOKEN'
 
 export function saveLoginToken (token) {
   try {

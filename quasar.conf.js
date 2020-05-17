@@ -114,13 +114,13 @@ module.exports = function (ctx) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: 'Quasar App',
-        short_name: 'Quasar App',
-        description: 'A Quasar Framework app',
+        name: 'Winwin Hexo Editor',
+        short_name: 'Winwin Hexo Editor',
+        description: 'An Online Hexo Blog Editor',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#027be3',
+        theme_color: '#1976d2',
         icons: [
           {
             src: 'statics/icons/icon-128x128.png',

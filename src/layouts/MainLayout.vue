@@ -12,9 +12,22 @@
         />
 
         <q-toolbar-title>
-          Hexo Editor Client
+          Hexo Editor
         </q-toolbar-title>
+        <q-btn-dropdown
+          flat
+          label="服务器地址"
+          dropdown-icon="code"
+        >
+          <q-img
+            :src="qrcode"
+            :ratio="1"
+            class="bg-grey-2"
+            spinner-color="primary"
+          />
+        </q-btn-dropdown>
         <q-btn
+          class="q-ml-md"
           v-show="!isLoginPage"
           flat
           label="退出"
@@ -26,6 +39,7 @@
     <q-drawer
       v-model="leftDrawerOpen"
       bordered
+      behavior="mobile"
       content-class="bg-grey-1"
     >
       <q-list>
@@ -96,8 +110,8 @@
 <script>
 import packageJson from '../../package.json'
 import EssentialLink from '../components/EssentialLink'
-import { saveLoginToken } from '../utils/storage'
-
+import * as editorDispatcher from '../stores/editorDispatcher'
+import { genQRCode } from '../utils/qrcode'
 export default {
   name: 'MainLayout',
 
@@ -106,6 +120,7 @@ export default {
   },
   data () {
     return {
+      qrcode: '',
       leftDrawerOpen: false,
       essentialLinks: [
         {
@@ -156,10 +171,17 @@ export default {
       return this.$route.path === '/login'
     }
   },
+  async created () {
+    try {
+      console.log(process.env.HEXO_SERVER_ROOT + process.env.HEXO_SERVER_BASE)
+      this.qrcode = await genQRCode(process.env.HEXO_SERVER_ROOT + process.env.HEXO_SERVER_BASE)
+    } catch (_) {
+
+    }
+  },
   methods: {
-    onLogout () {
-      this.$store.commit('SET_LOGIN', false)
-      saveLoginToken(undefined)
+    async onLogout () {
+      await editorDispatcher.logout()
       this.$router.push('/login')
     }
   }

@@ -1,13 +1,23 @@
+import { loginStore } from 'src/stores/loginStore'
+
 export default async ({ router, app }) => {
-  router.beforeEach((to, from, next) => {
-    if (to.path === '/login')next()
-    else {
-      const isLoggedIn = app.store.state.isLoggedIn
-      if (!isLoggedIn) {
-        next('/login')
-      } else {
-        next()
-      }
+  router.beforeEach(async (to, from, next) => {
+    if (typeof (loginStore.state.isLoggedIn) === 'undefined') {
+      await loginStore.init()
+    }
+    const isLoggedIn = loginStore.state.isLoggedIn
+    const toLogin = to.path === '/login'
+    // 真值表干的漂亮啊！
+    //                     toLogin
+    //                   true    false
+    // isLoggedIn true   /home   next
+    //            false  next    /login
+    if (isLoggedIn ^ toLogin) {
+      next()
+    } else if (isLoggedIn && toLogin) {
+      next('/home')
+    } else {
+      next('/login')
     }
   })
 }

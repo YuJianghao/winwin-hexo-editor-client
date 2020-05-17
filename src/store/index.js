@@ -4,15 +4,9 @@ import Vuex from 'vuex'
 // import example from './module-example'
 
 Vue.use(Vuex)
-const state = {
-  isLoggedIn: false
-}
+const state = {}
 
-const mutations = {
-  SET_LOGIN (state, isLoggedIn) {
-    state.isLoggedIn = isLoggedIn
-  }
-}
+const mutations = {}
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
