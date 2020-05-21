@@ -3,10 +3,11 @@ import { loadLoginToken, saveLoginToken } from '../utils/storage'
 import { forceReloadWindow } from 'src/utils/forceReloadWindow'
 import { editorUiStore } from 'src/stores/editorUiStore'
 
-// TODO 404和500错误的统一处理
 const request = axios.create()
 
-request.defaults.baseURL = process.env.HEXO_SERVER_ROOT
+if (process.env.DEV) {
+  request.defaults.baseURL = '/api'
+}
 request.defaults.headers['Content-Type'] = 'application/json'
 request.interceptors.request.use((config) => {
   const token = loadLoginToken()
