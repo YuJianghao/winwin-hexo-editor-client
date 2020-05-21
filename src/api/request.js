@@ -7,6 +7,8 @@ const request = axios.create()
 
 if (process.env.DEV) {
   request.defaults.baseURL = '/api'
+} else {
+  request.defaults.baseURL = window.location.origin
 }
 request.defaults.headers['Content-Type'] = 'application/json'
 request.interceptors.request.use((config) => {
