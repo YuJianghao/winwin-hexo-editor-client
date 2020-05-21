@@ -2,13 +2,11 @@
 
 A Hexo Editor Client by winwin2011
 
-<img src="https://img.shields.io/npm/v/@winwin/hexo-editor-client?style=flat-square">
+<img src="https://img.shields.io/github/package-json/v/YuJianghao/winwin-hexo-editor-client?style=flat-square">
 
 ## Schreenshots
 
-[Please visit @winwin/hexo-editor homePage](https://yujianghao.github.io/winwin-hexo-editor/)
-
-![Main page](https://cdn.yujianghao.cn/Zc8QgOwVQQrsmCVp.png)
+![Main page](https://cdn.yujianghao.cn/uploads/2020/05/22/Id6dz5jj_winwin-hexo-editor-v0.1.7-safari.png)
 
 ## Feature
 
@@ -26,48 +24,29 @@ A Hexo Editor Client by winwin2011
 - [ ] ~~Image CDN~~(use [picgo](https://picgo.github.io/PicGo-Doc/zh/guide/) instead)
 - [ ] let me know what you need ...
 
-## Installation
+## Build
 
-### Use as a stand alone web app with @winwin/hexo-editor
-
-> If you run this client locally, prebulid version with localhost settings is recommended. See [@winwin/hexo-editor HomePage](https://yujianghao.github.io/winwin-hexo-editor/)
+Prebulid dist is recommended. See `@winwin/hexo-editor` on [Gitee](https://gitee.com/winwin_2011/winwin-hexo-editor) or [Github](https://github.com/YuJianghao/winwin-hexo-editor)
 
 **Download code and dependences.**
 
 ```bash
 git clone git@github.com:YuJianghao/winwin-hexo-editor-client.git
-sudo npm install -g @quasar/cli
+npm install -g @quasar/cli
 npm install
 ```
 
-**Configure .env file**
-
-This project use `./.env` as env file for dev and prod. 
-
-```.env
-# you can change these values base on your server address and routes
-HEXO_SERVER_ROOT='http://localhost:5777'
-```
-
-If your server run at `http://example.com:5777/myapps/hexoeditor/`
-
-Then `HEXO_SERVER_ROOT` sould be `http://example.com:5777/myapps/hexoeditor`
-
-**Build the app**
+**Build the app with quasar**
 
 ```bash
-quasar build
+quasar build -m pwa
 ```
 
-**Deploy**
+**Develop**
 
-Move dist files from `hexo-editor-client/dist/spa` to `hexo-editor/public`. Then start `hexo-editor` service
-
-### Use as a Vue Page Component
-
-Just figure out how this client work and hack it into your app! 
-
-Please raise a issue if you really need to use this as component, so I can afford some help.
+```bash
+quasar dev -m pwa
+```
 
 ## Notice
 
@@ -88,6 +67,10 @@ All kinds of PR are welcomed, including crazy change!
 - [koel - A personal music streaming server that works](https://github.com/phanan/koel) ([homepage](https://koel.phanan.net/)). Koel shows me how to use stores to manage data!
 
 ## Release Note
+
+### 0.1.7
+
+- remove hard code, use auto api address
 
 ### 0.1.6
 

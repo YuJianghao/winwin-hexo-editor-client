@@ -167,14 +167,16 @@ export default {
       return packageJson.version
     },
     isLoginPage () {
-      // return Object.keys(this.$route)
       return this.$route.path === '/login'
     }
   },
   async created () {
     try {
-      console.log(process.env.HEXO_SERVER_ROOT + process.env.HEXO_SERVER_BASE)
-      this.qrcode = await genQRCode(process.env.HEXO_SERVER_ROOT + process.env.HEXO_SERVER_BASE)
+      if (process.env.DEV) {
+        console.log('QRCode:')
+        console.log(window.location.origin + process.env.HEXO_SERVER_BASE)
+      }
+      this.qrcode = await genQRCode(window.location.origin + process.env.HEXO_SERVER_BASE)
     } catch (_) {
 
     }

@@ -102,11 +102,9 @@ class HexoEditorCore extends EventEmitter {
    * 初始化客户端数据
    * @param {Object} opts 初始化选项
    * @param {Object} opts.api hexo-client-sdk-api实例
-   * @param {String} [opts.addr='http://localhost:5777/hexoeditorserver'] 服务器地址
    * @param {Boolean} [opts.debug=false]
    */
   async init (opts) {
-    this.addr = opts.addr || 'http://localhost:5777/hexoeditorserver'
     if (!opts.api) throw new Error('hexo-editor-sdk-api is required')
     this.api = opts.api
     this.debug = opts.debug || false
