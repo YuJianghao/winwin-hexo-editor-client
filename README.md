@@ -68,6 +68,10 @@ All kinds of PR are welcomed, including crazy change!
 
 ## Release Note
 
+### 0.1.8
+
+- 修复不能访问API的严重bug
+
 ### 0.1.7
 
 - remove hard code, use auto api address
