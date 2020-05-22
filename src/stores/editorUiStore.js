@@ -7,6 +7,8 @@ export const editorUiStore = {
     post: 'unselect',
     preview: false,
     full: false,
+    loading: false,
+    message: '',
     get unselect () {
       return this.post === 'unselect'
     },
@@ -17,10 +19,36 @@ export const editorUiStore = {
       return this.post === 'viewing' || this.preview
     }
   },
+  loading: {
+    pending: false,
+    timmer: null
+  },
   init () {
     this.full = false
     this.state.post = 'unselect'
     this.state.preview = false
+  },
+  showLoading (opt = {}) {
+    this.state.message = opt.message
+    if (this.loading.pending) {
+      window.clearTimeout(this.loading.timmer)
+    }
+    if (!opt.delay) {
+      this.state.loading = true
+    } else {
+      this.loading.timmer = window.setTimeout(() => {
+        this.state.loading = true
+        this.loading.pending = false
+      }, opt.delay)
+      this.loading.pending = true
+    }
+  },
+  hideLoading () {
+    this.state.message = ''
+    this.state.loading = false
+    if (this.loading.pending) {
+      window.clearTimeout(this.loading.timmer)
+    }
   },
   destory () {
     this.full = false

@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 class MarkdownExtension {
   static activate (editor) {
     addKeyBinding(editor, [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_B], 'Toggle bold', toggleBlod)
@@ -50,7 +50,6 @@ function toggleCodeSpan (editor) {
 }
 
 function toggleWrap (editor, start, end = start) {
-  console.log(start, end)
   const selections = editor.getSelections()
   const textModel = editor.getModel()
   const ops = selections.map(selection => {

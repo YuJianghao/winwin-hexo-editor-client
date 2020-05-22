@@ -1,5 +1,6 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = function (ctx) {
   return {
@@ -90,6 +91,27 @@ module.exports = function (ctx) {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
         })
+        if (process.env.NODE_ENV !== 'development') {
+          cfg.plugins.push(new BundleAnalyzerPlugin())
+        }
+
+        cfg.optimization.splitChunks.cacheGroups.monaco = {
+          test: /monaco/,
+          name: 'monaco'
+        }
+        cfg.optimization.splitChunks.cacheGroups.highlightjs = {
+          test: /highlight.js/,
+          name: 'highlightjs'
+        }
+        cfg.optimization.splitChunks.cacheGroups.markdown = {
+          test: /markdown-it/,
+          name: 'markdownit'
+        }
+
+        cfg.externals = {
+          'highlight.js': 'hljs',
+          'markdown-it': 'markdownit'
+        }
       }
     },
 
