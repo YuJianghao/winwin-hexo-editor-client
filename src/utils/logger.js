@@ -45,9 +45,6 @@ class Logger {
 
   _shouldDo (method) {
     if (logLevelHas(method)) {
-      console.debug('123')
-      console.log(method)
-      console.log(logLevel.indexOf(method) >= logLevel.indexOf(this.level))
       return logLevel.indexOf(method) >= logLevel.indexOf(this.level)
     } else {
       return true
