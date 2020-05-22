@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import dispatcher from './dispatcher'
+import ui from './ui'
 
 // import example from './module-example'
 
@@ -22,7 +23,8 @@ export default function (/* { ssrContext } */) {
     state,
     mutations,
     modules: {
-      dispatcher
+      dispatcher,
+      ui
       // example
     },
 

@@ -1,7 +1,7 @@
 <template>
   <div
     class="col"
-    v-if="editorUiStore.viewing"
+    v-if="editorUiViewing"
     @dblclick="editPostById"
   >
     <q-scroll-area class="full-height">
@@ -39,17 +39,19 @@ const md = MarkdownIt({
     return '<pre class="hljs"><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
   }
 })
-import { editorUiStore } from '../stores/editorUiStore'
 import { hexoEditorCore } from '../stores/editorStore'
+import { mapGetters } from 'vuex'
 export default {
   name: 'HexoPostViewer',
   data () {
     return {
-      state: hexoEditorCore.state,
-      editorUiStore: editorUiStore.state
+      state: hexoEditorCore.state
     }
   },
   computed: {
+    ...mapGetters({
+      editorUiViewing: 'ui/viewing'
+    }),
     html () {
       if (!this.state.post._content) return ''
       return md.render(this.state.post._content)

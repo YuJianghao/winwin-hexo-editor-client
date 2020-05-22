@@ -282,9 +282,7 @@ class HexoEditorCore extends EventEmitter {
       await this._setPost(res.data.post)
       await this._markSaved()
       this._success('save-post-success', this.state.post)
-      await this.loadPosts()
-      await this.loadCategories()
-      await this.loadTags()
+      await this.reload()
     } catch (err) {
       this._fail('save-post-fail', err)
     } finally {
@@ -398,6 +396,7 @@ class HexoEditorCore extends EventEmitter {
     try {
       const res = await this.api.publishPost(id || this.state.post._id)
       await this._setPost(res.data.post)
+      await this.loadPosts()
       this._success('publish-post-id-success')
     } catch (err) {
       if (err.status === 404) {
@@ -416,6 +415,7 @@ class HexoEditorCore extends EventEmitter {
     try {
       const res = await this.api.unpublishPost(id || this.state.post._id)
       await this._setPost(res.data.post)
+      await this.loadPosts()
       this._success('unpublish-post-id-success')
     } catch (err) {
       if (err.status === 404) {

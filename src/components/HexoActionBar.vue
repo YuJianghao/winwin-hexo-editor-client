@@ -163,7 +163,7 @@
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
 import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiStore } from '../stores/editorUiStore'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoActionBar',
   components: {
@@ -174,8 +174,7 @@ export default {
     return {
       showCatsMenu: false,
       showTagsMenu: false,
-      state: hexoEditorCore.state,
-      editorUiStore: editorUiStore.state
+      state: hexoEditorCore.state
     }
   },
   methods: {
@@ -208,20 +207,26 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      editorUi: state => state.ui
+    }),
+    ...mapGetters({
+      editorUiEditing: 'ui/editing'
+    }),
     published () {
       return this.state.post.published
     },
     showLeft () {
-      return !this.editorUiStore.full
+      return !this.editorUi.full
     },
     showRight () {
       return !!this.state.post
     },
     showEdit () {
-      return this.editorUiStore.editing
+      return this.editorUiEditing
     },
     showView () {
-      return !this.editorUiStore.editing
+      return !this.editorUiEditing
     },
     tags () {
       return this.state.post ? this.state.post.tags || [] : []

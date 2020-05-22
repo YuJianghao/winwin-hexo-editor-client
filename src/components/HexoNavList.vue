@@ -1,7 +1,7 @@
 <template>
   <div
     class="col"
-    v-show="!full"
+    v-show="!editorUi.full"
   >
     <q-scroll-area
       class="full-height bg-grey-2"
@@ -108,19 +108,18 @@
 
 <script>
 import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiStore } from '../stores/editorUiStore'
+import { mapState } from 'vuex'
 export default {
   name: 'HexoNavList',
   data () {
     return {
-      state: hexoEditorCore.state,
-      uiState: editorUiStore.state
+      state: hexoEditorCore.state
     }
   },
   computed: {
-    full () {
-      return this.uiState.full
-    },
+    ...mapState({
+      editorUi: state => state.ui
+    }),
     published () {
       // TODO 这个想办法挪到store里面去
       if (!this.state.post) return false

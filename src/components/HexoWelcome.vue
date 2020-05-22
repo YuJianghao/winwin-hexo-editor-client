@@ -2,7 +2,7 @@
   <div
     class="col column flex-center bg-blue-1"
     style="user-select:none"
-    v-if="editorUiStore.unselect"
+    v-if="editorUiUnselect"
     @dblclick="addPostByDefault"
   >
     <h2>
@@ -13,14 +13,18 @@
 
 <script>
 import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiStore } from '../stores/editorUiStore'
+import { mapGetters } from 'vuex'
 export default {
   name: 'HexoWelcome',
   data () {
     return {
-      state: hexoEditorCore.state,
-      editorUiStore: editorUiStore.state
+      state: hexoEditorCore.state
     }
+  },
+  computed: {
+    ...mapGetters({
+      editorUiUnselect: 'ui/unselect'
+    })
   },
   methods: {
     async addPostByDefault () {

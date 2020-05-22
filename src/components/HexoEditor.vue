@@ -2,7 +2,7 @@
   <div
     class="col column"
     style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
-    v-if="editorUiStore.editing"
+    v-if="editorUiEditing"
   >
     <div style="height:42px;max-width:100%">
       <q-input
@@ -28,8 +28,8 @@
 <script>
 // import { Editor } from './VueTuiEditor/index'
 import MonacoEditor from './MonacoEditor'
-import { editorUiStore } from '../stores/editorUiStore'
 import { hexoEditorCore } from '../stores/editorStore'
+import { mapGetters } from 'vuex'
 export default {
   name: 'HexoEditor',
   components: {
@@ -37,9 +37,13 @@ export default {
   },
   data () {
     return {
-      state: hexoEditorCore.state,
-      editorUiStore: editorUiStore.state
+      state: hexoEditorCore.state
     }
+  },
+  computed: {
+    ...mapGetters({
+      editorUiEditing: 'ui/editing'
+    })
   },
   methods: {
     updateTitle (e) {
@@ -52,7 +56,7 @@ export default {
       this.$store.dispatch('savePost')
     },
     togglePreview () {
-      editorUiStore.togglePreview()
+      this.$store.commit('ui/togglePreview')
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div
     class="col"
-    v-show="!uiState.full"
+    v-show="!editorUi.full"
   >
     <q-scroll-area
       class="full-height"
@@ -74,14 +74,18 @@
 <script>
 import { date } from 'quasar'
 import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiStore } from '../stores/editorUiStore'
+import { mapState } from 'vuex'
 export default {
   name: 'HexoPostsList',
   data () {
     return {
-      state: hexoEditorCore.state,
-      uiState: editorUiStore.state
+      state: hexoEditorCore.state
     }
+  },
+  computed: {
+    ...mapState({
+      editorUi: state => state.ui
+    })
   },
   methods: {
     async viewPostById (_id) {

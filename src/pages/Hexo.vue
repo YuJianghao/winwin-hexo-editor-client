@@ -15,7 +15,7 @@
       <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
       <hexo-welcome style="max-height:100%"></hexo-welcome>
     </div>
-    <q-inner-loading :showing="uiState.loading">
+    <q-inner-loading :showing="editorUi.loading.show">
       <q-spinner-gears
         size="50px"
         color="primary"
@@ -33,7 +33,7 @@ import HexoWelcome from '../components/HexoWelcome'
 import HexoEditor from '../components/HexoEditor'
 import HexoActionBar from '../components/HexoActionBar'
 import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiStore } from '../stores/editorUiStore'
+import { mapState } from 'vuex'
 export default {
   name: 'Hexo',
   components: {
@@ -48,9 +48,13 @@ export default {
     return {
       editorData: '',
       full: false,
-      state: hexoEditorCore.state,
-      uiState: editorUiStore.state
+      state: hexoEditorCore.state
     }
+  },
+  computed: {
+    ...mapState({
+      editorUi: state => state.ui
+    })
   },
   methods: {
     pageStyle (offset, height) {
