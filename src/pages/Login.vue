@@ -21,6 +21,7 @@
                 label="用户名"
                 ref="username"
                 hint="默认: admin"
+                :disable="logging"
                 :rules="[val => !!val || '请填写用户名']"
                 @keydown.enter="onLogin"
               />
@@ -33,6 +34,7 @@
                 label="密码"
                 ref="password"
                 hint="默认: admin"
+                :disable="logging"
                 :rules="[val => !!val || '请填写密码']"
                 @keydown.enter="onLogin"
               />
