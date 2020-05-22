@@ -109,7 +109,6 @@
 <script>
 import { hexoEditorCore } from '../stores/editorStore'
 import { editorUiStore } from '../stores/editorUiStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoNavList',
   data () {
@@ -130,25 +129,25 @@ export default {
   },
   methods: {
     async filterByCategoriesId (_id) {
-      await editorDispatcher.filterByCategoriesId(_id)
+      this.$store.dispatch('filterByCategoriesId', _id)
     },
     async filterByTagsId (_id) {
-      await editorDispatcher.filterByTagsId(_id)
+      this.$store.dispatch('filterByTagsId', _id)
     },
     async filterByAll () {
-      await editorDispatcher.filterByAll()
+      this.$store.dispatch('filterByAll')
     },
     async filterByUnCategorized () {
-      await editorDispatcher.filterByUnCategorized()
+      this.$store.dispatch('filterByUnCategorized')
     },
     async deploy () {
-      await editorDispatcher.deploy()
+      this.$store.dispatch('deploy')
     },
     async syncGit () {
-      await editorDispatcher.syncGit()
+      this.$store.dispatch('syncGit')
     },
     async saveGit () {
-      await editorDispatcher.saveGit()
+      this.$store.dispatch('saveGit')
     }
   }
 }

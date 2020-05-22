@@ -30,7 +30,6 @@
 import MonacoEditor from './MonacoEditor'
 import { editorUiStore } from '../stores/editorUiStore'
 import { hexoEditorCore } from '../stores/editorStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoEditor',
   components: {
@@ -44,13 +43,13 @@ export default {
   },
   methods: {
     updateTitle (e) {
-      editorDispatcher.setPostByTitle(e)
+      this.$store.dispatch('setPostByTitle', e)
     },
     updateContent (e) {
-      editorDispatcher.setPostByContent(e)
+      this.$store.dispatch('setPostByContent', e)
     },
     savePost () {
-      editorDispatcher.savePost()
+      this.$store.dispatch('savePost')
     },
     togglePreview () {
       editorUiStore.togglePreview()

@@ -14,7 +14,6 @@
 <script>
 import { hexoEditorCore } from '../stores/editorStore'
 import { editorUiStore } from '../stores/editorUiStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoWelcome',
   data () {
@@ -25,7 +24,7 @@ export default {
   },
   methods: {
     async addPostByDefault () {
-      await editorDispatcher.addPostByDefault()
+      this.$store.dispatch('addPostByDefault')
     }
   }
 }

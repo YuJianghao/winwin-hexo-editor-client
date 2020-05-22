@@ -56,7 +56,6 @@
 
 <script>
 import { hexoEditorCore } from '../stores/editorStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoTagSelector',
   data () {
@@ -79,7 +78,7 @@ export default {
         return this.state.postTags || []
       },
       set (v) {
-        editorDispatcher.setPostByTags(v)
+        this.$store.dispatch('setPostByTags', v)
       }
     }
   },

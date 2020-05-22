@@ -110,7 +110,6 @@
 <script>
 import packageJson from '../../package.json'
 import EssentialLink from '../components/EssentialLink'
-import * as editorDispatcher from '../stores/editorDispatcher'
 import { genQRCode } from '../utils/qrcode'
 export default {
   name: 'MainLayout',
@@ -183,7 +182,7 @@ export default {
   },
   methods: {
     async onLogout () {
-      await editorDispatcher.logout()
+      this.$store.dispatch('logout')
       this.$router.push('/login')
     }
   }

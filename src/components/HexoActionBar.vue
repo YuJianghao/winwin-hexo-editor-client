@@ -164,7 +164,6 @@ import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
 import { hexoEditorCore } from '../stores/editorStore'
 import { editorUiStore } from '../stores/editorUiStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoActionBar',
   components: {
@@ -181,28 +180,28 @@ export default {
   },
   methods: {
     async addPostByDefault () {
-      await editorDispatcher.addPostByDefault()
+      this.$store.dispatch('addPostByDefault')
     },
     async reload () {
-      await editorDispatcher.reload(true)
+      this.$store.dispatch('reload', true)
     },
     async editPostById () {
-      await editorDispatcher.editPostById()
+      this.$store.dispatch('editPostById')
     },
     async publishPostById () {
-      await editorDispatcher.publishPostById()
+      this.$store.dispatch('publishPostById')
     },
     async unpublishPostById () {
-      await editorDispatcher.unpublishPostById()
+      this.$store.dispatch('unpublishPostById')
     },
     async toggleFull () {
-      await editorDispatcher.toggleFull()
+      this.$store.dispatch('toggleFull')
     },
     async deletePostById () {
-      await editorDispatcher.deletePostById()
+      this.$store.dispatch('deletePostById')
     },
     async savePost () {
-      await editorDispatcher.savePost()
+      this.$store.dispatch('savePost')
     },
     onPublish () {
       this.state.post.published ? this.unpublishPostById() : this.publishPostById()

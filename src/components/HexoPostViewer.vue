@@ -41,7 +41,6 @@ const md = MarkdownIt({
 })
 import { editorUiStore } from '../stores/editorUiStore'
 import { hexoEditorCore } from '../stores/editorStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
 export default {
   name: 'HexoPostViewer',
   data () {
@@ -58,7 +57,7 @@ export default {
   },
   methods: {
     async editPostById () {
-      await editorDispatcher.editPostById()
+      this.$store.dispatch('editPostById')
     },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')

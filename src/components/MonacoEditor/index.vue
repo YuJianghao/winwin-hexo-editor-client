@@ -161,7 +161,7 @@ export default {
     }, 100)
   },
   beforeDestroy () {
-    this.editor.dispost()
+    this.editor.dispose()
     window.clearInterval(this.timer)
   }
 }

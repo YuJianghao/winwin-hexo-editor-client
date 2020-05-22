@@ -33,7 +33,6 @@ import HexoWelcome from '../components/HexoWelcome'
 import HexoEditor from '../components/HexoEditor'
 import HexoActionBar from '../components/HexoActionBar'
 import { hexoEditorCore } from '../stores/editorStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
 import { editorUiStore } from '../stores/editorUiStore'
 export default {
   name: 'Hexo',
@@ -60,13 +59,13 @@ export default {
   },
   async mounted () {
     // when hexo-editor started, init hexoEditorCore
-    await editorDispatcher.init()
+    this.$store.dispatch('init')
   },
   created () {
     document.getElementById('app-message').innerHTML = '加载编辑器...'
   },
   async beforeDestory () {
-    await editorDispatcher.destroy()
+    this.$store.dispatch('destroy')
   }
 }
 </script>

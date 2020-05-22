@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events'
 import random from 'string-random'
+import { Logger } from 'src/utils/logger'
+const logger = new Logger({ prefix: 'EditorStore' })
 // import Vue from 'vue'
 
 class Helper {
@@ -69,7 +71,7 @@ class HexoEditorCore extends EventEmitter {
           if (this.filterBy.type === 'uncategorized') return this.postsList.filter(post => !post.categories)
           throw new Error('invalid')
         } catch (__) {
-          if (ctx.debug) console.warn(`invalid type ${this.filterBy.type} with _id ${this.filterBy._id}, returning postsList`)
+          if (ctx.debug) logger.warn(`invalid type ${this.filterBy.type} with _id ${this.filterBy._id}, returning postsList`)
           this.filterBy.type = 'all'
           return this.filteredPostsList
         }
@@ -216,7 +218,7 @@ class HexoEditorCore extends EventEmitter {
    */
   async filterByCategoriesId (_id) {
     if (!this.state.categories[_id]) {
-      if (this.debug) console.warn(`categories ${_id} not exists, returning`)
+      if (this.debug) logger.warn(`categories ${_id} not exists, returning`)
       return
     }
     this.state.filterBy.type = 'categories'
@@ -236,7 +238,7 @@ class HexoEditorCore extends EventEmitter {
    */
   async filterByTagsId (_id) {
     if (!this.state.tags[_id]) {
-      if (this.debug) console.warn(`tags ${_id} not exists, returning`)
+      if (this.debug) logger.warn(`tags ${_id} not exists, returning`)
       return
     }
     this.state.filterBy.type = 'tags'
@@ -318,14 +320,14 @@ class HexoEditorCore extends EventEmitter {
   }
 
   async setPostByTitle (title = '新文章') {
-    if (!title && this.debug) console.warn('no title given, using default')
+    if (!title && this.debug) logger.warn('no title given, using default')
     this._update('set-post-title')
     await this._markChanged()
     await this._setPost({ ...this.state.post, ...{ title } })
   }
 
   async setPostByContent (_content) {
-    if (!_content && this.debug) console.warn('no _content given, using default:`\\n`')
+    if (!_content && this.debug) logger.warn('no _content given, using default:`\\n`')
     this._update('set-post-_content')
     await this._markChanged()
     await this._setPost({ ...this.state.post, ...{ _content: _content || '\n' } })
@@ -509,43 +511,28 @@ class HexoEditorCore extends EventEmitter {
 
   _info (eventName, data) {
     this.emit(eventName, data)
-    if (this.debug) {
-      console.log('%c' + eventName, 'color: #fff; background: #1a8bed; padding: 0 5px; ')
-      if (data) console.log(data)
-    }
+    logger.log(eventName, data || '')
   }
 
   _fail (eventName, data) {
     this.emit(eventName, data)
-    if (this.debug) {
-      console.log('%c' + eventName, 'color: #fff; background: #f44336; padding: 0 5px; ')
-      if (data) console.log(data)
-    }
+    logger.error(eventName, data || '')
     throw data
   }
 
   _success (eventName, data) {
     this.emit(eventName, data)
-    if (this.debug) {
-      console.log('%c' + eventName, 'color: #fff; background: #21ba45; padding: 0 5px; ')
-      if (data) console.log(data)
-    }
+    logger.log(eventName, data || '')
   }
 
   _start (eventName, data) {
     this.emit(eventName, data)
-    if (this.debug) {
-      console.log('%c' + eventName, 'color: #fff; background: #21ba45; padding: 0 5px; ')
-      if (data) console.log(data)
-    }
+    logger.log(eventName, data || '')
   }
 
   _update (eventName, data) {
     this.emit(eventName, data)
-    if (this.debug) {
-      console.log('%c' + eventName, 'color: #fff; background: #ff9800; padding: 0 5px; ')
-      if (data) console.log(data)
-    }
+    logger.warn(eventName, data || '')
   }
 }
 const hexoEditorCore = new HexoEditorCore()
