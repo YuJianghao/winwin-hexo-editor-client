@@ -91,8 +91,9 @@ module.exports = function (ctx) {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
         })
-
-        cfg.plugins.push(new BundleAnalyzerPlugin())
+        if (process.env.NODE_ENV !== 'development') {
+          cfg.plugins.push(new BundleAnalyzerPlugin())
+        }
 
         cfg.optimization.splitChunks.cacheGroups.monaco = {
           test: /monaco/,
@@ -105,6 +106,11 @@ module.exports = function (ctx) {
         cfg.optimization.splitChunks.cacheGroups.markdown = {
           test: /markdown-it/,
           name: 'markdownit'
+        }
+
+        cfg.externals = {
+          'highlight.js': 'hljs',
+          'markdown-it': 'markdownit'
         }
       }
     },
