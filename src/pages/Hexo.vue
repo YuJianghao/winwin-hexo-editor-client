@@ -64,6 +64,9 @@ export default {
       Loading.hide()
     }
   },
+  created () {
+    document.getElementById('app-message').innerHTML = '加载编辑器...'
+  },
   async beforeDestory () {
     await editorDispatcher.destroy()
   }

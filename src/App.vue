@@ -6,6 +6,9 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  mounted () {
+    document.getElementById('app-message').innerHTML = '初始化应用...'
+  }
 }
 </script>
