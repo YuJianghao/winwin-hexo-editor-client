@@ -50,7 +50,6 @@ function toggleCodeSpan (editor) {
 }
 
 function toggleWrap (editor, start, end = start) {
-  console.log(start, end)
   const selections = editor.getSelections()
   const textModel = editor.getModel()
   const ops = selections.map(selection => {

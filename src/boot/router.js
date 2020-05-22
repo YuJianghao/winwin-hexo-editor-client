@@ -1,14 +1,23 @@
+let isFirst = true
 import { loginStore } from 'src/stores/loginStore'
 import { Loading } from 'quasar'
 
 export default async ({ router, app }) => {
   router.afterEach(() => {
     Loading.hide()
+    if (isFirst) {
+      const loading = document.getElementById('app-loading')
+      loading.style.opacity = 0
+      window.setTimeout(() => {
+        loading.style.display = 'none'
+      }, 500)
+      isFirst = false
+    }
   })
   router.beforeEach(async (to, from, next) => {
-    Loading.show({
-      message: '正在加载'
-    })
+    if (!isFirst) {
+      Loading.show()
+    }
     if (typeof (loginStore.state.isLoggedIn) === 'undefined') {
       await loginStore.init()
     }

@@ -4,20 +4,27 @@ import { hexoEditorCore } from '../stores/editorStore'
 import request from '../api/request'
 import { editorUiStore } from './editorUiStore'
 import message from 'src/utils/message'
-import { Loading } from 'quasar'
 import { loginStore } from './loginStore'
 
 export async function init () {
-  console.log('init')
-  await loginStore.init()
-  await hexoEditorCore.init({
-    api: hexo({
-      baseUrl: process.env.HEXO_SERVER_BASE,
-      axios: request
-    }),
-    debug: process.env.DEV
-  })
-  await editorUiStore.init()
+  try {
+    editorUiStore.showLoading({ delay: 500 })
+    await loginStore.init()
+    await hexoEditorCore.init({
+      api: hexo({
+        baseUrl: process.env.HEXO_SERVER_BASE,
+        axios: request
+      }),
+      debug: process.env.DEV
+    })
+    await editorUiStore.init()
+  } catch (err) {
+    if (err.status === 401) return
+    message.error({ message: '初始化失败', caption: err.message })
+    throw err
+  } finally {
+    editorUiStore.hideLoading()
+  }
 }
 
 export async function login (username, password) {
@@ -25,7 +32,6 @@ export async function login (username, password) {
 }
 
 export async function logout () {
-  console.log('logout')
   if (!hexoEditorCore.state.saved) {
     await editorUiStore.confirm(null, '要退出么，未保存的文件会丢失', '退出', 'red', '返回', 'primary', 'cancel', async resolve => {
       await loginStore.logout()
@@ -126,13 +132,13 @@ export async function filterByUnCategorized () {
 export async function deploy () {
   await editorUiStore.confirm(null, '确定部署博客么？', null, null, null, null, 'ok', async resolve => {
     try {
-      Loading.show({ message: '正在部署', delay: 100 })
+      editorUiStore.showLoading({ message: '正在部署', delay: 100 })
       await hexoEditorCore.deploy()
       message.success({ message: '部署完成' })
     } catch (err) {
       message.error({ message: '部署失败', caption: err.message })
     } finally {
-      Loading.hide()
+      editorUiStore.hideLoading()
       resolve()
     }
   })
@@ -141,13 +147,13 @@ export async function deploy () {
 export async function syncGit () {
   await editorUiStore.confirm(null, '确定从git同步么？未保存到git的文件将丢失', '放弃文件并同步', 'red', '返回', 'primary', 'cancel', async resolve => {
     try {
-      Loading.show({ message: '正在从GIT同步', delay: 100 })
+      editorUiStore.showLoading({ message: '正在从GIT同步', delay: 100 })
       await hexoEditorCore.syncGit()
       message.success({ message: '同步完成' })
     } catch (err) {
       message.error({ message: '同步失败', caption: err.message })
     } finally {
-      Loading.hide()
+      editorUiStore.hideLoading()
       resolve()
     }
   })
@@ -155,25 +161,26 @@ export async function syncGit () {
 
 export async function saveGit () {
   try {
-    Loading.show({ message: '正在同步到GIT', delay: 100 })
+    editorUiStore.showLoading({ message: '正在同步到GIT', delay: 100 })
     await hexoEditorCore.saveGit()
     message.success({ message: '同步完成' })
   } catch (err) {
     message.error({ message: '同步失败', caption: err.message })
   } finally {
-    Loading.hide()
+    editorUiStore.hideLoading()
   }
 }
 
 export async function reload (force = false) {
   try {
-    Loading.show({ delay: 500 })
+    editorUiStore.showLoading({ delay: 500 })
     await hexoEditorCore.reload(force)
+    message.success({ message: '重载成功' })
   } catch (err) {
     if (err.status === 401) return
     message.error({ message: '重载失败', caption: err.message })
   } finally {
-    Loading.hide()
+    editorUiStore.hideLoading()
   }
 }
 
@@ -202,7 +209,6 @@ export async function togglePreview () {
 }
 
 export const destroy = async () => {
-  console.log('destroy')
   await editorUiStore.destory()
   await hexoEditorCore.destory()
 }
