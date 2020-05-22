@@ -4,13 +4,11 @@ import { hexoEditorCore } from 'src/stores/editorStore'
 import request from 'src/api/request'
 import { confirmDialog } from 'src/utils/dialog'
 import message from 'src/utils/message'
-import { loginStore } from 'src/stores/loginStore'
 
 export async function init ({ commit }) {
   try {
-    console.log('/ui/showLoading')
     commit('editorUi/showLoading')
-    await loginStore.init()
+    commit('globalUser/init')
     await hexoEditorCore.init({
       api: hexo({
         baseUrl: process.env.HEXO_SERVER_BASE,
@@ -28,18 +26,18 @@ export async function init ({ commit }) {
   }
 }
 
-export async function login ({ commit }, { username, password }) {
-  await loginStore.login(username, password)
+export async function login ({ commit, dispatch }, { username, password }) {
+  await dispatch('globalUser/login', { username, password })
 }
 
-export async function logout ({ commit }) {
+export async function logout ({ commit, dispatch }) {
   if (!hexoEditorCore.state.saved) {
     await confirmDialog(null, '要退出么，未保存的文件会丢失', '退出', 'red', '返回', 'primary', 'cancel', async resolve => {
-      await loginStore.logout()
+      commit('globalUser/logout')
     })
   } else {
-    await destroy()
-    await loginStore.logout()
+    dispatch('destroy')
+    commit('globalUser/logout')
   }
 }
 

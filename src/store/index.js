@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import dispatcher from './dispatcher'
 import editorUi from './editorUi'
+import globalUser from './globalUser'
 
 // import example from './module-example'
 
@@ -24,7 +25,8 @@ export default function (/* { ssrContext } */) {
     mutations,
     modules: {
       dispatcher,
-      editorUi
+      editorUi,
+      globalUser
       // example
     },
 

@@ -84,7 +84,7 @@ export default {
       }
       try {
         this.logging = true
-        this.$store.dispatch('login', {
+        await this.$store.dispatch('login', {
           username: this.username,
           password: this.password
         })
