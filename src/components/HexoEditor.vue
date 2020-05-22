@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      editorUiEditing: 'ui/editing'
+      editorUiEditing: 'editorUi/editing'
     })
   },
   methods: {
@@ -56,7 +56,7 @@ export default {
       this.$store.dispatch('savePost')
     },
     togglePreview () {
-      this.$store.commit('ui/togglePreview')
+      this.$store.commit('editorUi/togglePreview')
     }
   }
 }

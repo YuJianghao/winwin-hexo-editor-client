@@ -208,10 +208,10 @@ export default {
   },
   computed: {
     ...mapState({
-      editorUi: state => state.ui
+      editorUi: state => state.editorUi
     }),
     ...mapGetters({
-      editorUiEditing: 'ui/editing'
+      editorUiEditing: 'editorUi/editing'
     }),
     published () {
       return this.state.post.published

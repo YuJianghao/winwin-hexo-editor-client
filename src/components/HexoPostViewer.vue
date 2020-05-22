@@ -50,7 +50,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      editorUiViewing: 'ui/viewing'
+      editorUiViewing: 'editorUi/viewing'
     }),
     html () {
       if (!this.state.post._content) return ''

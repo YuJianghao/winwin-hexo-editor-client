@@ -9,7 +9,7 @@ import { loginStore } from 'src/stores/loginStore'
 export async function init ({ commit }) {
   try {
     console.log('/ui/showLoading')
-    commit('ui/showLoading')
+    commit('editorUi/showLoading')
     await loginStore.init()
     await hexoEditorCore.init({
       api: hexo({
@@ -18,13 +18,13 @@ export async function init ({ commit }) {
       }),
       debug: process.env.DEV
     })
-    commit('ui/init')
+    commit('editorUi/init')
   } catch (err) {
     if (err.status === 401) return
     message.error({ message: '初始化失败', caption: err.message })
     throw err
   } finally {
-    commit('ui/hideLoading')
+    commit('editorUi/hideLoading')
   }
 }
 
@@ -48,11 +48,11 @@ export async function editPostById ({ commit }, payload = { force: false }) {
   if (!force && !hexoEditorCore.state.saved && !await hexoEditorCore.isCurrentPost(_id)) {
     await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
       await hexoEditorCore.loadPostById(_id, true)
-      commit('ui/editPost')
+      commit('editorUi/editPost')
     })
   } else {
     await hexoEditorCore.loadPostById(_id, force)
-    commit('ui/editPost')
+    commit('editorUi/editPost')
   }
 }
 
@@ -61,11 +61,11 @@ export async function viewPostById ({ commit }, payload = { force: false }) {
   if (!force && !hexoEditorCore.state.saved) {
     await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
       await hexoEditorCore.loadPostById(_id, true)
-      commit('ui/viewPost')
+      commit('editorUi/viewPost')
     })
   } else {
     await hexoEditorCore.loadPostById(_id, force)
-    commit('ui/viewPost')
+    commit('editorUi/viewPost')
   }
 }
 
@@ -73,9 +73,9 @@ export async function deletePostById ({ commit }, _id) {
   return confirmDialog(null, '你确认要删除么', '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
       await hexoEditorCore.deletePostById(_id)
-      commit('ui/deletePost')
+      commit('editorUi/deletePost')
     } catch (err) {
-      if (hexoEditorCore.state.post) { commit('ui/viewPost') }
+      if (hexoEditorCore.state.post) { commit('editorUi/viewPost') }
     } finally {
       resolve()
     }
@@ -85,7 +85,7 @@ export async function deletePostById ({ commit }, _id) {
 export async function addPostByDefault ({ commit }) {
   try {
     await hexoEditorCore.addPostByDefault()
-    commit('ui/editPost')
+    commit('editorUi/editPost')
   } catch (err) {
     if (err.status === 401) return
     message.error({ message: '新建失败', caption: err.message })
@@ -135,13 +135,13 @@ export async function filterByUnCategorized ({ commit }) {
 export async function deploy ({ commit }) {
   await confirmDialog(null, '确定部署博客么？', null, null, null, null, 'ok', async resolve => {
     try {
-      commit('ui/showLoading', { message: '正在部署', delay: 100 })
+      commit('editorUi/showLoading', { message: '正在部署', delay: 100 })
       await hexoEditorCore.deploy()
       message.success({ message: '部署完成' })
     } catch (err) {
       message.error({ message: '部署失败', caption: err.message })
     } finally {
-      commit('ui/hideLoading')
+      commit('editorUi/hideLoading')
       resolve()
     }
   })
@@ -150,13 +150,13 @@ export async function deploy ({ commit }) {
 export async function syncGit ({ commit }) {
   await confirmDialog(null, '确定从git同步么？未保存到git的文件将丢失', '放弃文件并同步', 'red', '返回', 'primary', 'cancel', async resolve => {
     try {
-      commit('ui/showLoading', { message: '正在从GIT同步', delay: 100 })
+      commit('editorUi/showLoading', { message: '正在从GIT同步', delay: 100 })
       await hexoEditorCore.syncGit()
       message.success({ message: '同步完成' })
     } catch (err) {
       message.error({ message: '同步失败', caption: err.message })
     } finally {
-      commit('ui/hideLoading')
+      commit('editorUi/hideLoading')
       resolve()
     }
   })
@@ -164,26 +164,26 @@ export async function syncGit ({ commit }) {
 
 export async function saveGit ({ commit }) {
   try {
-    commit('ui/showLoading', { message: '正在同步到GIT', delay: 100 })
+    commit('editorUi/showLoading', { message: '正在同步到GIT', delay: 100 })
     await hexoEditorCore.saveGit()
     message.success({ message: '同步完成' })
   } catch (err) {
     message.error({ message: '同步失败', caption: err.message })
   } finally {
-    commit('ui/hideLoading')
+    commit('editorUi/hideLoading')
   }
 }
 
 export async function reload ({ commit }, force = false) {
   try {
-    commit('ui/showLoading')
+    commit('editorUi/showLoading')
     await hexoEditorCore.reload(force)
     message.success({ message: '重载成功' })
   } catch (err) {
     if (err.status === 401) return
     message.error({ message: '重载失败', caption: err.message })
   } finally {
-    commit('ui/hideLoading')
+    commit('editorUi/hideLoading')
   }
 }
 
@@ -204,14 +204,14 @@ export async function savePost ({ commit }) {
 }
 
 export async function toggleFull ({ commit }) {
-  commit('ui/toggleFull')
+  commit('editorUi/toggleFull')
 }
 
 export async function togglePreview ({ commit }) {
-  commit('ui/togglePreview')
+  commit('editorUi/togglePreview')
 }
 
 export async function destroy ({ commit }) {
-  commit('ui/destory')
+  commit('editorUi/destory')
   await hexoEditorCore.destory()
 }

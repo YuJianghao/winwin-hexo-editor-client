@@ -84,7 +84,7 @@ export default {
   },
   computed: {
     ...mapState({
-      editorUi: state => state.ui
+      editorUi: state => state.editorUi
     })
   },
   methods: {

@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      editorUiUnselect: 'ui/unselect'
+      editorUiUnselect: 'editorUi/unselect'
     })
   },
   methods: {

@@ -118,7 +118,7 @@ export default {
   },
   computed: {
     ...mapState({
-      editorUi: state => state.ui
+      editorUi: state => state.editorUi
     }),
     published () {
       // TODO 这个想办法挪到store里面去
