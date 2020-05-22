@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 class MarkdownExtension {
   static activate (editor) {
     addKeyBinding(editor, [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_B], 'Toggle bold', toggleBlod)
