@@ -93,6 +93,19 @@ module.exports = function (ctx) {
         })
 
         cfg.plugins.push(new BundleAnalyzerPlugin())
+
+        cfg.optimization.splitChunks.cacheGroups.monaco = {
+          test: /monaco/,
+          name: 'monaco'
+        }
+        cfg.optimization.splitChunks.cacheGroups.highlightjs = {
+          test: /highlight.js/,
+          name: 'highlightjs'
+        }
+        cfg.optimization.splitChunks.cacheGroups.markdown = {
+          test: /markdown-it/,
+          name: 'markdownit'
+        }
       }
     },
 
