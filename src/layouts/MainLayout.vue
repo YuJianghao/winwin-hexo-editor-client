@@ -181,13 +181,6 @@ export default {
 
     }
   },
-  mounted () {
-    const loading = document.getElementById('app-loading')
-    loading.style.opacity = 0
-    window.setTimeout(() => {
-      loading.style.display = 'none'
-    }, 500)
-  },
   methods: {
     async onLogout () {
       await editorDispatcher.logout()

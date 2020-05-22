@@ -8,7 +8,11 @@
 export default {
   name: 'App',
   mounted () {
-    document.getElementById('app-message').innerHTML = '初始化应用...'
+    const loading = document.getElementById('app-loading')
+    loading.style.opacity = 0
+    window.setTimeout(() => {
+      loading.style.display = 'none'
+    }, 500)
   }
 }
 </script>

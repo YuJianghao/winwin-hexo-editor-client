@@ -1,7 +1,14 @@
 import { loginStore } from 'src/stores/loginStore'
+import { Loading } from 'quasar'
 
 export default async ({ router, app }) => {
+  router.afterEach(() => {
+    Loading.hide()
+  })
   router.beforeEach(async (to, from, next) => {
+    Loading.show({
+      message: '正在加载'
+    })
     if (typeof (loginStore.state.isLoggedIn) === 'undefined') {
       await loginStore.init()
     }
