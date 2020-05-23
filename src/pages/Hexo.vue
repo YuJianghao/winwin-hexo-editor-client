@@ -3,7 +3,6 @@
     class="column overflow-hidden"
     :style-fn="pageStyle"
   >
-    <!-- {{state.postsList}} -->
     <hexo-action-bar></hexo-action-bar>
     <div
       class="row"
@@ -32,7 +31,6 @@ import HexoNavList from '../components/HexoNavList'
 import HexoWelcome from '../components/HexoWelcome'
 import HexoEditor from '../components/HexoEditor'
 import HexoActionBar from '../components/HexoActionBar'
-import { hexoEditorCore } from '../stores/editorStore'
 import { mapState } from 'vuex'
 export default {
   name: 'Hexo',
@@ -47,8 +45,7 @@ export default {
   data () {
     return {
       editorData: '',
-      full: false,
-      state: hexoEditorCore.state
+      full: false
     }
   },
   computed: {
@@ -62,7 +59,6 @@ export default {
     }
   },
   async mounted () {
-    // when hexo-editor started, init hexoEditorCore
     this.$store.dispatch('init')
   },
   created () {
