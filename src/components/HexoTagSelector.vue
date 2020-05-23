@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: 'HexoTagSelector',
   data () {
@@ -64,13 +64,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      editorCoreData: state => state.editorCore.data
-    }),
-    ...mapGetters({
-      editorCoreDataPostTagsList: 'editorCore/dataPostTagsList',
-      editorCoreDataTagsNameList: 'editorCore/dataTagsNameList'
-    }),
     availableTags () {
       const at = []
       at.push.apply(at, this.editorCoreDataTagsNameList)
@@ -86,7 +79,12 @@ export default {
       set (v) {
         this.$store.dispatch('setPostByTags', v)
       }
-    }
+    },
+    // externals
+    ...mapGetters({
+      editorCoreDataPostTagsList: 'editorCore/dataPostTagsList',
+      editorCoreDataTagsNameList: 'editorCore/dataTagsNameList'
+    })
   },
   methods: {
     addTag () {

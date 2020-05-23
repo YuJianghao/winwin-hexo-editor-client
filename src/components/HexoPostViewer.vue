@@ -1,7 +1,7 @@
 <template>
   <div
     class="col"
-    v-if="editorUiViewing"
+    v-if="show"
     @dblclick="editPostById"
   >
     <q-scroll-area class="full-height">
@@ -9,8 +9,8 @@
         class="full-height q-mx-auto q-pa-lg article-entry"
         style="max-width:900px"
       >
-        <h1>{{editorCoreData.post.title}}</h1>
-        <sub v-if="editorCoreData.post.date">{{getDateString(editorCoreData.post.date)}}</sub>
+        <h1>{{post.title}}</h1>
+        <sub v-if="post.date">{{getDateString(post.date)}}</sub>
         <div v-html="html"></div>
       </div>
     </q-scroll-area>
@@ -43,16 +43,23 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoPostViewer',
   computed: {
+    show () {
+      return this.editorUiViewing
+    },
+    post () {
+      return this.editorCoreData.post
+    },
+    html () {
+      if (!this.post._content) return ''
+      return md.render(this.post._content)
+    },
+    // externals
     ...mapState({
       editorCoreData: state => state.editorCore.data
     }),
     ...mapGetters({
       editorUiViewing: 'editorUi/viewing'
-    }),
-    html () {
-      if (!this.editorCoreData.post._content) return ''
-      return md.render(this.editorCoreData.post._content)
-    }
+    })
   },
   methods: {
     async editPostById () {

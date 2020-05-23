@@ -15,11 +15,12 @@ export async function logout ({ rootState, rootGetters, commit, dispatch }) {
   logger.log('logout')
   if (!rootGetters['editorCore/isPostSaved']) {
     await confirmDialog(null, '要退出么，未保存的文件会丢失', '退出', 'red', '返回', 'primary', 'cancel', async resolve => {
+      await dispatch('destroy')
       commit('globalUser/logout')
       resolve()
     })
   } else {
-    dispatch('destroy')
+    await dispatch('destroy')
     commit('globalUser/logout')
   }
 }
@@ -29,10 +30,10 @@ export async function logout ({ rootState, rootGetters, commit, dispatch }) {
 export async function init ({ commit, dispatch }) {
   logger.log('init')
   try {
+    commit('editorUi/init')
     commit('editorUi/showLoading')
     commit('globalUser/init')
     await dispatch('editorCore/init')
-    commit('editorUi/init')
   } catch (err) {
     if (err.status === 401) return
     message.error({ message: '初始化失败', caption: err.message })

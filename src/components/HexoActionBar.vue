@@ -62,7 +62,7 @@
           stretch
           :icon="published?'close':'publish'"
           :color="published?'red':'primary'"
-          v-if="editorCoreData.post"
+          v-if="showPublishButton"
           :label="published?'取消发布':'发布'"
           @click="onPublish"
         />
@@ -82,9 +82,9 @@
           @click="editPostById"
         >
           分类：
-          {{editorCoreDataPostCategoriesList.length?'':'无'}}
+          {{categories.length?'':'无'}}
           <q-badge
-            v-for="(item,key) in editorCoreDataPostCategoriesList"
+            v-for="(item,key) in categories"
             :key="key"
             color="primary"
             text-color="white"
@@ -117,9 +117,9 @@
         >
           <template slot="label">
             分类：
-            {{editorCoreDataPostCategoriesList.length?'':'无'}}
+            {{categories.length?'':'无'}}
             <q-badge
-              v-for="(item,key) in editorCoreDataPostCategoriesList"
+              v-for="(item,key) in categories"
               :key="key"
               color="primary"
               text-color="white"
@@ -205,16 +205,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      editorUi: state => state.editorUi,
-      editorCoreData: state => state.editorCore.data
-    }),
-    ...mapGetters({
-      editorUiEditing: 'editorUi/editing',
-      editorCoreDataPostTagsList: 'editorCore/dataPostTagsList',
-      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
-      editorCoreDataPostPublished: 'editorCore/dataPostPublished'
-    }),
     published () {
       return this.editorCoreDataPostPublished
     },
@@ -229,6 +219,12 @@ export default {
     },
     showView () {
       return !this.editorUiEditing
+    },
+    showPublishButton () {
+      return !!this.editorCoreData.post
+    },
+    categories () {
+      return this.editorCoreDataPostCategoriesList
     },
     tags () {
       return this.editorCoreDataPostTagsList
@@ -254,7 +250,18 @@ export default {
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
         width: '0'
       }
-    }
+    },
+    // externals
+    ...mapState({
+      editorUi: state => state.editorUi,
+      editorCoreData: state => state.editorCore.data
+    }),
+    ...mapGetters({
+      editorUiEditing: 'editorUi/editing',
+      editorCoreDataPostTagsList: 'editorCore/dataPostTagsList',
+      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
+      editorCoreDataPostPublished: 'editorCore/dataPostPublished'
+    })
   }
 }
 </script>

@@ -171,11 +171,9 @@ export default {
     }
   },
   async created () {
-    const logger = new Logger({ prefix: 'QRCode' })
+    const qrCodeLogger = new Logger({ prefix: 'QRCode' })
     try {
-      if (process.env.DEV) {
-        logger.log(window.location.origin + process.env.HEXO_SERVER_BASE)
-      }
+      qrCodeLogger.log(window.location.origin + process.env.HEXO_SERVER_BASE)
       this.qrcode = await genQRCode(window.location.origin + process.env.HEXO_SERVER_BASE)
     } catch (_) {
 

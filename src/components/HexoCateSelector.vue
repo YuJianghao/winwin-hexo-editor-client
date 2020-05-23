@@ -96,10 +96,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
-      editorCoreDataCategoriesNameList: 'editorCore/dataCategoriesNameList'
-    }),
     postCategories () {
       return this.editorCoreDataPostCategoriesList
     },
@@ -113,7 +109,12 @@ export default {
         if (!ac.includes(pc)) { ac.push(pc) }
       })
       return ac
-    }
+    },
+    // externals
+    ...mapGetters({
+      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
+      editorCoreDataCategoriesNameList: 'editorCore/dataCategoriesNameList'
+    })
   },
   methods: {
     async setPostByCategoriesArray2d (cats) {

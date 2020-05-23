@@ -1,20 +1,20 @@
 <template>
   <div
     class="col"
-    v-show="!editorUi.full"
+    v-show="show"
   >
     <q-scroll-area
       class="full-height"
       style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
     >
       <q-list>
-        <q-item v-if="editorFilterPostsEmpty">
+        <q-item v-if="empty">
           <q-item-section>
             <q-item-label>没有文章</q-item-label>
           </q-item-section>
         </q-item>
         <q-slide-item
-          v-for="(item,key) in editorFilterPostsList"
+          v-for="(item,key) in postsList"
           left-color="blue"
           right-color="red"
           :key="key"
@@ -77,12 +77,21 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoPostsList',
   computed: {
+    show () {
+      return !this.editorUi.full
+    },
+    postsList () {
+      return this.editorFilterPostsList
+    },
+    empty () {
+      return this.postsList.length === 0
+    },
+    // externals
     ...mapState({
       editorUi: state => state.editorUi
     }),
     ...mapGetters({
-      editorFilterPostsList: 'editorFilter/postsList',
-      editorFilterPostsEmpty: 'editorFilter/postsEmpty'
+      editorFilterPostsList: 'editorFilter/postsList'
     })
   },
   methods: {

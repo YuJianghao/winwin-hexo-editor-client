@@ -1,7 +1,7 @@
 <template>
   <div
     class="col"
-    v-show="!editorUi.full"
+    v-show="show"
   >
     <q-scroll-area
       class="full-height bg-grey-2"
@@ -46,7 +46,7 @@
         >
           <q-item-section>全部</q-item-section>
           <q-item-section avatar>
-            <q-badge :label="editorCoreDataPostsCount" />
+            <q-badge :label="postsCount" />
           </q-item-section>
         </q-item>
         <q-expansion-item
@@ -55,7 +55,7 @@
           expand-separator
         >
           <q-item
-            v-for="(item,key) in editorCoreDataCategoriesList"
+            v-for="(item,key) in categoriesList"
             :key="key"
             clickable
             v-ripple
@@ -77,7 +77,7 @@
               未分类
             </q-item-section>
             <q-item-section avatar="">
-              <q-badge :label="editorCoreDataUnCategoriesCount" />
+              <q-badge :label="unCategoriesCount" />
             </q-item-section>
           </q-item>
         </q-expansion-item>
@@ -87,7 +87,7 @@
           expand-separator
         >
           <q-item
-            v-for="(item,key) in editorCoreDataTagsList"
+            v-for="(item,key) in tagsList"
             :key="key"
             clickable
             v-ripple
@@ -111,6 +111,22 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoNavList',
   computed: {
+    show () {
+      return !this.editorUi.full
+    },
+    postsCount () {
+      return this.editorCoreDataPostsCount
+    },
+    tagsList () {
+      return this.editorCoreDataTagsList
+    },
+    categoriesList () {
+      return this.editorCoreDataCategoriesList
+    },
+    unCategoriesCount () {
+      return this.editorCoreDataUnCategoriesCount
+    },
+    // externals
     ...mapState({
       editorUi: state => state.editorUi
     }),
