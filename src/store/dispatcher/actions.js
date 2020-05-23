@@ -11,9 +11,9 @@ export async function login ({ commit, dispatch }, { username, password }) {
   await dispatch('globalUser/login', { username, password })
 }
 
-export async function logout ({ rootState, commit, dispatch }) {
+export async function logout ({ rootState, rootGetters, commit, dispatch }) {
   logger.log('logout')
-  if (!rootState.editorCore.status.saved) {
+  if (!rootGetters['editorCore/isPostSaved']) {
     await confirmDialog(null, '要退出么，未保存的文件会丢失', '退出', 'red', '返回', 'primary', 'cancel', async resolve => {
       commit('globalUser/logout')
       resolve()
@@ -63,11 +63,11 @@ export async function reload ({ commit, dispatch }, force = false) {
 
 // 查看相关
 
-export async function viewPostById ({ rootState, commit, dispatch }, payload = { force: false }) {
+export async function viewPostById ({ rootState, rootGetters, commit, dispatch }, payload = { force: false }) {
   logger.log('viewPostById')
   const { _id, force } = payload
   try {
-    if (!force && !rootState.editorCore.status.saved) {
+    if (!force && !rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
         await dispatch('editorCore/loadPostById', { _id, force: true })
         commit('editorUi/viewPost')
@@ -106,20 +106,18 @@ export async function filterByUnCategorized ({ commit }) {
 
 // 编辑
 
-export async function addPostByDefault ({ rootState, commit, dispatch }) {
+export async function addPostByDefault ({ rootState, rootGetters, commit, dispatch }) {
   logger.log('addPostByDefault')
   try {
-    if (!rootState.editorCore.status.saved) {
+    if (!rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
         await dispatch('editorCore/addPostBase', { force: true })
         commit('editorUi/editPost')
         resolve()
       })
     } else {
-      // TODO： Rmove hexoEditorCore
       await dispatch('editorCore/addPostBase')
-      // TODO: 完成后恢复编辑器行为
-      // commit('editorUi/editPost')
+      commit('editorUi/editPost')
     }
   } catch (err) {
     if (err.status === 401) return
@@ -132,8 +130,7 @@ export async function deletePostById ({ commit, dispatch }, _id) {
   return confirmDialog(null, '你确认要删除么', '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
       await dispatch('editorCore/deletePostById', _id)
-      // TODO: 完成后恢复编辑器行为
-      // commit('editorUi/deletePost')
+      commit('editorUi/deletePost')
     } catch (err) {
       // TODO: 异常处理
       message.error({ message: '删除失败', caption: err.message })
@@ -143,13 +140,12 @@ export async function deletePostById ({ commit, dispatch }, _id) {
   })
 }
 
-export async function editPostById ({ getters, rootState, commit, dispatch }, payload = {}) {
+export async function editPostById ({ getters, rootState, rootGetters, commit, dispatch }, payload = {}) {
   logger.log('editPostById')
   let { _id, force } = payload
   force = force || false
-  if (!force && !rootState.editorCore.status.saved && !await getters['editorCore/dataPostId'] === _id) {
+  if (!force && !rootGetters['editorCore/isPostSaved'] && !await getters['editorCore/dataPostId'] === _id) {
     await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-      // TODO： Rmove hexoEditorCore
       await dispatch('editorCore/loadPostById', { _id, force: true })
       commit('editorUi/editPost')
       resolve()
@@ -175,19 +171,19 @@ export async function unpublishPostById ({ commit }, _id) {
 
 export async function setPostByTitle ({ commit }, title) {
   logger.log('setPostByTitle')
-  commit('editorCore/updateDataPostByTitle', title)
+  commit('editorCore/updatePostByTitle', title)
 }
 export async function setPostByContent ({ commit }, content) {
   logger.log('setPostByContent')
-  commit('editorCore/updateDataPostByContent', content)
+  commit('editorCore/updatePostByContent', content)
 }
 export async function setPostByTags ({ commit }, tags) {
   logger.log('setPostByTags')
-  commit('editorCore/updateDataPostByTags', tags)
+  commit('editorCore/updatePostByTags', tags)
 }
 export async function setPostByCategoriesArray2d ({ commit }, cats) {
   logger.log('setPostByCategoriesArray2d')
-  commit('editorCore/updateDataPostByCategoriesArray2D', cats)
+  commit('editorCore/updatePostByCategoriesArray2D', cats)
 }
 
 // 操作相关
@@ -237,13 +233,13 @@ export async function saveGit ({ commit }) {
   }
 }
 
-export async function savePost ({ commit }) {
+export async function savePost ({ dispatch }) {
   logger.log('savePost')
   try {
     const timer = window.setTimeout(() => {
       message.info({ message: '正在保存' })
     }, 500)
-    await hexoEditorCore.savePost()
+    await dispatch('editorCore/savePost')
     window.clearTimeout(timer)
     message.success({ message: '保存成功' })
   } catch (err) {

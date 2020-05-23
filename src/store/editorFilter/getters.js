@@ -22,8 +22,6 @@ export function postsList (state, getters, rootState, rootGetters) {
     logger.warn(`invalid type ${state.type} with _id ${state._id}, returning postsList`)
     return rootGetters['editorCore/dataPostsList']
   }
-  // TODO: 实现过滤后文章列表
-  // return rootGetters['editorCore/dataPostsList']
 }
 
 export function postsCount (state, getters) {

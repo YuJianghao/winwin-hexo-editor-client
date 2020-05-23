@@ -3,25 +3,21 @@ export function someAction (context) {
 }
 */
 
-import request from 'src/api'
 import stringRandom from 'string-random'
 import { Logger } from 'src/utils/logger'
-const hexo = request.hexo
+import * as hexoService from 'src/service/hexo'
+import { replaceErrorMessage } from 'src/utils/common'
 const logger = new Logger({ prefix: 'EditorCore/Actions' })
 
-// basic
-
+// TODO: 确认文章编辑没有漏洞
 export async function init ({ commit, dispatch }) {
-  commit('updateDataPostBase', null)
+  commit('closePost')
   await dispatch('loadAll')
-  commit('markReady')
 }
 
 export async function destroy ({ commit }) {
-  commit('updateDataPostBase', null)
-  commit('updateDataPostsBase', {})
-  commit('updateDataCategoriesBase', {})
-  commit('updateDataTagsBase', {})
+  commit('closePost')
+  commit('resetAll')
 }
 
 export async function reload ({ dispatch }, force) {
@@ -30,22 +26,30 @@ export async function reload ({ dispatch }, force) {
 
 // CURD
 
-export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
+export async function addPostBase ({ state, getters, commit, dispatch }, payload = {}) {
   if (!payload.force && !state.status.saved) throw new Error('Unsaved file, use force=true to override')
-  const defaultOpt = {
-    title: '新文章',
-    slug: stringRandom(16)
+  let post = null
+  try {
+    const defaultOpt = {
+      title: '新文章',
+      slug: stringRandom(16)
+    }
+    post = await hexoService.addPost(Object.assign(defaultOpt, payload.options))
+  } catch (err) {
+    throw replaceErrorMessage(err, '新建文章失败，请稍后再试')
   }
-  const res = await hexo.addPost(Object.assign(defaultOpt, payload.options))
-  await dispatch('loadPosts')
-  if (res.data.categories) await dispatch('loadCategories')
-  if (res.data.tags) await dispatch('loadTags')
-  commit('updateDataPostBase', res.data.post)
-  commit('markSaved')
+  try {
+    await dispatch('loadPosts')
+    if (post.categories) await dispatch('loadCategories')
+    if (post.tags) await dispatch('loadTags')
+    commit('loadPost', post)
+    commit('markSaved')
+  } catch (err) {
+    throw replaceErrorMessage(err, '新文章创建成功，但数据更新失败，请手动刷新')
+  }
 }
 
-export async function loadPostById ({ state, commit }, { _id, force }) {
-  if (!state.status.ready) throw new Error('App initiating')
+export async function loadPostById ({ state, getters, commit }, { _id, force }) {
   if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
   if (_id && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
   if (state.data.post && state.data.post._id === _id) {
@@ -53,9 +57,12 @@ export async function loadPostById ({ state, commit }, { _id, force }) {
     return
   }
   if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
-  const res = await hexo.getPost(_id || state.data.post._id)
-  commit('updateDataPostBase', res.data.post)
-  commit('markSaved')
+  try {
+    const post = await hexoService.getPostById(_id || state.data.post._id)
+    commit('loadPost', post)
+  } catch (err) {
+    throw replaceErrorMessage(err, '文章获取失败，请稍后再试')
+  }
 }
 
 export async function loadAll ({ dispatch }) {
@@ -67,22 +74,52 @@ export async function loadAll ({ dispatch }) {
 }
 
 export async function loadPosts ({ commit }) {
-  const res = await hexo.getPosts()
-  commit('updateDataPostsByList', res.data.posts)
+  try {
+    const posts = await hexoService.getPosts()
+    commit('loadPostsByList', posts)
+  } catch (err) {
+    throw replaceErrorMessage(err, '文章列表获取失败，请稍后再试')
+  }
 }
 
 export async function loadCategories ({ commit }) {
-  const res = await hexo.getCategories()
-  commit('updateDataCategoriesByList', res.data.categories)
+  try {
+    const categories = await hexoService.getCategories()
+    commit('loadCategoriesByList', categories)
+  } catch (err) {
+    throw replaceErrorMessage(err, '分类获取失败，请稍后再试')
+  }
 }
 
 export async function loadTags ({ commit }) {
-  const res = await hexo.getTags()
-  commit('updateDataTagsByList', res.data.tags)
+  try {
+    const tags = await hexoService.getTags()
+    commit('loadTagsByList', tags)
+  } catch (err) {
+    throw replaceErrorMessage(err, '标签获取失败，请稍后再试')
+  }
 }
 
 export async function deletePostById ({ state, commit, dispatch }, _id) {
   if (!state.data.post && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
-  await hexo.deletePost(_id || state.data.post._id)
-  await dispatch('reload')
+  try {
+    await hexoService.deletePostById(_id || state.data.post._id)
+    await dispatch('reload')
+  } catch (err) {
+    throw replaceErrorMessage(err, '删除失败，请稍后再试')
+  }
+}
+
+export async function savePost (state, dispatch, commit) {
+  try {
+    await hexoService.savePost(state.data.post)
+    commit('savePost')
+  } catch (err) {
+    throw replaceErrorMessage(err, '保存失败，请稍后再试')
+  }
+  try {
+    await dispatch('loadAll')
+  } catch (err) {
+    throw replaceErrorMessage(err, '文章已保存，但数据更新失败，请手动刷新')
+  }
 }

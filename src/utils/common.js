@@ -18,3 +18,16 @@ export function postCategoriesArray2d (categories) {
     })
   }
 }
+
+export function isEmptyObject (obj) {
+  return Object.keys(obj).length === 0
+}
+
+export function replaceErrorMessage (err, message) {
+  if (process.env.DEV) {
+    err.message += message
+  } else {
+    err.message = message
+  }
+  return err
+}

@@ -1,52 +1,29 @@
-import { Logger } from 'src/utils/logger'
 import { listToObject } from 'src/utils/common'
-import Vue from 'vue'
 
-const logger = new Logger({ prefix: 'EditorCore' })
-/*
-export function someMutation (state) {
-}
-*/
+// post state
 
-// update data base
-
-export function updateDataPostBase (state, post) {
+export function loadPost (state, post) {
   state.data.post = post
-  if (state.data.post && typeof post.categories === 'undefined') {
-    Vue.set(state.data.post, 'categories', null)
-  }
-  markChanged(state)
+  markSaved(state)
 }
 
-export function updateDataPostById (state, _id) {
-  if (!Object.keys(state.data.posts).includes(_id)) {
-    logger.warn('Post with id', _id, 'doesn\'t exist. Returning.')
-    return
-  }
-  if (state.data.post && state.data.post._id === _id) {
-    logger.warn('Post already loaded. Returning.')
-  } else {
-    updateDataPostBase(state.data.posts[_id])
-  }
+export function updatePostByTitle (state, title) {
+  updatePost(state, Object.assign({ title }, state.data.post))
 }
 
-export function updateDataPostByTitle (state, title) {
-  updateDataPostBase(state, Object.assign(state.data.post, { title }))
+export function updatePostByContent (state, content) {
+  updatePost(state, Object.assign({ _content: content }, state.data.post))
 }
 
-export function updateDataPostByContent (state, content) {
-  updateDataPostBase(state, Object.assign(state.data.post, { _content: content }))
+export function updatePostByTags (state, tags) {
+  updatePost(state, Object.assign({ tags }, state.data.post))
 }
 
-export function updateDataPostByTags (state, tags) {
-  updateDataPostBase(state, Object.assign(state.data.post, { tags }))
+export function updatePostByCategories (state, categories) {
+  updatePost(state, Object.assign({ categories }, state.data.post))
 }
 
-export function updateDataPostByCategories (state, categories) {
-  updateDataPostBase(state, Object.assign(state.data.post, { categories }))
-}
-
-export function updateDataPostByCategoriesArray2D (state, categoriesArray2D) {
+export function updatePostByCategoriesArray2D (state, categoriesArray2D) {
   let categories = []
   if (categoriesArray2D.length === 1) {
     if (categoriesArray2D[0].length === 1) {
@@ -57,32 +34,65 @@ export function updateDataPostByCategoriesArray2D (state, categoriesArray2D) {
   } else {
     categories = categoriesArray2D
   }
-  updateDataPostByCategories(state, categories)
+  updatePostByCategories(state, categories)
 }
 
-export function updateDataPostByOptions (state, opt = {}) {
-  updateDataPostBase(Object.assign(state.data.post, opt))
+export function updatePostByOptions (state, opt = {}) {
+  updatePost(Object.assign(opt, state.data.post))
 }
 
-export function updateDataPostsBase (state, posts) {
+export function closePost (state) {
+  state.data.post = null
+}
+
+export function updatePost (state, post) {
+  state.data.post = post
+  markChanged(state)
+}
+
+export function savePost (state) {
+  markSaved(state)
+}
+
+// other state
+
+export function loadPosts (state, posts) {
   state.data.posts = posts
 }
-export function updateDataPostsByList (state, posts) {
-  updateDataPostsBase(state, listToObject(posts))
+export function loadPostsByList (state, posts) {
+  loadPosts(state, listToObject(posts))
 }
 
-export function updateDataCategoriesBase (state, categories) {
+export function loadCategories (state, categories) {
   state.data.categories = categories
 }
-export function updateDataCategoriesByList (state, categories) {
-  updateDataCategoriesBase(state, listToObject(categories))
+export function loadCategoriesByList (state, posts) {
+  loadCategories(state, listToObject(posts))
 }
 
-export function updateDataTagsBase (state, tags) {
+export function loadTags (state, tags) {
   state.data.tags = tags
 }
-export function updateDataTagsByList (state, posts) {
-  updateDataTagsBase(state, listToObject(posts))
+export function loadTagsByList (state, posts) {
+  loadTags(state, listToObject(posts))
+}
+
+export function resetAll (state) {
+  resetPosts(state)
+  resetCategories(state)
+  resetTags(state)
+}
+
+export function resetPosts (state, posts) {
+  state.data.posts = {}
+}
+
+export function resetCategories (state, categories) {
+  state.data.categories = {}
+}
+
+export function resetTags (state, tags) {
+  state.data.tags = {}
 }
 
 // change editor status
@@ -93,9 +103,4 @@ export function markChanged (state) {
 
 export function markSaved (state) {
   state.status.saved = true
-}
-
-export function markReady (state) {
-  state.status.ready = true
-  markSaved(state)
 }

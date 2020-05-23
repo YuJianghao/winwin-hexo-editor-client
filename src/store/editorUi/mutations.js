@@ -1,4 +1,3 @@
-import { hexoEditorCore } from 'src/stores/editorStore'
 import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'EditorUI/Mutations' })
 // import { Dialog } from 'quasar'
@@ -41,9 +40,9 @@ export function closePost (state) {
   state.post = 'unselect'
   state.preview = false
 }
-export function deletePost (state, _id) {
+export function deletePost (state, rootState, _id) {
   if (!_id) this.closePost()
-  if (hexoEditorCore.state.post && hexoEditorCore.state.post._id === _id) { this.closePost() }
+  if (rootState.editorCore.data.post && rootState.editorCore.data.post._id === _id) { this.closePost() }
 }
 
 export function toggleFull (state, full) {
@@ -54,30 +53,3 @@ export function togglePreview (state, preview) {
   if (typeof preview === 'undefined') state.preview = !state.preview
   else state.preview = !!preview
 }
-// export function confirm (state, title, payload = {}) {
-//   const { message, okLabel, okColor, cancelLabel, cancelColor, focus = 'ok', onOk, onCancel, onDismiss } = payload
-//   if (!message) throw new Error('message is required')
-//   return new Promise(resolve => {
-//     Dialog.create({
-//       title: title || '确认',
-//       message: message,
-//       ok: {
-//         label: okLabel || '确定',
-//         color: okColor || 'primary',
-//         flat: true
-//       },
-//       cancel: {
-//         label: cancelLabel || '返回',
-//         color: cancelColor || 'grey',
-//         flat: true
-//       },
-//       focus
-//     }).onOk(async () => {
-//       if (onOk) { onOk(resolve) } else resolve()
-//     }).onCancel(() => {
-//       if (onCancel) { onCancel(resolve) } else resolve()
-//     }).onDismiss(() => {
-//       if (onDismiss) { onDismiss(resolve) } else resolve()
-//     })
-//   })
-// }

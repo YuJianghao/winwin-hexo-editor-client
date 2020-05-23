@@ -1,9 +1,51 @@
-import { objectToList } from 'src/utils/common'
-
+import { objectToList, isEmptyObject } from 'src/utils/common'
+import { Logger } from 'src/utils/logger'
+const logger = new Logger({ prefix: 'editorCore/mutation' })
 /*
 export function someGetter (state) {
 }
 */
+
+// post status
+
+export function isPostInit (state) {
+  return state.data.post !== null
+}
+export function isPostSaved (state) {
+  return state.status.saved
+}
+export function isPostUnsaved (state) {
+  return !state.status.saved
+}
+export function postStatus (state) {
+  if (isPostInit(state)) return 'init'
+  if (isPostSaved(state)) return 'saved'
+  if (isPostUnsaved(state)) return 'unsaved'
+  logger.error('Unknown state', state)
+  return 'error'
+}
+
+// other status
+
+export function isOtherInit (state) {
+  return isEmptyObject(state.data.posts) &&
+  isEmptyObject(state.data.categories) &&
+  isEmptyObject(state.data.tags)
+}
+
+export function isOtherReady (state) {
+  return !isOtherInit(state)
+}
+
+export function otherStatus (state) {
+  if (isOtherInit(state)) return 'init'
+  if (isOtherReady(state)) return 'ready'
+  logger.error('Unknown state', state)
+  return 'error'
+}
+
+// ============
+
 export function dataPostId (state) {
   return state.post ? state.post._id : null
 }
