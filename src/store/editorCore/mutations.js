@@ -28,6 +28,36 @@ export function updateDataPostById (state, _id) {
   }
 }
 
+export function updateDataPostByTitle (state, title) {
+  updateDataPostBase(state, Object.assign(state.data.post, { title }))
+}
+
+export function updateDataPostByContent (state, content) {
+  updateDataPostBase(state, Object.assign(state.data.post, { _content: content }))
+}
+
+export function updateDataPostByTags (state, tags) {
+  updateDataPostBase(state, Object.assign(state.data.post, { tags }))
+}
+
+export function updateDataPostByCategories (state, categories) {
+  updateDataPostBase(state, Object.assign(state.data.post, { categories }))
+}
+
+export function updateDataPostByCategoriesArray2D (state, categoriesArray2D) {
+  let categories = []
+  if (categoriesArray2D.length === 1) {
+    if (categoriesArray2D[0].length === 1) {
+      categories = categoriesArray2D[0][0]
+    } else {
+      categories = categoriesArray2D[0]
+    }
+  } else {
+    categories = categoriesArray2D
+  }
+  updateDataPostByCategories(state, categories)
+}
+
 export function updateDataPostByOptions (state, opt = {}) {
   updateDataPostBase(Object.assign(state.data.post, opt))
 }
@@ -37,7 +67,7 @@ export function updateDataPostsBase (state, posts) {
   logger.warn('posts', state.data.posts, hexoEditorCore.state)
 }
 export function updateDataPostsByList (state, posts) {
-  updateDataCategoriesBase(state, listToObject(posts))
+  updateDataPostsBase(state, listToObject(posts))
 }
 
 export function updateDataCategoriesBase (state, categories) {
@@ -64,4 +94,8 @@ export function markChanged (state) {
 
 export function markSaved (state) {
   state.status.saved = true
+}
+
+export function markReady (state) {
+  state.status.ready = true
 }

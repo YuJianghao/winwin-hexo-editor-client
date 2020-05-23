@@ -51,33 +51,15 @@ export async function init ({ commit, dispatch }) {
 export async function destroy ({ commit, dispatch }) {
   commit('editorUi/destroy')
   // TODO： Rmove hexoEditorCore
-  dispatch('editorCore/destroy')
+  await dispatch('editorCore/destroy')
   await hexoEditorCore.destory()
 }
 
-// 查看相关
-
-export async function viewPostById ({ commit, dispatch }, payload = { force: false }) {
-  const { _id, force } = payload
-  // TODO: Replace hexoEditorCore
-  if (!force && !hexoEditorCore.state.saved) {
-    await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-      // TODO： Rmove hexoEditorCore
-      dispatch('editorCore/loadPostById', { _id, force: true })
-      await hexoEditorCore.loadPostById(_id, true)
-      commit('editorUi/viewPost')
-    })
-  } else {
-  // TODO： Rmove hexoEditorCore
-    dispatch('editorCore/loadPostById', { _id, force })
-    await hexoEditorCore.loadPostById(_id, force)
-    commit('editorUi/viewPost')
-  }
-}
-
-export async function reload ({ commit }, force = false) {
+export async function reload ({ commit, dispatch }, force = false) {
   try {
     commit('editorUi/showLoading')
+    // TODO： Rmove hexoEditorCore
+    await dispatch('editorCore/reload')
     await hexoEditorCore.reload(force)
     message.success({ message: '重载成功' })
   } catch (err) {
@@ -85,6 +67,30 @@ export async function reload ({ commit }, force = false) {
     message.error({ message: '重载失败', caption: err.message })
   } finally {
     commit('editorUi/hideLoading')
+  }
+}
+
+// 查看相关
+
+export async function viewPostById ({ commit, dispatch }, payload = { force: false }) {
+  const { _id, force } = payload
+  try {
+    // TODO: Replace hexoEditorCore
+    if (!force && !hexoEditorCore.state.saved) {
+      await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+      // TODO： Rmove hexoEditorCore
+        await dispatch('editorCore/loadPostById', { _id, force: true })
+        await hexoEditorCore.loadPostById(_id, true)
+        commit('editorUi/viewPost')
+      })
+    } else {
+      // TODO： Rmove hexoEditorCore
+      await dispatch('editorCore/loadPostById', { _id, force })
+      await hexoEditorCore.loadPostById(_id, force)
+      commit('editorUi/viewPost')
+    }
+  } catch (err) {
+    message.error({ message: '文章载入失败', caption: err.message })
   }
 }
 
@@ -108,37 +114,54 @@ export async function filterByUnCategorized ({ commit }) {
 
 // 编辑
 
-export async function addPostByDefault ({ commit }) {
+export async function addPostByDefault ({ commit, dispatch }) {
   try {
-    await hexoEditorCore.addPostByDefault()
-    commit('editorUi/editPost')
+    if (!hexoEditorCore.state.saved) {
+      await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+        // TODO： Rmove hexoEditorCore
+        await dispatch('editorCore/addPostBase', { force: true })
+        commit('editorUi/editPost')
+      })
+    } else {
+      // TODO： Rmove hexoEditorCore
+      await dispatch('editorCore/addPostBase')
+      // TODO: 完成后恢复编辑器行为
+      // commit('editorUi/editPost')
+    }
   } catch (err) {
     if (err.status === 401) return
     message.error({ message: '新建失败', caption: err.message })
   }
 }
 
-export async function deletePostById ({ commit }, _id) {
+export async function deletePostById ({ commit, dispatch }, _id) {
   return confirmDialog(null, '你确认要删除么', '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
-      await hexoEditorCore.deletePostById(_id)
-      commit('editorUi/deletePost')
+      // TODO： Rmove hexoEditorCore
+      await dispatch('editorCore/deletePostById', _id)
+      // TODO: 完成后恢复编辑器行为
+      // commit('editorUi/deletePost')
     } catch (err) {
-      if (hexoEditorCore.state.post) { commit('editorUi/viewPost') }
+      // TODO: 异常处理
+      message.error({ message: '删除失败', caption: err.message })
     } finally {
       resolve()
     }
   })
 }
 
-export async function editPostById ({ commit }, payload = { force: false }) {
-  const { _id, force } = payload
+export async function editPostById ({ commit, dispatch }, payload = {}) {
+  let { _id, force } = payload
+  force = force || false
   if (!force && !hexoEditorCore.state.saved && !await hexoEditorCore.isCurrentPost(_id)) {
     await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+      // TODO： Rmove hexoEditorCore
+      await dispatch('editorCore/loadPostById', { _id, force: true })
       await hexoEditorCore.loadPostById(_id, true)
       commit('editorUi/editPost')
     })
   } else {
+    await dispatch('editorCore/loadPostById', { _id, force })
     await hexoEditorCore.loadPostById(_id, force)
     commit('editorUi/editPost')
   }
@@ -155,17 +178,21 @@ export async function unpublishPostById ({ commit }, _id) {
   })
 }
 
-export async function setPostByCategoriesArray2d ({ commit }, cats) {
-  await hexoEditorCore.setPostByCategoriesArray2d(cats)
-}
 export async function setPostByTitle ({ commit }, title) {
+  commit('editorCore/updateDataPostByTitle', title)
   await hexoEditorCore.setPostByTitle(title)
 }
 export async function setPostByContent ({ commit }, content) {
+  commit('editorCore/updateDataPostByContent', content)
   await hexoEditorCore.setPostByContent(content)
 }
 export async function setPostByTags ({ commit }, tags) {
+  commit('editorCore/updateDataPostByTags', tags)
   await hexoEditorCore.setPostByTags(tags)
+}
+export async function setPostByCategoriesArray2d ({ commit }, cats) {
+  commit('editorCore/updateDataPostByCategoriesArray2D', cats)
+  await hexoEditorCore.setPostByCategoriesArray2d(cats)
 }
 
 // 操作相关
