@@ -24,7 +24,7 @@ export async function destroy ({ commit }) {
   commit('updateDataTagsBase', {})
 }
 
-export async function reload ({ dispatch }) {
+export async function reload ({ dispatch }, force) {
   await dispatch('loadAll')
 }
 
@@ -81,8 +81,8 @@ export async function loadTags ({ commit }) {
   commit('updateDataTagsByList', res.data.tags)
 }
 
-export async function deletePostById ({ state, dispatch }, _id) {
-  if (!state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
-  await hexo.deletePost(_id)
+export async function deletePostById ({ state, commit, dispatch }, _id) {
+  if (!state.data.post && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
+  await hexo.deletePost(_id || state.data.post._id)
   await dispatch('reload')
 }

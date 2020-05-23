@@ -1,7 +1,5 @@
 
-import hexo from '@winwin/hexo-editor-sdk'
 import { hexoEditorCore } from 'src/stores/editorStore'
-import request from 'src/api/request'
 import { confirmDialog } from 'src/utils/dialog'
 import message from 'src/utils/message'
 import { Logger } from 'src/utils/logger'
@@ -33,15 +31,7 @@ export async function init ({ commit, dispatch }) {
   try {
     commit('editorUi/showLoading')
     commit('globalUser/init')
-    // TODO: Remove hexoEditorCore
     await dispatch('editorCore/init')
-    await hexoEditorCore.init({
-      api: hexo({
-        baseUrl: process.env.HEXO_SERVER_BASE,
-        axios: request
-      }),
-      debug: process.env.DEV
-    })
     commit('editorUi/init')
   } catch (err) {
     if (err.status === 401) return
@@ -55,17 +45,13 @@ export async function init ({ commit, dispatch }) {
 export async function destroy ({ commit, dispatch }) {
   logger.log('destroy')
   commit('editorUi/destroy')
-  // TODO： Rmove hexoEditorCore
   await dispatch('editorCore/destroy')
-  await hexoEditorCore.destory()
 }
 
 export async function reload ({ commit, dispatch }, force = false) {
   try {
     commit('editorUi/showLoading')
-    // TODO： Rmove hexoEditorCore
-    await dispatch('editorCore/reload')
-    await hexoEditorCore.reload(force)
+    await dispatch('editorCore/reload', force)
     message.success({ message: '重载成功' })
   } catch (err) {
     if (err.status === 401) return
@@ -77,23 +63,18 @@ export async function reload ({ commit, dispatch }, force = false) {
 
 // 查看相关
 
-export async function viewPostById ({ commit, dispatch }, payload = { force: false }) {
+export async function viewPostById ({ rootState, commit, dispatch }, payload = { force: false }) {
   logger.log('viewPostById')
   const { _id, force } = payload
   try {
-    // TODO: Replace hexoEditorCore
-    if (!force && !hexoEditorCore.state.saved) {
+    if (!force && !rootState.editorCore.status.saved) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-      // TODO： Rmove hexoEditorCore
         await dispatch('editorCore/loadPostById', { _id, force: true })
-        await hexoEditorCore.loadPostById(_id, true)
         commit('editorUi/viewPost')
         resolve()
       })
     } else {
-      // TODO： Rmove hexoEditorCore
       await dispatch('editorCore/loadPostById', { _id, force })
-      await hexoEditorCore.loadPostById(_id, force)
       commit('editorUi/viewPost')
     }
   } catch (err) {
@@ -106,35 +87,30 @@ export async function viewPostById ({ commit, dispatch }, payload = { force: fal
 export async function filterByAll ({ commit }) {
   logger.log('filterByAll')
   commit('editorFilter/filterByAll')
-  await hexoEditorCore.filterByAll()
 }
 
 export async function filterByCategoriesId ({ commit }, _id) {
   logger.log('filterByCategoriesId')
   commit('editorFilter/filterByCategoriesId', _id)
-  await hexoEditorCore.filterByCategoriesId(_id)
 }
 
 export async function filterByTagsId ({ commit }, _id) {
   logger.log('filterByTagsId')
   commit('editorFilter/filterByTagsId', _id)
-  await hexoEditorCore.filterByTagsId(_id)
 }
 
 export async function filterByUnCategorized ({ commit }) {
   logger.log('filterByUnCategorized')
   commit('editorFilter/filterByUnCategorized')
-  await hexoEditorCore.filterByUnCategorized()
 }
 
 // 编辑
 
-export async function addPostByDefault ({ commit, dispatch }) {
+export async function addPostByDefault ({ rootState, commit, dispatch }) {
   logger.log('addPostByDefault')
   try {
-    if (!hexoEditorCore.state.saved) {
+    if (!rootState.editorCore.status.saved) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-        // TODO： Rmove hexoEditorCore
         await dispatch('editorCore/addPostBase', { force: true })
         commit('editorUi/editPost')
         resolve()
@@ -155,7 +131,6 @@ export async function deletePostById ({ commit, dispatch }, _id) {
   logger.log('deletePostById')
   return confirmDialog(null, '你确认要删除么', '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
-      // TODO： Rmove hexoEditorCore
       await dispatch('editorCore/deletePostById', _id)
       // TODO: 完成后恢复编辑器行为
       // commit('editorUi/deletePost')
@@ -168,21 +143,19 @@ export async function deletePostById ({ commit, dispatch }, _id) {
   })
 }
 
-export async function editPostById ({ commit, dispatch }, payload = {}) {
+export async function editPostById ({ getters, rootState, commit, dispatch }, payload = {}) {
   logger.log('editPostById')
   let { _id, force } = payload
   force = force || false
-  if (!force && !hexoEditorCore.state.saved && !await hexoEditorCore.isCurrentPost(_id)) {
+  if (!force && !rootState.editorCore.status.saved && !await getters['editorCore/dataPostId'] === _id) {
     await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
       // TODO： Rmove hexoEditorCore
       await dispatch('editorCore/loadPostById', { _id, force: true })
-      await hexoEditorCore.loadPostById(_id, true)
       commit('editorUi/editPost')
       resolve()
     })
   } else {
     await dispatch('editorCore/loadPostById', { _id, force })
-    await hexoEditorCore.loadPostById(_id, force)
     commit('editorUi/editPost')
   }
 }
@@ -203,22 +176,18 @@ export async function unpublishPostById ({ commit }, _id) {
 export async function setPostByTitle ({ commit }, title) {
   logger.log('setPostByTitle')
   commit('editorCore/updateDataPostByTitle', title)
-  await hexoEditorCore.setPostByTitle(title)
 }
 export async function setPostByContent ({ commit }, content) {
   logger.log('setPostByContent')
   commit('editorCore/updateDataPostByContent', content)
-  await hexoEditorCore.setPostByContent(content)
 }
 export async function setPostByTags ({ commit }, tags) {
   logger.log('setPostByTags')
   commit('editorCore/updateDataPostByTags', tags)
-  await hexoEditorCore.setPostByTags(tags)
 }
 export async function setPostByCategoriesArray2d ({ commit }, cats) {
   logger.log('setPostByCategoriesArray2d')
   commit('editorCore/updateDataPostByCategoriesArray2D', cats)
-  await hexoEditorCore.setPostByCategoriesArray2d(cats)
 }
 
 // 操作相关

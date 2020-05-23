@@ -4,6 +4,9 @@ import { objectToList } from 'src/utils/common'
 export function someGetter (state) {
 }
 */
+export function dataPostId (state) {
+  return state.post ? state.post._id : null
+}
 export function dataPostsCount (state) {
   return dataPostsList(state).length
 }
