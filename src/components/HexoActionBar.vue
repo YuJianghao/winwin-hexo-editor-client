@@ -62,7 +62,7 @@
           stretch
           :icon="published?'close':'publish'"
           :color="published?'red':'primary'"
-          v-if="state.post"
+          v-if="editorCoreData.post"
           :label="published?'取消发布':'发布'"
           @click="onPublish"
         />
@@ -82,9 +82,9 @@
           @click="editPostById"
         >
           分类：
-          {{state.postCategoriesList.length?'':'无'}}
+          {{editorCoreDataPostCategoriesList.length?'':'无'}}
           <q-badge
-            v-for="(item,key) in state.postCategoriesList"
+            v-for="(item,key) in editorCoreDataPostCategoriesList"
             :key="key"
             color="primary"
             text-color="white"
@@ -117,9 +117,9 @@
         >
           <template slot="label">
             分类：
-            {{state.postCategoriesList.length?'':'无'}}
+            {{editorCoreDataPostCategoriesList.length?'':'无'}}
             <q-badge
-              v-for="(item,key) in state.postCategoriesList"
+              v-for="(item,key) in editorCoreDataPostCategoriesList"
               :key="key"
               color="primary"
               text-color="white"
@@ -162,7 +162,6 @@
 <script>
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
-import { hexoEditorCore } from '../stores/editorStore'
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoActionBar',
@@ -173,8 +172,7 @@ export default {
   data () {
     return {
       showCatsMenu: false,
-      showTagsMenu: false,
-      state: hexoEditorCore.state
+      showTagsMenu: false
     }
   },
   methods: {
@@ -203,24 +201,28 @@ export default {
       this.$store.dispatch('savePost')
     },
     onPublish () {
-      this.state.post.published ? this.unpublishPostById() : this.publishPostById()
+      this.editorCoreDataPostPublished ? this.unpublishPostById() : this.publishPostById()
     }
   },
   computed: {
     ...mapState({
-      editorUi: state => state.editorUi
+      editorUi: state => state.editorUi,
+      editorCoreData: state => state.editorCore.data
     }),
     ...mapGetters({
-      editorUiEditing: 'editorUi/editing'
+      editorUiEditing: 'editorUi/editing',
+      editorCoreDataPostTagsList: 'editorCore/dataPostTagsList',
+      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
+      editorCoreDataPostPublished: 'editorCore/dataPostPublished'
     }),
     published () {
-      return this.state.post.published
+      return this.editorCoreDataPostPublished
     },
     showLeft () {
       return !this.editorUi.full
     },
     showRight () {
-      return !!this.state.post
+      return !!this.editorCoreData.post
     },
     showEdit () {
       return this.editorUiEditing
@@ -229,7 +231,7 @@ export default {
       return !this.editorUiEditing
     },
     tags () {
-      return this.state.post ? this.state.post.tags || [] : []
+      return this.editorCoreDataPostTagsList
     },
     navStyle () {
       return {

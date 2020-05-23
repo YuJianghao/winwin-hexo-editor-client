@@ -1,6 +1,7 @@
 import { Logger } from 'src/utils/logger'
 import { hexoEditorCore } from 'src/stores/editorStore'
 import { listToObject } from 'src/utils/common'
+import Vue from 'vue'
 
 const logger = new Logger({ prefix: 'EditorCore' })
 /*
@@ -12,6 +13,9 @@ export function someMutation (state) {
 
 export function updateDataPostBase (state, post) {
   state.data.post = post
+  if (state.data.post && typeof post.categories === 'undefined') {
+    Vue.set(state.data.post, 'categories', null)
+  }
   logger.warn('post', state.data.post, hexoEditorCore.state)
   markSaved(state)
 }

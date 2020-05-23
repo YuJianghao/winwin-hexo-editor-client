@@ -79,7 +79,7 @@
 
 <script>
 // TODO 把这个做成公共组件，不要和store交互
-import { hexoEditorCore } from '../stores/editorStore'
+import { mapGetters } from 'vuex'
 export default {
   name: 'HexoCateSelector',
   props: {
@@ -90,22 +90,25 @@ export default {
   },
   data () {
     return {
-      state: hexoEditorCore.state,
       text: '',
       editing: false,
       showMenu: false
     }
   },
   computed: {
+    ...mapGetters({
+      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
+      editorCoreDataCategoriesNameList: 'editorCore/dataCategoriesNameList'
+    }),
     postCategories () {
-      return this.state.postCategoriesList
+      return this.editorCoreDataPostCategoriesList
     },
     showChild () {
       return this.level < this.postCategories.length
     },
     availableCategories () {
       const ac = []
-      ac.push.apply(ac, this.state.categoriesNameList)
+      ac.push.apply(ac, this.editorCoreDataCategoriesNameList)
       this.postCategories.map(pc => {
         if (!ac.includes(pc)) { ac.push(pc) }
       })
