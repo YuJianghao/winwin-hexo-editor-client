@@ -6,24 +6,19 @@
     @dblclick="addPostByDefault"
   >
     <h2>
-      {{state.empty?'':'选择或'}}新建一篇文章
+      {{editorCoreDataPostEmpty?'':'选择或'}}新建一篇文章
     </h2>
   </div>
 </template>
 
 <script>
-import { hexoEditorCore } from '../stores/editorStore'
 import { mapGetters } from 'vuex'
 export default {
   name: 'HexoWelcome',
-  data () {
-    return {
-      state: hexoEditorCore.state
-    }
-  },
   computed: {
     ...mapGetters({
-      editorUiUnselect: 'editorUi/unselect'
+      editorUiUnselect: 'editorUi/unselect',
+      editorCoreDataPostEmpty: 'editorCore/dataPostEmpty'
     })
   },
   methods: {

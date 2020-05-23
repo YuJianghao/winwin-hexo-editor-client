@@ -8,6 +8,9 @@ export function dataPostsCount (state) {
   return objectToList(state.data.posts).length
 }
 
+export function dataPostEmpty (state) {
+  return !!state.data.post
+}
 export function dataPostPublished (state) {
   return state.data.post ? state.data.post.published : false
 }
