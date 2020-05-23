@@ -9,8 +9,8 @@
         class="full-height q-mx-auto q-pa-lg article-entry"
         style="max-width:900px"
       >
-        <h1>{{state.post.title}}</h1>
-        <sub v-if="state.post.date">{{getDateString(state.post.date)}}</sub>
+        <h1>{{editorCoreData.post.title}}</h1>
+        <sub v-if="editorCoreData.post.date">{{getDateString(editorCoreData.post.date)}}</sub>
         <div v-html="html"></div>
       </div>
     </q-scroll-area>
@@ -39,22 +39,19 @@ const md = MarkdownIt({
     return '<pre class="hljs"><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
   }
 })
-import { hexoEditorCore } from '../stores/editorStore'
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoPostViewer',
-  data () {
-    return {
-      state: hexoEditorCore.state
-    }
-  },
   computed: {
+    ...mapState({
+      editorCoreData: state => state.editorCore.data
+    }),
     ...mapGetters({
       editorUiViewing: 'editorUi/viewing'
     }),
     html () {
-      if (!this.state.post._content) return ''
-      return md.render(this.state.post._content)
+      if (!this.editorCoreData.post._content) return ''
+      return md.render(this.editorCoreData.post._content)
     }
   },
   methods: {
