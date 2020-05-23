@@ -40,11 +40,6 @@ export function closePost (state) {
   state.post = 'unselect'
   state.preview = false
 }
-export function deletePost (state, rootState, _id) {
-  if (!_id) this.closePost()
-  if (rootState.editorCore.data.post && rootState.editorCore.data.post._id === _id) { this.closePost() }
-}
-
 export function toggleFull (state, full) {
   if (typeof full === 'undefined') state.full = !state.full
   else state.full = !!full

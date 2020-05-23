@@ -7,20 +7,25 @@ export function loadPost (state, post) {
   markSaved(state)
 }
 
+export function updatePostByOptions (state, opt = {}) {
+  const post = Object.assign({}, state.data.post)
+  updatePost(state, Object.assign(post, opt))
+}
+
 export function updatePostByTitle (state, title) {
-  updatePost(state, Object.assign({ title }, state.data.post))
+  updatePostByOptions(state, { title })
 }
 
 export function updatePostByContent (state, content) {
-  updatePost(state, Object.assign({ _content: content }, state.data.post))
+  updatePostByOptions(state, { _content: content })
 }
 
 export function updatePostByTags (state, tags) {
-  updatePost(state, Object.assign({ tags }, state.data.post))
+  updatePostByOptions(state, { tags })
 }
 
 export function updatePostByCategories (state, categories) {
-  updatePost(state, Object.assign({ categories }, state.data.post))
+  updatePostByOptions(state, { categories })
 }
 
 export function updatePostByCategoriesArray2D (state, categoriesArray2D) {
@@ -35,10 +40,6 @@ export function updatePostByCategoriesArray2D (state, categoriesArray2D) {
     categories = categoriesArray2D
   }
   updatePostByCategories(state, categories)
-}
-
-export function updatePostByOptions (state, opt = {}) {
-  updatePost(Object.assign(opt, state.data.post))
 }
 
 export function closePost (state) {

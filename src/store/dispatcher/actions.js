@@ -131,9 +131,10 @@ export async function deletePostById ({ commit, dispatch }, _id) {
   return confirmDialog(null, '你确认要删除么', '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
       await dispatch('editorCore/deletePostById', _id)
-      commit('editorUi/deletePost')
+      await dispatch('editorUi/deletePost', _id)
     } catch (err) {
       // TODO: 异常处理
+      logger.error(err)
       message.error({ message: '删除失败', caption: err.message })
     } finally {
       resolve()

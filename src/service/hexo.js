@@ -22,7 +22,8 @@ export async function deletePostById (_id) {
   await hexo.deletePost(_id)
 }
 export async function addPost (options) {
-  await hexo.addPost(options)
+  const res = await hexo.addPost(options)
+  return res.data.post
 }
 export async function savePost (post) {
   const res = await hexo.updatePost(post._id, post)
