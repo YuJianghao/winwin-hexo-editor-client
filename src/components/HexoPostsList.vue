@@ -8,13 +8,13 @@
       style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
     >
       <q-list>
-        <q-item v-if="state.empty">
+        <q-item v-if="editorFilterPostsEmpty">
           <q-item-section>
             <q-item-label>没有文章</q-item-label>
           </q-item-section>
         </q-item>
         <q-slide-item
-          v-for="(item,key) in state.filteredPostsList"
+          v-for="(item,key) in editorFilterPostsList"
           left-color="blue"
           right-color="red"
           :key="key"
@@ -73,18 +73,16 @@
 
 <script>
 import { date } from 'quasar'
-import { hexoEditorCore } from '../stores/editorStore'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoPostsList',
-  data () {
-    return {
-      state: hexoEditorCore.state
-    }
-  },
   computed: {
     ...mapState({
       editorUi: state => state.editorUi
+    }),
+    ...mapGetters({
+      editorFilterPostsList: 'editorFilter/postsList',
+      editorFilterPostsEmpty: 'editorFilter/postsEmpty'
     })
   },
   methods: {

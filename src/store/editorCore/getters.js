@@ -5,7 +5,10 @@ export function someGetter (state) {
 }
 */
 export function dataPostsCount (state) {
-  return objectToList(state.data.posts).length
+  return dataPostsList(state).length
+}
+export function dataPostsList (state) {
+  return objectToList(state.data.posts)
 }
 
 export function dataPostEmpty (state) {

@@ -4,6 +4,7 @@ import dispatcher from './dispatcher'
 import globalUser from './globalUser'
 import editorUi from './editorUi'
 import editorCore from './editorCore'
+import editorFilter from './editorFilter'
 
 // import example from './module-example'
 
@@ -28,6 +29,7 @@ export default function (/* { ssrContext } */) {
       dispatcher,
       editorUi,
       editorCore,
+      editorFilter,
       globalUser
       // example
     },
