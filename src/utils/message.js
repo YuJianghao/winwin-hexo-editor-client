@@ -3,8 +3,9 @@ export default {
   /**
    *
    * @param {object} opt 参数
-   * @param {string} message 消息内容
-   * @param {string} position 消息位置
+   * @param {string} opt.message 消息内容
+   * @param {string} opt.caption 消息详情
+   * @param {string} opt.position 消息位置
    */
   info (opt) {
     Notify.create(Object.assign({ ...opt }, {
@@ -16,8 +17,9 @@ export default {
   /**
    *
    * @param {object} opt 参数
-   * @param {string} message 消息内容
-   * @param {string} position 消息位置
+   * @param {string} opt.message 消息内容
+   * @param {string} opt.caption 消息详情
+   * @param {string} opt.position 消息位置
    */
   warning (opt) {
     Notify.create(Object.assign({ ...opt }, {
@@ -29,8 +31,9 @@ export default {
   /**
    *
    * @param {object} opt 参数
-   * @param {string} message 消息内容
-   * @param {string} position 消息位置
+   * @param {string} opt.message 消息内容
+   * @param {string} opt.caption 消息详情
+   * @param {string} opt.position 消息位置
    */
   success (opt) {
     Notify.create(Object.assign({ ...opt }, {
@@ -41,8 +44,9 @@ export default {
   /**
    *
    * @param {object} opt 参数
-   * @param {string} message 消息内容
-   * @param {string} position 消息位置
+   * @param {string} opt.message 消息内容
+   * @param {string} opt.caption 消息详情
+   * @param {string} opt.position 消息位置
    */
   error (opt) {
     Notify.create(Object.assign({ ...opt }, {
