@@ -1,6 +1,6 @@
 export default function () {
   return {
-    post: 'unselect',
+    editing: false,
     preview: false,
     full: false,
     message: '',

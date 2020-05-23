@@ -1,9 +1,9 @@
-export function unselect (state) {
-  return state.post === 'unselect'
+export function unselect (state, getters, rootState) {
+  return !rootState.editorCore.data.post && !state.editing && !state.preview
 }
 export function editing (state) {
-  return state.post === 'editing'
+  return state.editing
 }
 export function viewing (state) {
-  return state.post === 'viewing' || state.preview
+  return state.preview && !state.editing
 }

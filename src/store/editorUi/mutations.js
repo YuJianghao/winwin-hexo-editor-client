@@ -8,12 +8,12 @@ export function someMutation (state) {
 */
 export function init (state) {
   state.full = false
-  state.post = 'unselect'
+  state.editing = false
   state.preview = false
 }
 export function destroy (state) {
-  this.full = false
-  state.post = 'unselect'
+  state.full = false
+  state.editing = false
   state.preview = false
 }
 
@@ -28,16 +28,17 @@ export function hideLoading (state) {
 
 export function editPost (state) {
   logger.log('post editing')
-  state.post = 'editing'
+  state.editing = true
   state.preview = true
 }
 export function viewPost (state) {
   logger.log('post viewing')
-  state.post = 'viewing'
+  state.editing = false
+  state.preview = true
 }
 export function closePost (state) {
   logger.log('post unselect')
-  state.post = 'unselect'
+  state.editing = false
   state.preview = false
 }
 export function toggleFull (state, full) {
