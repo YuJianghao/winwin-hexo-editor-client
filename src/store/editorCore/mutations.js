@@ -1,5 +1,4 @@
 import { Logger } from 'src/utils/logger'
-import { hexoEditorCore } from 'src/stores/editorStore'
 import { listToObject } from 'src/utils/common'
 import Vue from 'vue'
 
@@ -16,7 +15,6 @@ export function updateDataPostBase (state, post) {
   if (state.data.post && typeof post.categories === 'undefined') {
     Vue.set(state.data.post, 'categories', null)
   }
-  logger.warn('post', state.data.post, hexoEditorCore.state)
   markSaved(state)
 }
 
@@ -68,7 +66,6 @@ export function updateDataPostByOptions (state, opt = {}) {
 
 export function updateDataPostsBase (state, posts) {
   state.data.posts = posts
-  logger.warn('posts', state.data.posts, hexoEditorCore.state)
 }
 export function updateDataPostsByList (state, posts) {
   updateDataPostsBase(state, listToObject(posts))
@@ -76,7 +73,6 @@ export function updateDataPostsByList (state, posts) {
 
 export function updateDataCategoriesBase (state, categories) {
   state.data.categories = categories
-  logger.warn('categories', state.data.categories, hexoEditorCore.state)
 }
 export function updateDataCategoriesByList (state, categories) {
   updateDataCategoriesBase(state, listToObject(categories))
@@ -84,7 +80,6 @@ export function updateDataCategoriesByList (state, categories) {
 
 export function updateDataTagsBase (state, tags) {
   state.data.tags = tags
-  logger.warn('tags', state.data.tags, hexoEditorCore.state)
 }
 export function updateDataTagsByList (state, posts) {
   updateDataTagsBase(state, listToObject(posts))

@@ -96,19 +96,23 @@ export async function viewPostById ({ commit, dispatch }, payload = { force: fal
 
 // 筛选
 
+export async function filterByAll ({ commit }) {
+  commit('editorFilter/filterByAll')
+  await hexoEditorCore.filterByAll()
+}
+
 export async function filterByCategoriesId ({ commit }, _id) {
+  commit('editorFilter/filterByCategoriesId', _id)
   await hexoEditorCore.filterByCategoriesId(_id)
 }
 
 export async function filterByTagsId ({ commit }, _id) {
+  commit('editorFilter/filterByTagsId', _id)
   await hexoEditorCore.filterByTagsId(_id)
 }
 
-export async function filterByAll ({ commit }) {
-  await hexoEditorCore.filterByAll()
-}
-
 export async function filterByUnCategorized ({ commit }) {
+  commit('editorFilter/filterByUnCategorized')
   await hexoEditorCore.filterByUnCategorized()
 }
 
