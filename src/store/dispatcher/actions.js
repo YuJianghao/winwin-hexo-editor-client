@@ -234,20 +234,19 @@ export async function saveGit ({ commit }) {
   }
 }
 
-export async function savePost ({ dispatch }) {
+export async function savePost ({ commit, dispatch }) {
   logger.log('savePost')
   try {
-    const timer = window.setTimeout(() => {
-      message.info({ message: '正在保存' })
-    }, 500)
+    commit('editorUi/showLoading', { message: '正在保存', delay: 100 })
     await dispatch('editorCore/savePost')
-    window.clearTimeout(timer)
     message.success({ message: '保存成功' })
   } catch (err) {
     if (err.status === 404) {
       err.message = '列表已更新，请刷新'
     }
     message.error({ message: '保存失败', caption: err.message })
+  } finally {
+    commit('editorUi/hideLoading')
   }
 }
 
