@@ -7,7 +7,7 @@
     <div style="height:42px;max-width:100%">
       <q-input
         borderless
-        :value="state.post.title"
+        :value="editorCoreData.post.title"
         style="height:42px;overflow-y:hidden"
         input-class="text-left q-pa-none bg-grey-2"
         input-style="font-size:1.2rem;text-indent:1rem;font-weight:lighter;"
@@ -17,7 +17,7 @@
     </div>
     <monaco-editor
       style="flex:1;height:0;max-width:100%"
-      :value="state.post._content"
+      :value="editorCoreData.post._content"
       @input="updateContent"
       @on-save="savePost"
       @on-toggle-preview="togglePreview"
@@ -26,21 +26,18 @@
 </template>
 
 <script>
-// import { Editor } from './VueTuiEditor/index'
 import MonacoEditor from './MonacoEditor'
-import { hexoEditorCore } from '../stores/editorStore'
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoEditor',
   components: {
     MonacoEditor
   },
-  data () {
-    return {
-      state: hexoEditorCore.state
-    }
-  },
   computed: {
+    // TODO: 把vuex限制在js中，模板文件不要出现vuex
+    ...mapState({
+      editorCoreData: state => state.editorCore.data
+    }),
     ...mapGetters({
       editorUiEditing: 'editorUi/editing'
     })

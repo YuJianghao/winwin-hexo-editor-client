@@ -4,9 +4,6 @@ import { objectToList } from 'src/utils/common'
 export function someGetter (state) {
 }
 */
-export function dataPostPublished (state) {
-  return state.data.post ? state.data.post.published : false
-}
 export function dataPostsCount (state) {
   return objectToList(state.data.posts).length
 }
