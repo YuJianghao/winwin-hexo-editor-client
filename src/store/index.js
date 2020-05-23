@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import dispatcher from './dispatcher'
-import editorUi from './editorUi'
 import globalUser from './globalUser'
+import editorUi from './editorUi'
+import editorCore from './editorCore'
 
 // import example from './module-example'
 
@@ -26,6 +27,7 @@ export default function (/* { ssrContext } */) {
     modules: {
       dispatcher,
       editorUi,
+      editorCore,
       globalUser
       // example
     },

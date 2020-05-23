@@ -10,7 +10,7 @@ export function init (state) {
   state.post = 'unselect'
   state.preview = false
 }
-export function destory (state) {
+export function destroy (state) {
   this.full = false
   state.post = 'unselect'
   state.preview = false

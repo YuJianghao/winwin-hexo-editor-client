@@ -5,10 +5,32 @@ import request from 'src/api/request'
 import { confirmDialog } from 'src/utils/dialog'
 import message from 'src/utils/message'
 
-export async function init ({ commit }) {
+// 用户相关
+
+export async function login ({ commit, dispatch }, { username, password }) {
+  await dispatch('globalUser/login', { username, password })
+}
+
+export async function logout ({ commit, dispatch }) {
+  // TODO: Replace hexoEditorCore
+  if (!hexoEditorCore.state.saved) {
+    await confirmDialog(null, '要退出么，未保存的文件会丢失', '退出', 'red', '返回', 'primary', 'cancel', async resolve => {
+      commit('globalUser/logout')
+    })
+  } else {
+    dispatch('destroy')
+    commit('globalUser/logout')
+  }
+}
+
+// 组件生命周期相关
+
+export async function init ({ commit, dispatch }) {
   try {
     commit('editorUi/showLoading')
     commit('globalUser/init')
+    // TODO: Remove hexoEditorCore
+    await dispatch('editorCore/init')
     await hexoEditorCore.init({
       api: hexo({
         baseUrl: process.env.HEXO_SERVER_BASE,
@@ -26,44 +48,73 @@ export async function init ({ commit }) {
   }
 }
 
-export async function login ({ commit, dispatch }, { username, password }) {
-  await dispatch('globalUser/login', { username, password })
+export async function destroy ({ commit, dispatch }) {
+  commit('editorUi/destroy')
+  // TODO： Rmove hexoEditorCore
+  dispatch('editorCore/destroy')
+  await hexoEditorCore.destory()
 }
 
-export async function logout ({ commit, dispatch }) {
-  if (!hexoEditorCore.state.saved) {
-    await confirmDialog(null, '要退出么，未保存的文件会丢失', '退出', 'red', '返回', 'primary', 'cancel', async resolve => {
-      commit('globalUser/logout')
-    })
-  } else {
-    dispatch('destroy')
-    commit('globalUser/logout')
-  }
-}
+// 查看相关
 
-export async function editPostById ({ commit }, payload = { force: false }) {
+export async function viewPostById ({ commit, dispatch }, payload = { force: false }) {
   const { _id, force } = payload
-  if (!force && !hexoEditorCore.state.saved && !await hexoEditorCore.isCurrentPost(_id)) {
-    await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-      await hexoEditorCore.loadPostById(_id, true)
-      commit('editorUi/editPost')
-    })
-  } else {
-    await hexoEditorCore.loadPostById(_id, force)
-    commit('editorUi/editPost')
-  }
-}
-
-export async function viewPostById ({ commit }, payload = { force: false }) {
-  const { _id, force } = payload
+  // TODO: Replace hexoEditorCore
   if (!force && !hexoEditorCore.state.saved) {
     await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+      // TODO： Rmove hexoEditorCore
+      dispatch('editorCore/loadPostById', { _id, force: true })
       await hexoEditorCore.loadPostById(_id, true)
       commit('editorUi/viewPost')
     })
   } else {
+  // TODO： Rmove hexoEditorCore
+    dispatch('editorCore/loadPostById', { _id, force })
     await hexoEditorCore.loadPostById(_id, force)
     commit('editorUi/viewPost')
+  }
+}
+
+export async function reload ({ commit }, force = false) {
+  try {
+    commit('editorUi/showLoading')
+    await hexoEditorCore.reload(force)
+    message.success({ message: '重载成功' })
+  } catch (err) {
+    if (err.status === 401) return
+    message.error({ message: '重载失败', caption: err.message })
+  } finally {
+    commit('editorUi/hideLoading')
+  }
+}
+
+// 筛选
+
+export async function filterByCategoriesId ({ commit }, _id) {
+  await hexoEditorCore.filterByCategoriesId(_id)
+}
+
+export async function filterByTagsId ({ commit }, _id) {
+  await hexoEditorCore.filterByTagsId(_id)
+}
+
+export async function filterByAll ({ commit }) {
+  await hexoEditorCore.filterByAll()
+}
+
+export async function filterByUnCategorized ({ commit }) {
+  await hexoEditorCore.filterByUnCategorized()
+}
+
+// 编辑
+
+export async function addPostByDefault ({ commit }) {
+  try {
+    await hexoEditorCore.addPostByDefault()
+    commit('editorUi/editPost')
+  } catch (err) {
+    if (err.status === 401) return
+    message.error({ message: '新建失败', caption: err.message })
   }
 }
 
@@ -80,13 +131,16 @@ export async function deletePostById ({ commit }, _id) {
   })
 }
 
-export async function addPostByDefault ({ commit }) {
-  try {
-    await hexoEditorCore.addPostByDefault()
+export async function editPostById ({ commit }, payload = { force: false }) {
+  const { _id, force } = payload
+  if (!force && !hexoEditorCore.state.saved && !await hexoEditorCore.isCurrentPost(_id)) {
+    await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+      await hexoEditorCore.loadPostById(_id, true)
+      commit('editorUi/editPost')
+    })
+  } else {
+    await hexoEditorCore.loadPostById(_id, force)
     commit('editorUi/editPost')
-  } catch (err) {
-    if (err.status === 401) return
-    message.error({ message: '新建失败', caption: err.message })
   }
 }
 
@@ -114,21 +168,7 @@ export async function setPostByTags ({ commit }, tags) {
   await hexoEditorCore.setPostByTags(tags)
 }
 
-export async function filterByCategoriesId ({ commit }, _id) {
-  await hexoEditorCore.filterByCategoriesId(_id)
-}
-
-export async function filterByTagsId ({ commit }, _id) {
-  await hexoEditorCore.filterByTagsId(_id)
-}
-
-export async function filterByAll ({ commit }) {
-  await hexoEditorCore.filterByAll()
-}
-
-export async function filterByUnCategorized ({ commit }) {
-  await hexoEditorCore.filterByUnCategorized()
-}
+// 操作相关
 
 export async function deploy ({ commit }) {
   await confirmDialog(null, '确定部署博客么？', null, null, null, null, 'ok', async resolve => {
@@ -172,19 +212,6 @@ export async function saveGit ({ commit }) {
   }
 }
 
-export async function reload ({ commit }, force = false) {
-  try {
-    commit('editorUi/showLoading')
-    await hexoEditorCore.reload(force)
-    message.success({ message: '重载成功' })
-  } catch (err) {
-    if (err.status === 401) return
-    message.error({ message: '重载失败', caption: err.message })
-  } finally {
-    commit('editorUi/hideLoading')
-  }
-}
-
 export async function savePost ({ commit }) {
   try {
     const timer = window.setTimeout(() => {
@@ -201,15 +228,12 @@ export async function savePost ({ commit }) {
   }
 }
 
+// ui相关
+
 export async function toggleFull ({ commit }) {
   commit('editorUi/toggleFull')
 }
 
 export async function togglePreview ({ commit }) {
   commit('editorUi/togglePreview')
-}
-
-export async function destroy ({ commit }) {
-  commit('editorUi/destory')
-  await hexoEditorCore.destory()
 }

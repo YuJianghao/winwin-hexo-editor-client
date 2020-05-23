@@ -2,6 +2,7 @@ import { EventEmitter } from 'events'
 import random from 'string-random'
 import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'EditorStore' })
+logger.setLogLevel('error')
 // import Vue from 'vue'
 
 class Helper {
@@ -75,7 +76,6 @@ class HexoEditorCore extends EventEmitter {
           this.filterBy.type = 'all'
           return this.filteredPostsList
         }
-        // TODO
       },
       filterBy: {
         type: 'all',
