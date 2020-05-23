@@ -25,6 +25,6 @@ export async function addPost (options) {
   await hexo.addPost(options)
 }
 export async function savePost (post) {
-  const res = await this.api.updatePost(post._id, post)
+  const res = await hexo.updatePost(post._id, post)
   return res.data.post
 }

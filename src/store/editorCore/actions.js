@@ -110,8 +110,10 @@ export async function deletePostById ({ state, commit, dispatch }, _id) {
   }
 }
 
-export async function savePost (state, dispatch, commit) {
+export async function savePost ({ state, dispatch, commit }) {
   try {
+    console.log(state
+    )
     await hexoService.savePost(state.data.post)
     commit('savePost')
   } catch (err) {
