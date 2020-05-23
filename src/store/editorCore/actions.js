@@ -26,7 +26,7 @@ export async function reload ({ dispatch }, force) {
 
 // CURD
 
-export async function addPostBase ({ state, getters, commit, dispatch }, payload = {}) {
+export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
   if (!payload.force && !state.status.saved) throw new Error('Unsaved file, use force=true to override')
   let post = null
   try {
@@ -49,7 +49,7 @@ export async function addPostBase ({ state, getters, commit, dispatch }, payload
   }
 }
 
-export async function loadPostById ({ state, getters, commit }, { _id, force }) {
+export async function loadPostById ({ state, commit }, { _id, force }) {
   if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
   if (_id && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
   if (state.data.post && state.data.post._id === _id) {
@@ -101,12 +101,18 @@ export async function loadTags ({ commit }) {
 }
 
 export async function deletePostById ({ state, commit, dispatch }, _id) {
-  if (!state.data.post && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
+  if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
+  if (_id && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
   try {
     await hexoService.deletePostById(_id || state.data.post._id)
-    await dispatch('reload')
   } catch (err) {
     throw replaceErrorMessage(err, '删除失败，请稍后再试')
+  }
+  try {
+    if (!_id || state.data.post._id === _id) { commit('closePost') }
+    await dispatch('loadAll')
+  } catch (err) {
+    throw replaceErrorMessage(err, '文章已删除，但数据更新失败，请手动刷新')
   }
 }
 
@@ -121,5 +127,47 @@ export async function savePost ({ state, dispatch, commit }) {
     await dispatch('loadAll')
   } catch (err) {
     throw replaceErrorMessage(err, '文章已保存，但数据更新失败，请手动刷新')
+  }
+}
+
+export async function publishPostById ({ state, commit, dispatch }, { _id, force }) {
+  if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
+  if (_id && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
+  if (state.data.post && state.data.post._id === _id) {
+    logger.log('Same post', _id)
+    return
+  }
+  if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
+  try {
+    const post = await hexoService.publishPost(_id || state.data.post._id)
+    commit('loadPost', post)
+  } catch (err) {
+    throw replaceErrorMessage(err, '文章发布失败，请稍后再试')
+  }
+  try {
+    await dispatch('loadPosts')
+  } catch (err) {
+    throw replaceErrorMessage(err, '文章已发布，但数据更新失败，请手动刷新')
+  }
+}
+
+export async function unpublishPostById ({ state, commit, dispatch }, { _id, force }) {
+  if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
+  if (!state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
+  if (state.data.post && state.data.post._id === _id) {
+    logger.log('Same post', _id)
+    return
+  }
+  if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
+  try {
+    const post = await hexoService.unpublishPost(_id || state.data.post._id)
+    commit('loadPost', post)
+  } catch (err) {
+    throw replaceErrorMessage(err, '取消发布失败，请稍后再试')
+  }
+  try {
+    await dispatch('loadPosts')
+  } catch (err) {
+    throw replaceErrorMessage(err, '已取消发布，但数据更新失败，请手动刷新')
   }
 }

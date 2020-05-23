@@ -9,7 +9,6 @@ export async function getCategories () {
   const res = await hexo.getCategories()
   return res.data.categories
 }
-
 export async function getTags () {
   const res = await hexo.getTags()
   return res.data.tags
@@ -27,5 +26,14 @@ export async function addPost (options) {
 }
 export async function savePost (post) {
   const res = await hexo.updatePost(post._id, post)
+  return res.data.post
+}
+
+export async function publishPost (_id) {
+  const res = await hexo.publishPost(_id)
+  return res.data.post
+}
+export async function unpublishPost (_id) {
+  const res = await hexo.unpublishPost(_id)
   return res.data.post
 }

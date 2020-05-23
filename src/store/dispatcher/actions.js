@@ -133,8 +133,6 @@ export async function deletePostById ({ commit, dispatch }, _id) {
       await dispatch('editorCore/deletePostById', _id)
       await dispatch('editorUi/deletePost', _id)
     } catch (err) {
-      // TODO: 异常处理
-      logger.error(err)
       message.error({ message: '删除失败', caption: err.message })
     } finally {
       resolve()
@@ -158,15 +156,23 @@ export async function editPostById ({ getters, rootState, rootGetters, commit, d
   }
 }
 
-export async function publishPostById ({ commit }, _id) {
+export async function publishPostById ({ dispatch }, _id) {
   logger.log('publishPostById')
-  await hexoEditorCore.publishPostById(_id)
+  try {
+    await dispatch('editorCore/publishPostById', { _id })
+  } catch (err) {
+    message.error({ message: '发布失败', caption: err.message })
+  }
 }
 
-export async function unpublishPostById ({ commit }, _id) {
+export async function unpublishPostById ({ dispatch }, _id) {
   logger.log('unpublishPostById')
-  return confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
-    await hexoEditorCore.unpublishPostById(_id)
+  await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
+    try {
+      await dispatch('editorCore/unpublishPostById', { _id })
+    } catch (err) {
+      message.error({ message: '发布失败', caption: err.message })
+    }
     resolve()
   })
 }
