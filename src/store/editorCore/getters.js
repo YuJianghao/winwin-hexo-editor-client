@@ -7,9 +7,15 @@ export function someGetter (state) {
 export function dataPostsCount (state) {
   return objectToList(state.data.posts).length
 }
-
+export function dataPostTagsList (state) {
+  if (!state.data.post) return []
+  return state.data.post.tags || []
+}
 export function dataTagsList (state) {
   return objectToList(state.data.tags)
+}
+export function dataTagsNameList (state) {
+  return dataTagsList(state).map(tag => tag.name)
 }
 export function dataUnTagCount (state) {
   return objectToList(state.data.posts).filter(post => !post.tags).length
