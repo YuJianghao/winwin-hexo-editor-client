@@ -46,7 +46,7 @@
         >
           <q-item-section>全部</q-item-section>
           <q-item-section avatar>
-            <q-badge :label="state.postsCount" />
+            <q-badge :label="editorCoreDataPostsCount" />
           </q-item-section>
         </q-item>
         <q-expansion-item
@@ -55,7 +55,7 @@
           expand-separator
         >
           <q-item
-            v-for="(item,key) in state.categoriesList"
+            v-for="(item,key) in editorCoreDataCategoriesList"
             :key="key"
             clickable
             v-ripple
@@ -77,7 +77,7 @@
               未分类
             </q-item-section>
             <q-item-section avatar="">
-              <q-badge :label="state.uncategorizedPostsCount" />
+              <q-badge :label="editorCoreDataUnCategoriesCount" />
             </q-item-section>
           </q-item>
         </q-expansion-item>
@@ -87,7 +87,7 @@
           expand-separator
         >
           <q-item
-            v-for="(item,key) in state.tagsList"
+            v-for="(item,key) in editorCoreDataTagsList"
             :key="key"
             clickable
             v-ripple
@@ -107,24 +107,19 @@
 </template>
 
 <script>
-import { hexoEditorCore } from '../stores/editorStore'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoNavList',
-  data () {
-    return {
-      state: hexoEditorCore.state
-    }
-  },
   computed: {
     ...mapState({
       editorUi: state => state.editorUi
     }),
-    published () {
-      // TODO 这个想办法挪到store里面去
-      if (!this.state.post) return false
-      else return this.state.post.published
-    }
+    ...mapGetters({
+      editorCoreDataPostsCount: 'editorCore/dataPostsCount',
+      editorCoreDataTagsList: 'editorCore/dataTagsList',
+      editorCoreDataCategoriesList: 'editorCore/dataCategoriesList',
+      editorCoreDataUnCategoriesCount: 'editorCore/dataUnCategoriesCount'
+    })
   },
   methods: {
     async filterByCategoriesId (_id) {
