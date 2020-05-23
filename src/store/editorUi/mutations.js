@@ -1,4 +1,6 @@
 import { hexoEditorCore } from 'src/stores/editorStore'
+import { Logger } from 'src/utils/logger'
+const logger = new Logger({ prefix: 'EditorUI/Mutations' })
 // import { Dialog } from 'quasar'
 
 /*
@@ -26,16 +28,16 @@ export function hideLoading (state) {
 }
 
 export function editPost (state) {
-  if (process.env.DEV) console.log('set editor ui post editing')
+  logger.log('post editing')
   state.post = 'editing'
   state.preview = true
 }
 export function viewPost (state) {
-  if (process.env.DEV) console.log('set editor ui post viewing')
+  logger.log('post viewing')
   state.post = 'viewing'
 }
 export function closePost (state) {
-  if (process.env.DEV) console.log('set editor ui post unselect')
+  logger.log('post unselect')
   state.post = 'unselect'
   state.preview = false
 }
