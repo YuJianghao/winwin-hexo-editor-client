@@ -81,10 +81,6 @@ export async function loadTags ({ commit }) {
   commit('updateDataTagsByList', res.data.tags)
 }
 
-export async function updatePost (ctx) {
-
-}
-
 export async function deletePostById ({ state, dispatch }, _id) {
   if (!state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
   await hexo.deletePost(_id)

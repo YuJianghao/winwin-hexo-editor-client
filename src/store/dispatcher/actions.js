@@ -4,18 +4,21 @@ import { hexoEditorCore } from 'src/stores/editorStore'
 import request from 'src/api/request'
 import { confirmDialog } from 'src/utils/dialog'
 import message from 'src/utils/message'
-
+import { Logger } from 'src/utils/logger'
+const logger = new Logger({ prefix: 'Dispatcher' })
 // 用户相关
 
 export async function login ({ commit, dispatch }, { username, password }) {
+  logger.log('login')
   await dispatch('globalUser/login', { username, password })
 }
 
-export async function logout ({ commit, dispatch }) {
-  // TODO: Replace hexoEditorCore
-  if (!hexoEditorCore.state.saved) {
+export async function logout ({ rootState, commit, dispatch }) {
+  logger.log('logout')
+  if (!rootState.editorCore.status.saved) {
     await confirmDialog(null, '要退出么，未保存的文件会丢失', '退出', 'red', '返回', 'primary', 'cancel', async resolve => {
       commit('globalUser/logout')
+      resolve()
     })
   } else {
     dispatch('destroy')
@@ -26,6 +29,7 @@ export async function logout ({ commit, dispatch }) {
 // 组件生命周期相关
 
 export async function init ({ commit, dispatch }) {
+  logger.log('init')
   try {
     commit('editorUi/showLoading')
     commit('globalUser/init')
@@ -49,6 +53,7 @@ export async function init ({ commit, dispatch }) {
 }
 
 export async function destroy ({ commit, dispatch }) {
+  logger.log('destroy')
   commit('editorUi/destroy')
   // TODO： Rmove hexoEditorCore
   await dispatch('editorCore/destroy')
@@ -73,6 +78,7 @@ export async function reload ({ commit, dispatch }, force = false) {
 // 查看相关
 
 export async function viewPostById ({ commit, dispatch }, payload = { force: false }) {
+  logger.log('viewPostById')
   const { _id, force } = payload
   try {
     // TODO: Replace hexoEditorCore
@@ -82,6 +88,7 @@ export async function viewPostById ({ commit, dispatch }, payload = { force: fal
         await dispatch('editorCore/loadPostById', { _id, force: true })
         await hexoEditorCore.loadPostById(_id, true)
         commit('editorUi/viewPost')
+        resolve()
       })
     } else {
       // TODO： Rmove hexoEditorCore
@@ -97,21 +104,25 @@ export async function viewPostById ({ commit, dispatch }, payload = { force: fal
 // 筛选
 
 export async function filterByAll ({ commit }) {
+  logger.log('filterByAll')
   commit('editorFilter/filterByAll')
   await hexoEditorCore.filterByAll()
 }
 
 export async function filterByCategoriesId ({ commit }, _id) {
+  logger.log('filterByCategoriesId')
   commit('editorFilter/filterByCategoriesId', _id)
   await hexoEditorCore.filterByCategoriesId(_id)
 }
 
 export async function filterByTagsId ({ commit }, _id) {
+  logger.log('filterByTagsId')
   commit('editorFilter/filterByTagsId', _id)
   await hexoEditorCore.filterByTagsId(_id)
 }
 
 export async function filterByUnCategorized ({ commit }) {
+  logger.log('filterByUnCategorized')
   commit('editorFilter/filterByUnCategorized')
   await hexoEditorCore.filterByUnCategorized()
 }
@@ -119,12 +130,14 @@ export async function filterByUnCategorized ({ commit }) {
 // 编辑
 
 export async function addPostByDefault ({ commit, dispatch }) {
+  logger.log('addPostByDefault')
   try {
     if (!hexoEditorCore.state.saved) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
         // TODO： Rmove hexoEditorCore
         await dispatch('editorCore/addPostBase', { force: true })
         commit('editorUi/editPost')
+        resolve()
       })
     } else {
       // TODO： Rmove hexoEditorCore
@@ -139,6 +152,7 @@ export async function addPostByDefault ({ commit, dispatch }) {
 }
 
 export async function deletePostById ({ commit, dispatch }, _id) {
+  logger.log('deletePostById')
   return confirmDialog(null, '你确认要删除么', '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
       // TODO： Rmove hexoEditorCore
@@ -155,6 +169,7 @@ export async function deletePostById ({ commit, dispatch }, _id) {
 }
 
 export async function editPostById ({ commit, dispatch }, payload = {}) {
+  logger.log('editPostById')
   let { _id, force } = payload
   force = force || false
   if (!force && !hexoEditorCore.state.saved && !await hexoEditorCore.isCurrentPost(_id)) {
@@ -163,6 +178,7 @@ export async function editPostById ({ commit, dispatch }, payload = {}) {
       await dispatch('editorCore/loadPostById', { _id, force: true })
       await hexoEditorCore.loadPostById(_id, true)
       commit('editorUi/editPost')
+      resolve()
     })
   } else {
     await dispatch('editorCore/loadPostById', { _id, force })
@@ -172,10 +188,12 @@ export async function editPostById ({ commit, dispatch }, payload = {}) {
 }
 
 export async function publishPostById ({ commit }, _id) {
+  logger.log('publishPostById')
   await hexoEditorCore.publishPostById(_id)
 }
 
 export async function unpublishPostById ({ commit }, _id) {
+  logger.log('unpublishPostById')
   return confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
     await hexoEditorCore.unpublishPostById(_id)
     resolve()
@@ -183,18 +201,22 @@ export async function unpublishPostById ({ commit }, _id) {
 }
 
 export async function setPostByTitle ({ commit }, title) {
+  logger.log('setPostByTitle')
   commit('editorCore/updateDataPostByTitle', title)
   await hexoEditorCore.setPostByTitle(title)
 }
 export async function setPostByContent ({ commit }, content) {
+  logger.log('setPostByContent')
   commit('editorCore/updateDataPostByContent', content)
   await hexoEditorCore.setPostByContent(content)
 }
 export async function setPostByTags ({ commit }, tags) {
+  logger.log('setPostByTags')
   commit('editorCore/updateDataPostByTags', tags)
   await hexoEditorCore.setPostByTags(tags)
 }
 export async function setPostByCategoriesArray2d ({ commit }, cats) {
+  logger.log('setPostByCategoriesArray2d')
   commit('editorCore/updateDataPostByCategoriesArray2D', cats)
   await hexoEditorCore.setPostByCategoriesArray2d(cats)
 }
@@ -202,6 +224,7 @@ export async function setPostByCategoriesArray2d ({ commit }, cats) {
 // 操作相关
 
 export async function deploy ({ commit }) {
+  logger.log('deploy')
   await confirmDialog(null, '确定部署博客么？', null, null, null, null, 'ok', async resolve => {
     try {
       commit('editorUi/showLoading', { message: '正在部署', delay: 100 })
@@ -217,6 +240,7 @@ export async function deploy ({ commit }) {
 }
 
 export async function syncGit ({ commit }) {
+  logger.log('syncGit')
   await confirmDialog(null, '确定从git同步么？未保存到git的文件将丢失', '放弃文件并同步', 'red', '返回', 'primary', 'cancel', async resolve => {
     try {
       commit('editorUi/showLoading', { message: '正在从GIT同步', delay: 100 })
@@ -232,6 +256,7 @@ export async function syncGit ({ commit }) {
 }
 
 export async function saveGit ({ commit }) {
+  logger.log('saveGit')
   try {
     commit('editorUi/showLoading', { message: '正在同步到GIT', delay: 100 })
     await hexoEditorCore.saveGit()
@@ -244,6 +269,7 @@ export async function saveGit ({ commit }) {
 }
 
 export async function savePost ({ commit }) {
+  logger.log('savePost')
   try {
     const timer = window.setTimeout(() => {
       message.info({ message: '正在保存' })
@@ -262,9 +288,11 @@ export async function savePost ({ commit }) {
 // ui相关
 
 export async function toggleFull ({ commit }) {
+  logger.log('toggleFull')
   commit('editorUi/toggleFull')
 }
 
 export async function togglePreview ({ commit }) {
+  logger.log('togglePreview')
   commit('editorUi/togglePreview')
 }

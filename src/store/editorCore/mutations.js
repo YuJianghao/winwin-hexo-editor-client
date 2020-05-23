@@ -15,7 +15,7 @@ export function updateDataPostBase (state, post) {
   if (state.data.post && typeof post.categories === 'undefined') {
     Vue.set(state.data.post, 'categories', null)
   }
-  markSaved(state)
+  markChanged(state)
 }
 
 export function updateDataPostById (state, _id) {
@@ -97,4 +97,5 @@ export function markSaved (state) {
 
 export function markReady (state) {
   state.status.ready = true
+  markSaved(state)
 }

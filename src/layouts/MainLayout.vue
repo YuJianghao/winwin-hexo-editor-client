@@ -183,7 +183,7 @@ export default {
   },
   methods: {
     async onLogout () {
-      this.$store.dispatch('logout')
+      await this.$store.dispatch('logout')
       this.$router.push('/login')
     }
   }
