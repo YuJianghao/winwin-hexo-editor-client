@@ -50,6 +50,7 @@
           :badge="postsCount"
           :onClick="filterByAll"
           isParent
+          :selected="selectedAll"
         ></app-filter-item>
         <app-filter-item
           v-for="(item,key) in categoriesList"
@@ -64,6 +65,7 @@
           label="未分类"
           :badge="unCategoriesCount"
           :onClick="filterByUnCategorized"
+          :selected="selectedUncategoriezed"
         ></app-filter-item>
       </q-list>
       <q-separator />
@@ -115,6 +117,12 @@ export default {
     },
     unCategoriesCount () {
       return this.editorCoreDataUnCategoriesCount
+    },
+    selectedAll () {
+      return this.editorFilter.type === 'all'
+    },
+    selectedUncategoriezed () {
+      return this.editorFilter.type === 'uncategorized'
     },
     selectedCategoriesId () {
       return this.editorFilter.type === 'categories' ? this.editorFilter._id : null
