@@ -7,6 +7,7 @@ class Logger {
   constructor ({ level = process.env.NODE_ENV === 'production' ? 'error' : 'debug', prefix }) {
     this.level = level
     this.prefix = prefix || level
+    this.prefix = `[${this.prefix}]`
     this.methodToColorMap = {
       debug: '#7f8c8d', // Gray
       log: '#2ecc71', // Green
@@ -24,11 +25,8 @@ class Logger {
 
   _print (method, args) {
     const styles = [
-  `background: ${this.methodToColorMap[method]}`,
-  'border-radius: 0.5em',
-  'color: white',
-  'font-weight: bold',
-  'padding: 2px 0.5em'
+  `color: ${this.methodToColorMap[method]}`,
+  'font-weight: bold'
     ]
     const logPrefix = ['%c' + this.prefix, styles.join(';')]
     if (this._shouldDo(method)) {
