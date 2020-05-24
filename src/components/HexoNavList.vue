@@ -46,7 +46,10 @@
         >
           <q-item-section>全部</q-item-section>
           <q-item-section avatar>
-            <q-badge :label="postsCount" />
+            <q-badge
+              :label="postsCount"
+              class="bg-grey"
+            />
           </q-item-section>
         </q-item>
         <q-expansion-item
@@ -54,53 +57,44 @@
           default-opened
           expand-separator
         >
-          <q-item
-            v-for="(item,key) in categoriesList"
-            :key="key"
-            clickable
-            v-ripple
-            @click="filterByCategoriesId(item._id)"
+          <q-list
+            dense
           >
-            <q-item-section>
-              {{item.name}}
-            </q-item-section>
-            <q-item-section avatar="">
-              <q-badge :label="item.length" />
-            </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            v-ripple
-            @click="filterByUnCategorized"
-          >
-            <q-item-section>
-              未分类
-            </q-item-section>
-            <q-item-section avatar="">
-              <q-badge :label="unCategoriesCount" />
-            </q-item-section>
-          </q-item>
+            <app-filter-item
+              v-for="(item,key) in categoriesList"
+              :key="key"
+              :label="item.name"
+              :badge="item.length"
+              :onClick="()=>filterByCategoriesId(item._id)"
+            > </app-filter-item>
+            <app-filter-item
+              label="未分类"
+              :badge="unCategoriesCount"
+              :onClick="filterByUnCategorized"
+            ></app-filter-item>
+          </q-list>
         </q-expansion-item>
-        <q-expansion-item
-          label="标签"
-          default-opened
-          expand-separator
-        >
-          <q-item
+        <q-item>
+          <q-item-section>标签云</q-item-section>
+        </q-item>
+        <q-list class="q-px-md q-pb-md">
+          <q-chip
+            dense
+            clickable
+            square
             v-for="(item,key) in tagsList"
             :key="key"
-            clickable
-            v-ripple
             @click="filterByTagsId(item._id)"
+            class="bg-grey-3"
           >
-            <q-item-section>
-              {{item.name}}
-            </q-item-section>
-            <q-item-section avatar="">
-              <q-badge :label="item.length" />
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
+            <q-avatar
+              color="grey-4"
+              text-color="white"
+              square
+            >{{item.length}}</q-avatar>
+            {{item.name}}
+          </q-chip>
+        </q-list>
       </q-list>
     </q-scroll-area>
   </div>
@@ -108,8 +102,12 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import AppFilterItem from 'components/AppFilterItem'
 export default {
   name: 'HexoNavList',
+  components: {
+    AppFilterItem
+  },
   computed: {
     show () {
       return !this.editorUi.full
@@ -118,7 +116,8 @@ export default {
       return this.editorCoreDataPostsCount
     },
     tagsList () {
-      return this.editorCoreDataTagsList
+      const list = this.editorCoreDataTagsList
+      return list.sort()
     },
     categoriesList () {
       return this.editorCoreDataCategoriesList
