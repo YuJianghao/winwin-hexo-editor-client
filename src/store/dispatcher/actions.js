@@ -278,7 +278,6 @@ export async function setSortKey ({ dispatch }, key) {
 }
 
 export async function setSortDirection ({ dispatch }, direction) {
-  console.log(direction)
   await dispatch('editorSorter/setDirection', direction)
 }
 

@@ -22,17 +22,69 @@
         stretch
         color="primary"
         icon="add"
-        label="新建"
         @click="addPostByDefault"
-      />
+      >
+        <q-tooltip
+          content-style="font-size: 14px"
+          transition-show="jump-down"
+          transition-hide="jump-up"
+          anchor="bottom middle"
+          self="center middle"
+        >
+          新建文章
+        </q-tooltip>
+      </q-btn>
+      <q-space />
       <q-btn
         flat
         stretch
         color="primary"
         icon="refresh"
-        label="刷新"
         @click="reload"
-      />
+      >
+        <q-tooltip
+          content-style="font-size: 14px"
+          transition-show="jump-down"
+          transition-hide="jump-up"
+          anchor="bottom middle"
+          self="center middle"
+        >
+          刷新文章列表
+        </q-tooltip>
+      </q-btn>
+      <q-btn
+        flat
+        stretch
+        color="primary"
+        icon="unfold_more"
+      >
+        <q-menu
+          anchor="bottom right"
+          self="top right"
+          transition-show="jump-down"
+          transition-hide="jump-up"
+        >
+          <q-list
+            style="min-width: 100px"
+            dense
+          >
+            <q-item
+              clickable
+              v-close-popup
+              v-for="item in sortMenuItems"
+              :key="item.key+item.direction"
+              @click="onSortBy(item.key,item.direction)"
+              :class="{'bg-blue-1':item.selected}"
+            >
+              <q-item-section>按照{{item.name}}{{item.direction?'升序':'降序'}}</q-item-section>
+              <q-item-section avatar>
+                <q-icon :name="item.direction?'expand_less':'expand_more'" />
+              </q-item-section>
+            </q-item>
+            <q-separator />
+          </q-list>
+        </q-menu>
+      </q-btn>
     </q-toolbar>
     <q-toolbar
       class="col bg-grey-2 q-px-none"
@@ -42,7 +94,7 @@
         flat
         stretch
         color="primary"
-        icon="menu"
+        :icon="showLeft?'chevron_left':'chevron_right'"
         @click="toggleFull"
         v-if="showRight"
       ></q-btn>
@@ -172,39 +224,27 @@ export default {
   data () {
     return {
       showCatsMenu: false,
-      showTagsMenu: false
-    }
-  },
-  methods: {
-    async addPostByDefault () {
-      this.$store.dispatch('addPostByDefault')
-    },
-    async reload () {
-      this.$store.dispatch('reload', true)
-    },
-    async editPostById () {
-      this.$store.dispatch('editPostById')
-    },
-    async publishPostById () {
-      this.$store.dispatch('publishPostById')
-    },
-    async unpublishPostById () {
-      this.$store.dispatch('unpublishPostById')
-    },
-    async toggleFull () {
-      this.$store.dispatch('toggleFull')
-    },
-    async deletePostById () {
-      this.$store.dispatch('deletePostById')
-    },
-    async savePost () {
-      this.$store.dispatch('savePost')
-    },
-    onPublish () {
-      this.editorCoreDataPostPublished ? this.unpublishPostById() : this.publishPostById()
+      showTagsMenu: false,
+      sort: [
+        { key: 'title', name: '标题' },
+        { key: 'date', name: '编辑日期' }
+      ]
     }
   },
   computed: {
+    sortMenuItems () {
+      const items = []
+      this.sort.map(item => {
+        [true, false].map(direction => {
+          items.push(Object.assign({},
+            Object.assign(item, {
+              direction: direction,
+              selected: this.editorSorter.key === item.key && this.editorSorter.direction === direction
+            })))
+        })
+      })
+      return items
+    },
     published () {
       return this.editorCoreDataPostPublished
     },
@@ -238,11 +278,12 @@ export default {
       }
     },
     listStyle () {
-      return Object.assign({
+      return {
         'min-height': '42px',
         'max-width': '300px',
-        'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
-      }, this.showRight ? { 'border-right': '1px solid rgba(0, 0, 0, 0.12)' } : {})
+        'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
+        'border-right': '1px solid rgba(0, 0, 0, 0.12)'
+      }
     },
     contentStyle () {
       return {
@@ -254,7 +295,8 @@ export default {
     // externals
     ...mapState({
       editorUi: state => state.editorUi,
-      editorCoreData: state => state.editorCore.data
+      editorCoreData: state => state.editorCore.data,
+      editorSorter: state => state.editorSorter
     }),
     ...mapGetters({
       editorUiEditing: 'editorUi/editing',
@@ -262,6 +304,39 @@ export default {
       editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
       editorCoreDataPostPublished: 'editorCore/dataPostPublished'
     })
+  },
+  methods: {
+    async addPostByDefault () {
+      this.$store.dispatch('addPostByDefault')
+    },
+    async reload () {
+      this.$store.dispatch('reload', true)
+    },
+    async editPostById () {
+      this.$store.dispatch('editPostById')
+    },
+    async publishPostById () {
+      this.$store.dispatch('publishPostById')
+    },
+    async unpublishPostById () {
+      this.$store.dispatch('unpublishPostById')
+    },
+    async toggleFull () {
+      this.$store.dispatch('toggleFull')
+    },
+    async deletePostById () {
+      this.$store.dispatch('deletePostById')
+    },
+    async savePost () {
+      this.$store.dispatch('savePost')
+    },
+    onPublish () {
+      this.editorCoreDataPostPublished ? this.unpublishPostById() : this.publishPostById()
+    },
+    onSortBy (key, direction) {
+      this.$store.dispatch('setSortKey', key)
+      this.$store.dispatch('setSortDirection', direction)
+    }
   }
 }
 </script>
