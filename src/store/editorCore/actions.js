@@ -171,3 +171,35 @@ export async function unpublishPostById ({ state, commit, dispatch }, { _id, for
     throw replaceErrorMessage(err, '已取消发布，但数据更新失败，请手动刷新')
   }
 }
+
+// TODO：需要测试
+export async function saveGit () {
+  try {
+    await hexoService.saveGit()
+  } catch (err) {
+    throw replaceErrorMessage(err, '保存到git失败，请稍后再试')
+  }
+}
+
+// TODO：需要测试
+export async function syncGit ({ dispatch }) {
+  try {
+    await hexoService.syncGit()
+  } catch (err) {
+    throw replaceErrorMessage(err, '从git同步失败，请稍后再试')
+  }
+  try {
+    await dispatch('init')
+  } catch (err) {
+    throw replaceErrorMessage(err, '同步成功，但数据更新失败，请手动刷新')
+  }
+}
+
+// TODO：需要测试
+export async function deploy () {
+  try {
+    await hexoService.deploy()
+  } catch (err) {
+    throw replaceErrorMessage(err, '部署失败，请稍后再试')
+  }
+}

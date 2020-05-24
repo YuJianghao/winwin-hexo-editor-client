@@ -37,3 +37,19 @@ export async function unpublishPost (_id) {
   const res = await hexo.unpublishPost(_id)
   return res.data.post
 }
+
+export async function syncGit () {
+  await hexo.syncGit()
+}
+
+export async function saveGit () {
+  await hexo.saveGit()
+}
+
+export async function deploy () {
+  await hexo.deploy()
+}
+
+export async function clean () {
+  await hexo.clean()
+}

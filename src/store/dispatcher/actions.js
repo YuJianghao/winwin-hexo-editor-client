@@ -1,5 +1,4 @@
 
-import { hexoEditorCore } from 'src/stores/editorStore'
 import { confirmDialog } from 'src/utils/dialog'
 import message from 'src/utils/message'
 import { Logger } from 'src/utils/logger'
@@ -196,14 +195,15 @@ export async function setPostByCategoriesArray2d ({ commit }, cats) {
 
 // 操作相关
 
-export async function deploy ({ commit }) {
+export async function deploy ({ commit, dispatch }) {
   logger.log('deploy')
   await confirmDialog(null, '确定部署博客么？', null, null, null, null, 'ok', async resolve => {
     try {
       commit('editorUi/showLoading', { message: '正在部署', delay: 100 })
-      await hexoEditorCore.deploy()
+      await dispatch('editorCore/deploy')
       message.success({ message: '部署完成' })
     } catch (err) {
+      if (err.status === 503)err.message = '请配置`hexo deploy`命令'
       message.error({ message: '部署失败', caption: err.message })
     } finally {
       commit('editorUi/hideLoading')
@@ -212,14 +212,15 @@ export async function deploy ({ commit }) {
   })
 }
 
-export async function syncGit ({ commit }) {
+export async function syncGit ({ commit, dispatch }) {
   logger.log('syncGit')
   await confirmDialog(null, '确定从git同步么？未保存到git的文件将丢失', '放弃文件并同步', 'red', '返回', 'primary', 'cancel', async resolve => {
     try {
       commit('editorUi/showLoading', { message: '正在从GIT同步', delay: 100 })
-      await hexoEditorCore.syncGit()
+      await dispatch('editorCore/syncGit')
       message.success({ message: '同步完成' })
     } catch (err) {
+      if (err.status === 503)err.message = '请配置Git命令'
       message.error({ message: '同步失败', caption: err.message })
     } finally {
       commit('editorUi/hideLoading')
@@ -228,13 +229,14 @@ export async function syncGit ({ commit }) {
   })
 }
 
-export async function saveGit ({ commit }) {
+export async function saveGit ({ commit, dispatch }) {
   logger.log('saveGit')
   try {
     commit('editorUi/showLoading', { message: '正在同步到GIT', delay: 100 })
-    await hexoEditorCore.saveGit()
+    await dispatch('editorCore/saveGit')
     message.success({ message: '同步完成' })
   } catch (err) {
+    if (err.status === 503)err.message = '请配置Git远端仓库'
     message.error({ message: '同步失败', caption: err.message })
   } finally {
     commit('editorUi/hideLoading')
