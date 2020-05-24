@@ -4,7 +4,10 @@
     v-show="show"
     style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
   >
-    <q-scroll-area class="full-height bg-grey-2">
+    <q-scroll-area
+      class="full-height bg-grey-2"
+      content-style="min-height:100%;display:flex;flex-direction:column"
+    >
       <q-list
         class="bg-grey-2 q-py-xs full-width"
         dense
@@ -40,7 +43,7 @@
           </q-item-section>
         </q-item>
       </q-list>
-      <q-separator />
+      <q-separator style="flex:0;" />
       <q-list
         dense
         class="q-py-xs"
@@ -68,25 +71,28 @@
           :selected="selectedUncategoriezed"
         ></app-filter-item>
       </q-list>
-      <q-separator />
-      <q-list
-        class="q-pa-sm tag-cloud"
-        dense
-      >
-        <q-chip
-          clickable
-          square
-          size="sm"
-          :outline="selectedTagsId!==item._id"
-          v-for="(item,key) in tagsList"
-          :key="key"
-          @click="filterByTagsId(item._id)"
-          :class="selectedTagsId===item._id?'text-white bg-primary selected':'text-primary'"
+      <q-space />
+      <template v-if="haveTags">
+        <q-separator style="flex:0;" />
+        <q-list
+          class="q-pa-sm tag-cloud"
+          dense
         >
-          <q-avatar square>{{item.length}}</q-avatar>
-          {{item.name.toUpperCase()}}
-        </q-chip>
-      </q-list>
+          <q-chip
+            clickable
+            square
+            size="sm"
+            :outline="selectedTagsId!==item._id"
+            v-for="(item,key) in tagsList"
+            :key="key"
+            @click="filterByTagsId(item._id)"
+            :class="selectedTagsId===item._id?'text-white bg-primary selected':'text-primary'"
+          >
+            <q-avatar square>{{item.length}}</q-avatar>
+            {{item.name.toUpperCase()}}
+          </q-chip>
+        </q-list>
+      </template>
     </q-scroll-area>
   </div>
 </template>
@@ -106,6 +112,9 @@ export default {
     },
     postsCount () {
       return this.editorCoreDataPostsCount
+    },
+    haveTags () {
+      return this.tagsList.length > 0
     },
     tagsList () {
       const list = this.editorCoreDataTagsList
