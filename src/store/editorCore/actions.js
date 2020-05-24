@@ -153,7 +153,7 @@ export async function publishPostById ({ state, commit, dispatch }, { _id, force
 
 export async function unpublishPostById ({ state, commit, dispatch }, { _id, force }) {
   if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
-  if (!state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
+  if (_id && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
   if (state.data.post && state.data.post._id === _id) {
     logger.log('Same post', _id)
     return

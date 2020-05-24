@@ -39,12 +39,12 @@ const md = MarkdownIt({
     return '<pre class="hljs"><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>'
   }
 })
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoPostViewer',
   computed: {
     show () {
-      return this.editorUi.preview
+      return this.editorUiViewing || this.editorUiEditing
     },
     post () {
       return this.editorCoreData.post
@@ -55,8 +55,11 @@ export default {
     },
     // externals
     ...mapState({
-      editorCoreData: state => state.editorCore.data,
-      editorUi: state => state.editorUi
+      editorCoreData: state => state.editorCore.data
+    }),
+    ...mapGetters({
+      editorUiViewing: 'editorUi/viewing',
+      editorUiEditing: 'editorUi/editing'
     })
   },
   methods: {
