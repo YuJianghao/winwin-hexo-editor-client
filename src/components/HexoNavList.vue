@@ -39,51 +39,44 @@
           </q-item-section>
         </q-item>
         <q-separator />
-        <q-item
-          clickable
-          v-ripple
-          @click="filterByAll"
+        <q-list
+          dense
+          class="q-py-sm"
         >
-          <q-item-section>全部</q-item-section>
-          <q-item-section avatar>
-            <q-badge
-              :label="postsCount"
-              class="bg-primary"
-            />
-          </q-item-section>
-        </q-item>
-        <q-expansion-item
-          label="分类"
-          default-opened
-          expand-separator
+          <app-filter-item
+            label="全部"
+            :badge="postsCount"
+            :onClick="filterByAll"
+          ></app-filter-item>
+          <app-filter-item
+            v-for="(item,key) in categoriesList"
+            :key="key"
+            :label="item.name"
+            :badge="item.length"
+            :onClick="()=>filterByCategoriesId(item._id)"
+            :selected="item._id===selectedCategoriesId"
+            :isParent="!item.parent"
+          > </app-filter-item>
+          <app-filter-item
+            label="未分类"
+            :badge="unCategoriesCount"
+            :onClick="filterByUnCategorized"
+          ></app-filter-item>
+        </q-list>
+        <q-separator />
+        <q-list
+          class="q-pa-sm tag-cloud"
+          dense
         >
-          <q-list dense class="q-pb-sm">
-            <app-filter-item
-              v-for="(item,key) in categoriesList"
-              :key="key"
-              :label="item.name"
-              :badge="item.length"
-              :onClick="()=>filterByCategoriesId(item._id)"
-              :selected="item._id===selectedCategoriesId"
-            > </app-filter-item>
-            <app-filter-item
-              label="未分类"
-              :badge="unCategoriesCount"
-              :onClick="filterByUnCategorized"
-            ></app-filter-item>
-          </q-list>
-        </q-expansion-item>
-        <q-space />
-        <q-list class="q-pa-sm" dense>
           <q-chip
             clickable
             square
             size="sm"
-            outline=""
+            :outline="selectedTagsId!==item._id"
             v-for="(item,key) in tagsList"
             :key="key"
             @click="filterByTagsId(item._id)"
-            class="text-primary"
+            :class="selectedTagsId===item._id?'text-white bg-primary selected':'text-primary'"
           >
             <q-avatar square>{{item.length}}</q-avatar>
             {{item.name.toUpperCase()}}
@@ -124,6 +117,9 @@ export default {
     selectedCategoriesId () {
       return this.editorFilter.type === 'categories' ? this.editorFilter._id : null
     },
+    selectedTagsId () {
+      return this.editorFilter.type === 'tags' ? this.editorFilter._id : null
+    },
     // externals
     ...mapState({
       editorUi: state => state.editorUi,
@@ -161,3 +157,11 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.tag-cloud .q-chip .q-avatar__content {
+  border-right: 1px solid;
+}
+.tag-cloud .q-chip.selected .q-avatar__content {
+  border-right: 1px solid mix($primary,$grey-2,50);
+}
+</style>
