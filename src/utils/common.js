@@ -1,3 +1,4 @@
+import pinyin from 'pinyin'
 import { Logger } from './logger'
 const logger = new Logger({})
 export function objectToList (obj) {
@@ -33,4 +34,10 @@ export function replaceErrorMessage (err, message) {
     err.message = message
   }
   return err
+}
+
+export function stringSort (strA, strB) {
+  const valueA = pinyin(strA, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
+  const valueB = pinyin(strB, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
+  return valueA > valueB ? 1 : -1
 }

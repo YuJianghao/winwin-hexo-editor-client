@@ -48,7 +48,7 @@
           <q-item-section avatar>
             <q-badge
               :label="postsCount"
-              class="bg-grey"
+              class="bg-primary"
             />
           </q-item-section>
         </q-item>
@@ -57,15 +57,14 @@
           default-opened
           expand-separator
         >
-          <q-list
-            dense
-          >
+          <q-list dense class="q-pb-sm">
             <app-filter-item
               v-for="(item,key) in categoriesList"
               :key="key"
               :label="item.name"
               :badge="item.length"
               :onClick="()=>filterByCategoriesId(item._id)"
+              :selected="item._id===selectedCategoriesId"
             > </app-filter-item>
             <app-filter-item
               label="未分类"
@@ -74,25 +73,20 @@
             ></app-filter-item>
           </q-list>
         </q-expansion-item>
-        <q-item>
-          <q-item-section>标签云</q-item-section>
-        </q-item>
-        <q-list class="q-px-md q-pb-md">
+        <q-space />
+        <q-list class="q-pa-sm" dense>
           <q-chip
-            dense
             clickable
             square
+            size="sm"
+            outline=""
             v-for="(item,key) in tagsList"
             :key="key"
             @click="filterByTagsId(item._id)"
-            class="bg-grey-3"
+            class="text-primary"
           >
-            <q-avatar
-              color="grey-4"
-              text-color="white"
-              square
-            >{{item.length}}</q-avatar>
-            {{item.name}}
+            <q-avatar square>{{item.length}}</q-avatar>
+            {{item.name.toUpperCase()}}
           </q-chip>
         </q-list>
       </q-list>
@@ -103,6 +97,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import AppFilterItem from 'components/AppFilterItem'
+import { stringSort } from '../utils/common'
 export default {
   name: 'HexoNavList',
   components: {
@@ -117,17 +112,22 @@ export default {
     },
     tagsList () {
       const list = this.editorCoreDataTagsList
-      return list.sort()
+      return list.sort((a, b) => stringSort(a.name, b.name))
     },
     categoriesList () {
-      return this.editorCoreDataCategoriesList
+      const list = this.editorCoreDataCategoriesList
+      return list.sort((a, b) => stringSort(a.name, b.name))
     },
     unCategoriesCount () {
       return this.editorCoreDataUnCategoriesCount
     },
+    selectedCategoriesId () {
+      return this.editorFilter.type === 'categories' ? this.editorFilter._id : null
+    },
     // externals
     ...mapState({
-      editorUi: state => state.editorUi
+      editorUi: state => state.editorUi,
+      editorFilter: state => state.editorFilter
     }),
     ...mapGetters({
       editorCoreDataPostsCount: 'editorCore/dataPostsCount',
