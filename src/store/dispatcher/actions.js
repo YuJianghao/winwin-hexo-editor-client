@@ -270,3 +270,18 @@ export async function togglePreview ({ commit }) {
   logger.log('togglePreview')
   commit('editorUi/togglePreview')
 }
+
+// 排序相关
+
+export async function setSortKey ({ dispatch }, key) {
+  await dispatch('editorSorter/setKey', key)
+}
+
+export async function setSortDirection ({ dispatch }, direction) {
+  console.log(direction)
+  await dispatch('editorSorter/setDirection', direction)
+}
+
+export async function toggleSortDirection ({ dispatch }) {
+  await dispatch('editorSorter/toggleSortDirection')
+}

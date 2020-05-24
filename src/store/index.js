@@ -5,6 +5,7 @@ import globalUser from './globalUser'
 import editorUi from './editorUi'
 import editorCore from './editorCore'
 import editorFilter from './editorFilter'
+import editorSorter from './editorSorter'
 
 // import example from './module-example'
 
@@ -30,6 +31,7 @@ export default function (/* { ssrContext } */) {
       editorUi,
       editorCore,
       editorFilter,
+      editorSorter,
       globalUser
       // example
     },

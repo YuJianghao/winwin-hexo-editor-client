@@ -81,7 +81,7 @@ export default {
       return !this.editorUi.full
     },
     postsList () {
-      return this.editorFilterPostsList
+      return this.editorSorterPostsList
     },
     empty () {
       return this.postsList.length === 0
@@ -91,7 +91,7 @@ export default {
       editorUi: state => state.editorUi
     }),
     ...mapGetters({
-      editorFilterPostsList: 'editorFilter/postsList'
+      editorSorterPostsList: 'editorSorter/postsList'
     })
   },
   methods: {
