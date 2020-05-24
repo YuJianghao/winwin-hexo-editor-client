@@ -65,7 +65,6 @@
 </template>
 
 <script>
-import * as editorDispatcher from '../stores/editorDispatcher'
 import message from '../utils/message'
 export default {
   name: 'Login',
@@ -85,7 +84,10 @@ export default {
       }
       try {
         this.logging = true
-        await editorDispatcher.login(this.username, this.password)
+        await this.$store.dispatch('login', {
+          username: this.username,
+          password: this.password
+        })
         this.$router.push('/')
       } catch (err) {
         if (err.status === 401) {

@@ -1,20 +1,20 @@
 <template>
   <div
     class="col"
-    v-show="!uiState.full"
+    v-show="show"
   >
     <q-scroll-area
       class="full-height"
       style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
     >
       <q-list>
-        <q-item v-if="state.empty">
+        <q-item v-if="empty">
           <q-item-section>
             <q-item-label>没有文章</q-item-label>
           </q-item-section>
         </q-item>
         <q-slide-item
-          v-for="(item,key) in state.filteredPostsList"
+          v-for="(item,key) in postsList"
           left-color="blue"
           right-color="red"
           :key="key"
@@ -73,26 +73,36 @@
 
 <script>
 import { date } from 'quasar'
-import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiStore } from '../stores/editorUiStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoPostsList',
-  data () {
-    return {
-      state: hexoEditorCore.state,
-      uiState: editorUiStore.state
-    }
+  computed: {
+    show () {
+      return !this.editorUi.full
+    },
+    postsList () {
+      return this.editorFilterPostsList
+    },
+    empty () {
+      return this.postsList.length === 0
+    },
+    // externals
+    ...mapState({
+      editorUi: state => state.editorUi
+    }),
+    ...mapGetters({
+      editorFilterPostsList: 'editorFilter/postsList'
+    })
   },
   methods: {
     async viewPostById (_id) {
-      await editorDispatcher.viewPostById(_id)
+      this.$store.dispatch('viewPostById', { _id })
     },
     async editPostById (_id) {
-      await editorDispatcher.editPostById(_id)
+      this.$store.dispatch('editPostById', { _id })
     },
     async deletePostById (_id) {
-      await editorDispatcher.deletePostById(_id)
+      this.$store.dispatch('deletePostById', _id)
     },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')

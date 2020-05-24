@@ -110,8 +110,8 @@
 <script>
 import packageJson from '../../package.json'
 import EssentialLink from '../components/EssentialLink'
-import * as editorDispatcher from '../stores/editorDispatcher'
 import { genQRCode } from '../utils/qrcode'
+import { Logger } from '../utils/logger'
 export default {
   name: 'MainLayout',
 
@@ -171,11 +171,9 @@ export default {
     }
   },
   async created () {
+    const qrCodeLogger = new Logger({ prefix: 'QRCode' })
     try {
-      if (process.env.DEV) {
-        console.log('QRCode:')
-        console.log(window.location.origin + process.env.HEXO_SERVER_BASE)
-      }
+      qrCodeLogger.log(window.location.origin + process.env.HEXO_SERVER_BASE)
       this.qrcode = await genQRCode(window.location.origin + process.env.HEXO_SERVER_BASE)
     } catch (_) {
 
@@ -183,7 +181,7 @@ export default {
   },
   methods: {
     async onLogout () {
-      await editorDispatcher.logout()
+      await this.$store.dispatch('logout')
       this.$router.push('/login')
     }
   }

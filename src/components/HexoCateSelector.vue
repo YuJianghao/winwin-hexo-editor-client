@@ -79,8 +79,7 @@
 
 <script>
 // TODO 把这个做成公共组件，不要和store交互
-import { hexoEditorCore } from '../stores/editorStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
+import { mapGetters } from 'vuex'
 export default {
   name: 'HexoCateSelector',
   props: {
@@ -91,7 +90,6 @@ export default {
   },
   data () {
     return {
-      state: hexoEditorCore.state,
       text: '',
       editing: false,
       showMenu: false
@@ -99,23 +97,28 @@ export default {
   },
   computed: {
     postCategories () {
-      return this.state.postCategoriesList
+      return this.editorCoreDataPostCategoriesList
     },
     showChild () {
       return this.level < this.postCategories.length
     },
     availableCategories () {
       const ac = []
-      ac.push.apply(ac, this.state.categoriesNameList)
+      ac.push.apply(ac, this.editorCoreDataCategoriesNameList)
       this.postCategories.map(pc => {
         if (!ac.includes(pc)) { ac.push(pc) }
       })
       return ac
-    }
+    },
+    // externals
+    ...mapGetters({
+      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
+      editorCoreDataCategoriesNameList: 'editorCore/dataCategoriesNameList'
+    })
   },
   methods: {
     async setPostByCategoriesArray2d (cats) {
-      await editorDispatcher.setPostByCategoriesArray2d(cats)
+      this.$store.dispatch('setPostByCategoriesArray2d', cats)
     },
     selected (item) {
       return item === this.postCategories[this.level]

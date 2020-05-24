@@ -3,7 +3,6 @@
     class="column overflow-hidden"
     :style-fn="pageStyle"
   >
-    <!-- {{state.postsList}} -->
     <hexo-action-bar></hexo-action-bar>
     <div
       class="row"
@@ -15,7 +14,7 @@
       <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
       <hexo-welcome style="max-height:100%"></hexo-welcome>
     </div>
-    <q-inner-loading :showing="uiState.loading">
+    <q-inner-loading :showing="editorUi.loading.show">
       <q-spinner-gears
         size="50px"
         color="primary"
@@ -32,9 +31,7 @@ import HexoNavList from '../components/HexoNavList'
 import HexoWelcome from '../components/HexoWelcome'
 import HexoEditor from '../components/HexoEditor'
 import HexoActionBar from '../components/HexoActionBar'
-import { hexoEditorCore } from '../stores/editorStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
-import { editorUiStore } from '../stores/editorUiStore'
+import { mapState } from 'vuex'
 export default {
   name: 'Hexo',
   components: {
@@ -48,10 +45,13 @@ export default {
   data () {
     return {
       editorData: '',
-      full: false,
-      state: hexoEditorCore.state,
-      uiState: editorUiStore.state
+      full: false
     }
+  },
+  computed: {
+    ...mapState({
+      editorUi: state => state.editorUi
+    })
   },
   methods: {
     pageStyle (offset, height) {
@@ -59,14 +59,13 @@ export default {
     }
   },
   async mounted () {
-    // when hexo-editor started, init hexoEditorCore
-    await editorDispatcher.init()
+    this.$store.dispatch('init')
   },
   created () {
     document.getElementById('app-message').innerHTML = '加载编辑器...'
   },
   async beforeDestory () {
-    await editorDispatcher.destroy()
+    this.$store.dispatch('destroy')
   }
 }
 </script>

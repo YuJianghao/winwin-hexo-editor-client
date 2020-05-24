@@ -62,7 +62,7 @@
           stretch
           :icon="published?'close':'publish'"
           :color="published?'red':'primary'"
-          v-if="state.post"
+          v-if="showPublishButton"
           :label="published?'取消发布':'发布'"
           @click="onPublish"
         />
@@ -82,9 +82,9 @@
           @click="editPostById"
         >
           分类：
-          {{state.postCategoriesList.length?'':'无'}}
+          {{categories.length?'':'无'}}
           <q-badge
-            v-for="(item,key) in state.postCategoriesList"
+            v-for="(item,key) in categories"
             :key="key"
             color="primary"
             text-color="white"
@@ -117,9 +117,9 @@
         >
           <template slot="label">
             分类：
-            {{state.postCategoriesList.length?'':'无'}}
+            {{categories.length?'':'无'}}
             <q-badge
-              v-for="(item,key) in state.postCategoriesList"
+              v-for="(item,key) in categories"
               :key="key"
               color="primary"
               text-color="white"
@@ -162,9 +162,7 @@
 <script>
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
-import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiStore } from '../stores/editorUiStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoActionBar',
   components: {
@@ -174,58 +172,62 @@ export default {
   data () {
     return {
       showCatsMenu: false,
-      showTagsMenu: false,
-      state: hexoEditorCore.state,
-      editorUiStore: editorUiStore.state
+      showTagsMenu: false
     }
   },
   methods: {
     async addPostByDefault () {
-      await editorDispatcher.addPostByDefault()
+      this.$store.dispatch('addPostByDefault')
     },
     async reload () {
-      await editorDispatcher.reload(true)
+      this.$store.dispatch('reload', true)
     },
     async editPostById () {
-      await editorDispatcher.editPostById()
+      this.$store.dispatch('editPostById')
     },
     async publishPostById () {
-      await editorDispatcher.publishPostById()
+      this.$store.dispatch('publishPostById')
     },
     async unpublishPostById () {
-      await editorDispatcher.unpublishPostById()
+      this.$store.dispatch('unpublishPostById')
     },
     async toggleFull () {
-      await editorDispatcher.toggleFull()
+      this.$store.dispatch('toggleFull')
     },
     async deletePostById () {
-      await editorDispatcher.deletePostById()
+      this.$store.dispatch('deletePostById')
     },
     async savePost () {
-      await editorDispatcher.savePost()
+      this.$store.dispatch('savePost')
     },
     onPublish () {
-      this.state.post.published ? this.unpublishPostById() : this.publishPostById()
+      this.editorCoreDataPostPublished ? this.unpublishPostById() : this.publishPostById()
     }
   },
   computed: {
     published () {
-      return this.state.post.published
+      return this.editorCoreDataPostPublished
     },
     showLeft () {
-      return !this.editorUiStore.full
+      return !this.editorUi.full
     },
     showRight () {
-      return !!this.state.post
+      return !!this.editorCoreData.post
     },
     showEdit () {
-      return this.editorUiStore.editing
+      return this.editorUiEditing
     },
     showView () {
-      return !this.editorUiStore.editing
+      return !this.editorUiEditing
+    },
+    showPublishButton () {
+      return !!this.editorCoreData.post
+    },
+    categories () {
+      return this.editorCoreDataPostCategoriesList
     },
     tags () {
-      return this.state.post ? this.state.post.tags || [] : []
+      return this.editorCoreDataPostTagsList
     },
     navStyle () {
       return {
@@ -248,7 +250,18 @@ export default {
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
         width: '0'
       }
-    }
+    },
+    // externals
+    ...mapState({
+      editorUi: state => state.editorUi,
+      editorCoreData: state => state.editorCore.data
+    }),
+    ...mapGetters({
+      editorUiEditing: 'editorUi/editing',
+      editorCoreDataPostTagsList: 'editorCore/dataPostTagsList',
+      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
+      editorCoreDataPostPublished: 'editorCore/dataPostPublished'
+    })
   }
 }
 </script>

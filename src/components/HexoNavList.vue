@@ -1,7 +1,7 @@
 <template>
   <div
     class="col"
-    v-show="!full"
+    v-show="show"
   >
     <q-scroll-area
       class="full-height bg-grey-2"
@@ -46,7 +46,7 @@
         >
           <q-item-section>全部</q-item-section>
           <q-item-section avatar>
-            <q-badge :label="state.postsCount" />
+            <q-badge :label="postsCount" />
           </q-item-section>
         </q-item>
         <q-expansion-item
@@ -55,7 +55,7 @@
           expand-separator
         >
           <q-item
-            v-for="(item,key) in state.categoriesList"
+            v-for="(item,key) in categoriesList"
             :key="key"
             clickable
             v-ripple
@@ -77,7 +77,7 @@
               未分类
             </q-item-section>
             <q-item-section avatar="">
-              <q-badge :label="state.uncategorizedPostsCount" />
+              <q-badge :label="unCategoriesCount" />
             </q-item-section>
           </q-item>
         </q-expansion-item>
@@ -87,7 +87,7 @@
           expand-separator
         >
           <q-item
-            v-for="(item,key) in state.tagsList"
+            v-for="(item,key) in tagsList"
             :key="key"
             clickable
             v-ripple
@@ -107,48 +107,57 @@
 </template>
 
 <script>
-import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiStore } from '../stores/editorUiStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoNavList',
-  data () {
-    return {
-      state: hexoEditorCore.state,
-      uiState: editorUiStore.state
-    }
-  },
   computed: {
-    full () {
-      return this.uiState.full
+    show () {
+      return !this.editorUi.full
     },
-    published () {
-      // TODO 这个想办法挪到store里面去
-      if (!this.state.post) return false
-      else return this.state.post.published
-    }
+    postsCount () {
+      return this.editorCoreDataPostsCount
+    },
+    tagsList () {
+      return this.editorCoreDataTagsList
+    },
+    categoriesList () {
+      return this.editorCoreDataCategoriesList
+    },
+    unCategoriesCount () {
+      return this.editorCoreDataUnCategoriesCount
+    },
+    // externals
+    ...mapState({
+      editorUi: state => state.editorUi
+    }),
+    ...mapGetters({
+      editorCoreDataPostsCount: 'editorCore/dataPostsCount',
+      editorCoreDataTagsList: 'editorCore/dataTagsList',
+      editorCoreDataCategoriesList: 'editorCore/dataCategoriesList',
+      editorCoreDataUnCategoriesCount: 'editorCore/dataUnCategoriesCount'
+    })
   },
   methods: {
     async filterByCategoriesId (_id) {
-      await editorDispatcher.filterByCategoriesId(_id)
+      this.$store.dispatch('filterByCategoriesId', _id)
     },
     async filterByTagsId (_id) {
-      await editorDispatcher.filterByTagsId(_id)
+      this.$store.dispatch('filterByTagsId', _id)
     },
     async filterByAll () {
-      await editorDispatcher.filterByAll()
+      this.$store.dispatch('filterByAll')
     },
     async filterByUnCategorized () {
-      await editorDispatcher.filterByUnCategorized()
+      this.$store.dispatch('filterByUnCategorized')
     },
     async deploy () {
-      await editorDispatcher.deploy()
+      this.$store.dispatch('deploy')
     },
     async syncGit () {
-      await editorDispatcher.syncGit()
+      this.$store.dispatch('syncGit')
     },
     async saveGit () {
-      await editorDispatcher.saveGit()
+      this.$store.dispatch('saveGit')
     }
   }
 }
