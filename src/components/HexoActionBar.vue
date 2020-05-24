@@ -8,7 +8,7 @@
       :style="navStyle"
       v-show="showLeft"
     >
-      <q-toolbar-title class="q-ml-md text-grey">
+      <q-toolbar-title class="text-grey" style="margin-left:14px;">
         HEXO
       </q-toolbar-title>
     </q-toolbar>
