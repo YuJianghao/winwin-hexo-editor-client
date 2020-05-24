@@ -1,8 +1,10 @@
 
+// import { date } from 'quasar'
 import { confirmDialog } from 'src/utils/dialog'
 import message from 'src/utils/message'
 import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'Dispatcher' })
+
 // 用户相关
 
 export async function login ({ commit, dispatch }, { username, password }) {
@@ -10,7 +12,7 @@ export async function login ({ commit, dispatch }, { username, password }) {
   await dispatch('globalUser/login', { username, password })
 }
 
-export async function logout ({ rootState, rootGetters, commit, dispatch }) {
+export async function logout ({ rootGetters, commit, dispatch }) {
   logger.log('logout')
   if (!rootGetters['editorCore/isPostSaved']) {
     await confirmDialog(null, '要退出么，未保存的文件会丢失', '退出', 'red', '返回', 'primary', 'cancel', async resolve => {
@@ -63,7 +65,7 @@ export async function reload ({ commit, dispatch }, force = false) {
 
 // 查看相关
 
-export async function viewPostById ({ rootState, rootGetters, commit, dispatch }, payload = { force: false }) {
+export async function viewPostById ({ rootGetters, commit, dispatch }, payload = { force: false }) {
   logger.log('viewPostById')
   const { _id, force } = payload
   try {
@@ -106,7 +108,7 @@ export async function filterByUnCategorized ({ commit }) {
 
 // 编辑
 
-export async function addPostByDefault ({ rootState, rootGetters, commit, dispatch }) {
+export async function addPostByDefault ({ rootGetters, commit, dispatch }) {
   logger.log('addPostByDefault')
   try {
     if (!rootGetters['editorCore/isPostSaved']) {
@@ -125,9 +127,12 @@ export async function addPostByDefault ({ rootState, rootGetters, commit, dispat
   }
 }
 
-export async function deletePostById ({ commit, dispatch }, _id) {
+export async function deletePostById ({ rootState, dispatch }, _id) {
   logger.log('deletePostById')
-  return confirmDialog(null, '你确认要删除么', '删除', 'red', null, 'primary', 'cancel', async resolve => {
+  const post = rootState.editorCore.data.posts[_id || rootState.editorCore.data.post._id]
+  const message = `你确认要删除《${post.title}》么？`
+  // if (post.date)message += `（最后编辑于${date.formatDate(post.date, 'YYYY年MM月DD日 HH:mm:ss')}）`
+  return confirmDialog('删除确认', message, '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
       await dispatch('editorCore/deletePostById', _id)
       await dispatch('editorUi/deletePost', _id)
@@ -139,7 +144,7 @@ export async function deletePostById ({ commit, dispatch }, _id) {
   })
 }
 
-export async function editPostById ({ getters, rootState, rootGetters, commit, dispatch }, payload = {}) {
+export async function editPostById ({ getters, rootGetters, commit, dispatch }, payload = {}) {
   logger.log('editPostById')
   let { _id, force } = payload
   force = force || false
