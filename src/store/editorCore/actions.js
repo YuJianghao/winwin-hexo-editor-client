@@ -109,7 +109,7 @@ export async function deletePostById ({ state, commit, dispatch }, _id) {
     throw replaceErrorMessage(err, '删除失败，请稍后再试')
   }
   try {
-    if (!_id || state.data.post._id === _id) { commit('closePost') }
+    if (!_id || (state.data.post && state.data.post._id === _id)) { commit('closePost') }
     await dispatch('loadAll')
   } catch (err) {
     throw replaceErrorMessage(err, '文章已删除，但数据更新失败，请手动刷新')
