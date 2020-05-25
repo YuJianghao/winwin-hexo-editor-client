@@ -127,7 +127,8 @@ export async function addPostByDefault ({ rootGetters, commit, dispatch }) {
   }
 }
 
-export async function deletePostById ({ rootState, dispatch }, _id) {
+export async function deletePostById ({ rootState, dispatch }, payload = {}) {
+  const { _id } = payload
   logger.log('deletePostById')
   const post = rootState.editorCore.data.posts[_id || rootState.editorCore.data.post._id]
   const message = `你确认要删除《${post.title}》么？`
@@ -160,7 +161,7 @@ export async function editPostById ({ getters, rootGetters, commit, dispatch }, 
   }
 }
 
-export async function publishPostById ({ dispatch }, _id) {
+export async function publishPostById ({ dispatch }, { _id }) {
   logger.log('publishPostById')
   try {
     await dispatch('editorCore/publishPostById', { _id })
@@ -169,7 +170,7 @@ export async function publishPostById ({ dispatch }, _id) {
   }
 }
 
-export async function unpublishPostById ({ dispatch }, _id) {
+export async function unpublishPostById ({ dispatch }, { _id }) {
   logger.log('unpublishPostById')
   await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
     try {
