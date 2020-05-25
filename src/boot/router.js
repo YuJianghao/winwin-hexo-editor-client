@@ -1,11 +1,26 @@
-import { loginStore } from 'src/stores/loginStore'
+let isFirst = true
+import { Loading } from 'quasar'
 
 export default async ({ router, app }) => {
-  router.beforeEach(async (to, from, next) => {
-    if (typeof (loginStore.state.isLoggedIn) === 'undefined') {
-      await loginStore.init()
+  router.afterEach(() => {
+    Loading.hide()
+    if (isFirst) {
+      const loading = document.getElementById('app-loading')
+      loading.style.opacity = 0
+      window.setTimeout(() => {
+        loading.style.display = 'none'
+      }, 500)
+      isFirst = false
     }
-    const isLoggedIn = loginStore.state.isLoggedIn
+  })
+  router.beforeEach(async (to, from, next) => {
+    if (!isFirst) {
+      Loading.show()
+    }
+    if (!app.store.state.globalUser.inited) {
+      app.store.commit('globalUser/init')
+    }
+    const isLoggedIn = app.store.state.globalUser.isLoggedIn
     const toLogin = to.path === '/login'
     // 真值表干的漂亮啊！
     //                     toLogin
@@ -16,6 +31,7 @@ export default async ({ router, app }) => {
       next()
     } else if (isLoggedIn && toLogin) {
       next('/home')
+      Loading.hide()
     } else {
       next('/login')
     }

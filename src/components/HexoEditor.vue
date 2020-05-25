@@ -2,12 +2,12 @@
   <div
     class="col column"
     style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
-    v-if="editorUiStore.editing"
+    v-if="show"
   >
     <div style="height:42px;max-width:100%">
       <q-input
         borderless
-        :value="state.post.title"
+        :value="post.title"
         style="height:42px;overflow-y:hidden"
         input-class="text-left q-pa-none bg-grey-2"
         input-style="font-size:1.2rem;text-indent:1rem;font-weight:lighter;"
@@ -17,7 +17,7 @@
     </div>
     <monaco-editor
       style="flex:1;height:0;max-width:100%"
-      :value="state.post._content"
+      :value="post._content"
       @input="updateContent"
       @on-save="savePost"
       @on-toggle-preview="togglePreview"
@@ -26,34 +26,41 @@
 </template>
 
 <script>
-// import { Editor } from './VueTuiEditor/index'
 import MonacoEditor from './MonacoEditor'
-import { editorUiStore } from '../stores/editorUiStore'
-import { hexoEditorCore } from '../stores/editorStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoEditor',
   components: {
     MonacoEditor
   },
-  data () {
-    return {
-      state: hexoEditorCore.state,
-      editorUiStore: editorUiStore.state
-    }
+  computed: {
+    show () {
+      return this.editorUiEditing
+    },
+    post () {
+      return this.editorCoreData.post
+    },
+    // externals
+    ...mapState({
+      editorCoreData: state => state.editorCore.data
+    }),
+    ...mapGetters({
+      editorUiEditing: 'editorUi/editing'
+    })
   },
   methods: {
     updateTitle (e) {
-      editorDispatcher.setPostByTitle(e)
+      this.$store.dispatch('setPostByTitle', e)
     },
     updateContent (e) {
-      editorDispatcher.setPostByContent(e)
+      this.$store.dispatch('setPostByContent', e)
     },
     savePost () {
-      editorDispatcher.savePost()
+      this.$store.dispatch('savePost')
     },
+    // TODO: 放到dispatcher里
     togglePreview () {
-      editorUiStore.togglePreview()
+      this.$store.commit('editorUi/togglePreview')
     }
   }
 }

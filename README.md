@@ -18,8 +18,8 @@ A Hexo Editor Client by winwin2011
 - [x] git push/reset/pull
 - [x] hexo generate/deploy/clean
 - [x] Basic authentication
+- [x] Post sort
 - [ ] front-matters
-- [ ] Post sort
 - [ ] Search
 - [ ] ~~Image CDN~~(use [picgo](https://picgo.github.io/PicGo-Doc/zh/guide/) instead)
 - [ ] let me know what you need ...
@@ -67,6 +67,16 @@ All kinds of PR are welcomed, including crazy change!
 - [koel - A personal music streaming server that works](https://github.com/phanan/koel) ([homepage](https://koel.phanan.net/)). Koel shows me how to use stores to manage data!
 
 ## Release Note
+
+### 0.2.0
+
+- 添加右键菜单
+- 优化文章/分类/标签数量很大时候的显示效果
+- 添加文章排序
+- 修改侧栏内容
+- 重构底层状态管理
+- 优化网站加载速度
+- 修复一些bug
 
 ### 0.1.8
 

@@ -14,9 +14,64 @@
     <link rel="icon" type="image/png" sizes="32x32" href="statics/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="statics/icons/favicon-96x96.png">
     <link rel="icon" type="image/ico" href="statics/icons/favicon.ico">
+    <style>
+      #app-loading{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 2001;
+        background-color: #1976d2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.5s;
+      }
+      #app-message{
+        color: #fff;
+        font-size: 21px;
+        font-weight: blod;
+        letter-spacing: 0.01em;
+      }
+      #app-spinner {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;;
+      }
+      #app-spinner:after {
+        content: " ";
+        display: block;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: 6px solid #fff;
+        border-color: #fff transparent #fff transparent;
+        animation: app-spinner 2s linear infinite;
+      }
+      @keyframes app-spinner {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+    </style>
   </head>
   <body>
     <!-- DO NOT touch the following DIV -->
-    <div id="q-app"></div>
+    <div id="q-app">
+    </div>
+    <div id="app-loading">
+      <div id="app-spinner"></div>
+      <div id="app-message">正在加载资源...</div>
+    </div>
   </body>
+  <script src="https://cdn.bootcdn.net/ajax/libs/markdown-it/10.0.0/markdown-it.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.3/languages/css.min.js"></script>
 </html>
