@@ -1,99 +1,101 @@
 <template>
   <div
-    class="col column"
+    class="col column full-height"
     v-show="show"
     style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
   >
-    <q-scroll-area
-      class="full-height bg-grey-2"
-      content-style="min-height:100%;display:flex;flex-direction:column"
+    <q-list
+      class="bg-grey-2 q-py-xs full-width"
+      dense
     >
-      <q-list
-        class="bg-grey-2 q-py-xs full-width"
-        dense
+      <q-item
+        clickable
+        class="text-blue"
+        @click="deploy"
       >
-        <q-item
-          clickable
-          class="text-blue"
-          @click="deploy"
-        >
-          <q-item-section style="margin-left:-2px;">部署</q-item-section>
-          <q-item-section avatar>
-            <q-icon name="local_airport" />
-          </q-item-section>
-        </q-item>
-        <q-item
-          clickable
-          class="text-blue"
-          @click="saveGit"
-        >
-          <q-item-section style="margin-left:-2px;">同步到GIT</q-item-section>
-          <q-item-section avatar>
-            <q-icon name="flight_takeoff" />
-          </q-item-section>
-        </q-item>
-        <q-item
-          clickable
-          class="text-red"
-          @click="syncGit"
-        >
-          <q-item-section style="margin-left:-2px;">从GIT同步</q-item-section>
-          <q-item-section avatar>
-            <q-icon name="flight_land" />
-          </q-item-section>
-        </q-item>
-      </q-list>
-      <q-separator style="flex:0;" />
-      <q-list
-        dense
-        class="q-py-xs"
+        <q-item-section style="margin-left:-2px;">部署</q-item-section>
+        <q-item-section avatar>
+          <q-icon name="local_airport" />
+        </q-item-section>
+      </q-item>
+      <q-item
+        clickable
+        class="text-blue"
+        @click="saveGit"
       >
-        <app-filter-item
-          label="全部"
-          :badge="postsCount"
-          :onClick="filterByAll"
-          isParent
-          :selected="selectedAll"
-        ></app-filter-item>
-        <app-filter-item
-          v-for="(item,key) in categoriesList"
-          :key="key"
-          :label="item.name"
-          :badge="item.length"
-          :onClick="()=>filterByCategoriesId(item._id)"
-          :selected="item._id===selectedCategoriesId"
-          :isParent="!item.parent"
-        > </app-filter-item>
-        <app-filter-item
-          label="未分类"
-          :badge="unCategoriesCount"
-          :onClick="filterByUnCategorized"
-          :selected="selectedUncategoriezed"
-        ></app-filter-item>
-      </q-list>
-      <q-space />
-      <template v-if="haveTags">
-        <q-separator style="flex:0;" />
+        <q-item-section style="margin-left:-2px;">同步到GIT</q-item-section>
+        <q-item-section avatar>
+          <q-icon name="flight_takeoff" />
+        </q-item-section>
+      </q-item>
+      <q-item
+        clickable
+        class="text-red"
+        @click="syncGit"
+      >
+        <q-item-section style="margin-left:-2px;">从GIT同步</q-item-section>
+        <q-item-section avatar>
+          <q-icon name="flight_land" />
+        </q-item-section>
+      </q-item>
+    </q-list>
+    <q-separator style="flex:0 0 1px" />
+    <div class="col">
+      <q-scroll-area
+        class="full-height bg-grey-2"
+        content-style="min-height:100%;display:flex;flex-direction:column"
+      >
         <q-list
-          class="q-pa-sm tag-cloud"
           dense
+          class="q-py-xs"
         >
-          <q-chip
-            clickable
-            square
-            size="sm"
-            :outline="selectedTagsId!==item._id"
-            v-for="(item,key) in tagsList"
+          <app-filter-item
+            label="全部"
+            :badge="postsCount"
+            :onClick="filterByAll"
+            isParent
+            :selected="selectedAll"
+          ></app-filter-item>
+          <app-filter-item
+            v-for="(item,key) in categoriesList"
             :key="key"
-            @click="filterByTagsId(item._id)"
-            :class="selectedTagsId===item._id?'text-white bg-primary selected':'text-primary'"
-          >
-            <q-avatar square>{{item.length}}</q-avatar>
-            {{item.name.toUpperCase()}}
-          </q-chip>
+            :label="item.name"
+            :badge="item.length"
+            :onClick="()=>filterByCategoriesId(item._id)"
+            :selected="item._id===selectedCategoriesId"
+            :isParent="!item.parent"
+          > </app-filter-item>
+          <app-filter-item
+            label="未分类"
+            :badge="unCategoriesCount"
+            :onClick="filterByUnCategorized"
+            :selected="selectedUncategoriezed"
+          ></app-filter-item>
         </q-list>
-      </template>
-    </q-scroll-area>
+        <q-space />
+        <template v-if="haveTags">
+          <q-separator style="flex:0;" />
+          <q-list
+            class="q-pa-sm tag-cloud"
+            dense
+          >
+            <q-chip
+              clickable
+              square
+              size="sm"
+              :outline="selectedTagsId!==item._id"
+              v-for="(item,key) in tagsList"
+              :key="key"
+              @click="filterByTagsId(item._id)"
+              :class="selectedTagsId===item._id?'text-white bg-primary selected':'text-primary'"
+            >
+              <q-avatar square>{{item.length}}</q-avatar>
+              {{item.name.toUpperCase()}}
+            </q-chip>
+          </q-list>
+        </template>
+      </q-scroll-area>
+    </div>
   </div>
 </template>
 
