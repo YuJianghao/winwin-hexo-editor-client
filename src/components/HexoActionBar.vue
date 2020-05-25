@@ -1,14 +1,14 @@
 <template>
   <div
     class="row no-wrap"
-    style="height:42px"
+    :style="`height:${barHeight}`"
   >
     <q-toolbar
       class="col bg-grey-2 q-px-none"
       :style="navStyle"
       v-show="showLeft"
     >
-      <q-toolbar-title class="q-ml-md text-grey">
+      <q-toolbar-title class="text-grey" style="margin-left:14px;">
         HEXO
       </q-toolbar-title>
     </q-toolbar>
@@ -22,17 +22,69 @@
         stretch
         color="primary"
         icon="add"
-        label="新建"
         @click="addPostByDefault"
-      />
+      >
+        <q-tooltip
+          content-style="font-size: 14px"
+          transition-show="jump-down"
+          transition-hide="jump-up"
+          anchor="bottom middle"
+          self="center middle"
+        >
+          新建文章
+        </q-tooltip>
+      </q-btn>
+      <q-space />
       <q-btn
         flat
         stretch
         color="primary"
         icon="refresh"
-        label="刷新"
         @click="reload"
-      />
+      >
+        <q-tooltip
+          content-style="font-size: 14px"
+          transition-show="jump-down"
+          transition-hide="jump-up"
+          anchor="bottom middle"
+          self="center middle"
+        >
+          刷新文章列表
+        </q-tooltip>
+      </q-btn>
+      <q-btn
+        flat
+        stretch
+        color="primary"
+        icon="unfold_more"
+      >
+        <q-menu
+          anchor="bottom right"
+          self="top right"
+          transition-show="jump-down"
+          transition-hide="jump-up"
+        >
+          <q-list
+            style="min-width: 100px"
+            dense
+          >
+            <q-item
+              clickable
+              v-close-popup
+              v-for="item in sortMenuItems"
+              :key="item.key+item.direction"
+              @click="onSortBy(item.key,item.direction)"
+              :class="{'bg-blue-1':item.selected}"
+            >
+              <q-item-section>按照{{item.name}}{{item.direction?'升序':'降序'}}</q-item-section>
+              <q-item-section avatar>
+                <q-icon :name="item.direction?'expand_less':'expand_more'" />
+              </q-item-section>
+            </q-item>
+            <q-separator />
+          </q-list>
+        </q-menu>
+      </q-btn>
     </q-toolbar>
     <q-toolbar
       class="col bg-grey-2 q-px-none"
@@ -42,7 +94,7 @@
         flat
         stretch
         color="primary"
-        icon="menu"
+        :icon="showLeft?'chevron_left':'chevron_right'"
         @click="toggleFull"
         v-if="showRight"
       ></q-btn>
@@ -62,7 +114,7 @@
           stretch
           :icon="published?'close':'publish'"
           :color="published?'red':'primary'"
-          v-if="state.post"
+          v-if="showPublishButton"
           :label="published?'取消发布':'发布'"
           @click="onPublish"
         />
@@ -82,9 +134,9 @@
           @click="editPostById"
         >
           分类：
-          {{state.postCategoriesList.length?'':'无'}}
+          {{categories.length?'':'无'}}
           <q-badge
-            v-for="(item,key) in state.postCategoriesList"
+            v-for="(item,key) in categories"
             :key="key"
             color="primary"
             text-color="white"
@@ -117,9 +169,9 @@
         >
           <template slot="label">
             分类：
-            {{state.postCategoriesList.length?'':'无'}}
+            {{categories.length?'':'无'}}
             <q-badge
-              v-for="(item,key) in state.postCategoriesList"
+              v-for="(item,key) in categories"
               :key="key"
               color="primary"
               text-color="white"
@@ -162,9 +214,7 @@
 <script>
 import HexoCateSelector from './HexoCateSelector'
 import HexoTagSelector from './HexoTagSelector'
-import { hexoEditorCore } from '../stores/editorStore'
-import { editorUiStore } from '../stores/editorUiStore'
-import * as editorDispatcher from '../stores/editorDispatcher'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoActionBar',
   components: {
@@ -175,79 +225,118 @@ export default {
     return {
       showCatsMenu: false,
       showTagsMenu: false,
-      state: hexoEditorCore.state,
-      editorUiStore: editorUiStore.state
-    }
-  },
-  methods: {
-    async addPostByDefault () {
-      await editorDispatcher.addPostByDefault()
-    },
-    async reload () {
-      await editorDispatcher.reload(true)
-    },
-    async editPostById () {
-      await editorDispatcher.editPostById()
-    },
-    async publishPostById () {
-      await editorDispatcher.publishPostById()
-    },
-    async unpublishPostById () {
-      await editorDispatcher.unpublishPostById()
-    },
-    async toggleFull () {
-      await editorDispatcher.toggleFull()
-    },
-    async deletePostById () {
-      await editorDispatcher.deletePostById()
-    },
-    async savePost () {
-      await editorDispatcher.savePost()
-    },
-    onPublish () {
-      this.state.post.published ? this.unpublishPostById() : this.publishPostById()
+      sort: [
+        { key: 'title', name: '标题' },
+        { key: 'date', name: '编辑日期' }
+      ],
+      barHeight: '36px'
     }
   },
   computed: {
+    sortMenuItems () {
+      const items = []
+      this.sort.map(item => {
+        [true, false].map(direction => {
+          items.push(Object.assign({},
+            Object.assign(item, {
+              direction: direction,
+              selected: this.editorSorter.key === item.key && this.editorSorter.direction === direction
+            })))
+        })
+      })
+      return items
+    },
     published () {
-      return this.state.post.published
+      return this.editorCoreDataPostPublished
     },
     showLeft () {
-      return !this.editorUiStore.full
+      return !this.editorUi.full
     },
     showRight () {
-      return !!this.state.post
+      return !!this.editorCoreData.post
     },
     showEdit () {
-      return this.editorUiStore.editing
+      return this.editorUiEditing
     },
     showView () {
-      return !this.editorUiStore.editing
+      return !this.editorUiEditing
+    },
+    showPublishButton () {
+      return !!this.editorCoreData.post
+    },
+    categories () {
+      return this.editorCoreDataPostCategoriesList
     },
     tags () {
-      return this.state.post ? this.state.post.tags || [] : []
+      return this.editorCoreDataPostTagsList
     },
     navStyle () {
       return {
-        'min-height': '42px',
+        'min-height': this.barHeight,
         'max-width': '200px',
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
         'border-right': '1px solid rgba(0, 0, 0, 0.12)'
       }
     },
     listStyle () {
-      return Object.assign({
-        'min-height': '42px',
+      return {
+        'min-height': this.barHeight,
         'max-width': '300px',
-        'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
-      }, this.showRight ? { 'border-right': '1px solid rgba(0, 0, 0, 0.12)' } : {})
+        'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
+        'border-right': '1px solid rgba(0, 0, 0, 0.12)'
+      }
     },
     contentStyle () {
       return {
-        'min-height': '42px',
+        'min-height': this.barHeight,
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
         width: '0'
       }
+    },
+    // externals
+    ...mapState({
+      editorUi: state => state.editorUi,
+      editorCoreData: state => state.editorCore.data,
+      editorSorter: state => state.editorSorter
+    }),
+    ...mapGetters({
+      editorUiEditing: 'editorUi/editing',
+      editorCoreDataPostTagsList: 'editorCore/dataPostTagsList',
+      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
+      editorCoreDataPostPublished: 'editorCore/dataPostPublished'
+    })
+  },
+  methods: {
+    async addPostByDefault () {
+      this.$store.dispatch('addPostByDefault')
+    },
+    async reload () {
+      this.$store.dispatch('reload', true)
+    },
+    async editPostById () {
+      this.$store.dispatch('editPostById')
+    },
+    async publishPostById () {
+      this.$store.dispatch('publishPostById')
+    },
+    async unpublishPostById () {
+      this.$store.dispatch('unpublishPostById')
+    },
+    async toggleFull () {
+      this.$store.dispatch('toggleFull')
+    },
+    async deletePostById () {
+      this.$store.dispatch('deletePostById')
+    },
+    async savePost () {
+      this.$store.dispatch('savePost')
+    },
+    onPublish () {
+      this.editorCoreDataPostPublished ? this.unpublishPostById() : this.publishPostById()
+    },
+    onSortBy (key, direction) {
+      this.$store.dispatch('setSortKey', key)
+      this.$store.dispatch('setSortDirection', direction)
     }
   }
 }

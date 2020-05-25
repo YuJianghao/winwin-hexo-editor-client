@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { loadLoginToken, saveLoginToken } from '../utils/storage'
 import { forceReloadWindow } from 'src/utils/forceReloadWindow'
-import { editorUiStore } from 'src/stores/editorUiStore'
+import { confirmDialog } from 'src/utils/dialog'
 
 const request = axios.create()
 
@@ -23,7 +23,7 @@ request.interceptors.response.use((res) => {
     err.response.message = err.response.data.message
     if (err.response.status === 401) {
       saveLoginToken('')
-      editorUiStore.confirm('登录过期', '开发阶段可能丢失数据，请确认数据完整或手动保存后重新登录', '放弃数据并转到登录页面', 'red', '稍等，我需要保存数据', null, 'ok', forceReloadWindow)
+      confirmDialog('登录过期', '开发阶段可能丢失数据，请确认数据完整或手动保存后重新登录', '放弃数据并转到登录页面', 'red', '稍等，我需要保存数据', null, 'ok', forceReloadWindow)
     }
   }
   return Promise.reject(err.response || err)
