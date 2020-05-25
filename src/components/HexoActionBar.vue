@@ -1,14 +1,14 @@
 <template>
   <div
     class="row no-wrap"
-    style="height:42px"
+    :style="`height:${barHeight}`"
   >
     <q-toolbar
       class="col bg-grey-2 q-px-none"
       :style="navStyle"
       v-show="showLeft"
     >
-      <q-toolbar-title class="q-ml-md text-grey">
+      <q-toolbar-title class="text-grey" style="margin-left:14px;">
         HEXO
       </q-toolbar-title>
     </q-toolbar>
@@ -228,7 +228,8 @@ export default {
       sort: [
         { key: 'title', name: '标题' },
         { key: 'date', name: '编辑日期' }
-      ]
+      ],
+      barHeight: '36px'
     }
   },
   computed: {
@@ -271,7 +272,7 @@ export default {
     },
     navStyle () {
       return {
-        'min-height': '42px',
+        'min-height': this.barHeight,
         'max-width': '200px',
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
         'border-right': '1px solid rgba(0, 0, 0, 0.12)'
@@ -279,7 +280,7 @@ export default {
     },
     listStyle () {
       return {
-        'min-height': '42px',
+        'min-height': this.barHeight,
         'max-width': '300px',
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
         'border-right': '1px solid rgba(0, 0, 0, 0.12)'
@@ -287,7 +288,7 @@ export default {
     },
     contentStyle () {
       return {
-        'min-height': '42px',
+        'min-height': this.barHeight,
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
         width: '0'
       }

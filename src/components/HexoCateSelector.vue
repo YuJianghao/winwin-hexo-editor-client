@@ -80,6 +80,7 @@
 <script>
 // TODO 把这个做成公共组件，不要和store交互
 import { mapGetters } from 'vuex'
+import { stringSort } from '../utils/common'
 export default {
   name: 'HexoCateSelector',
   props: {
@@ -108,7 +109,7 @@ export default {
       this.postCategories.map(pc => {
         if (!ac.includes(pc)) { ac.push(pc) }
       })
-      return ac
+      return ac.sort(stringSort)
     },
     // externals
     ...mapGetters({

@@ -56,6 +56,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { stringSort } from '../utils/common'
 export default {
   name: 'HexoTagSelector',
   data () {
@@ -70,7 +71,7 @@ export default {
       this.postTags.map(tag => {
         if (!at.includes(tag)) at.push(tag)
       })
-      return at
+      return at.sort(stringSort)
     },
     postTags: {
       get () {
