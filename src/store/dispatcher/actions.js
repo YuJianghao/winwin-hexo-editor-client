@@ -279,13 +279,16 @@ export async function togglePreview ({ commit }) {
 // 排序相关
 
 export async function setSortKey ({ dispatch }, key) {
+  logger.log('setSortKey')
   await dispatch('editorSorter/setKey', key)
 }
 
 export async function setSortDirection ({ dispatch }, direction) {
+  logger.log('setSortDirection')
   await dispatch('editorSorter/setDirection', direction)
 }
 
 export async function toggleSortDirection ({ dispatch }) {
+  logger.log('toggleSortDirection')
   await dispatch('editorSorter/toggleSortDirection')
 }

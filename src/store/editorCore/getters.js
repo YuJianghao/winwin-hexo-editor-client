@@ -1,6 +1,7 @@
 import { objectToList, isEmptyObject } from 'src/utils/common'
 import { Logger } from 'src/utils/logger'
-const logger = new Logger({ prefix: 'editorCore/mutation' })
+import LTT from 'list-to-tree'
+const logger = new Logger({ prefix: 'editorCore/getters' })
 /*
 export function someGetter (state) {
 }
@@ -29,8 +30,8 @@ export function postStatus (state) {
 
 export function isOtherInit (state) {
   return isEmptyObject(state.data.posts) &&
-  isEmptyObject(state.data.categories) &&
-  isEmptyObject(state.data.tags)
+    isEmptyObject(state.data.categories) &&
+    isEmptyObject(state.data.tags)
 }
 
 export function isOtherReady (state) {
@@ -67,7 +68,7 @@ export function dataPostTagsList (state) {
   return state.data.post.tags || []
 }
 export function dataPostCategoriesArray2d (state) {
-  if (!state.data.post.categories) return [[]]
+  if (!state.data.post || !state.data.post.categories) return [[]]
   if (!Array.isArray(state.data.post.categories)) return [[state.data.post.categories]]
   else {
     if (!state.data.post.categories.filter(cat => Array.isArray(cat)).length) { return [state.data.post.categories] }
@@ -89,6 +90,23 @@ export function dataUnTagCount (state) {
   return objectToList(state.data.posts).filter(post => !post.tags).length
 }
 
+export function dataCategoriesTreeList (state) {
+  try {
+    const list = dataCategoriesList(state).map(category => {
+      const newObj = {}
+      if (!category.parent)newObj.parent = 0
+      return Object.assign(newObj, category)
+    })
+    const ltt = new LTT(list, {
+      key_id: '_id',
+      key_parent: 'parent',
+      key_child: '_child'
+    })
+    return ltt.GetTree() || []
+  } catch (e) {
+    logger.error('dataCategoriesTreeList', e)
+  }
+}
 export function dataCategoriesList (state) {
   return objectToList(state.data.categories)
 }

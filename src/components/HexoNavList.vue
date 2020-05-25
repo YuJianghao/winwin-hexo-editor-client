@@ -2,7 +2,7 @@
   <div
     class="col column full-height"
     v-show="show"
-    style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
+    style="border-right: 1px solid rgba(0, 0, 0, 0.12);user-select:none"
   >
     <q-list
       class="bg-grey-2 q-py-xs full-width"
@@ -52,23 +52,21 @@
           <app-filter-item
             label="全部"
             :badge="postsCount"
-            :onClick="filterByAll"
-            isParent
+            @on-click="filterByAll"
             :selected="selectedAll"
           ></app-filter-item>
-          <app-filter-item
-            v-for="(item,key) in categoriesList"
-            :key="key"
-            :label="item.name"
-            :badge="item.length"
-            :onClick="()=>filterByCategoriesId(item._id)"
-            :selected="item._id===selectedCategoriesId"
-            :isParent="!item.parent"
-          > </app-filter-item>
+          <nav-categories-tree
+            :nodes="categoriesTreeList"
+            node_key="_id"
+            children_key="_child"
+            label_key="name"
+            :selected="selectedCategoriesId"
+            @on-click="filterByCategoriesId"
+          ></nav-categories-tree>
           <app-filter-item
             label="未分类"
             :badge="unCategoriesCount"
-            :onClick="filterByUnCategorized"
+            @on-click="filterByUnCategorized"
             :selected="selectedUncategoriezed"
           ></app-filter-item>
         </q-list>
@@ -102,11 +100,13 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import AppFilterItem from 'components/AppFilterItem'
+import NavCategoriesTree from 'components/NavCategoriesTree'
 import { stringSort } from '../utils/common'
 export default {
   name: 'HexoNavList',
   components: {
-    AppFilterItem
+    AppFilterItem,
+    NavCategoriesTree
   },
   computed: {
     show () {
@@ -125,6 +125,9 @@ export default {
     categoriesList () {
       const list = this.editorCoreDataCategoriesList
       return list.sort((a, b) => stringSort(a.name, b.name))
+    },
+    categoriesTreeList () {
+      return this.editorCoreDataCategoriesTreeList
     },
     unCategoriesCount () {
       return this.editorCoreDataUnCategoriesCount
@@ -150,6 +153,7 @@ export default {
       editorCoreDataPostsCount: 'editorCore/dataPostsCount',
       editorCoreDataTagsList: 'editorCore/dataTagsList',
       editorCoreDataCategoriesList: 'editorCore/dataCategoriesList',
+      editorCoreDataCategoriesTreeList: 'editorCore/dataCategoriesTreeList',
       editorCoreDataUnCategoriesCount: 'editorCore/dataUnCategoriesCount'
     })
   },

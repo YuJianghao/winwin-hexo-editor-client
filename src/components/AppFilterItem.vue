@@ -2,13 +2,14 @@
   <q-item
     clickable
     v-ripple
-    @click="onClick"
+    @click="$emit('on-click',_id)"
+    @dblclick="$emit('on-toggle')"
     :class="{'text-primary':selected,'bg-blue-1':selected}"
-    style="padding-left:8px"
+    :style="style"
   >
     <q-item-section>
       <q-item-label>
-        <q-icon :name="isParent?'arrow_right':''" />
+        <q-icon :name="isParent?'arrow_right':''"/>
         {{label}}
       </q-item-label>
     </q-item-section>
@@ -28,6 +29,9 @@ export default {
     return {}
   },
   props: {
+    _id: {
+      type: String
+    },
     label: {
       type: String,
       required: true
@@ -36,9 +40,6 @@ export default {
     icon: {
       type: String
     },
-    onClick: {
-      type: Function
-    },
     selected: {
       type: Boolean,
       default: false
@@ -46,6 +47,17 @@ export default {
     isParent: {
       type: Boolean,
       default: false
+    },
+    level: {
+      type: Number,
+      default: 0
+    }
+  },
+  computed: {
+    style () {
+      return {
+        'padding-left': 8 + this.level * 12 + 'px'
+      }
     }
   }
 }
