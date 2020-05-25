@@ -1,5 +1,8 @@
 <template>
-  <div id="q-app">
+  <div
+    id="q-app"
+    @contextmenu.prevent=""
+  >
     <router-view />
   </div>
 </template>

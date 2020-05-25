@@ -21,6 +21,7 @@
           @right="(e)=>{onRight(e,item._id)}"
           @left="(e)=>{onLeft(e,item._id)}"
           @click="viewPostById(item._id)"
+          @contextmenu="contextMenuPostIdCache=item._id"
         >
           <template v-slot:left>
             <div class="row items-center">
@@ -68,14 +69,29 @@
         </q-slide-item>
       </q-list>
     </q-scroll-area>
+    <post-context-menu
+      :id="contextMenuPostId"
+      @on-before-hide="onCMBeforeHide"
+      @on-before-show="onCMBeforeShow"
+    ></post-context-menu>
   </div>
 </template>
 
 <script>
-import { date } from 'quasar'
+import { getDatetimeStringDefault } from 'src/utils/post'
 import { mapState, mapGetters } from 'vuex'
+import PostContextMenu from 'components/PostContextMenu.vue'
 export default {
   name: 'HexoPostsList',
+  components: {
+    PostContextMenu
+  },
+  data () {
+    return {
+      contextMenuPostId: '',
+      contextMenuPostIdCache: ''
+    }
+  },
   computed: {
     show () {
       return !this.editorUi.full
@@ -95,6 +111,13 @@ export default {
     })
   },
   methods: {
+    onCMBeforeShow () {
+      this.contextMenuPostId = this.contextMenuPostIdCache
+      this.contextMenuPostIdCache = ''
+    },
+    onCMBeforeHide () {
+      this.contextMenuPostId = ''
+    },
     async viewPostById (_id) {
       this.$store.dispatch('viewPostById', { _id })
     },
@@ -102,10 +125,10 @@ export default {
       this.$store.dispatch('editPostById', { _id })
     },
     async deletePostById (_id) {
-      this.$store.dispatch('deletePostById', _id)
+      this.$store.dispatch('deletePostById', { _id })
     },
     getDateString (d) {
-      return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')
+      return getDatetimeStringDefault(d)
     },
     onLeft ({ reset }, _id) {
       this.editPostById(_id)
