@@ -1,6 +1,6 @@
 {
   "name": "@winwin/hexo-editor-client",
-  "version": "0.2.1-0",
+  "version": "0.2.1",
   "description": "A Vue & Quasar SPA web application for editing HEXO blogs.",
   "main": "index.js",
   "productName": "Hexo Editor",
