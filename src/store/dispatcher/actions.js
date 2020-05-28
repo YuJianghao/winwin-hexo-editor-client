@@ -66,7 +66,7 @@ export async function reload ({ commit, dispatch }, force = false) {
 // 查看相关
 
 /**
- * @param {String} [payload._id] 需要查看的文章id
+ * @param {String} [payload._id] 需要查看的文章id，默认未当前已打开文章
  * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
  */
 export async function viewPostById ({ rootGetters, commit, dispatch }, payload = {}) {
@@ -132,6 +132,10 @@ export async function addPostByDefault ({ rootGetters, commit, dispatch }) {
   }
 }
 
+/**
+ * @param {String} [payload._id] 需要删除的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
 export async function deletePostById ({ rootState, dispatch }, payload = {}) {
   logger.log('deletePostById', payload)
   const { _id } = payload
@@ -151,7 +155,7 @@ export async function deletePostById ({ rootState, dispatch }, payload = {}) {
 }
 
 /**
- * @param {String} [payload._id] 需要编辑的文章id
+ * @param {String} [payload._id] 需要编辑的文章id，默认未当前已打开文章
  * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
  */
 export async function editPostById ({ rootGetters, commit, dispatch }, payload = {}) {
@@ -171,7 +175,7 @@ export async function editPostById ({ rootGetters, commit, dispatch }, payload =
 }
 
 /**
- * @param {String} [payload._id] 需要编辑的文章id
+ * @param {String} [payload._id] 需要发布的文章id，默认未当前已打开文章
  * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
  */
 export async function publishPostById ({ getters, rootGetters, dispatch }, payload = {}) {
@@ -192,6 +196,10 @@ export async function publishPostById ({ getters, rootGetters, dispatch }, paylo
   }
 }
 
+/**
+ * @param {String} [payload._id] 需要取消发布的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
 export async function unpublishPostById ({ rootGetters, dispatch }, payload = {}) {
   logger.log('unpublishPostById', payload)
   const _id = payload._id || null
