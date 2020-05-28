@@ -203,16 +203,18 @@ export async function publishPostById ({ state, commit, dispatch }, payload = {}
   }
 }
 
-export async function unpublishPostById ({ state, commit, dispatch }, { _id, force }) {
-  if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
-  if (_id && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
-  if (state.data.post && state.data.post._id === _id) {
-    logger.log('Same post', _id)
-    return
-  }
-  if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
+/**
+ * 从id取消发布文章
+ * @param {Object} payload 参数
+ * @param {String} [payload._id] 需要取消发布的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
+export async function unpublishPostById ({ state, commit, dispatch }, payload = {}) {
+  const _id = payload._id || null
+  const force = payload.force || false
+  const { validId } = getValidId(state, _id, force)
   try {
-    const post = await hexoService.unpublishPost(_id || state.data.post._id)
+    const post = await hexoService.unpublishPost(validId)
     commit('loadPost', post)
   } catch (err) {
     throw replaceErrorMessage(err, '取消发布失败，请稍后再试')
