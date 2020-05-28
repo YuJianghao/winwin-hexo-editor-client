@@ -62,6 +62,18 @@ export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
   }
 }
 
+function getValidId (state, _id, force) {
+  if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
+  const validId = _id || state.data.post._id
+  if (validId && !state.data.posts[validId]) throw new Error('Invalid post id ' + validId)
+  if (state.data.post && state.data.post._id === validId) {
+    logger.log('Same post', validId)
+    return { samePost: true, validId: _id }
+  }
+  if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
+  return { samePost: false, validId }
+}
+
 /**
  * 从id载入文章
  * @param {Object} payload 参数
@@ -71,16 +83,10 @@ export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
 export async function loadPostById ({ state, commit }, payload = {}) {
   const _id = payload._id || null
   const force = payload.force || false
-  if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
-  const trueID = _id || state.data.post._id
-  if (trueID && !state.data.posts[trueID]) throw new Error('Invalid post id ' + trueID)
-  if (state.data.post && state.data.post._id === trueID) {
-    logger.log('Same post', trueID)
-    return
-  }
-  if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
+  const { validId, samePost } = getValidId(state, _id, force)
+  if (samePost) return
   try {
-    const post = await hexoService.getPostById(trueID)
+    const post = await hexoService.getPostById(validId)
     commit('loadPost', post)
   } catch (err) {
     throw replaceErrorMessage(err, '文章获取失败，请稍后再试')
@@ -143,12 +149,9 @@ export async function loadTags ({ commit }) {
 export async function deletePostById ({ state, commit, dispatch }, payload = {}) {
   const _id = payload._id || null
   const force = payload.force || false
-  if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
-  const trueID = _id || state.data.post._id
-  if (trueID && !state.data.posts[trueID]) throw new Error('Invalid post id ' + trueID)
-  if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
+  const { validId } = getValidId(state, _id, force)
   try {
-    await hexoService.deletePostById(trueID)
+    await hexoService.deletePostById(validId)
   } catch (err) {
     throw replaceErrorMessage(err, '删除失败，请稍后再试')
   }
@@ -160,6 +163,9 @@ export async function deletePostById ({ state, commit, dispatch }, payload = {})
   }
 }
 
+/**
+ * 保存文章
+ */
 export async function savePost ({ state, dispatch, commit }) {
   try {
     await hexoService.savePost(state.data.post)
@@ -174,16 +180,18 @@ export async function savePost ({ state, dispatch, commit }) {
   }
 }
 
-export async function publishPostById ({ state, commit, dispatch }, { _id, force }) {
-  if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
-  if (_id && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
-  if (state.data.post && state.data.post._id === _id) {
-    logger.log('Same post', _id)
-    return
-  }
-  if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
+/**
+ * 从id发布文章
+ * @param {Object} payload 参数
+ * @param {String} [payload._id] 需要发布的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
+export async function publishPostById ({ state, commit, dispatch }, payload = {}) {
+  const _id = payload._id || null
+  const force = payload.force || false
+  const { validId } = getValidId(state, _id, force)
   try {
-    const post = await hexoService.publishPost(_id || state.data.post._id)
+    const post = await hexoService.publishPost(validId)
     commit('loadPost', post)
   } catch (err) {
     throw replaceErrorMessage(err, '文章发布失败，请稍后再试')
