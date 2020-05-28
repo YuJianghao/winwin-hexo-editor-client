@@ -68,7 +68,9 @@ export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
  * @param {String} [payload._id] 需要加载的文章id，默认未当前已打开文章
  * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
  */
-export async function loadPostById ({ state, commit }, { _id, force }) {
+export async function loadPostById ({ state, commit }, payload = {}) {
+  const _id = payload._id || null
+  const force = payload.force || false
   if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
   const trueID = _id || state.data.post._id
   if (trueID && !state.data.posts[trueID]) throw new Error('Invalid post id ' + trueID)
@@ -85,6 +87,9 @@ export async function loadPostById ({ state, commit }, { _id, force }) {
   }
 }
 
+/**
+ * 载入所有数据
+ */
 export async function loadAll ({ dispatch }) {
   await Promise.all([
     dispatch('loadPosts'),
@@ -93,6 +98,9 @@ export async function loadAll ({ dispatch }) {
   ])
 }
 
+/**
+ * 载入文章列表
+ */
 export async function loadPosts ({ commit }) {
   try {
     const posts = await hexoService.getPosts()
@@ -102,6 +110,9 @@ export async function loadPosts ({ commit }) {
   }
 }
 
+/**
+ * 载入分类列表
+ */
 export async function loadCategories ({ commit }) {
   try {
     const categories = await hexoService.getCategories()
@@ -111,6 +122,9 @@ export async function loadCategories ({ commit }) {
   }
 }
 
+/**
+ * 载入标签列表
+ */
 export async function loadTags ({ commit }) {
   try {
     const tags = await hexoService.getTags()
@@ -120,11 +134,21 @@ export async function loadTags ({ commit }) {
   }
 }
 
-export async function deletePostById ({ state, commit, dispatch }, _id) {
+/**
+ * 从id删除文章
+ * @param {Object} payload 参数
+ * @param {String} [payload._id] 需要删除的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
+export async function deletePostById ({ state, commit, dispatch }, payload = {}) {
+  const _id = payload._id || null
+  const force = payload.force || false
   if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
-  if (_id && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
+  const trueID = _id || state.data.post._id
+  if (trueID && !state.data.posts[trueID]) throw new Error('Invalid post id ' + trueID)
+  if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
   try {
-    await hexoService.deletePostById(_id || state.data.post._id)
+    await hexoService.deletePostById(trueID)
   } catch (err) {
     throw replaceErrorMessage(err, '删除失败，请稍后再试')
   }

@@ -135,7 +135,7 @@ export async function deletePostById ({ rootState, dispatch }, payload = {}) {
   // if (post.date)message += `（最后编辑于${date.formatDate(post.date, 'YYYY年MM月DD日 HH:mm:ss')}）`
   return confirmDialog('删除确认', message, '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
-      await dispatch('editorCore/deletePostById', _id)
+      await dispatch('editorCore/deletePostById', { _id })
       await dispatch('editorUi/deletePost', _id)
     } catch (err) {
       message.error({ message: '删除失败', caption: err.message })
