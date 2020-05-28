@@ -6,8 +6,10 @@
   >
     <q-scroll-area class="full-height">
       <q-markdown
-      class="q-pa-md q-pr-lg"
-      :src="title+post._content">
+        class="q-pa-md q-pr-lg"
+        style="max-width:768px;margin:0 auto"
+        :src="title+post._content"
+      >
       </q-markdown>
     </q-scroll-area>
   </div>
@@ -26,8 +28,9 @@ export default {
       return this.editorCoreData.post
     },
     title () {
-      return `# ${this.post.title}\n${this.post.date
-      ? this.getDateString(this.post.date) : ''}\n`
+      // return `# ${this.post.title}\n${this.post.date
+      //   ? this.getDateString(this.post.date) : ''}\n`
+      return `# ${this.post.title}\n`
     },
     // externals
     ...mapState({

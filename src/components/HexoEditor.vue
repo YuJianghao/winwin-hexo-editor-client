@@ -10,7 +10,7 @@
         :value="post.title"
         :style="`height:${height}px;overflow-y:hidden;transition:${duration}ms;`"
         input-class="text-left q-pa-none"
-        input-style="font-size:1.2rem;text-indent:10px"
+        :input-style="`font-size:${titleSize}rem;text-indent:10px;transition:${duration}ms;`"
         @input="updateTitle"
         class="title"
       >
@@ -44,6 +44,10 @@ export default {
     }
   },
   computed: {
+    titleSize () {
+      const size = this.height / 66
+      return size > 1 ? size : 1
+    },
     show () {
       return this.editorUiEditing
     },

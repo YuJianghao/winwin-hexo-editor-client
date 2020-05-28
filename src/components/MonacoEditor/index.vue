@@ -45,7 +45,8 @@ import 'monaco-editor/esm/vs/editor/contrib/wordHighlighter/wordHighlighter.js'
 import 'monaco-editor/esm/vs/base/browser/ui/codiconLabel/codiconLabel.js'
 import 'monaco-editor/esm/vs/editor/contrib/find/findController.js'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
-import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
+import 'monaco-editor/esm/vs/basic-languages/monaco.contribution'
+// import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
 import myTheme from './theme'
 import MarkdownExtension from './markdown-extension'
 export default {
@@ -83,6 +84,7 @@ export default {
       highlightActiveIndentGuide: false,
       hideCursorInOverviewRuler: true,
       overviewRulerBorder: false,
+      renderLineHighlight: 'none',
       scrollbar: {
         vertical: 'auto',
         horizontal: 'hidden',
