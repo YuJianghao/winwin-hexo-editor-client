@@ -70,8 +70,8 @@ export async function reload ({ commit, dispatch }, force = false) {
  * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
  */
 export async function viewPostById ({ rootGetters, commit, dispatch }, payload = {}) {
-  logger.log('viewPostById')
-  const _id = payload.force || null
+  logger.log('viewPostById', payload)
+  const _id = payload._id || null
   const force = payload.force || false
   try {
     if (!force && !rootGetters['editorCore/isPostSaved']) {
@@ -133,8 +133,8 @@ export async function addPostByDefault ({ rootGetters, commit, dispatch }) {
 }
 
 export async function deletePostById ({ rootState, dispatch }, payload = {}) {
+  logger.log('deletePostById', payload)
   const { _id } = payload
-  logger.log('deletePostById')
   const post = rootState.editorCore.data.posts[_id || rootState.editorCore.data.post._id]
   const message = `你确认要删除《${post.title}》么？`
   // if (post.date)message += `（最后编辑于${date.formatDate(post.date, 'YYYY年MM月DD日 HH:mm:ss')}）`
@@ -154,11 +154,11 @@ export async function deletePostById ({ rootState, dispatch }, payload = {}) {
  * @param {String} [payload._id] 需要编辑的文章id
  * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
  */
-export async function editPostById ({ getters, rootGetters, commit, dispatch }, payload = {}) {
-  logger.log('editPostById')
-  const _id = payload.force || null
+export async function editPostById ({ rootGetters, commit, dispatch }, payload = {}) {
+  logger.log('editPostById', payload)
+  const _id = payload._id || null
   const force = payload.force || false
-  if (!force && !rootGetters['editorCore/isPostSaved'] && !await getters['editorCore/dataPostId'] === _id) {
+  if (!force && !rootGetters['editorCore/isPostSaved']) {
     await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
       await dispatch('editorCore/loadPostById', { _id, force: true })
       commit('editorUi/editPost')
@@ -170,10 +170,23 @@ export async function editPostById ({ getters, rootGetters, commit, dispatch }, 
   }
 }
 
-export async function publishPostById ({ dispatch }, { _id }) {
-  logger.log('publishPostById')
+/**
+ * @param {String} [payload._id] 需要编辑的文章id
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
+export async function publishPostById ({ getters, rootGetters, dispatch }, payload = {}) {
+  logger.log('publishPostById', payload)
+  const _id = payload._id || null
+  const force = payload.force || false
   try {
-    await dispatch('editorCore/publishPostById', { _id })
+    if (!force && !rootGetters['editorCore/isPostSaved']) {
+      await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+        await dispatch('editorCore/publishPostById', { _id, force: true })
+        resolve()
+      })
+    } else {
+      await dispatch('editorCore/publishPostById', { _id, force })
+    }
   } catch (err) {
     message.error({ message: '发布失败', caption: err.message })
   }
