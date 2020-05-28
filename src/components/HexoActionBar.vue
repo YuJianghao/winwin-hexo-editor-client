@@ -94,7 +94,7 @@
         flat
         stretch
         color="primary"
-        :icon="showLeft?'chevron_left':'chevron_right'"
+        :icon="showLeft?'fullscreen':'fullscreen_exit'"
         @click="toggleFull"
         v-if="showRight"
       ></q-btn>
@@ -274,6 +274,7 @@ export default {
       return {
         'min-height': this.barHeight,
         'max-width': '200px',
+        flex: '0 0 200px',
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
         'border-right': '1px solid rgba(0, 0, 0, 0.12)'
       }
@@ -282,6 +283,7 @@ export default {
       return {
         'min-height': this.barHeight,
         'max-width': '300px',
+        flex: '0 0 300px',
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)',
         'border-right': '1px solid rgba(0, 0, 0, 0.12)'
       }

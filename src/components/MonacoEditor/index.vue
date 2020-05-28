@@ -45,7 +45,8 @@ import 'monaco-editor/esm/vs/editor/contrib/wordHighlighter/wordHighlighter.js'
 import 'monaco-editor/esm/vs/base/browser/ui/codiconLabel/codiconLabel.js'
 import 'monaco-editor/esm/vs/editor/contrib/find/findController.js'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
-import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
+import 'monaco-editor/esm/vs/basic-languages/monaco.contribution'
+// import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
 import myTheme from './theme'
 import MarkdownExtension from './markdown-extension'
 export default {
@@ -53,6 +54,10 @@ export default {
   props: {
     value: {
       type: String
+    },
+    position: {
+      type: Number,
+      default: 0
     }
   },
   watch: {
@@ -65,7 +70,7 @@ export default {
     monaco.editor.defineTheme('myTheme', myTheme)
     monaco.editor.setTheme('myTheme')
 
-    this.editor = monaco.editor.create(dom, {
+    const editorOptions = {
       value: this.value,
       language: 'markdown',
       theme: 'myTheme',
@@ -77,19 +82,22 @@ export default {
       occurrencesHighlight: false,
       wordBasedSuggestions: false,
       highlightActiveIndentGuide: false,
+      hideCursorInOverviewRuler: true,
+      overviewRulerBorder: false,
+      renderLineHighlight: 'none',
       scrollbar: {
         vertical: 'auto',
         horizontal: 'hidden',
-        verticalScrollbarSize: 10,
-        horizontalScrollbarSize: 10
+        verticalScrollbarSize: 10
       },
-      fontSize: 15,
+      fontSize: 14,
       lineHeight: 25,
       wordWrap: 'on',
       lineNumbers: 'off',
       cursorBlinking: 'smooth',
-      fontFamily: 'Consolas,Roboto, -apple-system, Helvetica Neue, Helvetica, Arial, sans-serif'
-    })
+      fontFamily: 'Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace'
+    }
+    this.editor = monaco.editor.create(dom, editorOptions)
 
     this.editor.addAction({
       // An unique identifier of the contributed action.
@@ -156,6 +164,22 @@ export default {
       }
     })
 
+    this.lastScrollTop = 0
+    this.editor.onDidScrollChange(e => {
+      const isScrollDown = this.lastScrollTop < e.scrollTop
+      // this.editor.revealLine(0)
+      // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html#ondidscrollchange
+      if (isScrollDown) {
+        this.$emit('on-scroll-down', e)
+      } else {
+        this.$emit('on-scroll-up', e)
+      }
+      if (e.scrollTop === 0) {
+        this.$emit('on-scroll-top')
+      }
+      this.$emit('on-scroll', e)
+      this.lastScrollTop = e.scrollTop
+    })
     this.timer = window.setInterval(() => {
       this.editor.layout()
     }, 100)

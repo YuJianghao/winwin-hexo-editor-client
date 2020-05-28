@@ -103,14 +103,15 @@ module.exports = function (ctx) {
           test: /highlight.js/,
           name: 'highlightjs'
         }
-        cfg.optimization.splitChunks.cacheGroups.markdown = {
-          test: /markdown-it/,
-          name: 'markdownit'
-        }
+        // QMarkdown需要用到，所以不能用cdn
+        // cfg.optimization.splitChunks.cacheGroups.markdown = {
+        //   test: /markdown-it/,
+        //   name: 'markdownit'
+        // }
 
         cfg.externals = {
-          'highlight.js': 'hljs',
-          'markdown-it': 'markdownit'
+          'highlight.js': 'hljs'
+          // 'markdown-it': 'markdownit'
         }
       }
     },
