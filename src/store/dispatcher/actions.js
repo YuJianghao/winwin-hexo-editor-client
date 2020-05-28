@@ -192,16 +192,28 @@ export async function publishPostById ({ getters, rootGetters, dispatch }, paylo
   }
 }
 
-export async function unpublishPostById ({ dispatch }, { _id }) {
-  logger.log('unpublishPostById')
-  await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
-    try {
-      await dispatch('editorCore/unpublishPostById', { _id })
-    } catch (err) {
-      message.error({ message: '发布失败', caption: err.message })
+export async function unpublishPostById ({ rootGetters, dispatch }, payload = {}) {
+  logger.log('unpublishPostById', payload)
+  const _id = payload._id || null
+  const force = payload.force || false
+  try {
+    if (!force && !rootGetters['editorCore/isPostSaved']) {
+      await confirmDialog(null, '你确认要取消发布么？未保存的文件会丢失', '继续取消发布', 'red', '返回', 'primary', 'cancel', async resolve => {
+        await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
+          await dispatch('editorCore/unpublishPostById', { _id, force: true })
+          resolve()
+        })
+        resolve()
+      })
+    } else {
+      await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
+        await dispatch('editorCore/unpublishPostById', { _id, force: true })
+        resolve()
+      })
     }
-    resolve()
-  })
+  } catch (err) {
+    message.error({ message: '发布失败', caption: err.message })
+  }
 }
 
 export async function setPostByTitle ({ commit }, title) {
