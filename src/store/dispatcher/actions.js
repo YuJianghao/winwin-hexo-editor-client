@@ -150,10 +150,14 @@ export async function deletePostById ({ rootState, dispatch }, payload = {}) {
   })
 }
 
+/**
+ * @param {String} [payload._id] 需要编辑的文章id
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
 export async function editPostById ({ getters, rootGetters, commit, dispatch }, payload = {}) {
   logger.log('editPostById')
-  let { _id, force } = payload
-  force = force || false
+  const _id = payload.force || null
+  const force = payload.force || false
   if (!force && !rootGetters['editorCore/isPostSaved'] && !await getters['editorCore/dataPostId'] === _id) {
     await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
       await dispatch('editorCore/loadPostById', { _id, force: true })
