@@ -68,6 +68,14 @@ All kinds of PR are welcomed, including crazy change!
 
 ## Release Note
 
+### 0.2.2
+
+- 修复不能发布/取消发布的bug
+
+### 0.2.1
+
+- 启用git子模块
+
 ### 0.2.0
 
 - 添加右键菜单
