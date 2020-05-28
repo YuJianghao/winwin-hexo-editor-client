@@ -7,7 +7,7 @@ const logger = new Logger({ prefix: 'Dispatcher' })
 
 // 用户相关
 
-export async function login ({ commit, dispatch }, { username, password }) {
+export async function login ({ dispatch }, { username, password }) {
   logger.log('login')
   await dispatch('globalUser/login', { username, password })
 }
@@ -65,9 +65,14 @@ export async function reload ({ commit, dispatch }, force = false) {
 
 // 查看相关
 
-export async function viewPostById ({ rootGetters, commit, dispatch }, payload = { force: false }) {
-  logger.log('viewPostById')
-  const { _id, force } = payload
+/**
+ * @param {String} [payload._id] 需要查看的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
+export async function viewPostById ({ rootGetters, commit, dispatch }, payload = {}) {
+  logger.log('viewPostById', payload)
+  const _id = payload._id || null
+  const force = payload.force || false
   try {
     if (!force && !rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
@@ -127,15 +132,19 @@ export async function addPostByDefault ({ rootGetters, commit, dispatch }) {
   }
 }
 
+/**
+ * @param {String} [payload._id] 需要删除的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
 export async function deletePostById ({ rootState, dispatch }, payload = {}) {
+  logger.log('deletePostById', payload)
   const { _id } = payload
-  logger.log('deletePostById')
   const post = rootState.editorCore.data.posts[_id || rootState.editorCore.data.post._id]
   const message = `你确认要删除《${post.title}》么？`
   // if (post.date)message += `（最后编辑于${date.formatDate(post.date, 'YYYY年MM月DD日 HH:mm:ss')}）`
   return confirmDialog('删除确认', message, '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
-      await dispatch('editorCore/deletePostById', _id)
+      await dispatch('editorCore/deletePostById', { _id })
       await dispatch('editorUi/deletePost', _id)
     } catch (err) {
       message.error({ message: '删除失败', caption: err.message })
@@ -145,11 +154,15 @@ export async function deletePostById ({ rootState, dispatch }, payload = {}) {
   })
 }
 
-export async function editPostById ({ getters, rootGetters, commit, dispatch }, payload = {}) {
-  logger.log('editPostById')
-  let { _id, force } = payload
-  force = force || false
-  if (!force && !rootGetters['editorCore/isPostSaved'] && !await getters['editorCore/dataPostId'] === _id) {
+/**
+ * @param {String} [payload._id] 需要编辑的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
+export async function editPostById ({ rootGetters, commit, dispatch }, payload = {}) {
+  logger.log('editPostById', payload)
+  const _id = payload._id || null
+  const force = payload.force || false
+  if (!force && !rootGetters['editorCore/isPostSaved']) {
     await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
       await dispatch('editorCore/loadPostById', { _id, force: true })
       commit('editorUi/editPost')
@@ -161,25 +174,54 @@ export async function editPostById ({ getters, rootGetters, commit, dispatch }, 
   }
 }
 
-export async function publishPostById ({ dispatch }, { _id }) {
-  logger.log('publishPostById')
+/**
+ * @param {String} [payload._id] 需要发布的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
+export async function publishPostById ({ getters, rootGetters, dispatch }, payload = {}) {
+  logger.log('publishPostById', payload)
+  const _id = payload._id || null
+  const force = payload.force || false
   try {
-    await dispatch('editorCore/publishPostById', { _id })
+    if (!force && !rootGetters['editorCore/isPostSaved']) {
+      await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+        await dispatch('editorCore/publishPostById', { _id, force: true })
+        resolve()
+      })
+    } else {
+      await dispatch('editorCore/publishPostById', { _id, force })
+    }
   } catch (err) {
     message.error({ message: '发布失败', caption: err.message })
   }
 }
 
-export async function unpublishPostById ({ dispatch }, { _id }) {
-  logger.log('unpublishPostById')
-  await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
-    try {
-      await dispatch('editorCore/unpublishPostById', { _id })
-    } catch (err) {
-      message.error({ message: '发布失败', caption: err.message })
+/**
+ * @param {String} [payload._id] 需要取消发布的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
+export async function unpublishPostById ({ rootGetters, dispatch }, payload = {}) {
+  logger.log('unpublishPostById', payload)
+  const _id = payload._id || null
+  const force = payload.force || false
+  try {
+    if (!force && !rootGetters['editorCore/isPostSaved']) {
+      await confirmDialog(null, '你确认要取消发布么？未保存的文件会丢失', '继续取消发布', 'red', '返回', 'primary', 'cancel', async resolve => {
+        await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
+          await dispatch('editorCore/unpublishPostById', { _id, force: true })
+          resolve()
+        })
+        resolve()
+      })
+    } else {
+      await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
+        await dispatch('editorCore/unpublishPostById', { _id, force: true })
+        resolve()
+      })
     }
-    resolve()
-  })
+  } catch (err) {
+    message.error({ message: '发布失败', caption: err.message })
+  }
 }
 
 export async function setPostByTitle ({ commit }, title) {
