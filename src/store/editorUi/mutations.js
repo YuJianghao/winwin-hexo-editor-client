@@ -30,6 +30,7 @@ export function editPost (state) {
   logger.log('post editing')
   state.editing = true
   state.preview = true
+  state.full = true
 }
 export function viewPost (state) {
   logger.log('post viewing')

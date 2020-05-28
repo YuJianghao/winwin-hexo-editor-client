@@ -2,6 +2,7 @@
   <div
     class="col"
     v-show="show"
+    style=";flex:0 0 300px;"
   >
     <q-scroll-area
       class="full-height"
