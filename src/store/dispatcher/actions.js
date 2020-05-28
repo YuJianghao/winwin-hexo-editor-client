@@ -7,7 +7,7 @@ const logger = new Logger({ prefix: 'Dispatcher' })
 
 // 用户相关
 
-export async function login ({ commit, dispatch }, { username, password }) {
+export async function login ({ dispatch }, { username, password }) {
   logger.log('login')
   await dispatch('globalUser/login', { username, password })
 }
@@ -65,9 +65,14 @@ export async function reload ({ commit, dispatch }, force = false) {
 
 // 查看相关
 
-export async function viewPostById ({ rootGetters, commit, dispatch }, payload = { force: false }) {
+/**
+ * @param {String} [payload._id] 需要查看的文章id
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
+export async function viewPostById ({ rootGetters, commit, dispatch }, payload = {}) {
   logger.log('viewPostById')
-  const { _id, force } = payload
+  const _id = payload.force || null
+  const force = payload.force || false
   try {
     if (!force && !rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
