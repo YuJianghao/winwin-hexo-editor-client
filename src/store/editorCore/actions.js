@@ -9,23 +9,36 @@ import * as hexoService from 'src/service/hexo'
 import { replaceErrorMessage } from 'src/utils/common'
 const logger = new Logger({ prefix: 'EditorCore/Actions' })
 
-// TODO: 确认文章编辑没有漏洞
+/**
+ * 初始化数据
+ */
 export async function init ({ commit, dispatch }) {
   commit('closePost')
   await dispatch('loadAll')
 }
 
+/**
+ * 销毁数据
+ */
 export async function destroy ({ commit }) {
   commit('closePost')
   commit('resetAll')
 }
 
+/**
+ * 刷新数据
+ * @param {Boolean} [force] 是否强制载入（暂时未启用）
+ */
 export async function reload ({ dispatch }, force) {
   await dispatch('loadAll')
 }
 
-// CURD
-
+/**
+ * 从参数新建文章
+ * @param {Object} payload 参数
+ * @param {Boolean} [payload.force=false] 是否放弃当前未保存的更改
+ * @param {Object} [payload.options={}] 新文章的选项
+ */
 export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
   if (!payload.force && !state.status.saved) throw new Error('Unsaved file, use force=true to override')
   let post = null
@@ -49,16 +62,23 @@ export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
   }
 }
 
+/**
+ * 从id载入文章
+ * @param {Object} payload 参数
+ * @param {String} [payload._id] 需要加载的文章id，默认未当前已打开文章
+ * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+ */
 export async function loadPostById ({ state, commit }, { _id, force }) {
   if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
-  if (_id && !state.data.posts[_id]) throw new Error('Invalid post id ' + _id)
-  if (state.data.post && state.data.post._id === _id) {
-    logger.log('Same post', _id)
+  const trueID = _id || state.data.post._id
+  if (trueID && !state.data.posts[trueID]) throw new Error('Invalid post id ' + trueID)
+  if (state.data.post && state.data.post._id === trueID) {
+    logger.log('Same post', trueID)
     return
   }
   if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
   try {
-    const post = await hexoService.getPostById(_id || state.data.post._id)
+    const post = await hexoService.getPostById(trueID)
     commit('loadPost', post)
   } catch (err) {
     throw replaceErrorMessage(err, '文章获取失败，请稍后再试')
