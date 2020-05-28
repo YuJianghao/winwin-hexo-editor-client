@@ -65,7 +65,7 @@ export default {
     monaco.editor.defineTheme('myTheme', myTheme)
     monaco.editor.setTheme('myTheme')
 
-    this.editor = monaco.editor.create(dom, {
+    const editorOptions = {
       value: this.value,
       language: 'markdown',
       theme: 'myTheme',
@@ -77,19 +77,22 @@ export default {
       occurrencesHighlight: false,
       wordBasedSuggestions: false,
       highlightActiveIndentGuide: false,
+      hideCursorInOverviewRuler: true,
+      overviewRulerBorder: false,
       scrollbar: {
         vertical: 'auto',
         horizontal: 'hidden',
         verticalScrollbarSize: 10,
-        horizontalScrollbarSize: 10
+        useShadows: false
       },
       fontSize: 15,
       lineHeight: 25,
       wordWrap: 'on',
       lineNumbers: 'off',
       cursorBlinking: 'smooth',
-      fontFamily: 'Consolas,Roboto, -apple-system, Helvetica Neue, Helvetica, Arial, sans-serif'
-    })
+      fontFamily: 'Courier, Consolas,Roboto, -apple-system, Helvetica Neue, Helvetica, Arial, sans-serif'
+    }
+    this.editor = monaco.editor.create(dom, editorOptions)
 
     this.editor.addAction({
       // An unique identifier of the contributed action.

@@ -9,8 +9,8 @@
         borderless
         :value="post.title"
         style="height:42px;overflow-y:hidden"
-        input-class="text-left q-pa-none bg-grey-2"
-        input-style="font-size:1.2rem;text-indent:1rem;font-weight:lighter;"
+        input-class="text-left q-pa-none"
+        input-style="font-size:1.2rem;text-indent:10px;"
         @input="updateTitle"
       >
       </q-input>
