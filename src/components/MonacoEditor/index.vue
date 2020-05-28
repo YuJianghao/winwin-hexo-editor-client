@@ -53,6 +53,10 @@ export default {
   props: {
     value: {
       type: String
+    },
+    position: {
+      type: Number,
+      default: 0
     }
   },
   watch: {
@@ -82,15 +86,14 @@ export default {
       scrollbar: {
         vertical: 'auto',
         horizontal: 'hidden',
-        verticalScrollbarSize: 10,
-        useShadows: false
+        verticalScrollbarSize: 10
       },
-      fontSize: 15,
+      fontSize: 14,
       lineHeight: 25,
       wordWrap: 'on',
       lineNumbers: 'off',
       cursorBlinking: 'smooth',
-      fontFamily: 'Courier, Consolas,Roboto, -apple-system, Helvetica Neue, Helvetica, Arial, sans-serif'
+      fontFamily: 'Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace'
     }
     this.editor = monaco.editor.create(dom, editorOptions)
 
@@ -159,6 +162,22 @@ export default {
       }
     })
 
+    this.lastScrollTop = 0
+    this.editor.onDidScrollChange(e => {
+      const isScrollDown = this.lastScrollTop < e.scrollTop
+      // this.editor.revealLine(0)
+      // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html#ondidscrollchange
+      if (isScrollDown) {
+        this.$emit('on-scroll-down', e)
+      } else {
+        this.$emit('on-scroll-up', e)
+      }
+      if (e.scrollTop === 0) {
+        this.$emit('on-scroll-top')
+      }
+      this.$emit('on-scroll', e)
+      this.lastScrollTop = e.scrollTop
+    })
     this.timer = window.setInterval(() => {
       this.editor.layout()
     }, 100)
