@@ -94,7 +94,7 @@
         flat
         stretch
         color="primary"
-        :icon="showLeft?'chevron_left':'chevron_right'"
+        :icon="showLeft?'fullscreen':'fullscreen_exit'"
         @click="toggleFull"
         v-if="showRight"
       ></q-btn>
