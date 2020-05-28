@@ -1,4 +1,4 @@
-import request from './request'
+import { request, refresh } from './request'
 import { saveLoginToken } from '../utils/storage'
 // TODO 处理下storage的问题，放在API里面怪怪的
 
@@ -10,6 +10,11 @@ const users = {
         password: pass
       }
     })
+    saveLoginToken(data.data.token)
+    return data
+  },
+  refreshToken: async () => {
+    const data = await refresh.get('/refresh')
     saveLoginToken(data.data.token)
     return data
   }
