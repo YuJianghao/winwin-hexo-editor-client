@@ -118,6 +118,7 @@
 import { mapGetters } from 'vuex'
 import { stringSort } from '../../utils/common'
 import stringRandom from 'string-random'
+import message from '../../utils/message'
 export default {
   name: 'FrontmatterSelector',
   data () {
@@ -176,7 +177,7 @@ export default {
     onEdit (key) {
       this.tmpKey = key
       this.currentKey = key
-      this.currentValue = this.frontmatters[key]
+      this.currentValue = JSON.stringify(this.frontmatters[key])
       this.editingDialog = true
     },
     onCancel () {
@@ -189,10 +190,15 @@ export default {
       this.updateFrontmatters({ ['newKey' + stringRandom(4)]: 'value' })
     },
     async onSave () {
-      if (this.tmpKey) { await this.removeFrontmatters([this.tmpKey]) }
-      this.tmpKey = null
-      await this.updateFrontmatters({ [this.currentKey]: this.currentValue })
-      this.onCancel()
+      try {
+        JSON.parse(this.currentValue)
+        if (this.tmpKey) { await this.removeFrontmatters([this.tmpKey]) }
+        this.tmpKey = null
+        await this.updateFrontmatters({ [this.currentKey]: JSON.parse(this.currentValue) })
+        this.onCancel()
+      } catch (_) {
+        message.error({ message: '格式化失败', caption: '请检查【值】是否符合JSON格式', position: 'center', timeout: '1000' })
+      }
     }
   }
 }

@@ -21,9 +21,30 @@ export function updatePostByOptions (state, opt = {}) {
  */
 export function updatePostByFrontmatters (state, opt = {}) {
   const update = opt.update || {}
+  const restrictedKeys = [
+    '_id',
+    '_content',
+    'slug',
+    'date',
+    'updated',
+    'raw',
+    'layout',
+    'published',
+    'title',
+    'tags',
+    'category',
+    'categories'
+  ]
+  restrictedKeys.map(key => {
+    delete update[key]
+  })
   const remove = opt.remove || []
   updatePostByOptions(state, update)
-  remove.map(key => Vue.delete(state.data.post, key))
+  remove.map(key => {
+    if (!restrictedKeys.includes(key)) {
+      Vue.delete(state.data.post, key)
+    }
+  })
 }
 
 export function updatePostByTitle (state, title) {

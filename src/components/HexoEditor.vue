@@ -33,6 +33,7 @@
           @on-scroll-down="onScrollDown"
         ></monaco-editor>
       </div>
+      <!-- TODO: 恢复预览功能 -->
       <markdown-previewer
         class="col"
         :title="post.title"
