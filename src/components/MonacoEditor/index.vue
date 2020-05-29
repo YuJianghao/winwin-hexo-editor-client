@@ -88,7 +88,8 @@ export default {
       scrollbar: {
         vertical: 'auto',
         horizontal: 'hidden',
-        verticalScrollbarSize: 10
+        verticalScrollbarSize: 10,
+        useShadows: false
       },
       fontSize: 14,
       lineHeight: 25,

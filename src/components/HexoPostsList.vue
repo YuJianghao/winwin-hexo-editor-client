@@ -1,13 +1,11 @@
 <template>
   <div
-    class="col"
+    class="col column"
     v-show="show"
-    style=";flex:0 0 300px;"
+    style=";flex:0 0 300px;border-right: 1px solid rgba(0, 0, 0, 0.12);"
   >
-    <q-scroll-area
-      class="full-height"
-      style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
-    >
+    <hexo-posts-list-bar></hexo-posts-list-bar>
+    <q-scroll-area class="col">
       <q-list>
         <q-item v-if="empty">
           <q-item-section>
@@ -81,11 +79,13 @@
 <script>
 import { getDatetimeStringDefault } from 'src/utils/post'
 import { mapState, mapGetters } from 'vuex'
-import PostContextMenu from 'components/PostContextMenu.vue'
+import PostContextMenu from 'components/PostContextMenu'
+import HexoPostsListBar from 'components/HexoPostsListBar'
 export default {
   name: 'HexoPostsList',
   components: {
-    PostContextMenu
+    PostContextMenu,
+    HexoPostsListBar
   },
   data () {
     return {
