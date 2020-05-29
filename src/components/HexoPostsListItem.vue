@@ -6,7 +6,7 @@
     @right="(e)=>{onRight(e,post._id)}"
     @left="(e)=>{onLeft(e,post._id)}"
     @click="onClick(post._id)"
-    @contextmenu="contextMenuPostIdCache=post._id"
+    @contextmenu="$emit('on-context-menu')"
   >
     <template v-slot:left>
       <div class="row items-center">
@@ -27,16 +27,16 @@
     </template>
     <q-item
       clickable
-      v-ripple
+      :class="{'bg-blue-1':selected}"
     >
       <q-item-section>
         <q-item-label class="row">
           <q-badge
-            color="grey"
+            :color="selected?'grey-8':'grey'"
             class="q-mr-xs"
             v-if="!post.published"
           >草稿</q-badge>
-          <span class="text-bold text-grey-10">
+          <span class="text-bold" :class="selected?'text-primary':'text-grey-10'">
             {{post.title}}
           </span>
           <q-space />
@@ -61,8 +61,8 @@
           <q-badge
             v-for="tag in post.tags"
             :key="tag"
-            color="grey-3"
-            text-color="grey"
+            :color="selected?'primary':'grey-3'"
+            :text-color="selected?'white':'grey'"
             :label="tag"
             class="itemtag"
           />
@@ -83,6 +83,10 @@ export default {
     post: {
       type: Object,
       default: null
+    },
+    selected: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

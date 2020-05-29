@@ -16,9 +16,11 @@
           v-for="(item,key) in postsList"
           :key="key"
           :post="item"
+          :selected="editorCoreData.post?item._id===editorCoreData.post._id:false"
           @on-left="onLeft"
           @on-right="onRight"
           @on-click="viewPostById"
+          @on-context-menu="contextMenuPostIdCache=item._id"
         ></hexo-posts-list-item>
       </q-list>
     </q-scroll-area>
@@ -60,6 +62,7 @@ export default {
     },
     // externals
     ...mapState({
+      editorCoreData: state => state.editorCore.data,
       editorUi: state => state.editorUi
     }),
     ...mapGetters({
