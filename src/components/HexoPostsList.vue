@@ -12,60 +12,16 @@
             <q-item-label>没有文章</q-item-label>
           </q-item-section>
         </q-item>
-        <q-slide-item
+        <hexo-posts-list-item
           v-for="(item,key) in postsList"
-          left-color="blue"
-          right-color="red"
           :key="key"
-          @right="(e)=>{onRight(e,item._id)}"
-          @left="(e)=>{onLeft(e,item._id)}"
-          @click="viewPostById(item._id)"
-          @contextmenu="contextMenuPostIdCache=item._id"
-        >
-          <template v-slot:left>
-            <div class="row items-center">
-              <q-icon
-                left
-                name="edit"
-              /> 编辑
-            </div>
-          </template>
-          <template v-slot:right>
-            <div class="row items-center">
-              删除
-              <q-icon
-                right
-                name="delete"
-              />
-            </div>
-          </template>
-          <q-item
-            clickable
-            v-ripple
-          >
-            <q-item-section>
-              <q-item-label>
-                {{item.title}}
-                <q-badge
-                  color="grey"
-                  v-if="!item.published"
-                >草稿</q-badge>
-              </q-item-label>
-              <q-item-label
-                caption
-                lines="2"
-                v-if="item.date"
-              >{{getDateString(item.date)}}</q-item-label>
-            </q-item-section>
-            <q-item-section
-              side
-              top
-            >
-              <q-item-label caption>
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-slide-item>
+          :post="item"
+          :selected="editorCoreData.post?item._id===editorCoreData.post._id:false"
+          @on-left="onLeft"
+          @on-right="onRight"
+          @on-click="viewPostById"
+          @on-context-menu="contextMenuPostIdCache=item._id"
+        ></hexo-posts-list-item>
       </q-list>
     </q-scroll-area>
     <post-context-menu
@@ -77,15 +33,16 @@
 </template>
 
 <script>
-import { getDatetimeStringDefault } from 'src/utils/post'
 import { mapState, mapGetters } from 'vuex'
 import PostContextMenu from 'components/PostContextMenu'
 import HexoPostsListBar from 'components/HexoPostsListBar'
+import HexoPostsListItem from 'components/HexoPostsListItem'
 export default {
   name: 'HexoPostsList',
   components: {
     PostContextMenu,
-    HexoPostsListBar
+    HexoPostsListBar,
+    HexoPostsListItem
   },
   data () {
     return {
@@ -105,6 +62,7 @@ export default {
     },
     // externals
     ...mapState({
+      editorCoreData: state => state.editorCore.data,
       editorUi: state => state.editorUi
     }),
     ...mapGetters({
@@ -128,14 +86,11 @@ export default {
     async deletePostById (_id) {
       this.$store.dispatch('deletePostById', { _id })
     },
-    getDateString (d) {
-      return getDatetimeStringDefault(d)
-    },
-    onLeft ({ reset }, _id) {
+    onLeft ({ reset, _id }) {
       this.editPostById(_id)
       this.finalize(reset, 1)
     },
-    onRight ({ reset }, _id) {
+    onRight ({ reset, _id }) {
       this.deletePostById(_id)
       this.finalize(reset, 1)
     },
