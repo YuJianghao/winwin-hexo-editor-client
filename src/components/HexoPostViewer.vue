@@ -1,35 +1,37 @@
 <template>
   <div
-    class="col"
+    class="col column"
     v-if="show"
-    @dblclick="editPostById"
   >
-    <q-scroll-area class="full-height">
-      <q-markdown
-        class="q-pa-md q-pr-lg"
-        style="max-width:768px;margin:0 auto"
-        :src="title+post._content"
-      >
-      </q-markdown>
-    </q-scroll-area>
+    <hexo-post-viewer-bar></hexo-post-viewer-bar>
+    <markdown-previewer
+      class="col"
+      :title="post.title"
+      :content="post._content"
+      @on-edit="editPostById"
+    ></markdown-previewer>
   </div>
 </template>
 
 <script>
 import { date } from 'quasar'
 import { mapState, mapGetters } from 'vuex'
+import MarkdownPreviewer from './MarkdownPreviewer'
+import HexoPostViewerBar from './HexoPostViewerBar'
 export default {
   name: 'HexoPostViewer',
+  components: {
+    MarkdownPreviewer,
+    HexoPostViewerBar
+  },
   computed: {
     show () {
-      return this.editorUiViewing || this.editorUiEditing
+      return this.editorUiViewing
     },
     post () {
       return this.editorCoreData.post
     },
     title () {
-      // return `# ${this.post.title}\n${this.post.date
-      //   ? this.getDateString(this.post.date) : ''}\n`
       return `# ${this.post.title}\n`
     },
     // externals

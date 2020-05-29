@@ -4,6 +4,14 @@
     v-show="show"
     style="border-right: 1px solid rgba(0, 0, 0, 0.12);user-select:none;flex:0 0 200px;"
   >
+    <q-toolbar
+      class="bg-grey-2 q-px-none"
+      :style="toolbarStyle"
+    >
+      <q-toolbar-title class="text-grey" style="margin-left:14px;">
+        HEXO
+      </q-toolbar-title>
+    </q-toolbar>
     <q-list
       class="bg-grey-2 q-py-xs full-width"
       dense
@@ -111,6 +119,15 @@ export default {
   computed: {
     show () {
       return !this.editorUi.full
+    },
+    toolbarHeight () {
+      return this.editorUi.actionbar.height
+    },
+    toolbarStyle () {
+      return {
+        'min-height': this.editorUi.actionbar.height,
+        'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
+      }
     },
     postsCount () {
       return this.editorCoreDataPostsCount
