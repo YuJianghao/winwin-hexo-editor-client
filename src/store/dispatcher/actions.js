@@ -169,13 +169,20 @@ export async function editPostById ({ rootGetters, commit, dispatch }, payload =
   (_id && (_id !== rootGetters['editorCore/dataPostId']))
   if (requestSave) {
     await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-      await dispatch('editPostById', { _id, force: true })
+      await dispatch('editPostByIdDispatcher', { _id, force: true })
       resolve()
     })
   } else {
-    await dispatch('editorCore/loadPostById', { _id, force })
-    commit('editorUi/editPost')
+    await dispatch('editPostByIdDispatcher', { _id, force })
   }
+}
+
+export async function editPostByIdDispatcher ({ commit, dispatch }, payload = {}) {
+  logger.log('editPostByIdDispatcher', payload)
+  const _id = payload._id || null
+  const force = payload.force || false
+  await dispatch('editorCore/loadPostById', { _id, force })
+  commit('editorUi/editPost', { _id, force })
 }
 
 /**
