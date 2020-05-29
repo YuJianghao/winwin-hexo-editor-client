@@ -234,7 +234,6 @@ export async function unpublishPostById ({ state, commit, dispatch }, payload = 
   }
 }
 
-// TODO：需要测试
 export async function saveGit () {
   try {
     await hexoService.saveGit()
@@ -243,7 +242,6 @@ export async function saveGit () {
   }
 }
 
-// TODO：需要测试
 export async function syncGit ({ dispatch }) {
   try {
     await hexoService.syncGit()
@@ -257,7 +255,6 @@ export async function syncGit ({ dispatch }) {
   }
 }
 
-// TODO：需要测试
 export async function deploy () {
   try {
     await hexoService.deploy()
