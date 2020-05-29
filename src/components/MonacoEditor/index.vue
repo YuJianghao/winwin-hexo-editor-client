@@ -91,12 +91,12 @@ export default {
         verticalScrollbarSize: 10,
         useShadows: false
       },
-      fontSize: 14,
-      lineHeight: 25,
+      fontSize: 12,
+      lineHeight: 18,
       wordWrap: 'on',
       lineNumbers: 'off',
       cursorBlinking: 'smooth',
-      fontFamily: 'Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace'
+      fontFamily: 'Menlo,Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace'
     }
     this.editor = monaco.editor.create(dom, editorOptions)
 
