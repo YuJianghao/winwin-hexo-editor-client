@@ -73,16 +73,21 @@ export async function viewPostById ({ rootGetters, commit, dispatch }, payload =
   logger.log('viewPostById', payload)
   const _id = payload._id || null
   const force = payload.force || false
+  // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
+  const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
+  (_id !== rootGetters['editorCore/dataPostId'])
+  async function dispatcher (payload) {
+    await dispatch('editorCore/loadPostById', payload)
+    commit('editorUi/viewPost')
+  }
   try {
-    if (!force && !rootGetters['editorCore/isPostSaved']) {
+    if (requestSave) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-        await dispatch('editorCore/loadPostById', { _id, force: true })
-        commit('editorUi/viewPost')
+        await dispatcher({ _id, force: true })
         resolve()
       })
     } else {
-      await dispatch('editorCore/loadPostById', { _id, force })
-      commit('editorUi/viewPost')
+      await dispatcher({ _id, force })
     }
   } catch (err) {
     message.error({ message: '文章载入失败', caption: err.message })
