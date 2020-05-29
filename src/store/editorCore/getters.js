@@ -48,9 +48,6 @@ export function otherStatus (state) {
 
 // ============
 
-export function dataPostId (state) {
-  return state.post ? state.post._id : null
-}
 export function dataPostsCount (state) {
   return dataPostsList(state).length
 }
@@ -80,6 +77,9 @@ export function dataPostFrontmatters (state) {
   return frontmatters
 }
 
+export function dataPostId (state) {
+  return state.data.post ? state.data.post._id : null
+}
 export function dataPostEmpty (state) {
   return !state.data.post
 }

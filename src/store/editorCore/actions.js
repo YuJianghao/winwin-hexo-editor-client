@@ -62,7 +62,12 @@ export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
   }
 }
 
-function getValidId (state, _id, force) {
+/**
+ * 验证id是否有效（无效则引发异常），是否是当前文章id
+ * @param {Object} state 状态
+ * @param {String} _id 需要查询的id
+ */
+function getValidId (state, _id) {
   if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
   const validId = _id || state.data.post._id
   if (validId && !state.data.posts[validId]) throw new Error('Invalid post id ' + validId)
@@ -74,6 +79,11 @@ function getValidId (state, _id, force) {
   }
 }
 
+/**
+ * 验证是否试图在非强制情况下放弃更改，是则引发异常
+ * @param {Object} state 状态
+ * @param {Boolean} force 是否强制操作
+ */
 function checkSaved (state, force) {
   if (!state.status.saved && !force) throw new Error('Unsaved change, use force=true to override.')
 }
