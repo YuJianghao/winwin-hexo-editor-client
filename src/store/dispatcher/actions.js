@@ -189,7 +189,7 @@ export async function publishPostById ({ getters, rootGetters, dispatch }, paylo
   try {
     if (!force && !rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-        await dispatch('editorCore/publishPostById', { _id, force: true })
+        await dispatch('publishPostById', { _id, force: true })
         resolve()
       })
     } else {
@@ -211,15 +211,12 @@ export async function unpublishPostById ({ rootGetters, dispatch }, payload = {}
   try {
     if (!force && !rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '你确认要取消发布么？未保存的文件会丢失', '继续取消发布', 'red', '返回', 'primary', 'cancel', async resolve => {
-        await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
-          await dispatch('editorCore/unpublishPostById', { _id, force: true })
-          resolve()
-        })
+        await dispatch('unpublishPostById', { _id, force: true })
         resolve()
       })
     } else {
       await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
-        await dispatch('editorCore/unpublishPostById', { _id, force: true })
+        await dispatch('editorCore/unpublishPostById', { _id, force })
         resolve()
       })
     }
