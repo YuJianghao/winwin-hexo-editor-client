@@ -15,6 +15,7 @@
           :data="frontmattersList"
           :columns="columns"
           row-key="name"
+          :pagination="{ rowsPerPage: 0 }"
         >
           <template v-slot:body="props">
             <q-tr :props="props">
@@ -60,6 +61,7 @@
         <q-item
           clickable
           dense
+          @click="onAdd"
         >
           <q-item-section>
             <q-item-label>添加</q-item-label>
@@ -70,16 +72,60 @@
         </q-item>
       </q-scroll-area>
     </div>
+    <q-dialog
+      v-model="editingDialog"
+      persistent
+    >
+      <q-card style="min-width:500px">
+        <q-card-section class="q-pb-none">
+          <div class="text-h6">修改Frontmatter - {{tmpKey}}</div>
+        </q-card-section>
+        <q-card-section class="column items-center q-pt-sm">
+          <q-input
+            class="col full-width"
+            v-model="currentKey"
+            type="text"
+            label="键"
+          />
+          <q-input
+            class="col full-width"
+            v-model="currentValue"
+            type="text"
+            label="值"
+          />
+        </q-card-section>
+        <q-separator />
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="取消"
+            color="grey"
+            @click="onCancel"
+          />
+          <q-btn
+            flat
+            label="完成"
+            color="primary"
+            @click="onSave"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { stringSort } from '../../utils/common'
+import stringRandom from 'string-random'
 export default {
   name: 'FrontmatterSelector',
   data () {
     return {
+      editingDialog: false,
+      tmpKey: null,
+      currentKey: null,
+      currentValue: null,
       toolbarHeight: '42px',
       columns: [
         { name: 'action', label: '操作', align: 'center' },
@@ -118,18 +164,35 @@ export default {
     })
   },
   methods: {
-    updateFrontmatters (opt) {
-      this.$store.dispatch('setPostByFrontmatters', { update: opt })
+    async updateFrontmatters (opt) {
+      await this.$store.dispatch('setPostByFrontmatters', { update: opt })
     },
-    removeFrontmatters (keys) {
-      this.$store.dispatch('setPostByFrontmatters', { remove: keys })
+    async removeFrontmatters (keys) {
+      await this.$store.dispatch('setPostByFrontmatters', { remove: keys })
     },
     onDelete (key) {
       this.removeFrontmatters([key])
     },
     onEdit (key) {
-      console.log(key)
-      this.updateFrontmatters({ [key]: [123] })
+      this.tmpKey = key
+      this.currentKey = key
+      this.currentValue = this.frontmatters[key]
+      this.editingDialog = true
+    },
+    onCancel () {
+      this.tmpKey = null
+      this.currentKey = null
+      this.currentValue = null
+      this.editingDialog = false
+    },
+    onAdd () {
+      this.updateFrontmatters({ ['newKey' + stringRandom(4)]: 'value' })
+    },
+    async onSave () {
+      if (this.tmpKey) { await this.removeFrontmatters([this.tmpKey]) }
+      this.tmpKey = null
+      await this.updateFrontmatters({ [this.currentKey]: this.currentValue })
+      this.onCancel()
     }
   }
 }
