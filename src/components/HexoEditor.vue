@@ -9,13 +9,14 @@
         class="col column"
         style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
       >
-        <div :style="`height:${height}px;max-width:100%;transition:${duration}ms;`">
+        <div class="overflow-hidden"
+        >
           <q-input
             borderless
             :value="post.title"
-            :style="`height:${height}px;overflow-y:hidden;transition:${duration}ms;`"
+            :style="`height:${height}px;max-width:100%;transition:${duration}ms;border-bottom: 1px solid rgba(0, 0, 0, 0.12);`"
             input-class="text-left q-pa-none"
-            :input-style="`font-size:${titleSize}rem;text-indent:10px;transition:${duration}ms;`"
+            :input-style="inputStyle"
             @input="updateTitle"
             class="title"
           >
@@ -55,12 +56,22 @@ export default {
   },
   data () {
     return {
-      height: 80,
+      height: 42,
       duration: 150,
       scrollEventEnable: true
     }
   },
   computed: {
+    inputStyle () {
+      return {
+        // font-size:${titleSize}rem;text-indent:10px;transition:${duration}ms;font-weight:bold;
+        'font-size': this.titleSize + 'rem',
+        'text-indent': '10px',
+        transition: this.duration + 'ms',
+        'font-weight': 'bold',
+        'border-bottom': '1px solid black'
+      }
+    },
     preview () {
       return this.editorUi.preview
     },
@@ -86,7 +97,7 @@ export default {
   methods: {
     onScrollTop () {
       if (!this.scrollEventEnable) return
-      this.height = 80
+      this.height = 42
       this.scrollEventEnable = false
       window.setTimeout(() => { this.scrollEventEnable = true }, this.duration)
     },
