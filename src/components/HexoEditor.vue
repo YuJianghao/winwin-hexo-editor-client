@@ -37,7 +37,9 @@
         class="col"
         :title="post.title"
         :content="post._content"
+        v-show="false"
       ></markdown-previewer>
+      <editor-meta class="col" style="flex:0 0 300px"></editor-meta>
     </div>
   </div>
 </template>
@@ -46,13 +48,15 @@
 import MonacoEditor from './MonacoEditor'
 import HexoEditorBar from './HexoEditorBar'
 import MarkdownPreviewer from './MarkdownPreviewer'
+import EditorMeta from './EditorMeta'
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoEditor',
   components: {
     MonacoEditor,
     HexoEditorBar,
-    MarkdownPreviewer
+    MarkdownPreviewer,
+    EditorMeta
   },
   data () {
     return {

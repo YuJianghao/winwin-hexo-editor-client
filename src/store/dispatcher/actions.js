@@ -240,6 +240,10 @@ export async function setPostByCategoriesArray2d ({ commit }, cats) {
   logger.log('setPostByCategoriesArray2d')
   commit('editorCore/updatePostByCategoriesArray2D', cats)
 }
+export async function setPostByFrontmatters ({ commit }, opt) {
+  logger.log('setPostByFrontmatters')
+  commit('editorCore/updatePostByFrontmatters', opt)
+}
 
 // 操作相关
 
