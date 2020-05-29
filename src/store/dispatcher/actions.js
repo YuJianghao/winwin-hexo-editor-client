@@ -167,13 +167,17 @@ export async function editPostById ({ rootGetters, commit, dispatch }, payload =
   // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
   const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
   (_id && (_id !== rootGetters['editorCore/dataPostId']))
-  if (requestSave) {
-    await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-      await dispatch('editPostByIdDispatcher', { _id, force: true })
-      resolve()
-    })
-  } else {
-    await dispatch('editPostByIdDispatcher', { _id, force })
+  try {
+    if (requestSave) {
+      await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+        await dispatch('editPostByIdDispatcher', { _id, force: true })
+        resolve()
+      })
+    } else {
+      await dispatch('editPostByIdDispatcher', { _id, force })
+    }
+  } catch (err) {
+    message.error({ message: '文章载入失败', caption: err.message })
   }
 }
 
