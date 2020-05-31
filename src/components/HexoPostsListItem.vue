@@ -91,7 +91,7 @@ export default {
   },
   computed: {
     brief () {
-      const brief = this.post.brief || this.post._content.slice(0, 200)
+      const brief = this.post.brief
       return brief || '没有内容'
     }
   },
