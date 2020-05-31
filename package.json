@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
-    "@winwin/hexo-editor-sdk": "^0.1.0",
+    "@winwin/hexo-editor-sdk": "^0.2.0",
     "axios": "^0.18.1",
     "highlight.js": "^9.18.1",
     "list-to-tree": "^2.2.3",

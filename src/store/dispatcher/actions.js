@@ -35,6 +35,7 @@ export async function init ({ commit, dispatch }) {
     commit('editorUi/showLoading')
     commit('globalUser/init')
     await dispatch('editorCore/init')
+    await dispatch('editorSearch/init')
   } catch (err) {
     if (err.status === 401) return
     message.error({ message: '初始化失败', caption: err.message })
@@ -350,4 +351,12 @@ export async function setSortDirection ({ dispatch }, direction) {
 export async function toggleSortDirection ({ dispatch }) {
   logger.log('toggleSortDirection')
   await dispatch('editorSorter/toggleSortDirection')
+}
+
+// 搜索
+
+export async function search ({ dispatch }, payload) {
+  const q = payload.q || ''
+  const size = payload.size || ''
+  await dispatch('editorSearch/search', { q, size })
 }
