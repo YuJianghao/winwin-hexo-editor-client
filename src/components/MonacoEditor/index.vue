@@ -89,7 +89,7 @@ export default {
         vertical: 'auto',
         horizontal: 'hidden',
         verticalScrollbarSize: 10,
-        useShadows: false
+        useShadows: true
       },
       fontSize: 12,
       lineHeight: 18,

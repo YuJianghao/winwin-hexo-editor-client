@@ -2043,10 +2043,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@winwin/hexo-editor-sdk@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.npm.taobao.org/@winwin/hexo-editor-sdk/download/@winwin/hexo-editor-sdk-0.1.0.tgz#cb9fa3d5a13dac5d157fab3662f77603971c1223"
-  integrity sha1-y5+j1aE9rF0Vf6s2Yvd2A5ccEiM=
+"@winwin/hexo-editor-sdk@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/@winwin/hexo-editor-sdk/-/hexo-editor-sdk-0.2.0.tgz#6e69be2a4e06feb6dc4c1278fc155d066b6cc42b"
+  integrity sha512-RHilrLFCUOiMAljjyYWlDAngXDMcOOV9tjkJXaGTZw+Dn/7aMbgLGI2+SJFVXOHEFaTbLXUWFZ7r6DJoNM1lrA==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"

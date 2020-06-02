@@ -14,11 +14,11 @@
           <q-input
             borderless
             :value="post.title"
-            :style="`height:${height}px;max-width:100%;transition:${duration}ms;border-bottom: 1px solid rgba(0, 0, 0, 0.12);`"
-            input-class="text-left q-pa-none"
+            :style="`max-width:100%;border-bottom: 1px solid rgba(0, 0, 0, 0.12);`"
+            input-class="text-left text-bold q-pa-none"
             :input-style="inputStyle"
             @input="updateTitle"
-            class="title"
+            class="editor-title"
           >
           </q-input>
         </div>
@@ -29,8 +29,6 @@
           @input="updateContent"
           @on-save="savePost"
           @on-toggle-preview="togglePreview"
-          @on-scroll-top="onScrollTop"
-          @on-scroll-down="onScrollDown"
         ></monaco-editor>
       </div>
       <!-- TODO: 恢复预览功能 -->
@@ -62,19 +60,14 @@ export default {
   data () {
     return {
       height: 42,
-      duration: 150,
       scrollEventEnable: true
     }
   },
   computed: {
     inputStyle () {
       return {
-        // font-size:${titleSize}rem;text-indent:10px;transition:${duration}ms;font-weight:bold;
         'font-size': this.titleSize + 'rem',
-        'text-indent': '10px',
-        transition: this.duration + 'ms',
-        'font-weight': 'bold',
-        'border-bottom': '1px solid black'
+        'text-indent': '10px'
       }
     },
     preview () {
@@ -100,18 +93,6 @@ export default {
     })
   },
   methods: {
-    onScrollTop () {
-      if (!this.scrollEventEnable) return
-      this.height = 42
-      this.scrollEventEnable = false
-      window.setTimeout(() => { this.scrollEventEnable = true }, this.duration)
-    },
-    onScrollDown () {
-      if (!this.scrollEventEnable) return
-      this.height = 42
-      this.scrollEventEnable = false
-      window.setTimeout(() => { this.scrollEventEnable = true }, this.duration)
-    },
     updateTitle (e) {
       this.$store.dispatch('setPostByTitle', e)
     },
@@ -131,7 +112,12 @@ export default {
 .v-note-wrapper {
   z-index: 0;
 }
-.title .q-field__inner .q-field__control {
-  height: 80px !important;
+.editor-title{
+  .q-field__control{
+    height:35px;
+  }
+  .q-field__marginal{
+    height:35px;
+  }
 }
 </style>

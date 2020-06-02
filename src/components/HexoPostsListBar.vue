@@ -42,6 +42,15 @@
       flat
       stretch
       color="primary"
+      icon="search"
+      id="search-button"
+      @click="showSearchMenu=true"
+    >
+    </q-btn>
+    <q-btn
+      flat
+      stretch
+      color="primary"
       icon="unfold_more"
     >
       <q-menu
@@ -71,15 +80,23 @@
         </q-list>
       </q-menu>
     </q-btn>
+    <div style="position:absolute;top:0;left:0" class="full-width">
+     <search-menu v-model="showSearchMenu"></search-menu>
+    </div>
   </q-toolbar>
 </template>
 
 <script>
+import SearchMenu from './SearchMenu'
 import { mapState } from 'vuex'
 export default {
   name: 'HexoPostsListBar',
+  components: {
+    SearchMenu
+  },
   data () {
     return {
+      showSearchMenu: false,
       sortOptions: [
         { key: 'title', name: '标题' },
         { key: 'date', name: '编辑日期' }

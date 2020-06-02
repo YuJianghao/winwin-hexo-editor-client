@@ -127,7 +127,7 @@ export default {
       tmpKey: null,
       currentKey: null,
       currentValue: null,
-      toolbarHeight: '42px',
+      toolbarHeight: '36px',
       columns: [
         { name: 'action', label: '操作', align: 'center' },
         { name: 'key', label: '键', field: row => row.key, align: 'left' },
