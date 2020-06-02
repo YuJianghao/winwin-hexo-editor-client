@@ -72,6 +72,7 @@ All kinds of PR are welcomed, including crazy change!
 
 - Frontmatters支持
 - 文章搜索
+- Refresh token
 
 ### 0.2.2
 
