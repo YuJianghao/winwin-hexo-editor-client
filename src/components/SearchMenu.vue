@@ -7,25 +7,25 @@
     v-model="show"
     class="search-menu"
   >
-  <div>
+    <div>
 
-    <q-input
-      v-model="q"
-      square
-      borderless
-      class="q-px-md search-input"
-      style="border-bottom: 1px solid rgba(0, 0, 0, 0.12);"
-      @keyup.enter="search"
-      autofocus
-    >
-      <template v-slot:append>
-        <q-icon
-          name="search"
-          @click="search"
-        />
-      </template>
-    </q-input>
-  </div>
+      <q-input
+        v-model="q"
+        square
+        borderless
+        class="q-px-md search-input"
+        style="border-bottom: 1px solid rgba(0, 0, 0, 0.12);"
+        @keyup.enter="search"
+        autofocus
+      >
+        <template v-slot:append>
+          <q-icon
+            name="search"
+            @click="search"
+          />
+        </template>
+      </q-input>
+    </div>
     <div
       class="bg-blur col column"
       v-if="showResult"
@@ -35,19 +35,27 @@
           <q-item
             clickable
             v-close-popup
-            v-for="item in result"
+            v-for="item in resultByPost"
             :key="item._id+item.idx"
             @click="viewPostById(item._id)"
           >
             <q-item-section>
               <q-item-label class="text-bold">{{posts[item._id].title}}</q-item-label>
-              <q-item-label caption>
-                <span>{{item.str.slice(0,size)}}</span>
+              <q-item-label
+                caption
+                class="ellipsis-3-lines"
+              >
                 <span
-                  class="text-primary text-bold"
-                  style="border-bottom: 2px solid;"
-                >{{item.str.slice(size,size+serverQ.length)}}</span>
-                <span>{{item.str.slice(-size)}}...</span>
+                  v-for="o in item.result"
+                  :key="o._id+o.idx"
+                >
+                  <span>{{o.str.slice(0,o.start)}}</span>
+                  <span
+                    class="text-primary text-bold bg-blue-1 q-px-xs"
+                  >{{o.str.slice(o.start,o.start+serverQ.length)}}</span>
+                  <span>{{o.str.slice(o.start+serverQ.length)}}</span>
+                  ...
+                </span>
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -68,7 +76,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'SearchMenu',
   props: {
@@ -109,6 +117,9 @@ export default {
     ...mapState({
       editorCoreData: state => state.editorCore.data,
       editorSearch: state => state.editorSearch
+    }),
+    ...mapGetters({
+      resultByPost: 'editorSearch/resultByPost'
     })
   },
   methods: {
@@ -123,12 +134,12 @@ export default {
 }
 </script>
 <style lang="scss">
-.search-input{
-  .q-field__control{
-    height:35px;
+.search-input {
+  .q-field__control {
+    height: 35px;
   }
-  .q-field__marginal{
-    height:35px;
+  .q-field__marginal {
+    height: 35px;
   }
 }
 </style>

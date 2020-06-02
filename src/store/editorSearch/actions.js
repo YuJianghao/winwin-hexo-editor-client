@@ -26,5 +26,5 @@ export async function init ({ dispatch }) {
 export async function clear ({ commit }) {
   commit('setQ', null)
   commit('setResult', [])
-  commit('setSize', 20)
+  commit('setSize', 15)
 }
