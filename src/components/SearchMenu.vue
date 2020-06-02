@@ -5,13 +5,16 @@
     content-style="width: 300px;height:65vh"
     content-class="shadow-24 column no-wrap"
     v-model="show"
+    class="search-menu"
   >
+  <div>
+
     <q-input
       v-model="q"
       square
       borderless
-      class="q-px-md"
-      style="height:36px;border-bottom: 1px solid rgba(0, 0, 0, 0.12);"
+      class="q-px-md search-input"
+      style="border-bottom: 1px solid rgba(0, 0, 0, 0.12);"
       @keyup.enter="search"
       autofocus
     >
@@ -22,6 +25,7 @@
         />
       </template>
     </q-input>
+  </div>
     <div
       class="bg-blur col column"
       v-if="showResult"
@@ -118,3 +122,13 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.search-input{
+  .q-field__control{
+    height:35px;
+  }
+  .q-field__marginal{
+    height:35px;
+  }
+}
+</style>
