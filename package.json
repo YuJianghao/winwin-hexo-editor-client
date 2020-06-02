@@ -1,6 +1,6 @@
 {
   "name": "@winwin/hexo-editor-client",
-  "version": "0.2.2",
+  "version": "0.3.0-0",
   "description": "A Vue & Quasar SPA web application for editing HEXO blogs.",
   "main": "index.js",
   "productName": "Hexo Editor",
@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
-    "@winwin/hexo-editor-sdk": "^0.1.0",
+    "@winwin/hexo-editor-sdk": "^0.2.0",
     "axios": "^0.18.1",
     "highlight.js": "^9.18.1",
     "list-to-tree": "^2.2.3",
@@ -59,6 +59,7 @@
   "devDependencies": {
     "@quasar/app": "^1.0.0",
     "@quasar/quasar-app-extension-dotenv": "^1.0.0",
+    "@quasar/quasar-app-extension-qmarkdown": "^1.0.27",
     "@quasar/quasar-app-extension-testing": "^1.0.0",
     "@quasar/quasar-app-extension-testing-e2e-cypress": "^1.0.0-beta.11",
     "@quasar/quasar-app-extension-testing-quality": "^1.0.0-beta.8",

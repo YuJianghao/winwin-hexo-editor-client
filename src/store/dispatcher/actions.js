@@ -35,6 +35,7 @@ export async function init ({ commit, dispatch }) {
     commit('editorUi/showLoading')
     commit('globalUser/init')
     await dispatch('editorCore/init')
+    await dispatch('editorSearch/init')
   } catch (err) {
     if (err.status === 401) return
     message.error({ message: '初始化失败', caption: err.message })
@@ -73,11 +74,13 @@ export async function viewPostById ({ rootGetters, commit, dispatch }, payload =
   logger.log('viewPostById', payload)
   const _id = payload._id || null
   const force = payload.force || false
+  // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
+  const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
+  (_id && (_id !== rootGetters['editorCore/dataPostId']))
   try {
-    if (!force && !rootGetters['editorCore/isPostSaved']) {
+    if (requestSave) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-        await dispatch('editorCore/loadPostById', { _id, force: true })
-        commit('editorUi/viewPost')
+        await dispatch('viewPostById', { _id, force: true })
         resolve()
       })
     } else {
@@ -162,16 +165,29 @@ export async function editPostById ({ rootGetters, commit, dispatch }, payload =
   logger.log('editPostById', payload)
   const _id = payload._id || null
   const force = payload.force || false
-  if (!force && !rootGetters['editorCore/isPostSaved']) {
-    await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-      await dispatch('editorCore/loadPostById', { _id, force: true })
-      commit('editorUi/editPost')
-      resolve()
-    })
-  } else {
-    await dispatch('editorCore/loadPostById', { _id, force })
-    commit('editorUi/editPost')
+  // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
+  const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
+  (_id && (_id !== rootGetters['editorCore/dataPostId']))
+  try {
+    if (requestSave) {
+      await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+        await dispatch('editPostByIdDispatcher', { _id, force: true })
+        resolve()
+      })
+    } else {
+      await dispatch('editPostByIdDispatcher', { _id, force })
+    }
+  } catch (err) {
+    message.error({ message: '文章载入失败', caption: err.message })
   }
+}
+
+export async function editPostByIdDispatcher ({ commit, dispatch }, payload = {}) {
+  logger.log('editPostByIdDispatcher', payload)
+  const _id = payload._id || null
+  const force = payload.force || false
+  await dispatch('editorCore/loadPostById', { _id, force })
+  commit('editorUi/editPost', { _id, force })
 }
 
 /**
@@ -185,7 +201,7 @@ export async function publishPostById ({ getters, rootGetters, dispatch }, paylo
   try {
     if (!force && !rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-        await dispatch('editorCore/publishPostById', { _id, force: true })
+        await dispatch('publishPostById', { _id, force: true })
         resolve()
       })
     } else {
@@ -207,15 +223,12 @@ export async function unpublishPostById ({ rootGetters, dispatch }, payload = {}
   try {
     if (!force && !rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '你确认要取消发布么？未保存的文件会丢失', '继续取消发布', 'red', '返回', 'primary', 'cancel', async resolve => {
-        await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
-          await dispatch('editorCore/unpublishPostById', { _id, force: true })
-          resolve()
-        })
+        await dispatch('unpublishPostById', { _id, force: true })
         resolve()
       })
     } else {
       await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
-        await dispatch('editorCore/unpublishPostById', { _id, force: true })
+        await dispatch('editorCore/unpublishPostById', { _id, force })
         resolve()
       })
     }
@@ -239,6 +252,10 @@ export async function setPostByTags ({ commit }, tags) {
 export async function setPostByCategoriesArray2d ({ commit }, cats) {
   logger.log('setPostByCategoriesArray2d')
   commit('editorCore/updatePostByCategoriesArray2D', cats)
+}
+export async function setPostByFrontmatters ({ commit }, opt) {
+  logger.log('setPostByFrontmatters')
+  commit('editorCore/updatePostByFrontmatters', opt)
 }
 
 // 操作相关
@@ -334,4 +351,13 @@ export async function setSortDirection ({ dispatch }, direction) {
 export async function toggleSortDirection ({ dispatch }) {
   logger.log('toggleSortDirection')
   await dispatch('editorSorter/toggleSortDirection')
+}
+
+// 搜索
+
+export async function search ({ dispatch }, payload) {
+  logger.log('search', payload)
+  const q = payload.q || ''
+  const size = payload.size || ''
+  await dispatch('editorSearch/search', { q, size })
 }

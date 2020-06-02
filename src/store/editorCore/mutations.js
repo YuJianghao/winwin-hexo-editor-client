@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { listToObject } from 'src/utils/common'
 
 // post state
@@ -10,6 +11,40 @@ export function loadPost (state, post) {
 export function updatePostByOptions (state, opt = {}) {
   const post = Object.assign({}, state.data.post)
   updatePost(state, Object.assign(post, opt))
+}
+
+/**
+ *
+ * @param {Object} opt 参数
+ * @param {Object} [opt.update] 需要更新的数据
+ * @param {Array} [opt.remove] 需要删除的键
+ */
+export function updatePostByFrontmatters (state, opt = {}) {
+  const update = opt.update || {}
+  const restrictedKeys = [
+    '_id',
+    '_content',
+    'slug',
+    'date',
+    'updated',
+    'raw',
+    'layout',
+    'published',
+    'title',
+    'tags',
+    'category',
+    'categories'
+  ]
+  restrictedKeys.map(key => {
+    delete update[key]
+  })
+  const remove = opt.remove || []
+  updatePostByOptions(state, update)
+  remove.map(key => {
+    if (!restrictedKeys.includes(key)) {
+      Vue.delete(state.data.post, key)
+    }
+  })
 }
 
 export function updatePostByTitle (state, title) {

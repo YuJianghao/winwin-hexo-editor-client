@@ -1,3 +1,4 @@
+import { extend } from 'quasar'
 import { objectToList, isEmptyObject } from 'src/utils/common'
 import { Logger } from 'src/utils/logger'
 import LTT from 'list-to-tree'
@@ -47,18 +48,40 @@ export function otherStatus (state) {
 
 // ============
 
-export function dataPostId (state) {
-  return state.post ? state.post._id : null
-}
 export function dataPostsCount (state) {
   return dataPostsList(state).length
 }
 export function dataPostsList (state) {
   return objectToList(state.data.posts)
 }
+export function dataPostFrontmatters (state) {
+  if (dataPostEmpty(state)) return {}
+  const frontmatters = extend({}, state.data.post)
+  const restrictedKeys = [
+    '_id',
+    '_content',
+    'slug',
+    'date',
+    'updated',
+    'raw',
+    'layout',
+    'published',
+    'title',
+    'tags',
+    'category',
+    'categories'
+  ]
+  restrictedKeys.forEach(key => {
+    if (typeof frontmatters[key] !== 'undefined') delete frontmatters[key]
+  })
+  return frontmatters
+}
 
+export function dataPostId (state) {
+  return state.data.post ? state.data.post._id : null
+}
 export function dataPostEmpty (state) {
-  return !!state.data.post
+  return !state.data.post
 }
 export function dataPostPublished (state) {
   return state.data.post ? state.data.post.published : false
