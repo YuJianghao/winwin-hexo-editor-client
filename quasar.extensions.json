@@ -40,5 +40,9 @@
     ],
     "zapbrowser": "Chrome"
   },
-  "@quasar/testing-security-antivuln": {}
+  "@quasar/testing-security-antivuln": {},
+  "@quasar/qmarkdown": {
+    "import_md": true,
+    "import_vmd": true
+  }
 }

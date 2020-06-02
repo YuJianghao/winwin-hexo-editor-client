@@ -53,3 +53,8 @@ export async function deploy () {
 export async function clean () {
   await hexo.clean()
 }
+
+export async function search (q, size) {
+  const res = await hexo.search(q, size)
+  return res.data
+}

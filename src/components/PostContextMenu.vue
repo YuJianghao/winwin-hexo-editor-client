@@ -5,8 +5,8 @@
     no-refocus
     @before-hide="$emit('on-before-hide')"
     @before-show="$emit('on-before-show')"
-    transition-show="jump-right"
-    transition-hide="jump-right"
+    transition-show="jump-up"
+    transition-hide="jump-down"
     anchor="center right"
     self="top left"
     @contextmenu.prevent=""

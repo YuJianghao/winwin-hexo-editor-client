@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "32722dbe0371ff7046a4",
-    "url": "css/3.d91ac15a.css"
+    "revision": "a23590b1ea5b56092c99",
+    "url": "css/3.38d38e5e.css"
   },
   {
-    "revision": "db20f6fd47f6b4ceb93f",
+    "revision": "c8b516d236dabdd81c60",
     "url": "css/4.e3cdc20a.css"
   },
   {
@@ -12,11 +12,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/5.a4e9c4c7.css"
   },
   {
-    "revision": "d9c378b58446fcab31f8",
-    "url": "css/app.0a9d79e3.css"
+    "revision": "cf1c3c12a2b70fc6951d",
+    "url": "css/app.543f640c.css"
   },
   {
-    "revision": "959356c257ce7366583b",
+    "revision": "81764f61c34f09d19414",
     "url": "css/monaco.2ef2445c.css"
   },
   {
@@ -60,16 +60,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/hexo-editor-logo.de328791.png"
   },
   {
-    "revision": "bee6b37dccdf6f5ce0a5c40d67ac0ff0",
+    "revision": "420ac5c12a7ebd738092aef15b53b329",
     "url": "index.html"
   },
   {
-    "revision": "32722dbe0371ff7046a4",
-    "url": "js/3.32722dbe.js"
+    "revision": "a23590b1ea5b56092c99",
+    "url": "js/3.a23590b1.js"
   },
   {
-    "revision": "db20f6fd47f6b4ceb93f",
-    "url": "js/4.db20f6fd.js"
+    "revision": "c8b516d236dabdd81c60",
+    "url": "js/4.c8b516d2.js"
   },
   {
     "revision": "37ffae59b70dfe125d91",
@@ -80,16 +80,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/6.815cfbb3.js"
   },
   {
-    "revision": "d9c378b58446fcab31f8",
-    "url": "js/app.573fbca8.js"
+    "revision": "cf1c3c12a2b70fc6951d",
+    "url": "js/app.6c7660f3.js"
   },
   {
-    "revision": "959356c257ce7366583b",
-    "url": "js/monaco.959356c2.js"
+    "revision": "81764f61c34f09d19414",
+    "url": "js/monaco.81764f61.js"
   },
   {
-    "revision": "856bdc6c185aeaf8398e",
-    "url": "js/vendor.856bdc6c.js"
+    "revision": "eb07492a4522e9774582",
+    "url": "js/vendor.eb07492a.js"
   },
   {
     "revision": "85f3ec0979beb52f0ecd9069eee832cd",

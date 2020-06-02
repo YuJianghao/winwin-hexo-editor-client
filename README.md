@@ -19,8 +19,8 @@ A Hexo Editor Client by winwin2011
 - [x] hexo generate/deploy/clean
 - [x] Basic authentication
 - [x] Post sort
-- [ ] front-matters
-- [ ] Search
+- [x] front-matters
+- [x] Search
 - [ ] ~~Image CDN~~(use [picgo](https://picgo.github.io/PicGo-Doc/zh/guide/) instead)
 - [ ] let me know what you need ...
 
@@ -67,6 +67,12 @@ All kinds of PR are welcomed, including crazy change!
 - [koel - A personal music streaming server that works](https://github.com/phanan/koel) ([homepage](https://koel.phanan.net/)). Koel shows me how to use stores to manage data!
 
 ## Release Note
+
+### 0.3.0
+
+- Frontmatters支持
+- 文章搜索
+- Refresh token
 
 ### 0.2.2
 

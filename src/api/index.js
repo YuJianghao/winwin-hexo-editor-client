@@ -1,6 +1,6 @@
 import hexo from '@winwin/hexo-editor-sdk'
 import users from './users'
-import request from './request'
+import { request } from './request'
 
 const apis = {
   hexo: hexo({

@@ -1,39 +1,82 @@
 <template>
   <div
     class="col column"
-    style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
     v-if="show"
   >
-    <div style="height:42px;max-width:100%">
-      <q-input
-        borderless
-        :value="post.title"
-        style="height:42px;overflow-y:hidden"
-        input-class="text-left q-pa-none bg-grey-2"
-        input-style="font-size:1.2rem;text-indent:1rem;font-weight:lighter;"
-        @input="updateTitle"
+    <hexo-editor-bar></hexo-editor-bar>
+    <div class="col row">
+      <div
+        class="col column"
+        style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
       >
-      </q-input>
+        <div class="overflow-hidden"
+        >
+          <q-input
+            borderless
+            :value="post.title"
+            :style="`max-width:100%;border-bottom: 1px solid rgba(0, 0, 0, 0.12);`"
+            input-class="text-left text-bold q-pa-none"
+            :input-style="inputStyle"
+            @input="updateTitle"
+            class="editor-title"
+          >
+          </q-input>
+        </div>
+        <monaco-editor
+          class="col"
+          style="flex:1;height:0;max-width:100%"
+          :value="post._content"
+          @input="updateContent"
+          @on-save="savePost"
+          @on-toggle-preview="togglePreview"
+        ></monaco-editor>
+      </div>
+      <!-- TODO: 恢复预览功能 -->
+      <markdown-previewer
+        class="col"
+        :title="post.title"
+        :content="post._content"
+        v-show="false"
+      ></markdown-previewer>
+      <editor-meta class="col" style="flex:0 0 300px"></editor-meta>
     </div>
-    <monaco-editor
-      style="flex:1;height:0;max-width:100%"
-      :value="post._content"
-      @input="updateContent"
-      @on-save="savePost"
-      @on-toggle-preview="togglePreview"
-    ></monaco-editor>
   </div>
 </template>
 
 <script>
 import MonacoEditor from './MonacoEditor'
+import HexoEditorBar from './HexoEditorBar'
+import MarkdownPreviewer from './MarkdownPreviewer'
+import EditorMeta from './EditorMeta'
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoEditor',
   components: {
-    MonacoEditor
+    MonacoEditor,
+    HexoEditorBar,
+    MarkdownPreviewer,
+    EditorMeta
+  },
+  data () {
+    return {
+      height: 42,
+      scrollEventEnable: true
+    }
   },
   computed: {
+    inputStyle () {
+      return {
+        'font-size': this.titleSize + 'rem',
+        'text-indent': '10px'
+      }
+    },
+    preview () {
+      return this.editorUi.preview
+    },
+    titleSize () {
+      const size = this.height / 66
+      return size > 1 ? size : 1
+    },
     show () {
       return this.editorUiEditing
     },
@@ -42,7 +85,8 @@ export default {
     },
     // externals
     ...mapState({
-      editorCoreData: state => state.editorCore.data
+      editorCoreData: state => state.editorCore.data,
+      editorUi: state => state.editorUi
     }),
     ...mapGetters({
       editorUiEditing: 'editorUi/editing'
@@ -58,15 +102,22 @@ export default {
     savePost () {
       this.$store.dispatch('savePost')
     },
-    // TODO: 放到dispatcher里
     togglePreview () {
       this.$store.commit('editorUi/togglePreview')
     }
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .v-note-wrapper {
   z-index: 0;
+}
+.editor-title{
+  .q-field__control{
+    height:35px;
+  }
+  .q-field__marginal{
+    height:35px;
+  }
 }
 </style>

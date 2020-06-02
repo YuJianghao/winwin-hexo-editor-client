@@ -6,6 +6,7 @@ import editorUi from './editorUi'
 import editorCore from './editorCore'
 import editorFilter from './editorFilter'
 import editorSorter from './editorSorter'
+import editorSearch from './editorSearch'
 
 // import example from './module-example'
 
@@ -32,6 +33,7 @@ export default function (/* { ssrContext } */) {
       editorCore,
       editorFilter,
       editorSorter,
+      editorSearch,
       globalUser
       // example
     },
