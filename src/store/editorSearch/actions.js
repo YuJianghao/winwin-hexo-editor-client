@@ -6,10 +6,11 @@ const logger = new Logger({ prefix: 'editorSearch/Actions' })
 export function someAction (context) {
 }
 */
-export async function search ({ state, commit }, payload = {}) {
+export async function search ({ state, commit, dispatch }, payload = {}) {
   const q = payload.q || null
   if (!q) {
     logger.log('empty query')
+    await dispatch('clear')
     return {}
   }
   const size = payload.size || state.size

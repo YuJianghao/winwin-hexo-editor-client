@@ -356,6 +356,7 @@ export async function toggleSortDirection ({ dispatch }) {
 // 搜索
 
 export async function search ({ dispatch }, payload) {
+  logger.log('search', payload)
   const q = payload.q || ''
   const size = payload.size || ''
   await dispatch('editorSearch/search', { q, size })
