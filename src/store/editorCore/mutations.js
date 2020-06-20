@@ -8,7 +8,23 @@ export function loadPost (state, post) {
   markSaved(state)
 }
 
+export function markUpdateKey (state, key) {
+  if (!state.data.post || !state.data.post._whe_delete) return
+  if (state.data.post._whe_delete.indexOf(key) === -1) return
+  state.data.post._whe_delete.splice(state.data.post._whe_delete.indexOf(key), 1)
+  if (state.data.post._whe_delete.length === 0) {
+    Vue.delete(state.data.post, '_whe_delete')
+  }
+}
+
+export function markDeleteKey (state, key) {
+  if (!state.data.post) return
+  if (!state.data.post._whe_delete) state.data.post._whe_delete = []
+  state.data.post._whe_delete.push(key)
+}
+
 export function updatePostByOptions (state, opt = {}) {
+  Object.keys(opt).map(key => markUpdateKey(state, key))
   const post = Object.assign({}, state.data.post)
   updatePost(state, Object.assign(post, opt))
 }
@@ -33,18 +49,21 @@ export function updatePostByFrontmatters (state, opt = {}) {
     'title',
     'tags',
     'category',
-    'categories'
+    'categories',
+    '_whe_delete',
+    '_whe_brief'
   ]
   restrictedKeys.map(key => {
     delete update[key]
   })
   const remove = opt.remove || []
-  updatePostByOptions(state, update)
   remove.map(key => {
     if (!restrictedKeys.includes(key)) {
       Vue.delete(state.data.post, key)
+      markDeleteKey(state, key)
     }
   })
+  updatePostByOptions(state, update)
 }
 
 export function updatePostByTitle (state, title) {

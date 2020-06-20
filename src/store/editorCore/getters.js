@@ -69,7 +69,9 @@ export function dataPostFrontmatters (state) {
     'title',
     'tags',
     'category',
-    'categories'
+    'categories',
+    '_whe_delete',
+    '_whe_brief'
   ]
   restrictedKeys.forEach(key => {
     if (typeof frontmatters[key] !== 'undefined') delete frontmatters[key]
