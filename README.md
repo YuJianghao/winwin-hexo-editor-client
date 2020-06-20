@@ -68,6 +68,11 @@ All kinds of PR are welcomed, including crazy change!
 
 ## Release Note
 
+### 0.3.2
+
+- 修复不能删除的bug
+- 更新一些变量命名
+
 ### 0.3.0
 
 - Frontmatters支持
