@@ -10,7 +10,8 @@ export function loadPost (state, post) {
 
 export function markUpdateKey (state, key) {
   if (!state.data.post || !state.data.post._whe_delete) return
-  Vue.delete(state.data.post._whe_delete, key)
+  if (state.data.post._whe_delete.indexOf(key) === -1) return
+  state.data.post._whe_delete.splice(state.data.post._whe_delete.indexOf(key), 1)
   if (state.data.post._whe_delete.length === 0) {
     Vue.delete(state.data.post, '_whe_delete')
   }
@@ -56,13 +57,13 @@ export function updatePostByFrontmatters (state, opt = {}) {
     delete update[key]
   })
   const remove = opt.remove || []
-  updatePostByOptions(state, update)
   remove.map(key => {
     if (!restrictedKeys.includes(key)) {
       Vue.delete(state.data.post, key)
       markDeleteKey(state, key)
     }
   })
+  updatePostByOptions(state, update)
 }
 
 export function updatePostByTitle (state, title) {
