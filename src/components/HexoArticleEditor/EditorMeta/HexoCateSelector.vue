@@ -123,7 +123,7 @@ export default {
     })
   },
   methods: {
-    async setPostByCategoriesArray2d (cats) {
+    setPostByCategoriesArray2d (cats) {
       this.$emit('on-update', postCategoriesArray2d2Raw(cats))
     },
     selected (item) {

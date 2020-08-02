@@ -1,5 +1,5 @@
 <template>
-  <q-scroll-area class="full-height">
+  <q-scroll-area class="full-height" v-if="article">
     <meta-title title="基础信息"></meta-title>
     <category-editor
       :categories="article.categories"

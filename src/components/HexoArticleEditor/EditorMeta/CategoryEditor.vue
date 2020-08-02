@@ -32,11 +32,7 @@ import HexoCateSelector from './HexoCateSelector'
 import { postCategoriesRaw2Array2d } from 'src/utils/common'
 export default {
   name: 'CategoryEditor',
-  props: {
-    categories: {
-      default: () => []
-    }
-  },
+  props: ['categories'], // undefined or categories
   components: {
     HexoCateSelector
   },
@@ -47,6 +43,7 @@ export default {
   },
   computed: {
     categoriesList () {
+      if (!this.categories) return [[]]
       return postCategoriesRaw2Array2d(this.categories)[0]
     }
   }
