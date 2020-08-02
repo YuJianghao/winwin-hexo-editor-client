@@ -1,5 +1,5 @@
 <template>
-  <div v-if="categories">
+  <div>
     <q-item
       clickable
       dense
@@ -10,7 +10,7 @@
       </q-item-section>
       <q-item-section>
         <q-item-label>
-          {{categoriesList.length?'':'无'}}
+          {{categoriesList&&categoriesList.length?'':'无'}}
           <q-badge
             v-for="(item,key) in categoriesList"
             :key="key"
@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     categoriesList () {
-      if (!this.categories) return [[]]
+      if (!this.categories) return []
       return postCategoriesRaw2Array2d(this.categories)[0]
     }
   }

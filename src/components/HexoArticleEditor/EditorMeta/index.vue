@@ -9,7 +9,7 @@
       @on-update="e=>$emit('on-category-update',e)"
     ></category-editor>
     <tag-editor
-      :tags="article.tags"
+      :tags="article.tags||[]"
       @on-update="e=>$emit('on-tag-update',e)"
     ></tag-editor>
     <q-separator />

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="tags">
+  <div>
     <q-item
       clickable
       dense
@@ -10,7 +10,7 @@
       </q-item-section>
       <q-item-section>
         <q-item-label>
-          {{tags.length?'':'无'}}
+          {{tags&&tags.length?'':'无'}}
           <q-badge
             v-for="(item,key) in tags"
             :key="key"
