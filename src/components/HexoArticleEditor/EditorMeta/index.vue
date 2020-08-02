@@ -3,7 +3,7 @@
     class="full-height"
     v-if="article"
   >
-    <meta-title title="基础信息"></meta-title>
+    <meta-title title="详细信息"></meta-title>
     <category-editor
       :categories="article.categories"
       @on-update="e=>$emit('on-category-update',e)"

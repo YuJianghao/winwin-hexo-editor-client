@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="tags">
     <q-item
       clickable
       dense
@@ -22,7 +22,10 @@
         </q-item-label>
       </q-item-section>
       <q-menu fit>
-        <hexo-tag-selector @on-update="e=>$emit('on-update',e)" :tags="tags"></hexo-tag-selector>
+        <hexo-tag-selector
+          @on-update="e=>$emit('on-update',e)"
+          :tags="tags"
+        ></hexo-tag-selector>
       </q-menu>
     </q-item>
   </div>

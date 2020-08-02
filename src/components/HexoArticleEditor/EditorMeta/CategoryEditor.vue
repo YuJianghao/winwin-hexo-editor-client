@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="categories">
     <q-item
       clickable
       dense
