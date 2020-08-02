@@ -5,7 +5,19 @@
   >
     <hexo-nav-list style="max-width:200px;max-height:100%"></hexo-nav-list>
     <hexo-posts-list style="max-width:300px;max-height:100%"></hexo-posts-list>
-    <hexo-article-editor style="max-height:100%" @on-update="onArticleUpdate"></hexo-article-editor>
+
+    <div
+      class="col column"
+      v-if="show"
+    >
+      <hexo-editor-bar></hexo-editor-bar>
+      <hexo-article-editor
+        style="max-height:100%"
+        @on-update="onArticleUpdate"
+        @on-save="$store.dispatch('savePost')"
+      ></hexo-article-editor>
+    </div>
+
     <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
     <hexo-welcome style="max-height:100%"></hexo-welcome>
     <q-inner-loading :showing="editorUi.loading.show">
@@ -24,7 +36,8 @@ import HexoPostViewer from '../components/HexoPostViewer'
 import HexoNavList from '../components/HexoNavList'
 import HexoWelcome from '../components/HexoWelcome'
 import HexoArticleEditor from '../components/HexoArticleEditor'
-import { mapState } from 'vuex'
+import HexoEditorBar from 'components/HexoEditorBar'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Hexo',
   components: {
@@ -32,7 +45,8 @@ export default {
     HexoPostViewer,
     HexoNavList,
     HexoWelcome,
-    HexoArticleEditor
+    HexoArticleEditor,
+    HexoEditorBar
   },
   data () {
     return {
@@ -41,8 +55,14 @@ export default {
     }
   },
   computed: {
+    show () {
+      return this.editorUiEditing
+    },
     ...mapState({
       editorUi: state => state.editorUi
+    }),
+    ...mapGetters({
+      editorUiEditing: 'editorUi/editing'
     })
   },
   methods: {

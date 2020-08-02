@@ -1,57 +1,49 @@
 <template>
-  <div
-    class="col column"
-    v-if="show"
-  >
-    <hexo-editor-bar></hexo-editor-bar>
-    <div class="col row">
-      <div
-        class="col column"
-        style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
-      >
-        <div class="overflow-hidden">
-          <q-input
-            borderless
-            :value="post.title"
-            :style="`max-width:100%;border-bottom: 1px solid rgba(0, 0, 0, 0.12);`"
-            input-class="text-left text-bold q-pa-none"
-            :input-style="inputStyle"
-            @input="updateTitle"
-            class="editor-title"
-          >
-          </q-input>
-        </div>
-        <monaco-editor
-          class="col"
-          style="flex:1;height:0;max-width:100%"
-          :value="post._content"
-          @input="updateContent"
-          @on-save="savePost"
-          @on-toggle-preview="togglePreview"
-        ></monaco-editor>
+  <div class="col row">
+    <div
+      class="col column"
+      style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
+    >
+      <div class="overflow-hidden">
+        <q-input
+          borderless
+          :value="post.title"
+          :style="`max-width:100%;border-bottom: 1px solid rgba(0, 0, 0, 0.12);`"
+          input-class="text-left text-bold q-pa-none"
+          :input-style="inputStyle"
+          @input="updateTitle"
+          class="editor-title"
+        >
+        </q-input>
       </div>
-      <editor-meta
+      <monaco-editor
         class="col"
-        style="flex:0 0 300px"
-        :article="post"
-        @on-fm-update="updateFm"
-        @on-tag-update="updateTag"
-        @on-category-update="updateCategory"
-      ></editor-meta>
+        style="flex:1;height:0;max-width:100%"
+        :value="post._content"
+        @input="updateContent"
+        @on-save="savePost"
+        @on-toggle-preview="togglePreview"
+      ></monaco-editor>
     </div>
+    <editor-meta
+      class="col"
+      style="flex:0 0 300px"
+      :article="post"
+      @on-fm-update="updateFm"
+      @on-tag-update="updateTag"
+      @on-category-update="updateCategory"
+    ></editor-meta>
   </div>
 </template>
 
 <script>
 import MonacoEditor from './MonacoEditor'
-import HexoEditorBar from './HexoEditorBar'
 import EditorMeta from './EditorMeta'
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 export default {
   name: 'HexoEditor',
   components: {
     MonacoEditor,
-    HexoEditorBar,
     EditorMeta
   },
   data () {
@@ -74,9 +66,6 @@ export default {
       const size = this.height / 66
       return size > 1 ? size : 1
     },
-    show () {
-      return this.editorUiEditing
-    },
     post () {
       return this.editorCoreData.post
     },
@@ -84,9 +73,6 @@ export default {
     ...mapState({
       editorCoreData: state => state.editorCore.data,
       editorUi: state => state.editorUi
-    }),
-    ...mapGetters({
-      editorUiEditing: 'editorUi/editing'
     })
   },
   methods: {
@@ -116,7 +102,7 @@ export default {
       this.onUpdate(article)
     },
     savePost () {
-      this.$store.dispatch('savePost')
+      this.$emit('on-save')
     },
     togglePreview () {
       this.$store.commit('editorUi/togglePreview')
