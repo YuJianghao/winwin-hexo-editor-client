@@ -22,19 +22,19 @@
         </q-item-label>
       </q-item-section>
       <q-menu fit>
-        <hexo-cate-selector @on-update="e=>$emit('on-update',e)" :categories="categoriesList"></hexo-cate-selector>
+        <cate-selector @on-update="e=>$emit('on-update',e)" :categories="categoriesList"></cate-selector>
       </q-menu>
     </q-item>
   </div>
 </template>
 <script>
-import HexoCateSelector from './HexoCateSelector'
+import CateSelector from './CateSelector'
 import { postCategoriesRaw2Array2d } from 'src/utils/common'
 export default {
   name: 'CategoryEditor',
   props: ['categories'], // undefined or categories
   components: {
-    HexoCateSelector
+    CateSelector
   },
   data () {
     return {

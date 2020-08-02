@@ -22,16 +22,16 @@
         </q-item-label>
       </q-item-section>
       <q-menu fit>
-        <hexo-tag-selector
+        <tag-selector
           @on-update="e=>$emit('on-update',e)"
           :tags="tags"
-        ></hexo-tag-selector>
+        ></tag-selector>
       </q-menu>
     </q-item>
   </div>
 </template>
 <script>
-import HexoTagSelector from './HexoTagSelector'
+import TagSelector from './TagSelector'
 export default {
   name: 'TagEditor',
   props: {
@@ -41,7 +41,7 @@ export default {
     }
   },
   components: {
-    HexoTagSelector
+    TagSelector
   },
   data () {
     return {

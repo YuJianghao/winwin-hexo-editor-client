@@ -111,7 +111,6 @@ export default {
     availableCategories () {
       const ac = []
       ac.push.apply(ac, this.editorCoreDataCategoriesNameList)
-      console.log(this.categories)
       this.categories.forEach(pc => {
         if (!ac.includes(pc)) { ac.push(pc) }
       })

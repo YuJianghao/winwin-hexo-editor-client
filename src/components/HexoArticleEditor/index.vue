@@ -7,7 +7,7 @@
       <div class="overflow-hidden">
         <q-input
           borderless
-          :value="post.title"
+          :value="article.title"
           :style="`max-width:100%;border-bottom: 1px solid rgba(0, 0, 0, 0.12);`"
           input-class="text-left text-bold q-pa-none"
           :input-style="inputStyle"
@@ -19,16 +19,16 @@
       <monaco-editor
         class="col"
         style="flex:1;height:0;max-width:100%"
-        :value="post._content"
+        :value="article._content"
         @input="updateContent"
-        @on-save="savePost"
+        @on-save="saveArticle"
         @on-toggle-preview="togglePreview"
       ></monaco-editor>
     </div>
     <editor-meta
       class="col"
       style="flex:0 0 300px"
-      :article="post"
+      :article="article"
       @on-fm-update="updateFm"
       @on-tag-update="updateTag"
       @on-category-update="updateCategory"
@@ -66,7 +66,7 @@ export default {
       const size = this.height / 66
       return size > 1 ? size : 1
     },
-    post () {
+    article () {
       return this.editorCoreData.post
     },
     // externals
@@ -77,31 +77,31 @@ export default {
   },
   methods: {
     updateTitle (e) {
-      const article = Object.assign({}, this.post)
+      const article = Object.assign({}, this.article)
       article.title = e
       this.onUpdate(article)
     },
     updateContent (e) {
-      const article = Object.assign({}, this.post)
+      const article = Object.assign({}, this.article)
       article._content = e
       this.onUpdate(article)
     },
     updateFm (e) {
-      const article = Object.assign({}, this.post)
+      const article = Object.assign({}, this.article)
       article.frontmatters = e
       this.onUpdate(article)
     },
     updateTag (e) {
-      const article = Object.assign({}, this.post)
+      const article = Object.assign({}, this.article)
       article.tags = e
       this.onUpdate(article)
     },
     updateCategory (e) {
-      const article = Object.assign({}, this.post)
+      const article = Object.assign({}, this.article)
       article.categories = e
       this.onUpdate(article)
     },
-    savePost () {
+    saveArticle () {
       this.$emit('on-save')
     },
     togglePreview () {
