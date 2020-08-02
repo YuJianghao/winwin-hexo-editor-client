@@ -5,7 +5,7 @@
   >
     <hexo-nav-list style="max-width:200px;max-height:100%"></hexo-nav-list>
     <hexo-posts-list style="max-width:300px;max-height:100%"></hexo-posts-list>
-    <hexo-article-editor style="max-height:100%"></hexo-article-editor>
+    <hexo-article-editor style="max-height:100%" @on-update="onArticleUpdate"></hexo-article-editor>
     <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
     <hexo-welcome style="max-height:100%"></hexo-welcome>
     <q-inner-loading :showing="editorUi.loading.show">
@@ -48,6 +48,9 @@ export default {
   methods: {
     pageStyle (offset, height) {
       return 'height:' + (window.innerHeight - offset) + 'px'
+    },
+    onArticleUpdate (article) {
+      this.$store.dispatch('setPostByPost', article)
     }
   },
   async mounted () {

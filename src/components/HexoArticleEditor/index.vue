@@ -88,13 +88,18 @@ export default {
       this.$store.dispatch('setPostByTitle', e)
     },
     updateContent (e) {
-      this.$store.dispatch('setPostByContent', e)
+      const article = Object.assign({}, this.post)
+      article._content = e
+      this.onUpdate(article)
     },
     savePost () {
       this.$store.dispatch('savePost')
     },
     togglePreview () {
       this.$store.commit('editorUi/togglePreview')
+    },
+    onUpdate (article) {
+      this.$emit('on-update', article)
     }
   }
 }

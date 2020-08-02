@@ -237,6 +237,11 @@ export async function unpublishPostById ({ rootGetters, dispatch }, payload = {}
   }
 }
 
+export async function setPostByPost ({ commit }, article) {
+  logger.log('setPostByPost')
+  commit('editorCore/updatePost', article)
+}
+
 export async function setPostByTitle ({ commit }, title) {
   logger.log('setPostByTitle')
   commit('editorCore/updatePostByTitle', title)
