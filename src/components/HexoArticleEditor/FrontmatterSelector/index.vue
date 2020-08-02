@@ -116,9 +116,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { stringSort } from '../../utils/common'
+import { stringSort } from 'src/utils/common'
 import stringRandom from 'string-random'
-import message from '../../utils/message'
+import message from 'src/utils/message'
 export default {
   name: 'FrontmatterSelector',
   data () {

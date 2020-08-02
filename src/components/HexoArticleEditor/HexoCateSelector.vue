@@ -80,7 +80,7 @@
 <script>
 // TODO 把这个做成公共组件，不要和store交互
 import { mapGetters } from 'vuex'
-import { stringSort } from '../utils/common'
+import { stringSort } from 'src/utils/common'
 export default {
   name: 'HexoCateSelector',
   props: {

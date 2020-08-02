@@ -5,7 +5,7 @@
   >
     <hexo-nav-list style="max-width:200px;max-height:100%"></hexo-nav-list>
     <hexo-posts-list style="max-width:300px;max-height:100%"></hexo-posts-list>
-    <hexo-editor style="max-height:100%"></hexo-editor>
+    <hexo-article-editor style="max-height:100%"></hexo-article-editor>
     <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
     <hexo-welcome style="max-height:100%"></hexo-welcome>
     <q-inner-loading :showing="editorUi.loading.show">
@@ -23,7 +23,7 @@ import HexoPostsList from '../components/HexoPostsList'
 import HexoPostViewer from '../components/HexoPostViewer'
 import HexoNavList from '../components/HexoNavList'
 import HexoWelcome from '../components/HexoWelcome'
-import HexoEditor from '../components/HexoEditor'
+import HexoArticleEditor from '../components/HexoArticleEditor'
 import { mapState } from 'vuex'
 export default {
   name: 'Hexo',
@@ -32,7 +32,7 @@ export default {
     HexoPostViewer,
     HexoNavList,
     HexoWelcome,
-    HexoEditor
+    HexoArticleEditor
   },
   data () {
     return {

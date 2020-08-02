@@ -56,7 +56,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { stringSort } from '../utils/common'
+import { stringSort } from 'src/utils/common'
 export default {
   name: 'HexoTagSelector',
   data () {
