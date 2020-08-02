@@ -31,7 +31,7 @@
           @on-toggle-preview="togglePreview"
         ></monaco-editor>
       </div>
-      <editor-meta class="col" style="flex:0 0 300px"></editor-meta>
+      <editor-meta class="col" style="flex:0 0 300px" @on-fm-update="updateFm"></editor-meta>
     </div>
   </div>
 </template>
@@ -92,6 +92,11 @@ export default {
     updateContent (e) {
       const article = Object.assign({}, this.post)
       article._content = e
+      this.onUpdate(article)
+    },
+    updateFm (e) {
+      const article = Object.assign({}, this.post)
+      article.frontmatters = e
       this.onUpdate(article)
     },
     savePost () {

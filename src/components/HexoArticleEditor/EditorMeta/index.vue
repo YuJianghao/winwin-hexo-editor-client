@@ -1,6 +1,6 @@
 <template>
   <q-scroll-area class="full-height meta">
-    <frontmatter-editor class="meta-item"></frontmatter-editor>
+    <frontmatter-editor class="meta-item" @on-update="e=>$emit('on-fm-update',e)"></frontmatter-editor>
   </q-scroll-area>
 </template>
 

@@ -1,12 +1,7 @@
-import { extend } from 'quasar'
 import { objectToList, isEmptyObject } from 'src/utils/common'
 import { Logger } from 'src/utils/logger'
 import LTT from 'list-to-tree'
 const logger = new Logger({ prefix: 'editorCore/getters' })
-/*
-export function someGetter (state) {
-}
-*/
 
 // post status
 
@@ -56,27 +51,7 @@ export function dataPostsList (state) {
 }
 export function dataPostFrontmatters (state) {
   if (dataPostEmpty(state)) return {}
-  const frontmatters = extend({}, state.data.post)
-  const restrictedKeys = [
-    '_id',
-    '_content',
-    'slug',
-    'date',
-    'updated',
-    'raw',
-    'layout',
-    'published',
-    'title',
-    'tags',
-    'category',
-    'categories',
-    '_whe_delete',
-    '_whe_brief'
-  ]
-  restrictedKeys.forEach(key => {
-    if (typeof frontmatters[key] !== 'undefined') delete frontmatters[key]
-  })
-  return frontmatters
+  return state.data.post.frontmatters
 }
 
 export function dataPostId (state) {

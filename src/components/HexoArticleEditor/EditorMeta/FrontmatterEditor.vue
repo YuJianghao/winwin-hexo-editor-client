@@ -153,12 +153,22 @@ export default {
     })
   },
   methods: {
-    async updateFrontmatters (opt) {
-      await this.$store.dispatch('setPostByFrontmatters', { update: opt })
+    updateFrontmatters (opt) {
+      let fm = Object.assign({}, this.frontmatters)
+      fm = Object.assign(fm, opt)
+      this.onUpdate(fm)
     },
-    async removeFrontmatters (keys) {
-      await this.$store.dispatch('setPostByFrontmatters', { remove: keys })
+    removeFrontmatters (keys) {
+      const fm = Object.assign({}, this.frontmatters)
+      keys.map(key => [
+        delete fm[key]
+      ])
+      this.onUpdate(fm)
     },
+    onUpdate (fm) {
+      this.$emit('on-update', fm)
+    },
+    // buttons
     onDelete (key) {
       this.removeFrontmatters([key])
     },
@@ -168,19 +178,22 @@ export default {
       this.currentValue = JSON.stringify(this.frontmatters[key])
       this.editingDialog = true
     },
+    onAdd () {
+      this.updateFrontmatters({ ['newKey' + stringRandom(4)]: 'value' })
+    },
+    // dialog buttons
     onCancel () {
       this.tmpKey = null
       this.currentKey = null
       this.currentValue = null
       this.editingDialog = false
     },
-    onAdd () {
-      this.updateFrontmatters({ ['newKey' + stringRandom(4)]: 'value' })
-    },
     async onSave () {
       try {
         JSON.parse(this.currentValue)
-        if (this.tmpKey) { await this.removeFrontmatters([this.tmpKey]) }
+        if (this.tmpKey !== this.currentKey) {
+          this.removeFrontmatters([this.tmpKey])
+        }
         this.tmpKey = null
         await this.updateFrontmatters({ [this.currentKey]: JSON.parse(this.currentValue) })
         this.onCancel()
