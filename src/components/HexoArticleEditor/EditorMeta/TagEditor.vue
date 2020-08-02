@@ -22,16 +22,21 @@
         </q-item-label>
       </q-item-section>
       <q-menu fit>
-        <hexo-tag-selector></hexo-tag-selector>
+        <hexo-tag-selector @on-update="e=>$emit('on-update',e)" :tags="tags"></hexo-tag-selector>
       </q-menu>
     </q-item>
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import HexoTagSelector from './HexoTagSelector'
 export default {
   name: 'TagEditor',
+  props: {
+    tags: {
+      type: Array,
+      default: () => []
+    }
+  },
   components: {
     HexoTagSelector
   },
@@ -39,14 +44,6 @@ export default {
     return {
       showTagsMenu: false
     }
-  },
-  computed: {
-    tags () {
-      return this.editorCoreDataPostTagsList
-    },
-    ...mapGetters({
-      editorCoreDataPostTagsList: 'editorCore/dataPostTagsList'
-    })
   }
 }
 </script>

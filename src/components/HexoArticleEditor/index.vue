@@ -9,8 +9,7 @@
         class="col column"
         style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
       >
-        <div class="overflow-hidden"
-        >
+        <div class="overflow-hidden">
           <q-input
             borderless
             :value="post.title"
@@ -31,7 +30,13 @@
           @on-toggle-preview="togglePreview"
         ></monaco-editor>
       </div>
-      <editor-meta class="col" style="flex:0 0 300px" @on-fm-update="updateFm"></editor-meta>
+      <editor-meta
+        class="col"
+        style="flex:0 0 300px"
+        :article="post"
+        @on-fm-update="updateFm"
+        @on-tag-update="updateTag"
+      ></editor-meta>
     </div>
   </div>
 </template>
@@ -99,6 +104,11 @@ export default {
       article.frontmatters = e
       this.onUpdate(article)
     },
+    updateTag (e) {
+      const article = Object.assign({}, this.post)
+      article.tags = e
+      this.onUpdate(article)
+    },
     savePost () {
       this.$store.dispatch('savePost')
     },
@@ -115,12 +125,12 @@ export default {
 .v-note-wrapper {
   z-index: 0;
 }
-.editor-title{
-  .q-field__control{
-    height:35px;
+.editor-title {
+  .q-field__control {
+    height: 35px;
   }
-  .q-field__marginal{
-    height:35px;
+  .q-field__marginal {
+    height: 35px;
   }
 }
 </style>

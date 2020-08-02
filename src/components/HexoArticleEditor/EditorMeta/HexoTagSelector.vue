@@ -59,6 +59,12 @@ import { mapGetters } from 'vuex'
 import { stringSort } from 'src/utils/common'
 export default {
   name: 'HexoTagSelector',
+  props: {
+    tags: {
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
       text: ''
@@ -75,15 +81,14 @@ export default {
     },
     postTags: {
       get () {
-        return this.editorCoreDataPostTagsList
+        return this.tags
       },
       set (v) {
-        this.$store.dispatch('setPostByTags', v)
+        this.$emit('on-update', v)
       }
     },
     // externals
     ...mapGetters({
-      editorCoreDataPostTagsList: 'editorCore/dataPostTagsList',
       editorCoreDataTagsNameList: 'editorCore/dataTagsNameList'
     })
   },
