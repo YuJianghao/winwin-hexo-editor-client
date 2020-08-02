@@ -85,7 +85,9 @@ export default {
   },
   methods: {
     updateTitle (e) {
-      this.$store.dispatch('setPostByTitle', e)
+      const article = Object.assign({}, this.post)
+      article.title = e
+      this.onUpdate(article)
     },
     updateContent (e) {
       const article = Object.assign({}, this.post)
