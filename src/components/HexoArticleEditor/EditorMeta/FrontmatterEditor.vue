@@ -1,77 +1,69 @@
 <template>
   <div class="column full-height frontmatter">
-    <q-toolbar :style="toolbarStyle">
-      <q-toolbar-title style="font-size:1.2em">
-        Front-matters
-      </q-toolbar-title>
-    </q-toolbar>
-    <div class="col">
-      <q-scroll-area class="full-height">
-        <q-table
-          dense
-          flat
-          square
-          hide-bottom
-          :data="frontmattersList"
-          :columns="columns"
-          row-key="name"
-          :pagination="{ rowsPerPage: 0 }"
-        >
-          <template v-slot:body="props">
-            <q-tr :props="props">
-              <q-td
-                auto-width
-                key="action"
-                :props="props"
-              >
-                <q-btn
-                  round
-                  size="xs"
-                  color="red"
-                  icon="delete"
-                  flat
-                  @click="onDelete(props.row.key)"
-                />
-                <q-btn
-                  round
-                  class="q-ml-xs"
-                  size="xs"
-                  color="primary"
-                  icon="edit"
-                  flat
-                  @click="onEdit(props.row.key)"
-                />
-              </q-td>
-              <q-td
-                auto-width
-                key="key"
-                :props="props"
-              >
-                {{ props.row.key }}
-              </q-td>
-              <q-td
-                key="value"
-                :props="props"
-              >
-                {{ props.row.value }}
-              </q-td>
-            </q-tr>
-          </template>
-        </q-table>
-        <q-item
-          clickable
-          dense
-          @click="onAdd"
-        >
-          <q-item-section>
-            <q-item-label>添加</q-item-label>
-          </q-item-section>
-          <q-item-section avatar="">
-            <q-icon name="add" />
-          </q-item-section>
-        </q-item>
-      </q-scroll-area>
-    </div>
+    <meta-title title="Front-matters"></meta-title>
+    <q-table
+      dense
+      flat
+      square
+      hide-bottom
+      :data="frontmattersList"
+      :columns="columns"
+      row-key="name"
+      :pagination="{ rowsPerPage: 0 }"
+    >
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td
+            auto-width
+            key="action"
+            :props="props"
+          >
+            <q-btn
+              round
+              size="xs"
+              color="red"
+              icon="delete"
+              flat
+              @click="onDelete(props.row.key)"
+            />
+            <q-btn
+              round
+              class="q-ml-xs"
+              size="xs"
+              color="primary"
+              icon="edit"
+              flat
+              @click="onEdit(props.row.key)"
+            />
+          </q-td>
+          <q-td
+            auto-width
+            key="key"
+            :props="props"
+          >
+            {{ props.row.key }}
+          </q-td>
+          <q-td
+            key="value"
+            :props="props"
+          >
+            {{ props.row.value }}
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
+    <q-item
+      clickable
+      dense
+      @click="onAdd"
+    >
+      <q-item-section>
+        <q-item-label>添加</q-item-label>
+      </q-item-section>
+      <q-item-section avatar="">
+        <q-icon name="add" />
+      </q-item-section>
+    </q-item>
     <q-dialog
       v-model="editingDialog"
       persistent
@@ -85,13 +77,13 @@
             class="col full-width"
             v-model="currentKey"
             type="text"
-            label="键"
+            label="键（字符串）"
           />
           <q-input
             class="col full-width"
             v-model="currentValue"
             type="text"
-            label="值"
+            label="值（JSON格式）"
           />
         </q-card-section>
         <q-separator />
@@ -119,15 +111,18 @@ import { mapGetters } from 'vuex'
 import { stringSort } from 'src/utils/common'
 import stringRandom from 'string-random'
 import message from 'src/utils/message'
+import MetaTitle from './MetaTitle'
 export default {
   name: 'FrontmatterSelector',
+  components: {
+    MetaTitle
+  },
   data () {
     return {
       editingDialog: false,
       tmpKey: null,
       currentKey: null,
       currentValue: null,
-      toolbarHeight: '36px',
       columns: [
         { name: 'action', label: '操作', align: 'center' },
         { name: 'key', label: '键', field: row => row.key, align: 'left' },
@@ -152,13 +147,6 @@ export default {
     },
     frontmatters () {
       return this.editorCoreDataPostFrontmatters
-    },
-    toolbarStyle () {
-      return {
-        height: this.toolbarHeight,
-        'min-height': this.toolbarHeight,
-        'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
-      }
     },
     ...mapGetters({
       editorCoreDataPostFrontmatters: 'editorCore/dataPostFrontmatters'
