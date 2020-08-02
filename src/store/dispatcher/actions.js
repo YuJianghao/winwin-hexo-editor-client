@@ -242,27 +242,6 @@ export async function setPostByPost ({ commit }, article) {
   commit('editorCore/updatePost', article)
 }
 
-export async function setPostByTitle ({ commit }, title) {
-  logger.log('setPostByTitle')
-  commit('editorCore/updatePostByTitle', title)
-}
-export async function setPostByContent ({ commit }, content) {
-  logger.log('setPostByContent')
-  commit('editorCore/updatePostByContent', content)
-}
-export async function setPostByTags ({ commit }, tags) {
-  logger.log('setPostByTags')
-  commit('editorCore/updatePostByTags', tags)
-}
-export async function setPostByCategoriesArray2d ({ commit }, cats) {
-  logger.log('setPostByCategoriesArray2d')
-  commit('editorCore/updatePostByCategoriesArray2D', cats)
-}
-export async function setPostByFrontmatters ({ commit }, opt) {
-  logger.log('setPostByFrontmatters')
-  commit('editorCore/updatePostByFrontmatters', opt)
-}
-
 // 操作相关
 
 export async function deploy ({ commit, dispatch }) {
