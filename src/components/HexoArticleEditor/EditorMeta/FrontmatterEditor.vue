@@ -1,6 +1,5 @@
 <template>
-  <div class="column full-height frontmatter">
-    <meta-title title="Front-matters"></meta-title>
+  <div class="frontmatter">
     <q-table
       dense
       flat
@@ -61,7 +60,7 @@
         <q-item-label>添加</q-item-label>
       </q-item-section>
       <q-item-section avatar="">
-        <q-icon name="add" />
+        <q-icon name="add" size="small"/>
       </q-item-section>
     </q-item>
     <q-dialog
@@ -111,11 +110,9 @@ import { mapGetters } from 'vuex'
 import { stringSort } from 'src/utils/common'
 import stringRandom from 'string-random'
 import message from 'src/utils/message'
-import MetaTitle from './MetaTitle'
 export default {
   name: 'FrontmatterSelector',
   components: {
-    MetaTitle
   },
   data () {
     return {

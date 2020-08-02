@@ -1,15 +1,22 @@
 <template>
   <q-scroll-area class="full-height meta">
+    <meta-title title="基础信息"></meta-title>
+    <tag-editor class="meta-item"></tag-editor>
+    <meta-title title="Front-matters"></meta-title>
     <frontmatter-editor class="meta-item" @on-update="e=>$emit('on-fm-update',e)"></frontmatter-editor>
   </q-scroll-area>
 </template>
 
 <script>
 import FrontmatterEditor from './FrontmatterEditor'
+import TagEditor from './TagEditor'
+import MetaTitle from './MetaTitle'
 export default {
   name: 'EditorMeta',
   components: {
-    FrontmatterEditor
+    MetaTitle,
+    FrontmatterEditor,
+    TagEditor
   },
   data () {
     return {}
