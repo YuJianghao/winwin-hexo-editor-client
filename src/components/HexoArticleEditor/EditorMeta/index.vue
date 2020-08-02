@@ -1,5 +1,8 @@
 <template>
-  <q-scroll-area class="full-height" v-if="article">
+  <q-scroll-area
+    class="full-height"
+    v-if="article"
+  >
     <meta-title title="基础信息"></meta-title>
     <category-editor
       :categories="article.categories"
@@ -9,9 +12,10 @@
       :tags="article.tags"
       @on-update="e=>$emit('on-tag-update',e)"
     ></tag-editor>
-    <q-separator/>
+    <q-separator />
     <meta-title title="Front-matters"></meta-title>
     <frontmatter-editor
+      :frontmatters="article.frontmatters"
       @on-update="e=>$emit('on-fm-update',e)"
     ></frontmatter-editor>
   </q-scroll-area>

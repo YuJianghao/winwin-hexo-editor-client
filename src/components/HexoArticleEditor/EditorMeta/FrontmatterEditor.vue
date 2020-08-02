@@ -106,13 +106,16 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { stringSort } from 'src/utils/common'
 import stringRandom from 'string-random'
 import message from 'src/utils/message'
 export default {
   name: 'FrontmatterSelector',
-  components: {
+  props: {
+    frontmatters: {
+      type: Object,
+      default: () => {}
+    }
   },
   data () {
     return {
@@ -137,17 +140,8 @@ export default {
         }).sort((a, b) => {
           return stringSort(a.key, b.key)
         }).map(item => Object.assign(item, { action: null }))
-      },
-      set (v) {
-        console.log(v)
       }
-    },
-    frontmatters () {
-      return this.editorCoreDataPostFrontmatters
-    },
-    ...mapGetters({
-      editorCoreDataPostFrontmatters: 'editorCore/dataPostFrontmatters'
-    })
+    }
   },
   methods: {
     updateFrontmatters (opt) {
