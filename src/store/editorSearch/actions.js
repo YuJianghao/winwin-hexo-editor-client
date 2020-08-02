@@ -1,4 +1,4 @@
-import * as hexoService from 'src/service/hexo'
+import * as postService from 'src/service/post'
 import { Logger } from 'src/utils/logger'
 
 const logger = new Logger({ prefix: 'editorSearch/Actions' })
@@ -14,7 +14,7 @@ export async function search ({ state, commit, dispatch }, payload = {}) {
     return {}
   }
   const size = payload.size || state.size
-  const res = await hexoService.search(q, size)
+  const res = await postService.search(q, size)
   commit('setQ', res.q)
   commit('setResult', res.result)
   commit('setSize', res.size)

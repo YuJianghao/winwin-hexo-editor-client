@@ -5,7 +5,7 @@ export function someAction (context) {
 
 import stringRandom from 'string-random'
 import { Logger } from 'src/utils/logger'
-import * as hexoService from 'src/service/hexo'
+import * as postService from 'src/service/post'
 import { replaceErrorMessage } from 'src/utils/common'
 const logger = new Logger({ prefix: 'EditorCore/Actions' })
 
@@ -47,7 +47,7 @@ export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
       title: '新文章',
       slug: stringRandom(16)
     }
-    post = await hexoService.addPost(Object.assign(defaultOpt, payload.options))
+    post = await postService.addPost(Object.assign(defaultOpt, payload.options))
   } catch (err) {
     throw replaceErrorMessage(err, '新建文章失败，请稍后再试')
   }
@@ -104,7 +104,7 @@ export async function loadAll ({ dispatch }) {
  */
 export async function loadPosts ({ commit }) {
   try {
-    const posts = await hexoService.getPosts()
+    const posts = await postService.getPosts()
     commit('loadPostsByList', posts)
   } catch (err) {
     throw replaceErrorMessage(err, '文章列表获取失败，请稍后再试')
@@ -116,7 +116,7 @@ export async function loadPosts ({ commit }) {
  */
 export async function loadCategories ({ commit }) {
   try {
-    const categories = await hexoService.getCategories()
+    const categories = await postService.getCategories()
     commit('loadCategoriesByList', categories)
   } catch (err) {
     throw replaceErrorMessage(err, '分类获取失败，请稍后再试')
@@ -128,7 +128,7 @@ export async function loadCategories ({ commit }) {
  */
 export async function loadTags ({ commit }) {
   try {
-    const tags = await hexoService.getTags()
+    const tags = await postService.getTags()
     commit('loadTagsByList', tags)
   } catch (err) {
     throw replaceErrorMessage(err, '标签获取失败，请稍后再试')
@@ -140,7 +140,7 @@ export async function loadTags ({ commit }) {
  */
 export async function savePost ({ state, dispatch, commit }) {
   try {
-    await hexoService.savePost(state.data.post)
+    await postService.savePost(state.data.post)
     commit('savePost')
   } catch (err) {
     throw replaceErrorMessage(err, '保存失败，请稍后再试')
@@ -165,7 +165,7 @@ export async function loadPostById ({ state, commit }, payload = {}) {
   if (samePost) return
   checkSaved(state, force)
   try {
-    const post = await hexoService.getPostById(validId)
+    const post = await postService.getPostById(validId)
     commit('loadPost', post)
   } catch (err) {
     throw replaceErrorMessage(err, '文章获取失败，请稍后再试')
@@ -184,7 +184,7 @@ export async function deletePostById ({ state, commit, dispatch }, payload = {})
   const { validId } = getValidId(state, _id, force)
   checkSaved(state, force)
   try {
-    await hexoService.deletePostById(validId)
+    await postService.deletePostById(validId)
   } catch (err) {
     throw replaceErrorMessage(err, '删除失败，请稍后再试')
   }
@@ -208,7 +208,7 @@ export async function publishPostById ({ state, commit, dispatch }, payload = {}
   const { validId } = getValidId(state, _id, force)
   checkSaved(state, force)
   try {
-    const post = await hexoService.publishPost(validId)
+    const post = await postService.publishPost(validId)
     commit('loadPost', post)
   } catch (err) {
     throw replaceErrorMessage(err, '文章发布失败，请稍后再试')
@@ -232,7 +232,7 @@ export async function unpublishPostById ({ state, commit, dispatch }, payload = 
   const { validId } = getValidId(state, _id, force)
   checkSaved(state, force)
   try {
-    const post = await hexoService.unpublishPost(validId)
+    const post = await postService.unpublishPost(validId)
     commit('loadPost', post)
   } catch (err) {
     throw replaceErrorMessage(err, '取消发布失败，请稍后再试')
@@ -246,7 +246,7 @@ export async function unpublishPostById ({ state, commit, dispatch }, payload = 
 
 export async function saveGit () {
   try {
-    await hexoService.saveGit()
+    await postService.saveGit()
   } catch (err) {
     throw replaceErrorMessage(err, '保存到git失败，请稍后再试')
   }
@@ -254,7 +254,7 @@ export async function saveGit () {
 
 export async function syncGit ({ dispatch }) {
   try {
-    await hexoService.syncGit()
+    await postService.syncGit()
   } catch (err) {
     throw replaceErrorMessage(err, '从git同步失败，请稍后再试')
   }
@@ -267,7 +267,7 @@ export async function syncGit ({ dispatch }) {
 
 export async function deploy () {
   try {
-    await hexoService.deploy()
+    await postService.deploy()
   } catch (err) {
     throw replaceErrorMessage(err, '部署失败，请稍后再试')
   }
