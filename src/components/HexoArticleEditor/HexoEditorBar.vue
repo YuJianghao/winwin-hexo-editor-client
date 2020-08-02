@@ -34,39 +34,14 @@
       label="删除"
       @click="deletePostById"
     />
-    <q-btn-dropdown
-      stretch
-      flat
-      v-model="showCatsMenu"
-      :class="showCatsMenu?'bg-grey-4':''"
-      style="transition:0.2s"
-    >
-      <template slot="label">
-        分类：
-        {{categories.length?'':'无'}}
-        <q-badge
-          v-for="(item,key) in categories"
-          :key="key"
-          color="primary"
-          text-color="white"
-          class="q-mr-xs"
-          :label="item"
-        />
-      </template>
-      <template>
-        <hexo-cate-selector></hexo-cate-selector>
-      </template>
-    </q-btn-dropdown>
   </q-toolbar>
 </template>
 
 <script>
-import HexoCateSelector from './HexoCateSelector'
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'HexoEditorBar',
   components: {
-    HexoCateSelector
   },
   data () {
     return {

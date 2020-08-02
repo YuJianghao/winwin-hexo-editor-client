@@ -36,6 +36,7 @@
         :article="post"
         @on-fm-update="updateFm"
         @on-tag-update="updateTag"
+        @on-category-update="updateCategory"
       ></editor-meta>
     </div>
   </div>
@@ -107,6 +108,11 @@ export default {
     updateTag (e) {
       const article = Object.assign({}, this.post)
       article.tags = e
+      this.onUpdate(article)
+    },
+    updateCategory (e) {
+      const article = Object.assign({}, this.post)
+      article.categories = e
       this.onUpdate(article)
     },
     savePost () {
