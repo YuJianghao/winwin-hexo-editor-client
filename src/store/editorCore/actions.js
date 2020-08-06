@@ -13,7 +13,7 @@ import * as categoryService from 'src/service/category'
 import * as tagService from 'src/service/tag'
 import * as hexoService from 'src/service/hexo'
 
-import { replaceErrorMessage } from 'src/utils/common'
+import { replaceErrorMessage, listToObject } from 'src/utils/common'
 
 /**
  * 初始化数据
@@ -111,19 +111,18 @@ export async function loadAll ({ dispatch }) {
 export async function loadPosts ({ commit }) {
   try {
     const posts = await postService.getArticleList()
-    commit('loadPostsByList', posts)
+    commit('loadPosts', listToObject(posts))
   } catch (err) {
     throw replaceErrorMessage(err, '文章列表获取失败，请稍后再试')
   }
 }
-
 /**
  * 载入分类列表
  */
 export async function loadCategories ({ commit }) {
   try {
     const categories = await categoryService.getCategories()
-    commit('loadCategoriesByList', categories)
+    commit('loadCategories', listToObject(categories))
   } catch (err) {
     throw replaceErrorMessage(err, '分类获取失败，请稍后再试')
   }
@@ -135,7 +134,7 @@ export async function loadCategories ({ commit }) {
 export async function loadTags ({ commit }) {
   try {
     const tags = await tagService.getTags()
-    commit('loadTagsByList', tags)
+    commit('loadTags', listToObject(tags))
   } catch (err) {
     throw replaceErrorMessage(err, '标签获取失败，请稍后再试')
   }
