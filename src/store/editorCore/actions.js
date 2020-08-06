@@ -1,7 +1,4 @@
-/*
-export function someAction (context) {
-}
-*/
+import * as mutationTypes from './mutation-types'
 
 import stringRandom from 'string-random'
 import { Logger } from 'src/utils/logger'
@@ -19,7 +16,7 @@ import { replaceErrorMessage, listToObject } from 'src/utils/common'
  * 初始化数据
  */
 export async function init ({ commit, dispatch }) {
-  commit('closePost')
+  commit(mutationTypes.closePost)
   await dispatch('loadAll')
 }
 
@@ -27,8 +24,8 @@ export async function init ({ commit, dispatch }) {
  * 销毁数据
  */
 export async function destroy ({ commit }) {
-  commit('closePost')
-  commit('resetAll')
+  commit(mutationTypes.closePost)
+  commit(mutationTypes.resetAll)
 }
 
 /**
@@ -61,8 +58,7 @@ export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
     await dispatch('loadPosts')
     if (post.categories) await dispatch('loadCategories')
     if (post.tags) await dispatch('loadTags')
-    commit('loadPost', post)
-    commit('markSaved')
+    commit(mutationTypes.loadPost, post)
   } catch (err) {
     throw replaceErrorMessage(err, '新文章创建成功，但数据更新失败，请手动刷新')
   }
@@ -111,7 +107,7 @@ export async function loadAll ({ dispatch }) {
 export async function loadPosts ({ commit }) {
   try {
     const posts = await postService.getArticleList()
-    commit('loadPosts', listToObject(posts))
+    commit(mutationTypes.loadPosts, listToObject(posts))
   } catch (err) {
     throw replaceErrorMessage(err, '文章列表获取失败，请稍后再试')
   }
@@ -122,7 +118,7 @@ export async function loadPosts ({ commit }) {
 export async function loadCategories ({ commit }) {
   try {
     const categories = await categoryService.getCategories()
-    commit('loadCategories', listToObject(categories))
+    commit(mutationTypes.loadCategories, listToObject(categories))
   } catch (err) {
     throw replaceErrorMessage(err, '分类获取失败，请稍后再试')
   }
@@ -134,7 +130,7 @@ export async function loadCategories ({ commit }) {
 export async function loadTags ({ commit }) {
   try {
     const tags = await tagService.getTags()
-    commit('loadTags', listToObject(tags))
+    commit(mutationTypes.loadTags, listToObject(tags))
   } catch (err) {
     throw replaceErrorMessage(err, '标签获取失败，请稍后再试')
   }
@@ -146,7 +142,7 @@ export async function loadTags ({ commit }) {
 export async function savePost ({ state, dispatch, commit }) {
   try {
     await postService.saveArticle(state.data.post)
-    commit('savePost')
+    commit(mutationTypes.savePost)
   } catch (err) {
     throw replaceErrorMessage(err, '保存失败，请稍后再试')
   }
@@ -171,7 +167,7 @@ export async function loadPostById ({ state, commit }, payload = {}) {
   checkSaved(state, force)
   try {
     const post = await postService.getArticleById(validId)
-    commit('loadPost', post)
+    commit(mutationTypes.loadPost, post)
   } catch (err) {
     throw replaceErrorMessage(err, '文章获取失败，请稍后再试')
   }
@@ -194,7 +190,7 @@ export async function deletePostById ({ state, commit, dispatch }, payload = {})
     throw replaceErrorMessage(err, '删除失败，请稍后再试')
   }
   try {
-    if (!_id || (state.data.post && state.data.post._id === _id)) { commit('closePost') }
+    if (!_id || (state.data.post && state.data.post._id === _id)) { commit(mutationTypes.closePost) }
     await dispatch('loadAll')
   } catch (err) {
     throw replaceErrorMessage(err, '文章已删除，但数据更新失败，请手动刷新')
@@ -214,7 +210,7 @@ export async function publishPostById ({ state, commit, dispatch }, payload = {}
   checkSaved(state, force)
   try {
     const post = await hexoService.publishPost(validId)
-    commit('loadPost', post)
+    commit(mutationTypes.loadPost, post)
   } catch (err) {
     throw replaceErrorMessage(err, '文章发布失败，请稍后再试')
   }
@@ -238,7 +234,7 @@ export async function unpublishPostById ({ state, commit, dispatch }, payload = 
   checkSaved(state, force)
   try {
     const post = await hexoService.unpublishPost(validId)
-    commit('loadPost', post)
+    commit(mutationTypes.loadPost, post)
   } catch (err) {
     throw replaceErrorMessage(err, '取消发布失败，请稍后再试')
   }
