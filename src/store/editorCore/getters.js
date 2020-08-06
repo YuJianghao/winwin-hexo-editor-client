@@ -1,44 +1,9 @@
-import { objectToList, isEmptyObject } from 'src/utils/common'
-import { Logger } from 'src/utils/logger'
-import LTT from 'list-to-tree'
-const logger = new Logger({ prefix: 'editorCore/getters' })
+import { objectToList } from 'src/utils/common'
 
 // post status
 
-export function isPostInit (state) {
-  return state.data.post !== null
-}
 export function isPostSaved (state) {
   return state.status.saved
-}
-export function isPostUnsaved (state) {
-  return !state.status.saved
-}
-export function postStatus (state) {
-  if (isPostInit(state)) return 'init'
-  if (isPostSaved(state)) return 'saved'
-  if (isPostUnsaved(state)) return 'unsaved'
-  logger.error('Unknown state', state)
-  return 'error'
-}
-
-// other status
-
-export function isOtherInit (state) {
-  return isEmptyObject(state.data.posts) &&
-    isEmptyObject(state.data.categories) &&
-    isEmptyObject(state.data.tags)
-}
-
-export function isOtherReady (state) {
-  return !isOtherInit(state)
-}
-
-export function otherStatus (state) {
-  if (isOtherInit(state)) return 'init'
-  if (isOtherReady(state)) return 'ready'
-  logger.error('Unknown state', state)
-  return 'error'
 }
 
 // ============
@@ -49,16 +14,8 @@ export function dataPostsCount (state) {
 export function dataPostsList (state) {
   return objectToList(state.data.posts)
 }
-export function dataPostFrontmatters (state) {
-  if (dataPostEmpty(state)) return {}
-  return state.data.post.frontmatters
-}
-
 export function dataPostId (state) {
   return state.data.post ? state.data.post._id : null
-}
-export function dataPostEmpty (state) {
-  return !state.data.post
 }
 export function dataPostPublished (state) {
   return state.data.post ? state.data.post.published : false
@@ -90,23 +47,6 @@ export function dataUnTagCount (state) {
   return objectToList(state.data.posts).filter(post => !post.tags).length
 }
 
-export function dataCategoriesTreeList (state) {
-  try {
-    const list = dataCategoriesList(state).map(category => {
-      const newObj = {}
-      if (!category.parent)newObj.parent = 0
-      return Object.assign(newObj, category)
-    })
-    const ltt = new LTT(list, {
-      key_id: '_id',
-      key_parent: 'parent',
-      key_child: '_child'
-    })
-    return ltt.GetTree() || []
-  } catch (e) {
-    logger.error('dataCategoriesTreeList', e)
-  }
-}
 export function dataCategoriesList (state) {
   return objectToList(state.data.categories)
 }
