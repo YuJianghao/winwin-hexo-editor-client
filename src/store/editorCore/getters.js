@@ -12,7 +12,7 @@ export function dataPostsCount (state) {
   return dataPostsList(state).length
 }
 export function dataPostsList (state) {
-  return objectToList(state.data.posts)
+  return objectToList(state.data.articles)
 }
 export function dataPostId (state) {
   return state.data.post ? state.data.post._id : null
@@ -44,7 +44,7 @@ export function dataTagsNameList (state) {
   return dataTagsList(state).map(tag => tag.name)
 }
 export function dataUnTagCount (state) {
-  return objectToList(state.data.posts).filter(post => !post.tags).length
+  return objectToList(state.data.articles).filter(post => !post.tags).length
 }
 
 export function dataCategoriesList (state) {
@@ -54,5 +54,5 @@ export function dataCategoriesNameList (state) {
   return dataCategoriesList(state).map(category => category.name)
 }
 export function dataUnCategoriesCount (state) {
-  return objectToList(state.data.posts).filter(post => !post.categories).length
+  return objectToList(state.data.articles).filter(post => !post.categories).length
 }

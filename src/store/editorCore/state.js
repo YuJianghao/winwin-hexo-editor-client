@@ -2,7 +2,7 @@ export default function () {
   return {
     data: {
       post: null,
-      posts: {},
+      articles: {},
       categories: {},
       tags: {}
     },

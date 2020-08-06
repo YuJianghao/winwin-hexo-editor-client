@@ -72,7 +72,7 @@ export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
 function getValidId (state, _id) {
   if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
   const validId = _id || state.data.post._id
-  if (validId && !state.data.posts[validId]) throw new Error('Invalid post id ' + validId)
+  if (validId && !state.data.articles[validId]) throw new Error('Invalid post id ' + validId)
   if (state.data.post && state.data.post._id === validId) {
     logger.log('Use opened post', validId)
     return { samePost: true, validId }

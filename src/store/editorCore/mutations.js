@@ -23,7 +23,7 @@ const mutations = {
   // load
 
   [mutationTypes.loadArticles] (state, posts) {
-    state.data.posts = posts
+    state.data.articles = posts
   },
 
   [mutationTypes.loadCategories] (state, categories) {
@@ -43,7 +43,7 @@ const mutations = {
   },
 
   [mutationTypes.resetArticles] (state, posts) {
-    state.data.posts = {}
+    state.data.articles = {}
   },
 
   [mutationTypes.resetCategories] (state, categories) {
