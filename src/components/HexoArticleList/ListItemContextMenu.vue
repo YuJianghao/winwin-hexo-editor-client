@@ -3,8 +3,6 @@
     touch-position
     context-menu
     no-refocus
-    @before-hide="$emit('on-before-hide')"
-    @before-show="$emit('on-before-show')"
     transition-show="jump-up"
     transition-hide="jump-down"
     anchor="center right"
@@ -140,7 +138,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { getDatetimeStringNoSec } from '../utils/post'
+import { getDatetimeStringNoSec } from 'src/utils/post'
 export default {
   name: 'PostContextMenu',
   props: {

@@ -4,8 +4,21 @@
     :style-fn="pageStyle"
   >
     <hexo-nav-list style="max-width:200px;max-height:100%"></hexo-nav-list>
-    <hexo-posts-list style="max-width:300px;max-height:100%"></hexo-posts-list>
-
+    <div
+      v-show="!editorUi.full"
+      class="col column"
+      style=";flex:0 0 300px;border-right: 1px solid rgba(0, 0, 0, 0.12);"
+    >
+      <hexo-posts-list-bar></hexo-posts-list-bar>
+      <hexo-article-list
+        style="max-width:300px;max-height:100%"
+        :selected="editorCoreData.post?editorCoreData.post._id:''"
+        :articleList="editorSorterPostsList"
+        @on-item-click="viewPostById"
+        @on-item-left="editPostById"
+        @on-item-right="deletePostById"
+      ></hexo-article-list>
+    </div>
     <div
       class="col column"
       v-if="show"
@@ -13,11 +26,11 @@
       <hexo-editor-bar></hexo-editor-bar>
       <hexo-article-editor
         style="max-height:100%"
+        :article="editorCoreData.post"
         @on-update="onArticleUpdate"
         @on-save="$store.dispatch('savePost')"
       ></hexo-article-editor>
     </div>
-
     <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
     <hexo-welcome style="max-height:100%"></hexo-welcome>
     <q-inner-loading :showing="editorUi.loading.show">
@@ -31,7 +44,8 @@
 
 <script>
 import '../css/hexo.scss'
-import HexoPostsList from '../components/HexoPostsList'
+import HexoArticleList from '../components/HexoArticleList'
+import HexoPostsListBar from 'components/HexoPostsListBar'
 import HexoPostViewer from '../components/HexoPostViewer'
 import HexoNavList from '../components/HexoNavList'
 import HexoWelcome from '../components/HexoWelcome'
@@ -41,7 +55,8 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Hexo',
   components: {
-    HexoPostsList,
+    HexoArticleList,
+    HexoPostsListBar,
     HexoPostViewer,
     HexoNavList,
     HexoWelcome,
@@ -59,10 +74,12 @@ export default {
       return this.editorUiEditing
     },
     ...mapState({
+      editorCoreData: state => state.editorCore.data,
       editorUi: state => state.editorUi
     }),
     ...mapGetters({
-      editorUiEditing: 'editorUi/editing'
+      editorUiEditing: 'editorUi/editing',
+      editorSorterPostsList: 'editorSorter/postsList'
     })
   },
   methods: {
@@ -71,6 +88,16 @@ export default {
     },
     onArticleUpdate (article) {
       this.$store.dispatch('setPostByPost', article)
+    },
+    viewPostById (_id) {
+      console.log(_id)
+      this.$store.dispatch('viewPostById', { _id })
+    },
+    editPostById (_id) {
+      this.$store.dispatch('editPostById', { _id })
+    },
+    deletePostById (_id) {
+      this.$store.dispatch('deletePostById', { _id })
     }
   },
   async mounted () {

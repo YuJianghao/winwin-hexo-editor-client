@@ -1,5 +1,5 @@
 <template>
-  <div class="col row">
+  <div class="col row" v-if="article">
     <div
       class="col column"
       style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
@@ -34,14 +34,22 @@
       @on-category-update="updateCategory"
     ></editor-meta>
   </div>
+  <div v-else>
+    Internal Error: article is required
+  </div>
 </template>
 
 <script>
 import MonacoEditor from './MonacoEditor'
 import EditorMeta from './EditorMeta'
-import { mapState } from 'vuex'
 export default {
   name: 'HexoEditor',
+  props: {
+    article: {
+      type: Object,
+      required: true
+    }
+  },
   components: {
     MonacoEditor,
     EditorMeta
@@ -59,21 +67,10 @@ export default {
         'text-indent': '10px'
       }
     },
-    preview () {
-      return this.editorUi.preview
-    },
     titleSize () {
       const size = this.height / 66
       return size > 1 ? size : 1
-    },
-    article () {
-      return this.editorCoreData.post
-    },
-    // externals
-    ...mapState({
-      editorCoreData: state => state.editorCore.data,
-      editorUi: state => state.editorUi
-    })
+    }
   },
   methods: {
     updateTitle (e) {
@@ -104,8 +101,8 @@ export default {
     saveArticle () {
       this.$emit('on-save')
     },
-    togglePreview () {
-      this.$store.commit('editorUi/togglePreview')
+    togglePreview (e) {
+      this.$emit('on-toggle-preview', e)
     },
     onUpdate (article) {
       this.$emit('on-update', article)
