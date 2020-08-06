@@ -34,7 +34,7 @@
         @click="viewPostById(item._id)"
       >
         <q-item-section>
-          <q-item-label class="text-bold">{{posts[item._id].title}}</q-item-label>
+          <q-item-label class="text-bold">{{articles[item._id].title}}</q-item-label>
           <q-item-label
             caption
             class="ellipsis-3-lines"
@@ -81,22 +81,12 @@ export default {
     }
   },
   computed: {
-    result () {
-      return this.editorSearch.result
-    },
-    size () {
-      return this.editorSearch.size
-    },
-    serverQ () {
-      return this.editorSearch.q
-    },
-    posts () {
-      return this.editorCoreData.articles
-    },
     // externals
     ...mapState({
-      editorCoreData: state => state.editorCore.data,
-      editorSearch: state => state.editorSearch
+      articles: state => state.editorCore.data.articles,
+      result: state => state.editorSearch.result,
+      size: state => state.editorSearch.size,
+      serverQ: state => state.editorSearch.q
     }),
     ...mapGetters({
       resultByPost: 'editorSearch/resultByPost'

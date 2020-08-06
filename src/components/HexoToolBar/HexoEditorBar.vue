@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 export default {
   name: 'HexoEditorBar',
   components: {
@@ -50,37 +50,17 @@ export default {
     }
   },
   computed: {
-    isFullscreen () {
-      return this.editorUi.full
-    },
-    categories () {
-      return this.editorCoreDataPostCategoriesList
-    },
-    tags () {
-      return this.editorCoreDataPostTagsList
-    },
-    published () {
-      return this.editorCoreDataPostPublished
-    },
-    toolbarHeight () {
-      return this.editorUi.actionbar.height
-    },
     toolbarStyle () {
       return {
-        height: this.toolbarHeight,
-        'min-height': this.toolbarHeight,
+        height: '36px',
+        'min-height': '36px',
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
       }
     },
     // externals
     ...mapState({
-      editorUi: state => state.editorUi,
-      editorSorter: state => state.editorSorter
-    }),
-    ...mapGetters({
-      editorCoreDataPostTagsList: 'editorCore/dataPostTagsList',
-      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
-      editorCoreDataPostPublished: 'editorCore/dataPostPublished'
+      isFullscreen: state => state.editorUi.full,
+      published: state => state.editorCore.data.article.published
     })
   },
   methods: {
@@ -100,7 +80,7 @@ export default {
       this.$store.dispatch('savePost')
     },
     onPublish () {
-      this.editorCoreDataPostPublished ? this.unpublishPostById() : this.publishPostById()
+      this.published ? this.unpublishPostById() : this.publishPostById()
     }
   }
 }

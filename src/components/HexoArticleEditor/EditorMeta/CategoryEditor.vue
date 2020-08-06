@@ -43,7 +43,6 @@ export default {
   },
   computed: {
     categoriesList () {
-      if (!this.categories) return []
       return postCategoriesRaw2Array2d(this.categories)[0]
     }
   }

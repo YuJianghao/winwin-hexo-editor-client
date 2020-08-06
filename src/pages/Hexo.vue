@@ -6,10 +6,10 @@
     <hexo-nav-list
       v-show="!editorUi.full"
       style="max-width:200px;max-height:100%"
-      :categoriesList="editorCoreDataCategoriesList"
-      :tagsList="editorCoreDataTagsList"
-      :postsCount="editorCoreDataPostsCount"
-      :unCategoriesCount="editorCoreDataUnCategoriesCount"
+      :categoriesList="categoriesList"
+      :tagsList="tagsList"
+      :postsCount="articlesCount"
+      :unCategoriesCount="categoriesCount"
     ></hexo-nav-list>
     <div
       v-show="!editorUi.full"
@@ -17,10 +17,11 @@
       style=";flex:0 0 300px;border-right: 1px solid rgba(0, 0, 0, 0.12);"
     >
       <hexo-posts-list-bar></hexo-posts-list-bar>
+      <!-- :articleList="articleList.map(e=>e)" 是为了让prop更新 -->
       <hexo-article-list
         style="max-width:300px;max-height:100%"
-        :selected="editorCoreData.article?editorCoreData.article._id:''"
-        :articleList="editorSorterPostsList"
+        :selected="article?article._id:''"
+        :articleList="articleList.map(e=>e)"
         @on-item-click="viewPostById"
         @on-item-left="editPostById"
         @on-item-right="deletePostById"
@@ -33,7 +34,7 @@
       <hexo-editor-bar></hexo-editor-bar>
       <hexo-article-editor
         style="max-height:100%"
-        :article="editorCoreData.article"
+        :article="article"
         @on-update="onArticleUpdate"
         @on-save="$store.dispatch('savePost')"
       ></hexo-article-editor>
@@ -51,14 +52,18 @@
 
 <script>
 import '../css/hexo.scss'
-import HexoArticleList from '../components/HexoArticleList'
-import HexoPostsListBar from 'components/HexoPostsListBar'
-import HexoPostViewer from '../components/HexoPostViewer'
-import HexoNavList from '../components/HexoNavList'
-import HexoWelcome from '../components/HexoWelcome'
-import HexoArticleEditor from '../components/HexoArticleEditor'
-import HexoEditorBar from 'components/HexoEditorBar'
+
+import HexoPostsListBar from 'components/HexoToolBar/HexoPostsListBar'
+import HexoEditorBar from 'components/HexoToolBar/HexoEditorBar'
+
+import HexoNavList from 'components/HexoNavList'
+import HexoArticleList from 'components/HexoArticleList'
+import HexoArticleEditor from 'components/HexoArticleEditor'
+import HexoPostViewer from 'components/HexoPostViewer'
+import HexoWelcome from 'components/HexoWelcome'
+
 import { mapState, mapGetters } from 'vuex'
+
 export default {
   name: 'Hexo',
   components: {
@@ -77,20 +82,17 @@ export default {
     }
   },
   computed: {
-    show () {
-      return this.editorUiEditing
-    },
     ...mapState({
-      editorCoreData: state => state.editorCore.data,
+      article: state => state.editorCore.data.article,
       editorUi: state => state.editorUi
     }),
     ...mapGetters({
-      editorUiEditing: 'editorUi/editing',
-      editorSorterPostsList: 'editorSorter/postsList',
-      editorCoreDataTagsList: 'editorCore/dataTagsList',
-      editorCoreDataPostsCount: 'editorCore/dataPostsCount',
-      editorCoreDataUnCategoriesCount: 'editorCore/dataUnCategoriesCount',
-      editorCoreDataCategoriesList: 'editorCore/dataCategoriesList'
+      show: 'editorUi/editing',
+      articleList: 'editorSorter/postsList',
+      tagsList: 'editorCore/dataTagsList',
+      articlesCount: 'editorCore/dataPostsCount',
+      categoriesCount: 'editorCore/dataUnCategoriesCount',
+      categoriesList: 'editorCore/dataCategoriesList'
     })
   },
   methods: {
