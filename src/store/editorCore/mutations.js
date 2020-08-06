@@ -3,16 +3,16 @@ import * as mutationTypes from './mutation-types'
 
 const mutations = {
   [mutationTypes.loadArticle] (state, post) {
-    state.data.post = post
+    state.data.article = post
     mutations[mutationTypes.markSaved](state)
   },
 
   [mutationTypes.closeArticle] (state) {
-    state.data.post = null
+    state.data.article = null
   },
 
   [mutationTypes.updateArticle] (state, post) {
-    state.data.post = post
+    state.data.article = post
     mutations[mutationTypes.markChanged](state)
   },
 

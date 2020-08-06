@@ -91,7 +91,7 @@ export default {
       return this.editorSearch.q
     },
     posts () {
-      return this.editorCoreData.posts
+      return this.editorCoreData.articles
     },
     // externals
     ...mapState({

@@ -19,7 +19,7 @@
       <hexo-posts-list-bar></hexo-posts-list-bar>
       <hexo-article-list
         style="max-width:300px;max-height:100%"
-        :selected="editorCoreData.post?editorCoreData.post._id:''"
+        :selected="editorCoreData.article?editorCoreData.article._id:''"
         :articleList="editorSorterPostsList"
         @on-item-click="viewPostById"
         @on-item-left="editPostById"
@@ -33,7 +33,7 @@
       <hexo-editor-bar></hexo-editor-bar>
       <hexo-article-editor
         style="max-height:100%"
-        :article="editorCoreData.post"
+        :article="editorCoreData.article"
         @on-update="onArticleUpdate"
         @on-save="$store.dispatch('savePost')"
       ></hexo-article-editor>

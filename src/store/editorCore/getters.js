@@ -15,21 +15,21 @@ export function dataPostsList (state) {
   return objectToList(state.data.articles)
 }
 export function dataPostId (state) {
-  return state.data.post ? state.data.post._id : null
+  return state.data.article ? state.data.article._id : null
 }
 export function dataPostPublished (state) {
-  return state.data.post ? state.data.post.published : false
+  return state.data.article ? state.data.article.published : false
 }
 export function dataPostTagsList (state) {
-  if (!state.data.post) return []
-  return state.data.post.tags || []
+  if (!state.data.article) return []
+  return state.data.article.tags || []
 }
 export function dataPostCategoriesArray2d (state) {
-  if (!state.data.post || !state.data.post.categories) return [[]]
-  if (!Array.isArray(state.data.post.categories)) return [[state.data.post.categories]]
+  if (!state.data.article || !state.data.article.categories) return [[]]
+  if (!Array.isArray(state.data.article.categories)) return [[state.data.article.categories]]
   else {
-    if (!state.data.post.categories.filter(cat => Array.isArray(cat)).length) { return [state.data.post.categories] }
-    return state.data.post.categories.map(cat => {
+    if (!state.data.article.categories.filter(cat => Array.isArray(cat)).length) { return [state.data.article.categories] }
+    return state.data.article.categories.map(cat => {
       return Array.isArray(cat) ? cat : [cat]
     })
   }

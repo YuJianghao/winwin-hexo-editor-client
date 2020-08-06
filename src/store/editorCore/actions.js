@@ -70,10 +70,10 @@ export async function addPostBase ({ state, commit, dispatch }, payload = {}) {
  * @param {String} _id 需要查询的id
  */
 function getValidId (state, _id) {
-  if (!state.data.post && !_id) throw new Error('No post opened, _id is required!')
-  const validId = _id || state.data.post._id
+  if (!state.data.article && !_id) throw new Error('No post opened, _id is required!')
+  const validId = _id || state.data.article._id
   if (validId && !state.data.articles[validId]) throw new Error('Invalid post id ' + validId)
-  if (state.data.post && state.data.post._id === validId) {
+  if (state.data.article && state.data.article._id === validId) {
     logger.log('Use opened post', validId)
     return { samePost: true, validId }
   } else {
@@ -136,12 +136,16 @@ export async function loadTags ({ commit }) {
   }
 }
 
+export async function updatePost ({ commit }, post) {
+  commit(mutationTypes.updateArticle, post)
+}
+
 /**
  * 保存文章
  */
 export async function savePost ({ state, dispatch, commit }) {
   try {
-    await postService.saveArticle(state.data.post)
+    await postService.saveArticle(state.data.article)
     commit(mutationTypes.saveArticle)
   } catch (err) {
     throw replaceErrorMessage(err, '保存失败，请稍后再试')
@@ -190,7 +194,7 @@ export async function deletePostById ({ state, commit, dispatch }, payload = {})
     throw replaceErrorMessage(err, '删除失败，请稍后再试')
   }
   try {
-    if (!_id || (state.data.post && state.data.post._id === _id)) { commit(mutationTypes.closeArticle) }
+    if (!_id || (state.data.article && state.data.article._id === _id)) { commit(mutationTypes.closeArticle) }
     await dispatch('loadAll')
   } catch (err) {
     throw replaceErrorMessage(err, '文章已删除，但数据更新失败，请手动刷新')
