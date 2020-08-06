@@ -17,7 +17,7 @@
       >
         <q-item class="q-mb-sm">
           <q-item-section style="font-size:large;font-weight:400;letter-spacing: 0.05em;">
-            {{post.title}}</q-item-section>
+            {{contextMenuArticle.title}}</q-item-section>
         </q-item>
         <q-separator />
         <q-item v-if="date">
@@ -29,9 +29,9 @@
         <q-item>
           <q-item-section avatar>分类</q-item-section>
           <q-item-section>
-            <div v-if="post.categories">
+            <div v-if="categories.length>0">
               <q-badge
-                v-for="(item,key) in post.categories"
+                v-for="(item,key) in categories"
                 :key="key"
                 color="primary"
                 text-color="white"
@@ -45,9 +45,9 @@
         <q-item>
           <q-item-section avatar>标签</q-item-section>
           <q-item-section>
-            <div v-if="post.tags">
+            <div v-if="tags.length>0">
               <q-badge
-                v-for="(item,key) in post.tags"
+                v-for="(item,key) in tags"
                 :key="key"
                 color="primary"
                 text-color="white"
@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import { getDatetimeStringNoSec } from 'src/utils/post'
 export default {
   name: 'PostContextMenu',
@@ -145,28 +145,32 @@ export default {
     id: {
       type: String,
       required: true
+    },
+    contextMenuArticle: {
+      type: Object,
+      default: () => { }
     }
   },
   computed: {
-    show () {
-      return this.id && this.posts[this.id]
+    tags () {
+      if (!this.contextMenuArticle.tags) return []
+      return typeof this.contextMenuArticle.tags === 'string'
+        ? [this.contextMenuArticle.tags] : this.contextMenuArticle.tags
     },
-    post () {
-      return this.posts[this.id]
+    categories () {
+      if (!this.contextMenuArticle.categories) return []
+      return typeof this.contextMenuArticle.categories === 'string'
+        ? [this.contextMenuArticle.categories] : this.contextMenuArticle.categories
+    },
+    show () {
+      return this.id
     },
     date () {
-      return getDatetimeStringNoSec(this.post.date)
-    },
-    posts () {
-      return this.editorCoreData.posts
+      return getDatetimeStringNoSec(this.contextMenuArticle.date)
     },
     published () {
-      return this.post.published
-    },
-    // externals
-    ...mapState({
-      editorCoreData: state => state.editorCore.data
-    })
+      return this.contextMenuArticle.published
+    }
   },
   data () {
     return {}

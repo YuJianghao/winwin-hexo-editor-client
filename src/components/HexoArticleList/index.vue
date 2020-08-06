@@ -17,10 +17,13 @@
         @on-left="onLeft"
         @on-right="onRight"
         @on-click="onClick"
-        @on-context-menu="contextMenuPostId=item._id"
+        @on-context-menu="contextMenuArticleId=item._id"
       ></list-item>
     </q-list>
-    <list-item-context-menu :id="contextMenuPostId"></list-item-context-menu>
+    <list-item-context-menu
+      :id="contextMenuArticleId"
+      :contextMenuArticle="contextMenuArticle"
+    ></list-item-context-menu>
   </q-scroll-area>
   <div v-else>
     Internal Error: articleList is required
@@ -48,10 +51,17 @@ export default {
   },
   data () {
     return {
-      contextMenuPostId: ''
+      contextMenuArticleId: ''
     }
   },
   computed: {
+    contextMenuArticle () {
+      let article = null
+      this.articleList.forEach(item => {
+        if (item._id === this.contextMenuArticleId) article = item
+      })
+      return article
+    },
     empty () {
       return this.articleList.length === 0
     }
