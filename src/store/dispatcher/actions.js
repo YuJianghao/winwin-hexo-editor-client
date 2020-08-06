@@ -86,7 +86,7 @@ export async function viewPostById ({ rootGetters, commit, dispatch }, payload =
         resolve()
       })
     } else {
-      await dispatch('editorCore/' + editorCoreActionTypes.loadPostById, { _id, force })
+      await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
       commit('editorUi/viewPost')
     }
   } catch (err) {
@@ -123,12 +123,12 @@ export async function addPostByDefault ({ rootGetters, commit, dispatch }) {
   try {
     if (!rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-        await dispatch('editorCore/' + editorCoreActionTypes.addPostBase, { force: true })
+        await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { force: true })
         commit('editorUi/editPost')
         resolve()
       })
     } else {
-      await dispatch('editorCore/' + editorCoreActionTypes.addPostBase)
+      await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase)
       commit('editorUi/editPost')
     }
   } catch (err) {
@@ -149,7 +149,7 @@ export async function deletePostById ({ rootState, dispatch }, payload = {}) {
   // if (post.date)message += `（最后编辑于${date.formatDate(post.date, 'YYYY年MM月DD日 HH:mm:ss')}）`
   return confirmDialog('删除确认', message, '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
-      await dispatch('editorCore/' + editorCoreActionTypes.deletePostById, { _id })
+      await dispatch('editorCore/' + editorCoreActionTypes.deleteArticleById, { _id })
       await dispatch('editorUi/deletePost', _id)
     } catch (err) {
       message.error({ message: '删除失败', caption: err.message })
@@ -188,7 +188,7 @@ export async function editPostByIdDispatcher ({ commit, dispatch }, payload = {}
   logger.log('editPostByIdDispatcher', payload)
   const _id = payload._id || null
   const force = payload.force || false
-  await dispatch('editorCore/' + editorCoreActionTypes.loadPostById, { _id, force })
+  await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
   commit('editorUi/editPost', { _id, force })
 }
 
@@ -241,7 +241,7 @@ export async function unpublishPostById ({ rootGetters, dispatch }, payload = {}
 
 export async function setPostByPost ({ dispatch }, article) {
   logger.log('setPostByPost')
-  await dispatch('editorCore/' + editorCoreActionTypes.updatePost, article)
+  await dispatch('editorCore/' + editorCoreActionTypes.updateArticle, article)
 }
 
 // 操作相关
@@ -298,7 +298,7 @@ export async function savePost ({ commit, dispatch }) {
   logger.log('savePost')
   try {
     commit('editorUi/showLoading', { message: '正在保存', delay: 100 })
-    await dispatch('editorCore/' + editorCoreActionTypes.savePost)
+    await dispatch('editorCore/' + editorCoreActionTypes.saveArticle)
     message.success({ message: '保存成功' })
   } catch (err) {
     if (err.status === 404) {

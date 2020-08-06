@@ -19,14 +19,14 @@ import { replaceErrorMessage, listToObject } from 'src/utils/common'
   * @param {String} _id 需要查询的id
   */
 function getValidId (state, _id) {
-  if (!state.data.article && !_id) throw new Error('No post opened, _id is required!')
+  if (!state.data.article && !_id) throw new Error('No article opened, _id is required!')
   const validId = _id || state.data.article._id
-  if (validId && !state.data.articles[validId]) throw new Error('Invalid post id ' + validId)
+  if (validId && !state.data.articles[validId]) throw new Error('Invalid article id ' + validId)
   if (state.data.article && state.data.article._id === validId) {
-    logger.log('Use opened post', validId)
-    return { samePost: true, validId }
+    logger.log('Use opened article', validId)
+    return { sameArticle: true, validId }
   } else {
-    return { samePost: false, validId }
+    return { sameArticle: false, validId }
   }
 }
 
@@ -70,23 +70,23 @@ const actions = {
   * @param {Boolean} [payload.force=false] 是否放弃当前未保存的更改
   * @param {Object} [payload.options={}] 新文章的选项
   */
-  async [actionTypes.addPostBase] ({ state, commit, dispatch }, payload = {}) {
+  async [actionTypes.addArticleBase] ({ state, commit, dispatch }, payload = {}) {
     if (!payload.force && !state.status.saved) throw new Error('Unsaved file, use force=true to override')
-    let post = null
+    let article = null
     try {
       const defaultOpt = {
         title: '新文章',
         slug: stringRandom(16)
       }
-      post = await postService.addArticle(Object.assign(defaultOpt, payload.options))
+      article = await postService.addArticle(Object.assign(defaultOpt, payload.options))
     } catch (err) {
       throw replaceErrorMessage(err, '新建文章失败，请稍后再试')
     }
     try {
-      await dispatch(actionTypes.loadPosts)
-      if (post.categories) await dispatch('loadCategories')
-      if (post.tags) await dispatch('loadTags')
-      commit(mutationTypes.loadArticle, post)
+      await dispatch(actionTypes.loadArticles)
+      if (article.categories) await dispatch('loadCategories')
+      if (article.tags) await dispatch('loadTags')
+      commit(mutationTypes.loadArticle, article)
     } catch (err) {
       throw replaceErrorMessage(err, '新文章创建成功，但数据更新失败，请手动刷新')
     }
@@ -97,7 +97,7 @@ const actions = {
   */
   async [actionTypes.loadAll] ({ dispatch }) {
     await Promise.all([
-      dispatch(actionTypes.loadPosts),
+      dispatch(actionTypes.loadArticles),
       dispatch(actionTypes.loadCategories),
       dispatch(actionTypes.loadTags)
     ])
@@ -106,10 +106,10 @@ const actions = {
   /**
   * 载入文章列表
   */
-  async [actionTypes.loadPosts] ({ commit }) {
+  async [actionTypes.loadArticles] ({ commit }) {
     try {
-      const posts = await postService.getArticleList()
-      commit(mutationTypes.loadArticles, listToObject(posts))
+      const articles = await postService.getArticleList()
+      commit(mutationTypes.loadArticles, listToObject(articles))
     } catch (err) {
       throw replaceErrorMessage(err, '文章列表获取失败，请稍后再试')
     }
@@ -138,14 +138,14 @@ const actions = {
     }
   },
 
-  async [actionTypes.updatePost] ({ commit }, post) {
-    commit(mutationTypes.updateArticle, post)
+  async [actionTypes.updateArticle] ({ commit }, article) {
+    commit(mutationTypes.updateArticle, article)
   },
 
   /**
   * 保存文章
   */
-  async [actionTypes.savePost] ({ state, dispatch, commit }) {
+  async [actionTypes.saveArticle] ({ state, dispatch, commit }) {
     try {
       await postService.saveArticle(state.data.article)
       commit(mutationTypes.saveArticle)
@@ -165,15 +165,15 @@ const actions = {
   * @param {String} [payload._id] 需要加载的文章id，默认未当前已打开文章
   * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
   */
-  async [actionTypes.loadPostById] ({ state, commit }, payload = {}) {
+  async [actionTypes.loadArticleById] ({ state, commit }, payload = {}) {
     const _id = payload._id || null
     const force = payload.force || false
-    const { validId, samePost } = getValidId(state, _id, force)
-    if (samePost) return
+    const { validId, sameArticle } = getValidId(state, _id, force)
+    if (sameArticle) return
     checkSaved(state, force)
     try {
-      const post = await postService.getArticleById(validId)
-      commit(mutationTypes.loadArticle, post)
+      const article = await postService.getArticleById(validId)
+      commit(mutationTypes.loadArticle, article)
     } catch (err) {
       throw replaceErrorMessage(err, '文章获取失败，请稍后再试')
     }
@@ -185,7 +185,7 @@ const actions = {
   * @param {String} [payload._id] 需要删除的文章id，默认未当前已打开文章
   * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
   */
-  async [actionTypes.deletePostById] ({ state, commit, dispatch }, payload = {}) {
+  async [actionTypes.deleteArticleById] ({ state, commit, dispatch }, payload = {}) {
     const _id = payload._id || null
     const force = payload.force || false
     const { validId } = getValidId(state, _id, force)
@@ -221,7 +221,7 @@ const actions = {
       throw replaceErrorMessage(err, '文章发布失败，请稍后再试')
     }
     try {
-      await dispatch(actionTypes.loadPosts)
+      await dispatch(actionTypes.loadArticles)
     } catch (err) {
       throw replaceErrorMessage(err, '文章已发布，但数据更新失败，请手动刷新')
     }
@@ -245,7 +245,7 @@ const actions = {
       throw replaceErrorMessage(err, '取消发布失败，请稍后再试')
     }
     try {
-      await dispatch(actionTypes.loadPosts)
+      await dispatch(actionTypes.loadArticles)
     } catch (err) {
       throw replaceErrorMessage(err, '已取消发布，但数据更新失败，请手动刷新')
     }

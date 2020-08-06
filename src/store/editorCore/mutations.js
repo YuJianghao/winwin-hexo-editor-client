@@ -1,9 +1,10 @@
 import * as mutationTypes from './mutation-types'
-// post state
+
+// article state
 
 const mutations = {
-  [mutationTypes.loadArticle] (state, post) {
-    state.data.article = post
+  [mutationTypes.loadArticle] (state, article) {
+    state.data.article = article
     mutations[mutationTypes.markSaved](state)
   },
 
@@ -11,8 +12,8 @@ const mutations = {
     state.data.article = null
   },
 
-  [mutationTypes.updateArticle] (state, post) {
-    state.data.article = post
+  [mutationTypes.updateArticle] (state, article) {
+    state.data.article = article
     mutations[mutationTypes.markChanged](state)
   },
 
@@ -22,8 +23,8 @@ const mutations = {
 
   // load
 
-  [mutationTypes.loadArticles] (state, posts) {
-    state.data.articles = posts
+  [mutationTypes.loadArticles] (state, articles) {
+    state.data.articles = articles
   },
 
   [mutationTypes.loadCategories] (state, categories) {
@@ -42,7 +43,7 @@ const mutations = {
     mutations[mutationTypes.resetTags](state)
   },
 
-  [mutationTypes.resetArticles] (state, posts) {
+  [mutationTypes.resetArticles] (state, articles) {
     state.data.articles = {}
   },
 
