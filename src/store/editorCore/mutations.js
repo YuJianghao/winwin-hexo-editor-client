@@ -2,27 +2,27 @@ import * as mutationTypes from './mutation-types'
 // post state
 
 const mutations = {
-  [mutationTypes.loadPost] (state, post) {
+  [mutationTypes.loadArticle] (state, post) {
     state.data.post = post
     mutations[mutationTypes.markSaved](state)
   },
 
-  [mutationTypes.closePost] (state) {
+  [mutationTypes.closeArticle] (state) {
     state.data.post = null
   },
 
-  [mutationTypes.updatePost] (state, post) {
+  [mutationTypes.updateArticle] (state, post) {
     state.data.post = post
     mutations[mutationTypes.markChanged](state)
   },
 
-  [mutationTypes.savePost] (state) {
+  [mutationTypes.saveArticle] (state) {
     mutations[mutationTypes.markSaved](state)
   },
 
   // load
 
-  [mutationTypes.loadPosts] (state, posts) {
+  [mutationTypes.loadArticles] (state, posts) {
     state.data.posts = posts
   },
 
@@ -37,12 +37,12 @@ const mutations = {
   // reset
 
   [mutationTypes.resetAll] (state) {
-    mutations[mutationTypes.resetPosts](state)
+    mutations[mutationTypes.resetArticles](state)
     mutations[mutationTypes.resetCategories](state)
     mutations[mutationTypes.resetTags](state)
   },
 
-  [mutationTypes.resetPosts] (state, posts) {
+  [mutationTypes.resetArticles] (state, posts) {
     state.data.posts = {}
   },
 
