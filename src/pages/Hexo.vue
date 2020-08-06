@@ -3,7 +3,14 @@
     class="row overflow-hidden"
     :style-fn="pageStyle"
   >
-    <hexo-nav-list style="max-width:200px;max-height:100%"></hexo-nav-list>
+    <hexo-nav-list
+      v-show="!editorUi.full"
+      style="max-width:200px;max-height:100%"
+      :categoriesList="editorCoreDataCategoriesList"
+      :tagsList="editorCoreDataTagsList"
+      :postsCount="editorCoreDataPostsCount"
+      :unCategoriesCount="editorCoreDataUnCategoriesCount"
+    ></hexo-nav-list>
     <div
       v-show="!editorUi.full"
       class="col column"
@@ -79,7 +86,11 @@ export default {
     }),
     ...mapGetters({
       editorUiEditing: 'editorUi/editing',
-      editorSorterPostsList: 'editorSorter/postsList'
+      editorSorterPostsList: 'editorSorter/postsList',
+      editorCoreDataTagsList: 'editorCore/dataTagsList',
+      editorCoreDataPostsCount: 'editorCore/dataPostsCount',
+      editorCoreDataUnCategoriesCount: 'editorCore/dataUnCategoriesCount',
+      editorCoreDataCategoriesList: 'editorCore/dataCategoriesList'
     })
   },
   methods: {
