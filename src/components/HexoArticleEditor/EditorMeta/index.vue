@@ -4,8 +4,16 @@
     v-if="article"
   >
     <meta-title title="详细信息"></meta-title>
-    <date-editor label="发布" v-model="date"></date-editor>
-    <date-editor label="更新" v-model="updated"></date-editor>
+    <date-editor
+      label="发布"
+      :date="article.date"
+      @on-change="e=>$emit('on-date-update', e)"
+    ></date-editor>
+    <date-editor
+      label="更新"
+      :date="article.updated"
+      @on-change="e=>$emit('on-updated-update', e)"
+    ></date-editor>
     <category-editor
       :categories="article.categories"
       @on-update="e=>$emit('on-category-update',e)"
@@ -43,24 +51,6 @@ export default {
     TagEditor,
     CategoryEditor,
     DateEditor
-  },
-  computed: {
-    date: {
-      get () {
-        return this.article.date
-      },
-      set (v) {
-        this.$emit('on-date-update', v)
-      }
-    },
-    updated: {
-      get () {
-        return this.article.updated
-      },
-      set (v) {
-        this.$emit('on-updated-update', v)
-      }
-    }
   }
 }
 </script>

@@ -11,16 +11,16 @@
         {{dateString}}
       </q-item-label>
     </q-item-section>
-    <q-menu>
+    <q-menu @before-hide="onBeforeHide">
       <div class="row items-start">
         <q-date
-          v-model="date"
+          v-model="dateModel"
           mask="YYYY-MM-DD HH:mm:ss"
           class="no-shadow"
         />
         <q-separator vertical />
         <q-time
-          v-model="date"
+          v-model="dateModel"
           mask="YYYY-MM-DD HH:mm:ss"
           class="no-shadow"
           now-btn
@@ -34,7 +34,7 @@ import { date } from 'quasar'
 export default {
   name: 'DateEditor',
   props: {
-    value: {
+    date: {
       type: Number,
       default: null
     },
@@ -45,24 +45,23 @@ export default {
   },
   data () {
     return {
-      date: date.formatDate(new Date(this.value), 'YYYY-MM-DD HH:mm:ss')
+      dateModel: date.formatDate(new Date(this.date), 'YYYY-MM-DD HH:mm:ss')
     }
   },
   computed: {
     dateString () {
-      if (!this.value) return '无数据'
-      return date.formatDate(new Date(this.value), 'YYYY年MM月DD日 HH:mm')
+      if (!this.date) return '无数据'
+      return date.formatDate(new Date(this.date), 'YYYY年MM月DD日 HH:mm')
     }
   },
   watch: {
-    value (v) {
-      this.date = date.formatDate(new Date(v), 'YYYY-MM-DD HH:mm:ss')
-    },
     date (v) {
-      const stamp = new Date(v).getTime()
-      if (stamp !== this.value) {
-        this.$emit('input', stamp)
-      }
+      this.dateModel = date.formatDate(new Date(v), 'YYYY-MM-DD HH:mm:ss')
+    }
+  },
+  methods: {
+    onBeforeHide () {
+      this.$emit('on-change', new Date(this.dateModel).getTime())
     }
   }
 }
