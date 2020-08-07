@@ -21,6 +21,7 @@ A Hexo Editor Client by winwin2011
 - [x] Post sort
 - [x] front-matters
 - [x] Search
+- [x] Custom slug
 - [ ] ~~Image CDN~~(use [picgo](https://picgo.github.io/PicGo-Doc/zh/guide/) instead)
 - [ ] let me know what you need ...
 
