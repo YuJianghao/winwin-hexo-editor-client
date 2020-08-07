@@ -18,6 +18,8 @@
         @on-right="onRight"
         @on-click="viewPostById"
         @on-context-menu="contextMenuArticleId=item._id"
+        @on-btn-click="editPostById"
+        @on-btn2-click="deletePostById"
       ></list-item>
     </q-list>
     <list-item-context-menu

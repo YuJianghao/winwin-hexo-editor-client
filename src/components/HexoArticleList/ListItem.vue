@@ -7,6 +7,8 @@
     @left="(e)=>{onLeft(e,post._id)}"
     @click="onClick(post._id)"
     @contextmenu="$emit('on-context-menu')"
+    @mouseenter="showButton=true"
+    @mouseleave="showButton=false"
   >
     <template v-slot:left>
       <div class="row items-center">
@@ -30,13 +32,16 @@
       :class="{'bg-blue-1':selected}"
     >
       <q-item-section>
-        <q-item-label class="row">
+        <q-item-label class="ellipsis">
           <q-badge
             :color="selected?'grey-8':'grey'"
             class="q-mr-xs"
             v-if="!post.published"
           >草稿</q-badge>
-          <span class="text-bold" :class="selected?'text-primary':'text-grey-10'">
+          <span
+            class="text-bold q-pr-lg"
+            :class="selected?'text-primary':'text-grey-10'"
+          >
             {{post.title}}
           </span>
           <q-space />
@@ -68,6 +73,29 @@
           />
         </q-item-label>
       </q-item-section>
+      <div
+        v-show="showButton"
+        class="float-buttons column q-pl-md"
+      >
+        <q-btn
+          color="primary"
+          label="编辑"
+          @click.stop="onBtnClick(post._id)"
+          class="q-px-xs"
+          size="x-small"
+          dense
+          outline
+        />
+        <q-btn
+          color="red"
+          label="删除"
+          @click.stop="onBtn2Click(post._id)"
+          class="q-px-xs"
+          size="x-small"
+          dense
+          outline
+        />
+      </div>
     </q-item>
   </q-slide-item>
 </template>
@@ -77,7 +105,9 @@ import { getReadableStringFromNow } from 'src/utils/post'
 export default {
   name: 'HexoPostsListItem.vue',
   data () {
-    return {}
+    return {
+      showButton: false
+    }
   },
   props: {
     post: {
@@ -105,6 +135,12 @@ export default {
     onClick (_id) {
       this.$emit('on-click', _id)
     },
+    onBtnClick (_id) {
+      this.$emit('on-btn-click', _id)
+    },
+    onBtn2Click (_id) {
+      this.$emit('on-btn2-click', _id)
+    },
     getDateString (d) {
       return getReadableStringFromNow(d)
     }
@@ -118,5 +154,9 @@ export default {
   &::before {
     content: "#";
   }
+}
+.float-buttons .q-btn {
+  border-radius: 0 !important;
+  margin-bottom: 5px;
 }
 </style>
