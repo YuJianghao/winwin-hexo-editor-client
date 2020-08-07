@@ -33,7 +33,7 @@
       @on-tag-update="updateTag"
       @on-category-update="updateCategory"
       @on-date-update="updateDate"
-      @on-update-update="updateUpdate"
+      @on-updated-update="updateUpdated"
     ></editor-meta>
   </div>
   <div v-else>
@@ -105,9 +105,9 @@ export default {
       article.date = e
       this.onUpdate(article)
     },
-    updateUpdate (e) {
+    updateUpdated (e) {
       const article = Object.assign({}, this.article)
-      article.update = e
+      article.updated = e
       this.onUpdate(article)
     },
     saveArticle () {

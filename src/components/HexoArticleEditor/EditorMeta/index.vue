@@ -5,7 +5,7 @@
   >
     <meta-title title="详细信息"></meta-title>
     <date-editor label="发布" v-model="date"></date-editor>
-    <date-editor label="更新" v-model="update"></date-editor>
+    <date-editor label="更新" v-model="updated"></date-editor>
     <category-editor
       :categories="article.categories"
       @on-update="e=>$emit('on-category-update',e)"
@@ -53,12 +53,12 @@ export default {
         this.$emit('on-date-update', v)
       }
     },
-    update: {
+    updated: {
       get () {
-        return this.article.update
+        return this.article.updated
       },
       set (v) {
-        this.$emit('on-update-update', v)
+        this.$emit('on-updated-update', v)
       }
     }
   }
