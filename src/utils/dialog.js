@@ -1,4 +1,5 @@
 import { Dialog } from 'quasar'
+import NewPostDialog from 'components/NewPostDialog'
 
 export function confirmDialog (title, message, okLabel, okColor, cancelLabel, cancelColor, focus = 'ok', onOk, onCancel, onDismiss) {
   if (!message) throw new Error('message is required')
@@ -25,4 +26,10 @@ export function confirmDialog (title, message, okLabel, okColor, cancelLabel, ca
       if (onDismiss) { onDismiss(resolve) } else resolve()
     })
   })
+}
+
+export async function newPostDialog (onOk, onCancel) {
+  Dialog.create({
+    component: NewPostDialog
+  }).onOk(onOk)
 }

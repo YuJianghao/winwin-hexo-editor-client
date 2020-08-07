@@ -1,7 +1,6 @@
 import * as mutationTypes from './mutation-types'
 import * as actionTypes from './action-types'
 
-import stringRandom from 'string-random'
 import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'EditorCore/Actions' })
 
@@ -75,8 +74,7 @@ const actions = {
     let article = null
     try {
       const defaultOpt = {
-        title: '新文章',
-        slug: stringRandom(16)
+        title: '新文章'
       }
       article = await postService.addArticle(Object.assign(defaultOpt, payload.options))
     } catch (err) {
