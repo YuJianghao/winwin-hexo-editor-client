@@ -25,6 +25,28 @@
           <q-icon name="local_airport" />
         </q-item-section>
       </q-item>
+      <template v-if="showMore">
+      <q-item
+        clickable
+        class="text-blue"
+        @click="generate"
+      >
+        <q-item-section style="margin-left:-2px;">生成</q-item-section>
+        <q-item-section avatar>
+          <q-icon name="movie_filter" />
+        </q-item-section>
+      </q-item>
+      <q-item
+        clickable
+        class="text-blue"
+        @click="clean"
+      >
+        <q-item-section style="margin-left:-2px;">清理</q-item-section>
+        <q-item-section avatar>
+          <q-icon name="toys" />
+        </q-item-section>
+      </q-item>
+      </template>
       <q-item
         clickable
         class="text-blue"
@@ -35,6 +57,7 @@
           <q-icon name="flight_takeoff" />
         </q-item-section>
       </q-item>
+      <template v-if="showMore">
       <q-item
         clickable
         class="text-red"
@@ -43,6 +66,13 @@
         <q-item-section style="margin-left:-2px;">从GIT同步</q-item-section>
         <q-item-section avatar>
           <q-icon name="flight_land" />
+        </q-item-section>
+      </q-item>
+      </template>
+      <q-item clickable class="text-grey" @click="showMore=!showMore">
+        <q-item-section>{{showMore?'更少':'更多'}}</q-item-section>
+        <q-item-section avatar>
+          <q-icon :name="showMore?'keyboard_arrow_up':'keyboard_arrow_down'" />
         </q-item-section>
       </q-item>
     </q-list>
@@ -130,6 +160,11 @@ export default {
       default: 0
     }
   },
+  data () {
+    return {
+      showMore: false
+    }
+  },
   components: {
     AppFilterItem,
     NavCategoriesTree
@@ -194,6 +229,12 @@ export default {
     },
     async deploy () {
       this.$store.dispatch('deploy')
+    },
+    async clean () {
+      this.$store.dispatch('clean')
+    },
+    async generate () {
+      this.$store.dispatch('generate')
     },
     async syncGit () {
       this.$store.dispatch('syncGit')

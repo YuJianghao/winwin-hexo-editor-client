@@ -267,6 +267,32 @@ export async function deploy ({ commit, dispatch }) {
   })
 }
 
+export async function generate ({ commit, dispatch }) {
+  logger.log('generate')
+  try {
+    commit('editorUi/showLoading', { message: '正在生成', delay: 100 })
+    await dispatch('editorCore/' + editorCoreActionTypes.generate)
+    message.success({ message: '生成完成' })
+  } catch (err) {
+    message.error({ message: '生成失败', caption: err.message })
+  } finally {
+    commit('editorUi/hideLoading')
+  }
+}
+
+export async function clean ({ commit, dispatch }) {
+  logger.log('clean')
+  try {
+    commit('editorUi/showLoading', { message: '正在清理', delay: 100 })
+    await dispatch('editorCore/' + editorCoreActionTypes.clean)
+    message.success({ message: '清理完成' })
+  } catch (err) {
+    message.error({ message: '清理失败', caption: err.message })
+  } finally {
+    commit('editorUi/hideLoading')
+  }
+}
+
 export async function syncGit ({ commit, dispatch }) {
   logger.log('syncGit')
   await confirmDialog(null, '确定从git同步么？未保存到git的文件将丢失', '放弃文件并同步', 'red', '返回', 'primary', 'cancel', async resolve => {
