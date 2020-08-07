@@ -163,7 +163,7 @@ export default {
         ? [this.contextMenuArticle.categories] : this.contextMenuArticle.categories
     },
     show () {
-      return this.id
+      return this.id && this.contextMenuArticle
     },
     date () {
       return getDatetimeStringNoSec(this.contextMenuArticle.date)
