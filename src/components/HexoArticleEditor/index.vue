@@ -32,6 +32,8 @@
       @on-fm-update="updateFm"
       @on-tag-update="updateTag"
       @on-category-update="updateCategory"
+      @on-date-update="updateDate"
+      @on-update-update="updateUpdate"
     ></editor-meta>
   </div>
   <div v-else>
@@ -96,6 +98,16 @@ export default {
     updateCategory (e) {
       const article = Object.assign({}, this.article)
       article.categories = e
+      this.onUpdate(article)
+    },
+    updateDate (e) {
+      const article = Object.assign({}, this.article)
+      article.date = e
+      this.onUpdate(article)
+    },
+    updateUpdate (e) {
+      const article = Object.assign({}, this.article)
+      article.update = e
       this.onUpdate(article)
     },
     saveArticle () {

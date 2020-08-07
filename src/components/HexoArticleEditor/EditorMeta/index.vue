@@ -4,6 +4,8 @@
     v-if="article"
   >
     <meta-title title="详细信息"></meta-title>
+    <date-editor label="发布" v-model="date"></date-editor>
+    <date-editor label="更新" v-model="update"></date-editor>
     <category-editor
       :categories="article.categories"
       @on-update="e=>$emit('on-category-update',e)"
@@ -26,6 +28,7 @@ import FrontmatterEditor from './FrontmatterEditor'
 import TagEditor from './TagEditor'
 import CategoryEditor from './CategoryEditor'
 import MetaTitle from './MetaTitle'
+import DateEditor from './DateEditor'
 export default {
   name: 'EditorMeta',
   props: {
@@ -38,10 +41,26 @@ export default {
     MetaTitle,
     FrontmatterEditor,
     TagEditor,
-    CategoryEditor
+    CategoryEditor,
+    DateEditor
   },
-  data () {
-    return {}
+  computed: {
+    date: {
+      get () {
+        return this.article.date
+      },
+      set (v) {
+        this.$emit('on-date-update', v)
+      }
+    },
+    update: {
+      get () {
+        return this.article.update
+      },
+      set (v) {
+        this.$emit('on-update-update', v)
+      }
+    }
   }
 }
 </script>
