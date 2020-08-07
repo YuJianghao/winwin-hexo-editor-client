@@ -16,7 +16,7 @@
         :selected="item._id===selected"
         @on-left="onLeft"
         @on-right="onRight"
-        @on-click="onClick"
+        @on-click="viewPostById"
         @on-context-menu="contextMenuArticleId=item._id"
       ></list-item>
     </q-list>
@@ -68,15 +68,21 @@ export default {
   },
   methods: {
     onLeft ({ reset, _id }) {
-      this.$emit('on-item-left', _id)
+      this.editPostById(_id)
       this.finalize(reset, 1)
     },
     onRight ({ reset, _id }) {
-      this.$emit('on-item-right', _id)
+      this.deletePostById(_id)
       this.finalize(reset, 1)
     },
-    onClick (_id) {
-      this.$emit('on-item-click', _id)
+    viewPostById (_id) {
+      this.$store.dispatch('viewPostById', { _id })
+    },
+    editPostById (_id) {
+      this.$store.dispatch('editPostById', { _id })
+    },
+    deletePostById (_id) {
+      this.$store.dispatch('deletePostById', { _id })
     },
     finalize (reset, duration) {
       this.timer = setTimeout(() => {

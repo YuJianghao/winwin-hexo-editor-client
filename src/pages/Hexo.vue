@@ -22,9 +22,6 @@
         style="max-width:300px;max-height:100%"
         :selected="article?article._id:''"
         :articleList="articleList.map(e=>e)"
-        @on-item-click="viewPostById"
-        @on-item-left="editPostById"
-        @on-item-right="deletePostById"
       ></hexo-article-list>
     </div>
     <div
@@ -101,16 +98,6 @@ export default {
     },
     onArticleUpdate (article) {
       this.$store.dispatch('setPostByPost', article)
-    },
-    viewPostById (_id) {
-      console.log(_id)
-      this.$store.dispatch('viewPostById', { _id })
-    },
-    editPostById (_id) {
-      this.$store.dispatch('editPostById', { _id })
-    },
-    deletePostById (_id) {
-      this.$store.dispatch('deletePostById', { _id })
     }
   },
   async mounted () {
