@@ -1,6 +1,6 @@
 
 // import { date } from 'quasar'
-import { confirmDialog } from 'src/utils/dialog'
+import { confirmDialog, newPostDialog } from 'src/utils/dialog'
 import message from 'src/utils/message'
 import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'Dispatcher' })
@@ -123,13 +123,17 @@ export async function addPostByDefault ({ rootGetters, commit, dispatch }) {
   try {
     if (!rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-        await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { force: true })
-        commit('editorUi/editPost')
-        resolve()
+        newPostDialog(async (options) => {
+          await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { force: true, options })
+          commit('editorUi/editPost')
+          resolve()
+        })
       })
     } else {
-      await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase)
-      commit('editorUi/editPost')
+      await newPostDialog(async (options) => {
+        await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { options })
+        commit('editorUi/editPost')
+      })
     }
   } catch (err) {
     if (err.status === 401) return
