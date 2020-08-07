@@ -1,4 +1,4 @@
-import hexo from '@winwin/hexo-editor-sdk'
+import hexo from './hexo'
 import users from './users'
 import { request } from './request'
 

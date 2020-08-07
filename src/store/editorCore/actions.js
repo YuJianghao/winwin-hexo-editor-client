@@ -276,6 +276,22 @@ const actions = {
     } catch (err) {
       throw replaceErrorMessage(err, '部署失败，请稍后再试')
     }
+  },
+
+  async [actionTypes.generate] () {
+    try {
+      await hexoService.generate()
+    } catch (err) {
+      throw replaceErrorMessage(err, '生成失败，请稍后再试')
+    }
+  },
+
+  async [actionTypes.clean] () {
+    try {
+      await hexoService.clean()
+    } catch (err) {
+      throw replaceErrorMessage(err, '清理失败，请稍后再试')
+    }
   }
 
 }

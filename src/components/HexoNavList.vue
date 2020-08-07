@@ -28,6 +28,26 @@
       <q-item
         clickable
         class="text-blue"
+        @click="generate"
+      >
+        <q-item-section style="margin-left:-2px;">生成</q-item-section>
+        <q-item-section avatar>
+          <q-icon name="local_airport" />
+        </q-item-section>
+      </q-item>
+      <q-item
+        clickable
+        class="text-blue"
+        @click="clean"
+      >
+        <q-item-section style="margin-left:-2px;">清理</q-item-section>
+        <q-item-section avatar>
+          <q-icon name="local_airport" />
+        </q-item-section>
+      </q-item>
+      <q-item
+        clickable
+        class="text-blue"
         @click="saveGit"
       >
         <q-item-section style="margin-left:-2px;">同步到GIT</q-item-section>
@@ -194,6 +214,12 @@ export default {
     },
     async deploy () {
       this.$store.dispatch('deploy')
+    },
+    async clean () {
+      this.$store.dispatch('clean')
+    },
+    async generate () {
+      this.$store.dispatch('generate')
     },
     async syncGit () {
       this.$store.dispatch('syncGit')
