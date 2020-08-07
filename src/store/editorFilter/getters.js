@@ -7,7 +7,7 @@ export function someGetter (state) {
 */
 
 export function postsList (state, getters, rootState, rootGetters) {
-  const posts = rootState.editorCore.data.posts
+  const posts = rootState.editorCore.data.articles
   const postsList = rootGetters['editorCore/dataPostsList']
   const categories = rootState.editorCore.data.categories
   const tags = rootState.editorCore.data.tags

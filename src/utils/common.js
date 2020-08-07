@@ -11,7 +11,21 @@ export function listToObject (list, key = '_id') {
   return obj
 }
 
-export function postCategoriesArray2d (categories) {
+export function postCategoriesArray2d2Raw (categoriesArray2D) {
+  let categories = []
+  if (categoriesArray2D.length === 1) {
+    if (categoriesArray2D[0].length === 1) {
+      categories = categoriesArray2D[0][0]
+    } else {
+      categories = categoriesArray2D[0]
+    }
+  } else {
+    categories = categoriesArray2D
+  }
+  return categories
+}
+
+export function postCategoriesRaw2Array2d (categories) {
   if (!categories) return [[]]
   if (!Array.isArray(categories)) return [[categories]]
   else {

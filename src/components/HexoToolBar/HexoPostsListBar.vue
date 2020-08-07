@@ -104,13 +104,10 @@ export default {
     }
   },
   computed: {
-    toolbarHeight () {
-      return this.editorUi.actionbar.height
-    },
     toolbarStyle () {
       return {
-        height: this.toolbarHeight,
-        'min-height': this.toolbarHeight,
+        height: '36px',
+        'min-height': '36px',
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
       }
     },
@@ -121,7 +118,7 @@ export default {
           items.push(Object.assign({},
             Object.assign(item, {
               direction: direction,
-              selected: this.editorSorter.key === item.key && this.editorSorter.direction === direction
+              selected: this.sorterKey === item.key && this.sorterDirection === direction
             })))
         })
       })
@@ -129,8 +126,8 @@ export default {
     },
     // externals
     ...mapState({
-      editorUi: state => state.editorUi,
-      editorSorter: state => state.editorSorter
+      sorterKey: state => state.editorSorter.key,
+      sorterDirection: state => state.editorSorter.direction
     })
   },
   methods: {

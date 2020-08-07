@@ -1,0 +1,97 @@
+<template>
+  <q-scroll-area
+    class="col"
+    v-if="articleList"
+  >
+    <q-list>
+      <q-item v-if="empty">
+        <q-item-section>
+          <q-item-label>没有文章</q-item-label>
+        </q-item-section>
+      </q-item>
+      <list-item
+        v-for="(item,key) in articleList"
+        :key="key"
+        :post="item"
+        :selected="item._id===selected"
+        @on-left="onLeft"
+        @on-right="onRight"
+        @on-click="viewPostById"
+        @on-context-menu="contextMenuArticleId=item._id"
+      ></list-item>
+    </q-list>
+    <list-item-context-menu
+      :id="contextMenuArticleId"
+      :contextMenuArticle="contextMenuArticle"
+    ></list-item-context-menu>
+  </q-scroll-area>
+  <div v-else>
+    Internal Error: articleList is required
+  </div>
+</template>
+
+<script>
+import ListItemContextMenu from './ListItemContextMenu'
+import ListItem from './ListItem'
+export default {
+  name: 'HexoPostsList',
+  props: {
+    articleList: {
+      type: Array,
+      default: () => []
+    },
+    selected: {
+      type: String,
+      default: ''
+    }
+  },
+  components: {
+    ListItemContextMenu,
+    ListItem
+  },
+  data () {
+    return {
+      contextMenuArticleId: ''
+    }
+  },
+  computed: {
+    contextMenuArticle () {
+      let article = null
+      this.articleList.forEach(item => {
+        if (item._id === this.contextMenuArticleId) article = item
+      })
+      return article
+    },
+    empty () {
+      return this.articleList.length === 0
+    }
+  },
+  methods: {
+    onLeft ({ reset, _id }) {
+      this.editPostById(_id)
+      this.finalize(reset, 1)
+    },
+    onRight ({ reset, _id }) {
+      this.deletePostById(_id)
+      this.finalize(reset, 1)
+    },
+    viewPostById (_id) {
+      this.$store.dispatch('viewPostById', { _id })
+    },
+    editPostById (_id) {
+      this.$store.dispatch('editPostById', { _id })
+    },
+    deletePostById (_id) {
+      this.$store.dispatch('deletePostById', { _id })
+    },
+    finalize (reset, duration) {
+      this.timer = setTimeout(() => {
+        reset()
+      }, duration || 1000)
+    }
+  },
+  beforeDestroy () {
+    clearTimeout(this.timer)
+  }
+}
+</script>
