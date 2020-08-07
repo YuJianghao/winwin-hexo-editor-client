@@ -69,6 +69,13 @@ All kinds of PR are welcomed, including crazy change!
 
 ## Release Note
 
+### 0.4.0
+
+- 添加自定义slug
+- 支持修改date和updated
+- 重构应用结构
+- 优化UI
+
 ### 0.3.2
 
 - 修复不能删除的bug
