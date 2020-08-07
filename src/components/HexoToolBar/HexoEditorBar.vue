@@ -13,6 +13,14 @@
     <q-btn
       flat
       stretch
+      color="primary"
+      icon="save"
+      label="保存"
+      @click="savePost"
+    />
+    <q-btn
+      flat
+      stretch
       :icon="published?'close':'publish'"
       :color="published?'red':'primary'"
       :label="published?'取消发布':'发布'"
@@ -26,43 +34,21 @@
       label="删除"
       @click="deletePostById"
     />
-    <q-btn
-      stretch
-      flat
-      @click="editPostById"
-    >
-      分类：
-      {{categories.length?'':'无'}}
-      <q-badge
-        v-for="(item,key) in categories"
-        :key="key"
-        color="primary"
-        text-color="white"
-        :label="item"
-      />
-    </q-btn>
-    <q-btn
-      stretch
-      flat
-      @click="editPostById"
-    >
-      标签：
-      {{tags.length?'':'无'}}
-      <q-badge
-        v-for="(item,key) in tags"
-        :key="key"
-        color="primary"
-        text-color="white"
-        :label="item"
-      />
-    </q-btn>
   </q-toolbar>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 export default {
-  name: 'HexoPostViewerBar',
+  name: 'HexoEditorBar',
+  components: {
+  },
+  data () {
+    return {
+      showCatsMenu: false,
+      showTagsMenu: false
+    }
+  },
   computed: {
     toolbarStyle () {
       return {
@@ -73,18 +59,11 @@ export default {
     },
     // externals
     ...mapState({
-      isFullscreen: state => state.editorUi.full
-    }),
-    ...mapGetters({
-      tags: 'editorCore/dataPostTagsList',
-      categories: 'editorCore/dataPostCategoriesList',
-      published: 'editorCore/dataPostPublished'
+      isFullscreen: state => state.editorUi.full,
+      published: state => state.editorCore.data.article.published
     })
   },
   methods: {
-    async editPostById () {
-      this.$store.dispatch('editPostById')
-    },
     async publishPostById () {
       this.$store.dispatch('publishPostById')
     },
@@ -97,8 +76,11 @@ export default {
     async deletePostById () {
       this.$store.dispatch('deletePostById')
     },
+    async savePost () {
+      this.$store.dispatch('savePost')
+    },
     onPublish () {
-      this.editorCoreDataPostPublished ? this.unpublishPostById() : this.publishPostById()
+      this.published ? this.unpublishPostById() : this.publishPostById()
     }
   }
 }

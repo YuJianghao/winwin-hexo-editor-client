@@ -21,6 +21,7 @@ A Hexo Editor Client by winwin2011
 - [x] Post sort
 - [x] front-matters
 - [x] Search
+- [x] Custom slug
 - [ ] ~~Image CDN~~(use [picgo](https://picgo.github.io/PicGo-Doc/zh/guide/) instead)
 - [ ] let me know what you need ...
 
@@ -67,6 +68,13 @@ All kinds of PR are welcomed, including crazy change!
 - [koel - A personal music streaming server that works](https://github.com/phanan/koel) ([homepage](https://koel.phanan.net/)). Koel shows me how to use stores to manage data!
 
 ## Release Note
+
+### 0.4.0
+
+- 添加自定义slug
+- 支持修改date和updated
+- 重构应用结构
+- 优化UI
 
 ### 0.3.2
 

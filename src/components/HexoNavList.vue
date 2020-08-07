@@ -1,7 +1,6 @@
 <template>
   <div
     class="col column full-height"
-    v-show="show"
     style="border-right: 1px solid rgba(0, 0, 0, 0.12);user-select:none;flex:0 0 200px;"
   >
     <q-toolbar
@@ -90,7 +89,7 @@
               square
               size="sm"
               :outline="selectedTagsId!==item._id"
-              v-for="(item,key) in tagsList"
+              v-for="(item,key) in sortedTagsList"
               :key="key"
               @click="filterByTagsId(item._id)"
               :class="selectedTagsId===item._id?'text-white bg-primary selected':'text-primary'"
@@ -106,48 +105,61 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import LTT from 'list-to-tree'
+import { mapState } from 'vuex'
 import AppFilterItem from 'components/AppFilterItem'
 import NavCategoriesTree from 'components/NavCategoriesTree'
-import { stringSort } from '../utils/common'
+import { stringSort } from 'src/utils/common'
 export default {
   name: 'HexoNavList',
+  props: {
+    categoriesList: {
+      type: Array,
+      default: () => []
+    },
+    tagsList: {
+      type: Array,
+      default: () => []
+    },
+    postsCount: {
+      type: Number,
+      default: 0
+    },
+    unCategoriesCount: {
+      type: Number,
+      default: 0
+    }
+  },
   components: {
     AppFilterItem,
     NavCategoriesTree
   },
   computed: {
-    show () {
-      return !this.editorUi.full
-    },
-    toolbarHeight () {
-      return this.editorUi.actionbar.height
-    },
     toolbarStyle () {
       return {
-        'min-height': this.editorUi.actionbar.height,
+        'min-height': '36px',
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
       }
-    },
-    postsCount () {
-      return this.editorCoreDataPostsCount
     },
     haveTags () {
       return this.tagsList.length > 0
     },
-    tagsList () {
-      const list = this.editorCoreDataTagsList
-      return list.sort((a, b) => stringSort(a.name, b.name))
-    },
-    categoriesList () {
-      const list = this.editorCoreDataCategoriesList
+    sortedTagsList () {
+      const list = this.tagsList
       return list.sort((a, b) => stringSort(a.name, b.name))
     },
     categoriesTreeList () {
-      return this.editorCoreDataCategoriesTreeList
-    },
-    unCategoriesCount () {
-      return this.editorCoreDataUnCategoriesCount
+      const list = this.categoriesList.map(category => {
+        const newObj = {}
+        if (!category.parent)newObj.parent = 0
+        return Object.assign(newObj, category)
+      })
+      const ltt = new LTT(list, {
+        key_id: '_id',
+        key_parent: 'parent',
+        key_child: '_child'
+      })
+      return ltt.GetTree() || []
     },
     selectedAll () {
       return this.editorFilter.type === 'all'
@@ -165,13 +177,6 @@ export default {
     ...mapState({
       editorUi: state => state.editorUi,
       editorFilter: state => state.editorFilter
-    }),
-    ...mapGetters({
-      editorCoreDataPostsCount: 'editorCore/dataPostsCount',
-      editorCoreDataTagsList: 'editorCore/dataTagsList',
-      editorCoreDataCategoriesList: 'editorCore/dataCategoriesList',
-      editorCoreDataCategoriesTreeList: 'editorCore/dataCategoriesTreeList',
-      editorCoreDataUnCategoriesCount: 'editorCore/dataUnCategoriesCount'
     })
   },
   methods: {

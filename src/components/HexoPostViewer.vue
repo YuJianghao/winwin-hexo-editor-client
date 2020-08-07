@@ -29,7 +29,7 @@ export default {
       return this.editorUiViewing
     },
     post () {
-      return this.editorCoreData.post
+      return this.editorCoreData.article
     },
     title () {
       return `# ${this.post.title}\n`

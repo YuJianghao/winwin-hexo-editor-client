@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "2bf969d4244e80661e34",
-    "url": "css/3.356b6696.css"
+    "revision": "c01cf12c9fb5dd85571d",
+    "url": "css/3.eeb05bd4.css"
   },
   {
-    "revision": "3e764b80aebc4fc63036",
+    "revision": "71dadf1238f5489df7ea",
     "url": "css/4.e3cdc20a.css"
   },
   {
@@ -12,11 +12,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/5.a4e9c4c7.css"
   },
   {
-    "revision": "03fdc83489fe3e644dbb",
+    "revision": "40ddaf5e5fe3f8c5d225",
     "url": "css/app.543f640c.css"
   },
   {
-    "revision": "81764f61c34f09d19414",
+    "revision": "a211a8338efea1ede6d0",
     "url": "css/monaco.2ef2445c.css"
   },
   {
@@ -60,16 +60,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/hexo-editor-logo.de328791.png"
   },
   {
-    "revision": "1e9a14ca1fb662ea4253e9d2dbf6dc62",
+    "revision": "004c05f065a2c4ed0b181d1b3ad6c752",
     "url": "index.html"
   },
   {
-    "revision": "2bf969d4244e80661e34",
-    "url": "js/3.2bf969d4.js"
+    "revision": "c01cf12c9fb5dd85571d",
+    "url": "js/3.c01cf12c.js"
   },
   {
-    "revision": "3e764b80aebc4fc63036",
-    "url": "js/4.3e764b80.js"
+    "revision": "71dadf1238f5489df7ea",
+    "url": "js/4.71dadf12.js"
   },
   {
     "revision": "37ffae59b70dfe125d91",
@@ -80,16 +80,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/6.815cfbb3.js"
   },
   {
-    "revision": "03fdc83489fe3e644dbb",
-    "url": "js/app.84473d62.js"
+    "revision": "40ddaf5e5fe3f8c5d225",
+    "url": "js/app.e0cdc936.js"
   },
   {
-    "revision": "81764f61c34f09d19414",
-    "url": "js/monaco.81764f61.js"
+    "revision": "a211a8338efea1ede6d0",
+    "url": "js/monaco.a211a833.js"
   },
   {
-    "revision": "eb07492a4522e9774582",
-    "url": "js/vendor.eb07492a.js"
+    "revision": "3b3ed4d49ffca67bcdb6",
+    "url": "js/vendor.3b3ed4d4.js"
   },
   {
     "revision": "85f3ec0979beb52f0ecd9069eee832cd",

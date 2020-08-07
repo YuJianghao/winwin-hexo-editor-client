@@ -6,13 +6,13 @@
     <q-item
       clickable
       @click="onClick(false)"
-      :class="{'bg-blue-1':postCategories.length===level}"
+      :class="{'bg-blue-1':categories.length===level}"
     >
-      <q-item-section :class="postCategories.length===level?'text-blue-3':'text-grey-5'">
+      <q-item-section :class="categories.length===level?'text-blue-3':'text-grey-5'">
         <q-item-label>无</q-item-label>
       </q-item-section>
       <q-item-section
-        :class="postCategories.length===level?'text-blue-3':'text-grey-5'"
+        :class="categories.length===level?'text-blue-3':'text-grey-5'"
         class="text-right"
       >
         <q-item-label>Lv.{{level+1}}</q-item-label>
@@ -65,12 +65,16 @@
         <q-icon name="arrow_right" />
       </q-item-section>
       <q-menu
-        anchor="bottom right"
-        self="bottom left"
+        anchor="bottom left"
+        self="bottom right"
         v-if="showChild"
         v-model="showMenu"
       >
-        <hexo-cate-selector :level="level+1">
+        <hexo-cate-selector
+          :level="level+1"
+          :categories="categories"
+          @on-update="e=>$emit('on-update',e)"
+        >
         </hexo-cate-selector>
       </q-menu>
     </q-item>
@@ -80,10 +84,14 @@
 <script>
 // TODO 把这个做成公共组件，不要和store交互
 import { mapGetters } from 'vuex'
-import { stringSort } from '../utils/common'
+import { stringSort, postCategoriesArray2d2Raw } from 'src/utils/common'
 export default {
   name: 'HexoCateSelector',
   props: {
+    categories: {
+      type: Array,
+      default: () => []
+    },
     level: {
       type: Number,
       default: 0
@@ -97,35 +105,31 @@ export default {
     }
   },
   computed: {
-    postCategories () {
-      return this.editorCoreDataPostCategoriesList
-    },
     showChild () {
-      return this.level < this.postCategories.length
+      return this.level < this.categories.length
     },
     availableCategories () {
       const ac = []
       ac.push.apply(ac, this.editorCoreDataCategoriesNameList)
-      this.postCategories.map(pc => {
+      this.categories.forEach(pc => {
         if (!ac.includes(pc)) { ac.push(pc) }
       })
       return ac.sort(stringSort)
     },
     // externals
     ...mapGetters({
-      editorCoreDataPostCategoriesList: 'editorCore/dataPostCategoriesList',
       editorCoreDataCategoriesNameList: 'editorCore/dataCategoriesNameList'
     })
   },
   methods: {
-    async setPostByCategoriesArray2d (cats) {
-      this.$store.dispatch('setPostByCategoriesArray2d', cats)
+    setPostByCategoriesArray2d (cats) {
+      this.$emit('on-update', postCategoriesArray2d2Raw(cats))
     },
     selected (item) {
-      return item === this.postCategories[this.level]
+      return item === this.categories[this.level]
     },
     onClick (item) {
-      const cats = this.postCategories.slice(0, this.level)
+      const cats = this.categories.slice(0, this.level)
       if (item) {
         cats.push(item)
       }
@@ -136,7 +140,7 @@ export default {
     },
     onAddCate () {
       if (this.text) {
-        const cats = this.postCategories.slice(0, this.level)
+        const cats = this.categories.slice(0, this.level)
         cats.push(this.text)
         this.setPostByCategoriesArray2d([cats])
         this.editing = false

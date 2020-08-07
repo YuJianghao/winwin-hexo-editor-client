@@ -1,4 +1,5 @@
 import * as hexoService from 'src/service/hexo'
+
 import { Logger } from 'src/utils/logger'
 
 const logger = new Logger({ prefix: 'editorSearch/Actions' })

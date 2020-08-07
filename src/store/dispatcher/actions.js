@@ -1,9 +1,11 @@
 
 // import { date } from 'quasar'
-import { confirmDialog } from 'src/utils/dialog'
+import { confirmDialog, newPostDialog } from 'src/utils/dialog'
 import message from 'src/utils/message'
 import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'Dispatcher' })
+
+import * as editorCoreActionTypes from '../editorCore/action-types'
 
 // 用户相关
 
@@ -34,7 +36,7 @@ export async function init ({ commit, dispatch }) {
     commit('editorUi/init')
     commit('editorUi/showLoading')
     commit('globalUser/init')
-    await dispatch('editorCore/init')
+    await dispatch('editorCore/' + editorCoreActionTypes.init)
     await dispatch('editorSearch/init')
   } catch (err) {
     if (err.status === 401) return
@@ -48,13 +50,13 @@ export async function init ({ commit, dispatch }) {
 export async function destroy ({ commit, dispatch }) {
   logger.log('destroy')
   commit('editorUi/destroy')
-  await dispatch('editorCore/destroy')
+  await dispatch('editorCore/' + editorCoreActionTypes.destroy)
 }
 
 export async function reload ({ commit, dispatch }, force = false) {
   try {
     commit('editorUi/showLoading')
-    await dispatch('editorCore/reload', force)
+    await dispatch('editorCore/' + editorCoreActionTypes.reload, force)
     message.success({ message: '重载成功' })
   } catch (err) {
     if (err.status === 401) return
@@ -84,7 +86,7 @@ export async function viewPostById ({ rootGetters, commit, dispatch }, payload =
         resolve()
       })
     } else {
-      await dispatch('editorCore/loadPostById', { _id, force })
+      await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
       commit('editorUi/viewPost')
     }
   } catch (err) {
@@ -121,13 +123,17 @@ export async function addPostByDefault ({ rootGetters, commit, dispatch }) {
   try {
     if (!rootGetters['editorCore/isPostSaved']) {
       await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-        await dispatch('editorCore/addPostBase', { force: true })
-        commit('editorUi/editPost')
-        resolve()
+        newPostDialog(async (options) => {
+          await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { force: true, options })
+          commit('editorUi/editPost')
+          resolve()
+        })
       })
     } else {
-      await dispatch('editorCore/addPostBase')
-      commit('editorUi/editPost')
+      await newPostDialog(async (options) => {
+        await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { options })
+        commit('editorUi/editPost')
+      })
     }
   } catch (err) {
     if (err.status === 401) return
@@ -142,12 +148,12 @@ export async function addPostByDefault ({ rootGetters, commit, dispatch }) {
 export async function deletePostById ({ rootState, dispatch }, payload = {}) {
   logger.log('deletePostById', payload)
   const { _id } = payload
-  const post = rootState.editorCore.data.posts[_id || rootState.editorCore.data.post._id]
+  const post = rootState.editorCore.data.articles[_id || rootState.editorCore.data.article._id]
   const message = `你确认要删除《${post.title}》么？`
   // if (post.date)message += `（最后编辑于${date.formatDate(post.date, 'YYYY年MM月DD日 HH:mm:ss')}）`
   return confirmDialog('删除确认', message, '删除', 'red', null, 'primary', 'cancel', async resolve => {
     try {
-      await dispatch('editorCore/deletePostById', { _id })
+      await dispatch('editorCore/' + editorCoreActionTypes.deleteArticleById, { _id })
       await dispatch('editorUi/deletePost', _id)
     } catch (err) {
       message.error({ message: '删除失败', caption: err.message })
@@ -186,7 +192,7 @@ export async function editPostByIdDispatcher ({ commit, dispatch }, payload = {}
   logger.log('editPostByIdDispatcher', payload)
   const _id = payload._id || null
   const force = payload.force || false
-  await dispatch('editorCore/loadPostById', { _id, force })
+  await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
   commit('editorUi/editPost', { _id, force })
 }
 
@@ -205,7 +211,7 @@ export async function publishPostById ({ getters, rootGetters, dispatch }, paylo
         resolve()
       })
     } else {
-      await dispatch('editorCore/publishPostById', { _id, force })
+      await dispatch('editorCore/' + editorCoreActionTypes.publishPostById, { _id, force })
     }
   } catch (err) {
     message.error({ message: '发布失败', caption: err.message })
@@ -228,7 +234,7 @@ export async function unpublishPostById ({ rootGetters, dispatch }, payload = {}
       })
     } else {
       await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
-        await dispatch('editorCore/unpublishPostById', { _id, force })
+        await dispatch('editorCore/' + editorCoreActionTypes.unpublishPostById, { _id, force })
         resolve()
       })
     }
@@ -237,25 +243,9 @@ export async function unpublishPostById ({ rootGetters, dispatch }, payload = {}
   }
 }
 
-export async function setPostByTitle ({ commit }, title) {
-  logger.log('setPostByTitle')
-  commit('editorCore/updatePostByTitle', title)
-}
-export async function setPostByContent ({ commit }, content) {
-  logger.log('setPostByContent')
-  commit('editorCore/updatePostByContent', content)
-}
-export async function setPostByTags ({ commit }, tags) {
-  logger.log('setPostByTags')
-  commit('editorCore/updatePostByTags', tags)
-}
-export async function setPostByCategoriesArray2d ({ commit }, cats) {
-  logger.log('setPostByCategoriesArray2d')
-  commit('editorCore/updatePostByCategoriesArray2D', cats)
-}
-export async function setPostByFrontmatters ({ commit }, opt) {
-  logger.log('setPostByFrontmatters')
-  commit('editorCore/updatePostByFrontmatters', opt)
+export async function setPostByPost ({ dispatch }, article) {
+  logger.log('setPostByPost')
+  await dispatch('editorCore/' + editorCoreActionTypes.updateArticle, article)
 }
 
 // 操作相关
@@ -265,7 +255,7 @@ export async function deploy ({ commit, dispatch }) {
   await confirmDialog(null, '确定部署博客么？', null, null, null, null, 'ok', async resolve => {
     try {
       commit('editorUi/showLoading', { message: '正在部署', delay: 100 })
-      await dispatch('editorCore/deploy')
+      await dispatch('editorCore/' + editorCoreActionTypes.deploy)
       message.success({ message: '部署完成' })
     } catch (err) {
       if (err.status === 503)err.message = '请配置`hexo deploy`命令'
@@ -282,7 +272,7 @@ export async function syncGit ({ commit, dispatch }) {
   await confirmDialog(null, '确定从git同步么？未保存到git的文件将丢失', '放弃文件并同步', 'red', '返回', 'primary', 'cancel', async resolve => {
     try {
       commit('editorUi/showLoading', { message: '正在从GIT同步', delay: 100 })
-      await dispatch('editorCore/syncGit')
+      await dispatch('editorCore/' + editorCoreActionTypes.syncGit)
       message.success({ message: '同步完成' })
     } catch (err) {
       if (err.status === 503)err.message = '请配置Git命令'
@@ -298,7 +288,7 @@ export async function saveGit ({ commit, dispatch }) {
   logger.log('saveGit')
   try {
     commit('editorUi/showLoading', { message: '正在同步到GIT', delay: 100 })
-    await dispatch('editorCore/saveGit')
+    await dispatch('editorCore/' + editorCoreActionTypes.saveGit)
     message.success({ message: '同步完成' })
   } catch (err) {
     if (err.status === 503)err.message = '请配置Git远端仓库'
@@ -312,7 +302,7 @@ export async function savePost ({ commit, dispatch }) {
   logger.log('savePost')
   try {
     commit('editorUi/showLoading', { message: '正在保存', delay: 100 })
-    await dispatch('editorCore/savePost')
+    await dispatch('editorCore/' + editorCoreActionTypes.saveArticle)
     message.success({ message: '保存成功' })
   } catch (err) {
     if (err.status === 404) {
