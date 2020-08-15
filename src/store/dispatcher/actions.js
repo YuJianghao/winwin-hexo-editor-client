@@ -7,6 +7,7 @@ const logger = new Logger({ prefix: 'Dispatcher' })
 
 import * as actionTypes from './action-types'
 import * as editorCoreActionTypes from '../editorCore/action-types'
+import * as filterMutationTypes from '../editorFilter/mutation-types'
 
 // 用户相关
 
@@ -100,22 +101,22 @@ const actions = {
 
   [actionTypes.filterByAll]: async ({ commit }) => {
     logger.log('filterByAll')
-    commit('editorFilter/filterByAll')
+    commit('editorFilter/' + filterMutationTypes.filterByAll)
   },
 
   [actionTypes.filterByCategoriesId]: async ({ commit }, _id) => {
     logger.log('filterByCategoriesId')
-    commit('editorFilter/filterByCategoriesId', _id)
+    commit('editorFilter/' + filterMutationTypes.filterByCategoriesId, _id)
   },
 
   [actionTypes.filterByTagsId]: async ({ commit }, _id) => {
     logger.log('filterByTagsId')
-    commit('editorFilter/filterByTagsId', _id)
+    commit('editorFilter/' + filterMutationTypes.filterByTagsId, _id)
   },
 
   [actionTypes.filterByUnCategorized]: async ({ commit }) => {
     logger.log('filterByUnCategorized')
-    commit('editorFilter/filterByUnCategorized')
+    commit('editorFilter/' + filterMutationTypes.filterByUnCategorized)
   },
 
   // 编辑
