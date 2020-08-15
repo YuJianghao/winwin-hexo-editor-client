@@ -140,6 +140,7 @@ import { mapState } from 'vuex'
 import AppFilterItem from 'components/AppFilterItem'
 import NavCategoriesTree from 'components/NavCategoriesTree'
 import { stringSort } from 'src/utils/common'
+import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoNavList',
   props: {
@@ -216,31 +217,31 @@ export default {
   },
   methods: {
     async filterByCategoriesId (_id) {
-      this.$store.dispatch('filterByCategoriesId', _id)
+      this.$store.dispatch(actionTypes.filterByCategoriesId, _id)
     },
     async filterByTagsId (_id) {
-      this.$store.dispatch('filterByTagsId', _id)
+      this.$store.dispatch(actionTypes.filterByTagsId, _id)
     },
     async filterByAll () {
-      this.$store.dispatch('filterByAll')
+      this.$store.dispatch(actionTypes.filterByAll)
     },
     async filterByUnCategorized () {
-      this.$store.dispatch('filterByUnCategorized')
+      this.$store.dispatch(actionTypes.filterByUnCategorized)
     },
     async deploy () {
-      this.$store.dispatch('deploy')
+      this.$store.dispatch(actionTypes.deploy)
     },
     async clean () {
-      this.$store.dispatch('clean')
+      this.$store.dispatch(actionTypes.clean)
     },
     async generate () {
-      this.$store.dispatch('generate')
+      this.$store.dispatch(actionTypes.generate)
     },
     async syncGit () {
-      this.$store.dispatch('syncGit')
+      this.$store.dispatch(actionTypes.syncGit)
     },
     async saveGit () {
-      this.$store.dispatch('saveGit')
+      this.$store.dispatch(actionTypes.saveGit)
     }
   }
 }

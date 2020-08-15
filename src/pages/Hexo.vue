@@ -33,7 +33,7 @@
         style="max-height:100%"
         :article="article"
         @on-update="onArticleUpdate"
-        @on-save="$store.dispatch('savePost')"
+        @on-save="$store.dispatch(actionTypes.savePost)"
       ></hexo-article-editor>
     </div>
     <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
@@ -60,6 +60,8 @@ import HexoPostViewer from 'components/HexoPostViewer'
 import HexoWelcome from 'components/HexoWelcome'
 
 import { mapState, mapGetters } from 'vuex'
+
+import * as actionTypes from 'src/store/dispatcher/action-types'
 
 export default {
   name: 'Hexo',
@@ -97,17 +99,17 @@ export default {
       return 'height:' + (window.innerHeight - offset) + 'px'
     },
     onArticleUpdate (article) {
-      this.$store.dispatch('setPostByPost', article)
+      this.$store.dispatch(actionTypes.setPostByPost, article)
     }
   },
   async mounted () {
-    this.$store.dispatch('init')
+    this.$store.dispatch(actionTypes.init)
   },
   created () {
     document.getElementById('app-message').innerHTML = '加载编辑器...'
   },
   async beforeDestory () {
-    this.$store.dispatch('destroy')
+    this.$store.dispatch(actionTypes.destroy)
   }
 }
 </script>

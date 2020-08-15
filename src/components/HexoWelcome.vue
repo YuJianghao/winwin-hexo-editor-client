@@ -22,6 +22,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoWelcome',
   computed: {
@@ -48,7 +49,7 @@ export default {
   },
   methods: {
     async addPostByDefault () {
-      this.$store.dispatch('addPostByDefault')
+      this.$store.dispatch(actionTypes.addPostByDefault)
     }
   }
 }
