@@ -179,11 +179,11 @@ const actions = {
     try {
       if (requestSave) {
         await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          await dispatch('editPostByIdDispatcher', { _id, force: true })
+          await dispatch(actionTypes.editPostByIdDispatcher, { _id, force: true })
           resolve()
         })
       } else {
-        await dispatch('editPostByIdDispatcher', { _id, force })
+        await dispatch(actionTypes.editPostByIdDispatcher, { _id, force })
       }
     } catch (err) {
       message.error({ message: '文章载入失败', caption: err.message })
@@ -209,7 +209,7 @@ const actions = {
     try {
       if (!force && !rootGetters['editorCore/isPostSaved']) {
         await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          await dispatch('publishPostById', { _id, force: true })
+          await dispatch(actionTypes.publishPostById, { _id, force: true })
           resolve()
         })
       } else {
@@ -231,7 +231,7 @@ const actions = {
     try {
       if (!force && !rootGetters['editorCore/isPostSaved']) {
         await confirmDialog(null, '你确认要取消发布么？未保存的文件会丢失', '继续取消发布', 'red', '返回', 'primary', 'cancel', async resolve => {
-          await dispatch('unpublishPostById', { _id, force: true })
+          await dispatch(actionTypes.unpublishPostById, { _id, force: true })
           resolve()
         })
       } else {
