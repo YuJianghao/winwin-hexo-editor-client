@@ -35,6 +35,7 @@
 <script>
 import ListItemContextMenu from './ListItemContextMenu'
 import ListItem from './ListItem'
+import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoPostsList',
   props: {
@@ -78,13 +79,13 @@ export default {
       this.finalize(reset, 1)
     },
     viewPostById (_id) {
-      this.$store.dispatch('viewPostById', { _id })
+      this.$store.dispatch(actionTypes.viewPostById, { _id })
     },
     editPostById (_id) {
-      this.$store.dispatch('editPostById', { _id })
+      this.$store.dispatch(actionTypes.editPostById, { _id })
     },
     deletePostById (_id) {
-      this.$store.dispatch('deletePostById', { _id })
+      this.$store.dispatch(actionTypes.deletePostById, { _id })
     },
     finalize (reset, duration) {
       this.timer = setTimeout(() => {

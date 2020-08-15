@@ -66,6 +66,8 @@
 
 <script>
 import message from '../utils/message'
+import * as actionTypes from 'src/store/dispatcher/action-types'
+
 export default {
   name: 'Login',
   data () {
@@ -84,7 +86,7 @@ export default {
       }
       try {
         this.logging = true
-        await this.$store.dispatch('login', {
+        await this.$store.dispatch(actionTypes.login, {
           username: this.username,
           password: this.password
         })

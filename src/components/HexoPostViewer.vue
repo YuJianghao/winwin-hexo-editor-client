@@ -18,6 +18,7 @@ import { date } from 'quasar'
 import { mapState, mapGetters } from 'vuex'
 import MarkdownPreviewer from './MarkdownPreviewer'
 import HexoPostViewerBar from './HexoPostViewerBar'
+import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoPostViewer',
   components: {
@@ -45,7 +46,7 @@ export default {
   },
   methods: {
     async editPostById () {
-      this.$store.dispatch('editPostById')
+      this.$store.dispatch(actionTypes.editPostById)
     },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')

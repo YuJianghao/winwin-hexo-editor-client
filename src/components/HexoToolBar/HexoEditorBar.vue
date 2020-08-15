@@ -39,6 +39,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoEditorBar',
   components: {
@@ -65,19 +66,19 @@ export default {
   },
   methods: {
     async publishPostById () {
-      this.$store.dispatch('publishPostById')
+      this.$store.dispatch(actionTypes.publishPostById)
     },
     async unpublishPostById () {
-      this.$store.dispatch('unpublishPostById')
+      this.$store.dispatch(actionTypes.unpublishPostById)
     },
     async toggleFull () {
-      this.$store.dispatch('toggleFull')
+      this.$store.dispatch(actionTypes.toggleFull)
     },
     async deletePostById () {
-      this.$store.dispatch('deletePostById')
+      this.$store.dispatch(actionTypes.deletePostById)
     },
     async savePost () {
-      this.$store.dispatch('savePost')
+      this.$store.dispatch(actionTypes.savePost)
     },
     onPublish () {
       this.published ? this.unpublishPostById() : this.publishPostById()

@@ -89,6 +89,7 @@
 <script>
 import SearchMenu from './SearchMenu'
 import { mapState } from 'vuex'
+import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoPostsListBar',
   components: {
@@ -132,14 +133,14 @@ export default {
   },
   methods: {
     async addPostByDefault () {
-      this.$store.dispatch('addPostByDefault')
+      this.$store.dispatch(actionTypes.addPostByDefault)
     },
     async reload () {
-      this.$store.dispatch('reload', true)
+      this.$store.dispatch(actionTypes.reload, true)
     },
     onSortBy (key, direction) {
-      this.$store.dispatch('setSortKey', key)
-      this.$store.dispatch('setSortDirection', direction)
+      this.$store.dispatch(actionTypes.setSortKey, key)
+      this.$store.dispatch(actionTypes.setSortDirection, direction)
     }
   }
 }

@@ -139,6 +139,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { getDatetimeStringNoSec } from 'src/utils/post'
+import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'PostContextMenu',
   props: {
@@ -177,14 +178,14 @@ export default {
   },
   methods: {
     onAdd () {
-      this.$store.dispatch('addPostByDefault')
+      this.$store.dispatch(actionTypes.addPostByDefault)
       // TODO 需要处理新建文章的分类逻辑
     },
     onView () {
-      this.$store.dispatch('viewPostById', { _id: this.id })
+      this.$store.dispatch(actionTypes.viewPostById, { _id: this.id })
     },
     onEdit () {
-      this.$store.dispatch('editPostById', { _id: this.id })
+      this.$store.dispatch(actionTypes.editPostById, { _id: this.id })
     },
     onPublish () {
       if (this.published) {
@@ -194,7 +195,7 @@ export default {
       }
     },
     onDelete () {
-      this.$store.dispatch('deletePostById', { _id: this.id })
+      this.$store.dispatch(actionTypes.deletePostById, { _id: this.id })
     },
     // externals
     ...mapActions([
