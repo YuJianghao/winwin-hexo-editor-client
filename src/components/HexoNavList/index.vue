@@ -7,7 +7,10 @@
       class="bg-grey-2 q-px-none"
       :style="toolbarStyle"
     >
-      <q-toolbar-title class="text-grey" style="margin-left:14px;">
+      <q-toolbar-title
+        class="text-grey"
+        style="margin-left:14px;"
+      >
         HEXO
       </q-toolbar-title>
     </q-toolbar>
@@ -26,26 +29,26 @@
         </q-item-section>
       </q-item>
       <template v-if="showMore">
-      <q-item
-        clickable
-        class="text-blue"
-        @click="generate"
-      >
-        <q-item-section style="margin-left:-2px;">生成</q-item-section>
-        <q-item-section avatar>
-          <q-icon name="movie_filter" />
-        </q-item-section>
-      </q-item>
-      <q-item
-        clickable
-        class="text-blue"
-        @click="clean"
-      >
-        <q-item-section style="margin-left:-2px;">清理</q-item-section>
-        <q-item-section avatar>
-          <q-icon name="toys" />
-        </q-item-section>
-      </q-item>
+        <q-item
+          clickable
+          class="text-blue"
+          @click="generate"
+        >
+          <q-item-section style="margin-left:-2px;">生成</q-item-section>
+          <q-item-section avatar>
+            <q-icon name="movie_filter" />
+          </q-item-section>
+        </q-item>
+        <q-item
+          clickable
+          class="text-blue"
+          @click="clean"
+        >
+          <q-item-section style="margin-left:-2px;">清理</q-item-section>
+          <q-item-section avatar>
+            <q-icon name="toys" />
+          </q-item-section>
+        </q-item>
       </template>
       <q-item
         clickable
@@ -58,18 +61,22 @@
         </q-item-section>
       </q-item>
       <template v-if="showMore">
+        <q-item
+          clickable
+          class="text-red"
+          @click="syncGit"
+        >
+          <q-item-section style="margin-left:-2px;">从GIT同步</q-item-section>
+          <q-item-section avatar>
+            <q-icon name="flight_land" />
+          </q-item-section>
+        </q-item>
+      </template>
       <q-item
         clickable
-        class="text-red"
-        @click="syncGit"
+        class="text-grey"
+        @click="showMore=!showMore"
       >
-        <q-item-section style="margin-left:-2px;">从GIT同步</q-item-section>
-        <q-item-section avatar>
-          <q-icon name="flight_land" />
-        </q-item-section>
-      </q-item>
-      </template>
-      <q-item clickable class="text-grey" @click="showMore=!showMore">
         <q-item-section>{{showMore?'更少':'更多'}}</q-item-section>
         <q-item-section avatar>
           <q-icon :name="showMore?'keyboard_arrow_up':'keyboard_arrow_down'" />
@@ -86,26 +93,26 @@
           dense
           class="q-py-xs"
         >
-          <app-filter-item
+          <category-item
             label="全部"
             :badge="postsCount"
             @on-click="filterByAll"
             :selected="selectedAll"
-          ></app-filter-item>
-          <nav-categories-tree
+          ></category-item>
+          <category-tree
             :nodes="categoriesTreeList"
             node_key="_id"
             children_key="_child"
             label_key="name"
             :selected="selectedCategoriesId"
             @on-click="filterByCategoriesId"
-          ></nav-categories-tree>
-          <app-filter-item
+          ></category-tree>
+          <category-item
             label="未分类"
             :badge="unCategoriesCount"
             @on-click="filterByUnCategorized"
             :selected="selectedUncategoriezed"
-          ></app-filter-item>
+          ></category-item>
         </q-list>
         <q-space />
         <template v-if="haveTags">
@@ -114,19 +121,14 @@
             class="q-pa-sm tag-cloud"
             dense
           >
-            <q-chip
-              clickable
-              square
-              size="sm"
-              :outline="selectedTagsId!==item._id"
+            <tag-item
               v-for="(item,key) in sortedTagsList"
               :key="key"
+              :name="item.name"
+              :count="item.length"
+              :selected="selectedTagsId===item._id"
               @click="filterByTagsId(item._id)"
-              :class="selectedTagsId===item._id?'text-white bg-primary selected':'text-primary'"
-            >
-              <q-avatar square>{{item.length}}</q-avatar>
-              {{item.name.toUpperCase()}}
-            </q-chip>
+            ></tag-item>
           </q-list>
         </template>
       </q-scroll-area>
@@ -137,8 +139,9 @@
 <script>
 import LTT from 'list-to-tree'
 import { mapState } from 'vuex'
-import AppFilterItem from 'components/AppFilterItem'
-import NavCategoriesTree from 'components/NavCategoriesTree'
+import CategoryItem from 'components/HexoNavList/CategoryItem'
+import TagItem from 'components/HexoNavList/TagItem'
+import CategoryTree from 'components/HexoNavList/CategoryTree'
 import { stringSort } from 'src/utils/common'
 import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
@@ -167,8 +170,9 @@ export default {
     }
   },
   components: {
-    AppFilterItem,
-    NavCategoriesTree
+    CategoryItem,
+    CategoryTree,
+    TagItem
   },
   computed: {
     toolbarStyle () {
@@ -187,7 +191,7 @@ export default {
     categoriesTreeList () {
       const list = this.categoriesList.map(category => {
         const newObj = {}
-        if (!category.parent)newObj.parent = 0
+        if (!category.parent) newObj.parent = 0
         return Object.assign(newObj, category)
       })
       const ltt = new LTT(list, {
