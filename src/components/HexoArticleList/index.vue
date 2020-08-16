@@ -13,7 +13,7 @@
         v-for="(item,key) in articleList"
         :key="key"
         :post="item"
-        :selected="item._id===selected"
+        :selected="item._id===currentArticleId"
         @on-left="onLeft"
         @on-right="onRight"
         @on-click="viewPostById"
@@ -33,21 +33,12 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import ListItemContextMenu from './ListItemContextMenu'
 import ListItem from './ListItem'
 import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoPostsList',
-  props: {
-    articleList: {
-      type: Array,
-      default: () => []
-    },
-    selected: {
-      type: String,
-      default: ''
-    }
-  },
   components: {
     ListItemContextMenu,
     ListItem
@@ -67,7 +58,13 @@ export default {
     },
     empty () {
       return this.articleList.length === 0
-    }
+    },
+    ...mapState({
+      currentArticleId: state => state.editorCore.status.currentArticleId
+    }),
+    ...mapGetters({
+      articleList: 'editorSorter/postsList'
+    })
   },
   methods: {
     onLeft ({ reset, _id }) {
