@@ -8,6 +8,7 @@ const logger = new Logger({ prefix: 'Dispatcher' })
 import * as actionTypes from './action-types'
 import * as editorCoreActionTypes from '../editorCore/action-types'
 import * as filterMutationTypes from '../editorFilter/mutation-types'
+import { debounce } from 'quasar'
 
 // 用户相关
 
@@ -81,7 +82,7 @@ const actions = {
     const force = payload.force || false
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
     const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
-  (_id && (_id !== rootGetters['editorCore/dataPostId']))
+      (_id && (_id !== rootGetters['editorCore/dataPostId']))
     try {
       if (requestSave) {
         await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
@@ -176,7 +177,7 @@ const actions = {
     const force = payload.force || false
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
     const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
-  (_id && (_id !== rootGetters['editorCore/dataPostId']))
+      (_id && (_id !== rootGetters['editorCore/dataPostId']))
     try {
       if (requestSave) {
         await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
@@ -249,6 +250,7 @@ const actions = {
   [actionTypes.setPostByPost]: async ({ dispatch }, article) => {
     logger.log('setPostByPost')
     await dispatch('editorCore/' + editorCoreActionTypes.updateArticle, article)
+    await dispatch(actionTypes.autoSavePost, true)
   },
 
   // 操作相关
@@ -261,7 +263,7 @@ const actions = {
         await dispatch('editorCore/' + editorCoreActionTypes.deploy)
         message.success({ message: '部署完成' })
       } catch (err) {
-        if (err.status === 503)err.message = '请配置`hexo deploy`命令'
+        if (err.status === 503) err.message = '请配置`hexo deploy`命令'
         message.error({ message: '部署失败', caption: err.message })
       } finally {
         commit('editorUi/hideLoading')
@@ -304,7 +306,7 @@ const actions = {
         await dispatch('editorCore/' + editorCoreActionTypes.syncGit)
         message.success({ message: '同步完成' })
       } catch (err) {
-        if (err.status === 503)err.message = '请配置Git命令'
+        if (err.status === 503) err.message = '请配置Git命令'
         message.error({ message: '同步失败', caption: err.message })
       } finally {
         commit('editorUi/hideLoading')
@@ -320,19 +322,23 @@ const actions = {
       await dispatch('editorCore/' + editorCoreActionTypes.saveGit)
       message.success({ message: '同步完成' })
     } catch (err) {
-      if (err.status === 503)err.message = '请配置Git远端仓库'
+      if (err.status === 503) err.message = '请配置Git远端仓库'
       message.error({ message: '同步失败', caption: err.message })
     } finally {
       commit('editorUi/hideLoading')
     }
   },
 
-  [actionTypes.savePost]: async ({ commit, dispatch }) => {
-    logger.log('savePost')
+  [actionTypes.savePost]: async ({ commit, dispatch }, isAuto) => {
+    if (isAuto) {
+      logger.log('autoSavePost')
+    } else {
+      logger.log('savePost')
+    }
     try {
-      commit('editorUi/showLoading', { message: '正在保存', delay: 100 })
+      if (!isAuto) commit('editorUi/showLoading', { message: '正在保存', delay: 100 })
       await dispatch('editorCore/' + editorCoreActionTypes.saveArticle)
-      message.success({ message: '保存成功' })
+      if (!isAuto) message.success({ message: '保存成功' })
     } catch (err) {
       if (err.status === 404) {
         err.message = '列表已更新，请刷新'
@@ -381,5 +387,6 @@ const actions = {
     await dispatch('editorSearch/search', { q, size })
   }
 }
+actions[actionTypes.autoSavePost] = debounce(actions[actionTypes.savePost], 3000)
 
 export default actions

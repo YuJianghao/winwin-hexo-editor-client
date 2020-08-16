@@ -17,6 +17,7 @@
       icon="save"
       label="保存"
       @click="savePost"
+      v-show="false"
     />
     <q-btn
       flat
@@ -34,12 +35,15 @@
       label="删除"
       @click="deletePostById"
     />
+    <q-badge class="q-ml-md" color="grey" text-color="white" label="未保存" v-show="!saved"/>
+    <q-badge class="q-ml-md" color="grey-4" text-color="grey" :label="lastSavedAt" v-show="lastSavedAt&&saved"/>
   </q-toolbar>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import * as actionTypes from 'src/store/dispatcher/action-types'
+import { date } from 'quasar'
 export default {
   name: 'HexoEditorBar',
   components: {
@@ -51,6 +55,10 @@ export default {
     }
   },
   computed: {
+    lastSavedAt () {
+      if (!this.rawLastSavedAt) return null
+      return '最后保存于 ' + date.formatDate(new Date(this.rawLastSavedAt), 'HH:mm:ss')
+    },
     toolbarStyle () {
       return {
         height: '36px',
@@ -61,7 +69,9 @@ export default {
     // externals
     ...mapState({
       isFullscreen: state => state.editorUi.full,
-      published: state => state.editorCore.data.article.published
+      published: state => state.editorCore.data.article.published,
+      rawLastSavedAt: state => state.editorCore.status.lastSavedAt,
+      saved: state => state.editorCore.status.saved
     })
   },
   methods: {

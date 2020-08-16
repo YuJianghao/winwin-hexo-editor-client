@@ -33,7 +33,7 @@
         style="max-height:100%"
         :article="article"
         @on-update="onArticleUpdate"
-        @on-save="$store.dispatch(actionTypes.savePost)"
+        @on-save="onSave"
       ></hexo-article-editor>
     </div>
     <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
@@ -100,6 +100,9 @@ export default {
     },
     onArticleUpdate (article) {
       this.$store.dispatch(actionTypes.setPostByPost, article)
+    },
+    onSave () {
+      this.$store.dispatch(actionTypes.savePost)
     }
   },
   async mounted () {
