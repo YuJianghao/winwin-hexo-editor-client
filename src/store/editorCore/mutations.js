@@ -5,11 +5,13 @@ import * as mutationTypes from './mutation-types'
 const mutations = {
   [mutationTypes.loadArticle] (state, article) {
     state.data.article = article
+    mutations[mutationTypes.setLastSavedAt](state, null)
     mutations[mutationTypes.markSaved](state)
   },
 
   [mutationTypes.closeArticle] (state) {
     state.data.article = null
+    mutations[mutationTypes.setLastSavedAt](state, null)
   },
 
   [mutationTypes.updateArticle] (state, article) {
@@ -19,6 +21,7 @@ const mutations = {
 
   [mutationTypes.saveArticle] (state) {
     mutations[mutationTypes.markSaved](state)
+    mutations[mutationTypes.setLastSavedAt](state, new Date())
   },
 
   // load
@@ -63,6 +66,10 @@ const mutations = {
 
   [mutationTypes.markSaved] (state) {
     state.status.saved = true
+  },
+
+  [mutationTypes.setLastSavedAt] (state, time) {
+    state.status.lastSavedAt = time
   }
 }
 export default mutations
