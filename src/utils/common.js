@@ -55,3 +55,7 @@ export function stringSort (strA, strB) {
   const valueB = pinyin(strB, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
   return valueA > valueB ? 1 : -1
 }
+
+export function isOverflow (el) {
+  return el.clientWidth < el.scrollWidth
+}

@@ -5,7 +5,7 @@
       :key="node[node_key]"
       dense
     >
-      <app-filter-item
+      <category-item
         :_id="node[node_key]"
         :label="node[label_key]"
         :badge="node.length"
@@ -14,8 +14,8 @@
         :selected="selected===node[node_key]"
         @on-click="e=>$emit('on-click',e)"
         @on-toggle="onToggle"
-      ></app-filter-item>
-      <nav-categories-tree
+      ></category-item>
+      <category-tree
         v-if="node[children_key]"
         :key="node[node_key]"
         :nodes="node[children_key]"
@@ -26,17 +26,17 @@
         :style="contentStyle"
         :selected="selected"
         @on-click="e=>$emit('on-click',e)"
-      ></nav-categories-tree>
+      ></category-tree>
     </q-list>
   </div>
 </template>
 
 <script>
-import AppFilterItem from 'components/AppFilterItem'
+import CategoryItem from 'components/HexoNavList/CategoryItem'
 export default {
-  name: 'NavCategoriesTree',
+  name: 'CategoryTree',
   components: {
-    AppFilterItem
+    CategoryItem
   },
   props: {
     nodes: {

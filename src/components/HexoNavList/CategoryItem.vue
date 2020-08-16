@@ -7,26 +7,41 @@
     :class="{'text-primary':selected,'bg-blue-1':selected}"
     :style="style"
   >
+    <q-tooltip
+      anchor="bottom middle"
+      self="center middle"
+      transition-show="none"
+      transition-hide="none"
+      v-if="isOverflow"
+    >
+      {{label}}
+    </q-tooltip>
     <q-item-section>
-      <q-item-label>
-        <q-icon :name="isParent?'arrow_right':''"/>
+      <q-item-label
+        class="ellipsis"
+        ref="label"
+      >
+        <q-icon :name="isParent?'arrow_right':''" />
         {{label}}
       </q-item-label>
     </q-item-section>
     <q-item-section avatar>
-        <q-badge
-          :label="badge"
-          class="bg-blue-7"
-        />
+      <q-badge
+        :label="badge"
+        class="bg-blue-7"
+      />
     </q-item-section>
   </q-item>
 </template>
 
 <script>
+import { isOverflow } from 'src/utils/common'
 export default {
-  name: 'AppFilterItem',
+  name: 'CategoryItem',
   data () {
-    return {}
+    return {
+      isOverflow: false
+    }
   },
   props: {
     _id: {
@@ -36,7 +51,7 @@ export default {
       type: String,
       required: true
     },
-    badge: { },
+    badge: {},
     icon: {
       type: String
     },
@@ -59,6 +74,12 @@ export default {
         'padding-left': 8 + this.level * 12 + 'px'
       }
     }
+  },
+  mounted () {
+    this.isOverflow = isOverflow(this.$refs.label.$el)
+  },
+  updated () {
+    this.isOverflow = isOverflow(this.$refs.label.$el)
   }
 }
 </script>
