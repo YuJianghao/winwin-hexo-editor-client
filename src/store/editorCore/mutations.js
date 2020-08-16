@@ -70,6 +70,14 @@ const mutations = {
 
   [mutationTypes.setLastSavedAt] (state, time) {
     state.status.lastSavedAt = time
+  },
+
+  [mutationTypes.setCurrentArticleId] (state, id) {
+    state.status.currentArticleId = id
+  },
+
+  [mutationTypes.setArticleLoading] (state, loading) {
+    state.status.loadingArticle = loading
   }
 }
 export default mutations

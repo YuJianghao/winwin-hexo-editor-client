@@ -21,12 +21,7 @@ function getValidId (state, _id) {
   if (!state.data.article && !_id) throw new Error('No article opened, _id is required!')
   const validId = _id || state.data.article._id
   if (validId && !state.data.articles[validId]) throw new Error('Invalid article id ' + validId)
-  if (state.data.article && state.data.article._id === validId) {
-    logger.log('Use opened article', validId)
-    return { sameArticle: true, validId }
-  } else {
-    return { sameArticle: false, validId }
-  }
+  return validId
 }
 
 /**
@@ -166,14 +161,29 @@ const actions = {
   async [actionTypes.loadArticleById] ({ state, commit }, payload = {}) {
     const _id = payload._id || null
     const force = payload.force || false
-    const { validId, sameArticle } = getValidId(state, _id, force)
-    if (sameArticle) return
+
+    const validId = getValidId(state, _id, force)
+    commit(mutationTypes.setCurrentArticleId, validId)
+
+    let isSameArticle
+    if (state.data.article &&
+      state.data.article._id === validId &&
+      state.status.currentArticleId === validId) {
+      logger.log('Use opened article', validId)
+      isSameArticle = true
+    } else {
+      isSameArticle = false
+    }
+    if (isSameArticle) return
     checkSaved(state, force)
     try {
+      commit(mutationTypes.setArticleLoading, true)
       const article = await postService.getArticleById(validId)
       commit(mutationTypes.loadArticle, article)
     } catch (err) {
       throw replaceErrorMessage(err, '文章获取失败，请稍后再试')
+    } finally {
+      commit(mutationTypes.setArticleLoading, false)
     }
   },
 
@@ -186,7 +196,7 @@ const actions = {
   async [actionTypes.deleteArticleById] ({ state, commit, dispatch }, payload = {}) {
     const _id = payload._id || null
     const force = payload.force || false
-    const { validId } = getValidId(state, _id, force)
+    const validId = getValidId(state, _id, force)
     checkSaved(state, force)
     try {
       await postService.deleteArticleById(validId)
@@ -210,7 +220,7 @@ const actions = {
   async [actionTypes.publishPostById] ({ state, commit, dispatch }, payload = {}) {
     const _id = payload._id || null
     const force = payload.force || false
-    const { validId } = getValidId(state, _id, force)
+    const validId = getValidId(state, _id, force)
     checkSaved(state, force)
     try {
       const post = await hexoService.publishPost(validId)
@@ -234,7 +244,7 @@ const actions = {
   async [actionTypes.unpublishPostById] ({ state, commit, dispatch }, payload = {}) {
     const _id = payload._id || null
     const force = payload.force || false
-    const { validId } = getValidId(state, _id, force)
+    const validId = getValidId(state, _id, force)
     checkSaved(state, force)
     try {
       const post = await hexoService.unpublishPost(validId)

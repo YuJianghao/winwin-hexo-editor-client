@@ -17,11 +17,8 @@
       style=";flex:0 0 300px;border-right: 1px solid rgba(0, 0, 0, 0.12);"
     >
       <hexo-posts-list-bar></hexo-posts-list-bar>
-      <!-- :articleList="articleList.map(e=>e)" 是为了让prop更新 -->
       <hexo-article-list
         style="max-width:300px;max-height:100%"
-        :selected="article?article._id:''"
-        :articleList="articleList.map(e=>e)"
       ></hexo-article-list>
     </div>
     <div
@@ -87,7 +84,6 @@ export default {
     }),
     ...mapGetters({
       show: 'editorUi/editing',
-      articleList: 'editorSorter/postsList',
       tagsList: 'editorCore/dataTagsList',
       articlesCount: 'editorCore/dataPostsCount',
       categoriesCount: 'editorCore/dataUnCategoriesCount',
