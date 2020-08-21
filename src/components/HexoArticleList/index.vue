@@ -34,6 +34,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import pinyin from 'pinyin'
 
 import ListItemContextMenu from './ListItemContextMenu'
 import ListItem from './ListItem'
@@ -69,11 +70,28 @@ export default {
     filterId () {
       return this.$route.query.filterId
     },
+    sortBy () {
+      const by = this.$route.query.sortBy
+      if (['title', 'date'].includes(by)) return by
+      return 'date'
+    },
+    sortAscend () {
+      switch (this.$route.query.sortAscend) {
+        case 'true':
+          return true
+        case 'false':
+          return false
+        default :
+          return false
+      }
+    },
     articleList () {
+      let articles = []
+      // filter
       const allArticles = objectToList(this.articles)
       switch (this.filterBy) {
         case 'categories':
-          return (() => {
+          articles = (() => {
             const category = this.categories[this.filterId]
             if (category && allArticles.length > 0) {
               return category.posts.map(_id => this.articles[_id])
@@ -81,8 +99,9 @@ export default {
               return allArticles
             }
           })()
+          break
         case 'tags':
-          return (() => {
+          articles = (() => {
             const tag = this.tags[this.filterId]
             if (tag && allArticles.length > 0) {
               return tag.posts.map(_id => this.articles[_id])
@@ -90,11 +109,26 @@ export default {
               return allArticles
             }
           })()
+          break
         case 'uncategorized':
-          return allArticles.filter(article => !article.categories)
+          articles = allArticles.filter(article => !article.categories)
+          break
         default:
-          return allArticles
+          articles = allArticles
       }
+      // sort
+
+      articles = articles.sort((a, b) => {
+        if (typeof a[this.sortBy] === 'undefined') return -1
+        let valueA = a[this.sortBy]
+        let valueB = b[this.sortBy]
+        if (typeof valueA === 'string') {
+          valueA = pinyin(valueA, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
+          valueB = pinyin(valueB, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
+        }
+        return valueA > valueB ^ !this.sortAscend ? 1 : -1
+      })
+      return articles
     },
     ...mapState({
       currentArticleId: state => state.editorCore.status.currentArticleId,
