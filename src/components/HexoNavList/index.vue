@@ -221,16 +221,16 @@ export default {
   },
   methods: {
     async filterByCategoriesId (_id) {
-      this.$store.dispatch(actionTypes.filterByCategoriesId, _id)
+      this.$router.push(`${this.$route.path}?filterBy=categories&filterId=${_id}`)
     },
     async filterByTagsId (_id) {
-      this.$store.dispatch(actionTypes.filterByTagsId, _id)
+      this.$router.push(`${this.$route.path}?filterBy=tags&filterId=${_id}`)
     },
     async filterByAll () {
-      this.$store.dispatch(actionTypes.filterByAll)
+      this.$router.push(`${this.$route.path}?filterBy=all`)
     },
     async filterByUnCategorized () {
-      this.$store.dispatch(actionTypes.filterByUnCategorized)
+      this.$router.push(`${this.$route.path}?filterBy=uncategorized`)
     },
     async deploy () {
       this.$store.dispatch(actionTypes.deploy)
