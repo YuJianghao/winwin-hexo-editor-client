@@ -138,11 +138,10 @@
 
 <script>
 import LTT from 'list-to-tree'
-import { mapState } from 'vuex'
 import CategoryItem from 'components/HexoNavList/CategoryItem'
 import TagItem from 'components/HexoNavList/TagItem'
 import CategoryTree from 'components/HexoNavList/CategoryTree'
-import { stringSort } from 'src/utils/common'
+import { stringSort, query2String, extendQuery } from 'src/utils/common'
 import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoNavList',
@@ -202,35 +201,46 @@ export default {
       return ltt.GetTree() || []
     },
     selectedAll () {
-      return this.editorFilter.type === 'all'
+      return !this.selectedUncategoriezed &&
+      !this.selectedCategoriesId &&
+      !this.selectedTagsId
     },
     selectedUncategoriezed () {
-      return this.editorFilter.type === 'uncategorized'
+      return this.$route.query.filterBy === 'uncategorized'
     },
     selectedCategoriesId () {
-      return this.editorFilter.type === 'categories' ? this.editorFilter._id : null
+      return this.$route.query.filterBy === 'categories' ? this.$route.query.filterId : null
     },
     selectedTagsId () {
-      return this.editorFilter.type === 'tags' ? this.editorFilter._id : null
-    },
-    // externals
-    ...mapState({
-      editorUi: state => state.editorUi,
-      editorFilter: state => state.editorFilter
-    })
+      return this.$route.query.filterBy === 'tags' ? this.$route.query.filterId : null
+    }
   },
   methods: {
     async filterByCategoriesId (_id) {
-      this.$router.push(`${this.$route.path}?filterBy=categories&filterId=${_id}`)
+      const query = {
+        filterBy: 'categories',
+        filterId: _id
+      }
+      this.$router.push(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query))}`)
     },
     async filterByTagsId (_id) {
-      this.$router.push(`${this.$route.path}?filterBy=tags&filterId=${_id}`)
+      const query = {
+        filterBy: 'tags',
+        filterId: _id
+      }
+      this.$router.push(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query))}`)
     },
     async filterByAll () {
-      this.$router.push(`${this.$route.path}?filterBy=all`)
+      const query = {
+        filterBy: 'all'
+      }
+      this.$router.push(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
     },
     async filterByUnCategorized () {
-      this.$router.push(`${this.$route.path}?filterBy=uncategorized`)
+      const query = {
+        filterBy: 'uncategorized'
+      }
+      this.$router.push(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
     },
     async deploy () {
       this.$store.dispatch(actionTypes.deploy)
