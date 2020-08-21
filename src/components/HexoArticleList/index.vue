@@ -33,10 +33,12 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
+
 import ListItemContextMenu from './ListItemContextMenu'
 import ListItem from './ListItem'
 import * as actionTypes from 'src/store/dispatcher/action-types'
+import { objectToList } from 'src/utils/common'
 export default {
   name: 'HexoPostsList',
   components: {
@@ -59,11 +61,46 @@ export default {
     empty () {
       return this.articleList.length === 0
     },
+    filterBy () {
+      const by = this.$route.query.filterBy
+      if (['all', 'categories', 'tags', 'uncategorized'].includes(by)) return by
+      return 'all'
+    },
+    filterId () {
+      return this.$route.query.filterId
+    },
+    articleList () {
+      const allArticles = objectToList(this.articles)
+      switch (this.filterBy) {
+        case 'categories':
+          return (() => {
+            const category = this.categories[this.filterId]
+            if (category && allArticles.length > 0) {
+              return category.posts.map(_id => this.articles[_id])
+            } else {
+              return allArticles
+            }
+          })()
+        case 'tags':
+          return (() => {
+            const tag = this.tags[this.filterId]
+            if (tag && allArticles.length > 0) {
+              return tag.posts.map(_id => this.articles[_id])
+            } else {
+              return allArticles
+            }
+          })()
+        case 'uncategorized':
+          return allArticles.filter(article => !article.categories)
+        default:
+          return allArticles
+      }
+    },
     ...mapState({
-      currentArticleId: state => state.editorCore.status.currentArticleId
-    }),
-    ...mapGetters({
-      articleList: 'editorSorter/postsList'
+      currentArticleId: state => state.editorCore.status.currentArticleId,
+      categories: state => state.editorCore.data.categories,
+      tags: state => state.editorCore.data.tags,
+      articles: state => state.editorCore.data.articles
     })
   },
   methods: {
