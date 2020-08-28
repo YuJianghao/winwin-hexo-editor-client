@@ -141,9 +141,6 @@ export default {
     })
   },
   methods: {
-    uniqueRouterPush (fullPath) {
-      if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
-    },
     onLeft ({ reset, _id }) {
       this.editPostById(_id)
       this.finalize(reset, 1)

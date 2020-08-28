@@ -88,8 +88,8 @@
 
 <script>
 import SearchMenu from './SearchMenu'
-import { mapState } from 'vuex'
 import * as actionTypes from 'src/store/dispatcher/action-types'
+import { query2String, extendQuery } from 'src/utils/common'
 export default {
   name: 'HexoPostsListBar',
   components: {
@@ -119,19 +119,32 @@ export default {
           items.push(Object.assign({},
             Object.assign(item, {
               direction: direction,
-              selected: this.sorterKey === item.key && this.sorterDirection === direction
+              selected: this.sortBy === item.key && this.sortAscend === direction
             })))
         })
       })
       return items
     },
-    // externals
-    ...mapState({
-      sorterKey: state => state.editorSorter.key,
-      sorterDirection: state => state.editorSorter.direction
-    })
+    sortBy () {
+      const by = this.$route.query.sortBy
+      if (['title', 'date'].includes(by)) return by
+      return 'date'
+    },
+    sortAscend () {
+      switch (this.$route.query.sortAscend) {
+        case 'true':
+          return true
+        case 'false':
+          return false
+        default :
+          return false
+      }
+    }
   },
   methods: {
+    uniqueRouterPush (fullPath) {
+      if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
+    },
     async addPostByDefault () {
       this.$store.dispatch(actionTypes.addPostByDefault)
     },
@@ -139,8 +152,10 @@ export default {
       this.$store.dispatch(actionTypes.reload, true)
     },
     onSortBy (key, direction) {
-      this.$store.dispatch(actionTypes.setSortKey, key)
-      this.$store.dispatch(actionTypes.setSortDirection, direction)
+      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, {
+        sortBy: key,
+        sortAscend: direction
+      }))}`)
     }
   }
 }
