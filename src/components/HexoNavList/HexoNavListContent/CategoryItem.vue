@@ -77,12 +77,17 @@ export default {
     }
   },
   methods: {
-    onMouseEnter () {
-      this.isOverflow = isOverflow(this.$refs.label.$el)
+    updateOverflow () {
+      try {
+        this.isOverflow = isOverflow(this.$refs.label.$el)
+      } catch (e) {
+        console.log(e)
+        this.isOverflow = true
+      }
     }
   },
   mounted () {
-    bus.$on('on-navlisttab-resize', this.onMouseEnter)
+    bus.$on('on-navlisttab-resize', this.updateOverflow)
   }
 }
 </script>

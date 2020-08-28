@@ -1,19 +1,24 @@
 <template>
   <hexo-layout>
-    <bar-content-layout :scroll="false" slot="nav-list">
+    <bar-content-layout
+      :scroll="false"
+      slot="nav-list"
+    >
       <hexo-nav-list-bar slot="bar"></hexo-nav-list-bar>
       <hexo-nav-list-content
-      slot="content"
-        v-show="!editorUi.full"
+        slot="content"
         :categoriesList="categoriesList"
         :tagsList="tagsList"
         :postsCount="articlesCount"
         :unCategoriesCount="categoriesCount"
       ></hexo-nav-list-content>
     </bar-content-layout>
-    <bar-content-layout :scroll="false" slot="article-list">
-        <hexo-article-list-bar slot="bar"></hexo-article-list-bar>
-        <hexo-article-list-content slot="content"></hexo-article-list-content>
+    <bar-content-layout
+      :scroll="false"
+      slot="article-list"
+    >
+      <hexo-article-list-bar slot="bar"></hexo-article-list-bar>
+      <hexo-article-list-content slot="content"></hexo-article-list-content>
     </bar-content-layout>
     <bar-content-layout slot="editor">
       <hexo-editor-bar slot="bar"></hexo-editor-bar>

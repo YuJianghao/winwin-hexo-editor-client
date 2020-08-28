@@ -80,8 +80,6 @@ const actions = {
     const _id = payload._id || null
     const force = payload.force || false
 
-    logger.log('viewPostById', payload)
-
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
     const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
       (_id && (_id !== rootGetters['editorCore/dataPostId']))
@@ -95,6 +93,7 @@ const actions = {
         const href = replaceQuery(window.location.href, { mode: 'view', id: _id })
         if (href !== window.location.href) redirect(href)
         else {
+          logger.log('viewPostById', payload)
           await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
         }
       }
@@ -155,8 +154,6 @@ const actions = {
     const _id = payload._id || null
     const force = payload.force || false
 
-    logger.log('editPostById', payload)
-
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
     const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
       (_id && (_id !== rootGetters['editorCore/dataPostId']))
@@ -181,6 +178,7 @@ const actions = {
     const href = replaceQuery(window.location.href, { mode: 'edit', id: _id })
     if (href !== window.location.href) redirect(href)
     else {
+      logger.log('editPostById', payload)
       await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
     }
   },
