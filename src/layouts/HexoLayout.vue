@@ -4,20 +4,21 @@
     :style-fn="pageStyle"
   >
     <div
-      class="col fit"
+      class="col full-height"
       style="flex:0 0 200px"
+      v-show="!editorUi.full"
     >
       <slot name="nav-list" />
     </div>
     <div
+      class="col full-height"
       v-show="!editorUi.full"
-      class="col column"
-      style=";flex:0 0 300px;border-right: 1px solid rgba(0, 0, 0, 0.12);"
+      style="flex:0 0 300px"
     >
       <slot name="article-list" />
     </div>
     <div
-      class="col column"
+      class="col full-height"
       v-if="show"
     >
       <slot name="editor" />

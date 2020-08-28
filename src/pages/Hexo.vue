@@ -10,17 +10,21 @@
       ></hexo-nav-list>
     </template>
     <template slot="article-list">
-      <hexo-posts-list-bar></hexo-posts-list-bar>
-      <hexo-article-list style="max-width:300px;max-height:100%"></hexo-article-list>
+      <div class="fit column">
+        <hexo-posts-list-bar></hexo-posts-list-bar>
+        <hexo-article-list></hexo-article-list>
+      </div>
     </template>
     <template slot="editor">
-      <hexo-editor-bar></hexo-editor-bar>
-      <hexo-article-editor
-        style="max-height:100%"
-        :article="article"
-        @on-update="onArticleUpdate"
-        @on-save="onSave"
-      ></hexo-article-editor>
+      <div class="fit column">
+        <hexo-editor-bar></hexo-editor-bar>
+        <hexo-article-editor
+          style="max-height:100%"
+          :article="article"
+          @on-update="onArticleUpdate"
+          @on-save="onSave"
+        ></hexo-article-editor>
+      </div>
     </template>
     <template slot="viewer">
       <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
