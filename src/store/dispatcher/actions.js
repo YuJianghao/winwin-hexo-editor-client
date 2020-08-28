@@ -80,26 +80,26 @@ const actions = {
     const _id = payload._id || null
     const force = payload.force || false
 
-    const href = replaceQuery(window.location.href, { mode: 'view', id: _id })
-    if (href !== window.location.href) redirect(href)
-    else {
-      logger.log('viewPostById', payload)
+    logger.log('viewPostById', payload)
 
-      // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
-      const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
+    // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
+    const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
       (_id && (_id !== rootGetters['editorCore/dataPostId']))
-      try {
-        if (requestSave) {
-          await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-            await dispatch('viewPostById', { _id, force: true })
-            resolve()
-          })
-        } else {
+    try {
+      if (requestSave) {
+        await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+          await dispatch('viewPostById', { _id, force: true })
+          resolve()
+        })
+      } else {
+        const href = replaceQuery(window.location.href, { mode: 'view', id: _id })
+        if (href !== window.location.href) redirect(href)
+        else {
           await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
         }
-      } catch (err) {
-        message.error({ message: '文章载入失败', caption: err.message })
       }
+    } catch (err) {
+      message.error({ message: '文章载入失败', caption: err.message })
     }
   },
 
@@ -155,26 +155,22 @@ const actions = {
     const _id = payload._id || null
     const force = payload.force || false
 
-    const href = replaceQuery(window.location.href, { mode: 'edit', id: _id })
-    if (href !== window.location.href) redirect(href)
-    else {
-      logger.log('editPostById', payload)
+    logger.log('editPostById', payload)
 
-      // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
-      const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
+    // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
+    const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
       (_id && (_id !== rootGetters['editorCore/dataPostId']))
-      try {
-        if (requestSave) {
-          await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-            await dispatch(actionTypes.editPostByIdDispatcher, { _id, force: true })
-            resolve()
-          })
-        } else {
-          await dispatch(actionTypes.editPostByIdDispatcher, { _id, force })
-        }
-      } catch (err) {
-        message.error({ message: '文章载入失败', caption: err.message })
+    try {
+      if (requestSave) {
+        await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+          await dispatch(actionTypes.editPostByIdDispatcher, { _id, force: true })
+          resolve()
+        })
+      } else {
+        await dispatch(actionTypes.editPostByIdDispatcher, { _id, force })
       }
+    } catch (err) {
+      message.error({ message: '文章载入失败', caption: err.message })
     }
   },
 
@@ -182,7 +178,11 @@ const actions = {
     logger.log('editPostByIdDispatcher', payload)
     const _id = payload._id || null
     const force = payload.force || false
-    await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
+    const href = replaceQuery(window.location.href, { mode: 'edit', id: _id })
+    if (href !== window.location.href) redirect(href)
+    else {
+      await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
+    }
   },
 
   /**

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="row" style="max-height:35px;flex-wrap: nowrap">
     <q-btn
       flat
       stretch
