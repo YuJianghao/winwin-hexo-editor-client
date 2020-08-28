@@ -98,7 +98,6 @@ const actions = {
             resolve()
           })
         } else {
-          commit('editorUi/viewPost')
           await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
         }
       } catch (err) {
@@ -116,14 +115,12 @@ const actions = {
         await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
           newPostDialog(async (options) => {
             await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { force: true, options })
-            commit('editorUi/editPost')
             resolve()
           })
         })
       } else {
         await newPostDialog(async (options) => {
           await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { options })
-          commit('editorUi/editPost')
         })
       }
     } catch (err) {
@@ -145,7 +142,6 @@ const actions = {
     return confirmDialog('删除确认', message, '删除', 'red', null, 'primary', 'cancel', async resolve => {
       try {
         await dispatch('editorCore/' + editorCoreActionTypes.deleteArticleById, { _id })
-        await dispatch('editorUi/deletePost', _id)
       } catch (err) {
         message.error({ message: '删除失败', caption: err.message })
       } finally {
@@ -191,7 +187,6 @@ const actions = {
     logger.log('editPostByIdDispatcher', payload)
     const _id = payload._id || null
     const force = payload.force || false
-    commit('editorUi/editPost', { _id, force })
     await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
   },
 
@@ -349,11 +344,6 @@ const actions = {
   [actionTypes.toggleFull]: async ({ commit }) => {
     logger.log('toggleFull')
     commit('editorUi/toggleFull')
-  },
-
-  [actionTypes.togglePreview]: async ({ commit }) => {
-    logger.log('togglePreview')
-    commit('editorUi/togglePreview')
   },
 
   // 搜索
