@@ -90,8 +90,8 @@ const actions = {
           resolve()
         })
       } else {
-        await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
         commit('editorUi/viewPost')
+        await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
       }
     } catch (err) {
       message.error({ message: '文章载入失败', caption: err.message })
@@ -196,8 +196,8 @@ const actions = {
     logger.log('editPostByIdDispatcher', payload)
     const _id = payload._id || null
     const force = payload.force || false
-    await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
     commit('editorUi/editPost', { _id, force })
+    await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
   },
 
   /**

@@ -14,7 +14,7 @@
         v-for="(item,key) in articleList"
         :key="key"
         :post="item"
-        :selected="item._id===currentArticleId"
+        :selected="item._id===id"
         @on-left="onLeft"
         @on-right="onRight"
         @on-click="viewPostById"
@@ -40,7 +40,7 @@ import pinyin from 'pinyin'
 import ListItemContextMenu from './ListItemContextMenu'
 import ListItem from './ListItem'
 import * as actionTypes from 'src/store/dispatcher/action-types'
-import { objectToList } from 'src/utils/common'
+import { objectToList, query2String, extendQuery } from 'src/utils/common'
 export default {
   name: 'HexoPostsList',
   components: {
@@ -131,14 +131,19 @@ export default {
       })
       return articles
     },
+    id () {
+      return this.$route.query.id
+    },
     ...mapState({
-      currentArticleId: state => state.editorCore.status.currentArticleId,
       categories: state => state.editorCore.data.categories,
       tags: state => state.editorCore.data.tags,
       articles: state => state.editorCore.data.articles
     })
   },
   methods: {
+    uniqueRouterPush (fullPath) {
+      if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
+    },
     onLeft ({ reset, _id }) {
       this.editPostById(_id)
       this.finalize(reset, 1)
@@ -148,10 +153,12 @@ export default {
       this.finalize(reset, 1)
     },
     viewPostById (_id) {
-      this.$store.dispatch(actionTypes.viewPostById, { _id })
+      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, { mode: 'view', id: _id }))}`)
+      // this.$store.dispatch(actionTypes.viewPostById, { _id })
     },
     editPostById (_id) {
-      this.$store.dispatch(actionTypes.editPostById, { _id })
+      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, { mode: 'edit', id: _id }))}`)
+      // this.$store.dispatch(actionTypes.editPostById, { _id })
     },
     deletePostById (_id) {
       this.$store.dispatch(actionTypes.deletePostById, { _id })

@@ -40,6 +40,7 @@ const actions = {
   async [actionTypes.init] ({ commit, dispatch }) {
     commit(mutationTypes.closeArticle)
     await dispatch(actionTypes.loadAll)
+    commit(mutationTypes.setReady, true)
   },
 
   /**
@@ -48,6 +49,7 @@ const actions = {
   async [actionTypes.destroy] ({ commit }) {
     commit(mutationTypes.closeArticle)
     commit(mutationTypes.resetAll)
+    commit(mutationTypes.setReady, false)
   },
 
   /**
@@ -163,12 +165,10 @@ const actions = {
     const force = payload.force || false
 
     const validId = getValidId(state, _id, force)
-    commit(mutationTypes.setCurrentArticleId, validId)
 
     let isSameArticle
     if (state.data.article &&
-      state.data.article._id === validId &&
-      state.status.currentArticleId === validId) {
+      state.data.article._id === validId) {
       logger.log('Use opened article', validId)
       isSameArticle = true
     } else {
@@ -176,14 +176,18 @@ const actions = {
     }
     if (isSameArticle) return
     checkSaved(state, force)
+    let finished = false
     try {
-      commit(mutationTypes.setArticleLoading, true)
+      window.setTimeout(_ => {
+        if (!finished) { commit(mutationTypes.setLoading, true) }
+      }, 100)
       const article = await postService.getArticleById(validId)
       commit(mutationTypes.loadArticle, article)
     } catch (err) {
       throw replaceErrorMessage(err, '文章获取失败，请稍后再试')
     } finally {
-      commit(mutationTypes.setArticleLoading, false)
+      finished = true
+      commit(mutationTypes.setLoading, false)
     }
   },
 

@@ -35,6 +35,12 @@
     >
       <slot name="welcome" />
     </div>
+    <div
+      class="col full-height"
+      v-if="show.loading"
+    >
+      <slot name="loading" />
+    </div>
     <q-inner-loading :showing="editorUi.loading.show">
       <q-spinner-gears
         size="50px"
@@ -44,7 +50,7 @@
   </q-page>
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'HexoLayout',
@@ -59,22 +65,16 @@ export default {
   computed: {
     show () {
       const obj = {}
-      obj.editor = this.editing
-      obj.viewer = this.viewing
-      obj.welcome = this.unselect
+      obj.editor = this.$route.query.mode === 'edit' && this.$route.query.id && !this.loading
+      obj.viewer = this.$route.query.mode === 'view' && this.$route.query.id && !this.loading
+      obj.loading = ['edit', 'view'].includes(this.$route.query.mode) && this.loading
+      obj.welcome = !obj.editor && !obj.viewer && !obj.loading
+      if (obj.welcome) { console.log(obj, this.editorUi) }
       return obj
     },
     ...mapState({
-      editorUi: state => state.editorUi
-    }),
-    ...mapGetters({
-      unselect: 'editorUi/unselect',
-      viewing: 'editorUi/viewing',
-      editing: 'editorUi/editing',
-      tagsList: 'editorCore/dataTagsList',
-      articlesCount: 'editorCore/dataPostsCount',
-      categoriesCount: 'editorCore/dataUnCategoriesCount',
-      categoriesList: 'editorCore/dataCategoriesList'
+      editorUi: state => state.editorUi,
+      loading: state => state.editorCore.status.loading
     })
   },
   methods: {

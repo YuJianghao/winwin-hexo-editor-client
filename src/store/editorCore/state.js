@@ -9,8 +9,8 @@ export default function () {
     status: {
       saved: true,
       lastSavedAt: null,
-      currentArticleId: '',
-      loadingArticle: false
+      loading: false,
+      ready: false
     }
   }
 }

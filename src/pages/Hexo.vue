@@ -32,6 +32,9 @@
     <template slot="welcome">
       <hexo-welcome></hexo-welcome>
     </template>
+    <template slot="loading">
+      <hexo-loading></hexo-loading>
+    </template>
   </hexo-layout>
 </template>
 
@@ -48,6 +51,7 @@ import HexoArticleList from 'components/HexoArticleList'
 import HexoArticleEditor from 'components/HexoArticleEditor'
 import HexoPostViewer from 'components/HexoPostViewer'
 import HexoWelcome from 'components/HexoWelcome'
+import HexoLoading from 'components/HexoLoading'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -62,6 +66,7 @@ export default {
     HexoPostViewer,
     HexoNavList,
     HexoWelcome,
+    HexoLoading,
     HexoArticleEditor,
     HexoEditorBar
   },
@@ -96,7 +101,7 @@ export default {
     }
   },
   async mounted () {
-    this.$store.dispatch(actionTypes.init)
+    if (!this.$store.state.editorCore.status.ready) { this.$store.dispatch(actionTypes.init) }
   },
   created () {
     document.getElementById('app-message').innerHTML = '加载编辑器...'
