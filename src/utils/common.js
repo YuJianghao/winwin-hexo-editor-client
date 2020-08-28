@@ -59,16 +59,3 @@ export function stringSort (strA, strB) {
 export function isOverflow (el) {
   return el.clientWidth < el.scrollWidth
 }
-
-export function query2String (q) {
-  return Object.keys(q).map(key => `${key}=${q[key]}`).join('&')
-}
-
-export function extendQuery (t, q, d = []) {
-  let query = Object.assign({}, t)
-  query = Object.assign(query, q)
-  d.map(k => {
-    delete query[k]
-  })
-  return query
-}

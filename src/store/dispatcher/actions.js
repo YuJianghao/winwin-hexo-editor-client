@@ -8,8 +8,7 @@ const logger = new Logger({ prefix: 'Dispatcher' })
 import * as actionTypes from './action-types'
 import * as editorCoreActionTypes from '../editorCore/action-types'
 import { debounce } from 'quasar'
-import { extendQuery } from 'src/utils/common'
-import { redirect, getHrefFromBaseAndQuery, getBaseAndQueryFromHref } from 'src/utils/url'
+import { redirect, replaceQuery } from 'src/utils/url'
 
 // 用户相关
 
@@ -81,9 +80,7 @@ const actions = {
     const _id = payload._id || null
     const force = payload.force || false
 
-    let { base, query } = getBaseAndQueryFromHref(window.location.href)
-    query = extendQuery(query, { mode: 'view', id: _id })
-    const href = getHrefFromBaseAndQuery(base, query)
+    const href = replaceQuery(window.location.href, { mode: 'view', id: _id })
     if (href !== window.location.href) redirect(href)
     else {
       logger.log('viewPostById', payload)
@@ -158,9 +155,7 @@ const actions = {
     const _id = payload._id || null
     const force = payload.force || false
 
-    let { base, query } = getBaseAndQueryFromHref(window.location.href)
-    query = extendQuery(query, { mode: 'edit', id: _id })
-    const href = getHrefFromBaseAndQuery(base, query)
+    const href = replaceQuery(window.location.href, { mode: 'edit', id: _id })
     if (href !== window.location.href) redirect(href)
     else {
       logger.log('editPostById', payload)

@@ -89,7 +89,7 @@
 <script>
 import SearchMenu from './SearchMenu'
 import * as actionTypes from 'src/store/dispatcher/action-types'
-import { query2String, extendQuery } from 'src/utils/common'
+import { query2String, extendQuery } from 'src/utils/url'
 export default {
   name: 'HexoPostsListBar',
   components: {
