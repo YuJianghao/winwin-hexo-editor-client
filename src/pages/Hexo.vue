@@ -1,51 +1,44 @@
 <template>
-  <q-page
-    class="row overflow-hidden"
-    :style-fn="pageStyle"
-  >
-    <hexo-nav-list
-      v-show="!editorUi.full"
-      style="max-width:200px;max-height:100%"
-      :categoriesList="categoriesList"
-      :tagsList="tagsList"
-      :postsCount="articlesCount"
-      :unCategoriesCount="categoriesCount"
-    ></hexo-nav-list>
-    <div
-      v-show="!editorUi.full"
-      class="col column"
-      style=";flex:0 0 300px;border-right: 1px solid rgba(0, 0, 0, 0.12);"
-    >
-      <hexo-posts-list-bar></hexo-posts-list-bar>
-      <hexo-article-list
-        style="max-width:300px;max-height:100%"
-      ></hexo-article-list>
-    </div>
-    <div
-      class="col column"
-      v-if="show"
-    >
-      <hexo-editor-bar></hexo-editor-bar>
-      <hexo-article-editor
-        style="max-height:100%"
-        :article="article"
-        @on-update="onArticleUpdate"
-        @on-save="onSave"
-      ></hexo-article-editor>
-    </div>
-    <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
-    <hexo-welcome style="max-height:100%"></hexo-welcome>
-    <q-inner-loading :showing="editorUi.loading.show">
-      <q-spinner-gears
-        size="50px"
-        color="primary"
-      />
-    </q-inner-loading>
-  </q-page>
+  <hexo-layout>
+    <template slot="nav-list">
+      <hexo-nav-list
+        v-show="!editorUi.full"
+        :categoriesList="categoriesList"
+        :tagsList="tagsList"
+        :postsCount="articlesCount"
+        :unCategoriesCount="categoriesCount"
+      ></hexo-nav-list>
+    </template>
+    <template slot="article-list">
+      <div class="fit column">
+        <hexo-posts-list-bar></hexo-posts-list-bar>
+        <hexo-article-list></hexo-article-list>
+      </div>
+    </template>
+    <template slot="editor">
+      <div class="fit column">
+        <hexo-editor-bar></hexo-editor-bar>
+        <hexo-article-editor
+          style="max-height:100%"
+          :article="article"
+          @on-update="onArticleUpdate"
+          @on-save="onSave"
+        ></hexo-article-editor>
+      </div>
+    </template>
+    <template slot="viewer">
+      <hexo-post-viewer></hexo-post-viewer>
+    </template>
+    <template slot="welcome">
+      <hexo-welcome></hexo-welcome>
+    </template>
+  </hexo-layout>
 </template>
 
 <script>
 import '../css/hexo.scss'
+
+import HexoLayout from 'layouts/HexoLayout'
 
 import HexoPostsListBar from 'components/HexoToolBar/HexoPostsListBar'
 import HexoEditorBar from 'components/HexoToolBar/HexoEditorBar'
@@ -63,6 +56,7 @@ import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'Hexo',
   components: {
+    HexoLayout,
     HexoArticleList,
     HexoPostsListBar,
     HexoPostViewer,
