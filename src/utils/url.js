@@ -15,14 +15,24 @@ export const redirect = url => {
   window.location.href = url
 }
 
-export const replaceQuery = (str, target, value) => {
-  if (str.indexOf('?') < 0) return str
-  const strs = str.split('?')
-  strs[strs.length - 1] = strs[strs.length - 1].split('&').map(item => {
-    if (item.indexOf(target + '=') === 0) return target + '=' + value
-    else return item
-  }).join('&')
-  return strs.join('?')
+export const replaceQuery = (str = '', q = {}, d = []) => {
+  const del = typeof d === 'string' ? [d] : d
+  let{ base, query } = getBaseAndQueryFromHref(str)
+  query = extendQuery(query, q, del)
+  return getHrefFromBaseAndQuery(base, query)
+}
+
+export function query2String (q) {
+  return Object.keys(q).map(key => `${key}=${q[key]}`).join('&')
+}
+
+export function extendQuery (t, q, d = []) {
+  let query = Object.assign({}, t)
+  query = Object.assign(query, q)
+  d.map(k => {
+    delete query[k]
+  })
+  return query
 }
 
 export const getBaseAndQueryFromHref = href => {
@@ -45,7 +55,5 @@ export const getBaseAndQueryFromHref = href => {
 }
 
 export const getHrefFromBaseAndQuery = (base, query) => {
-  return base + '?' + Object.keys(query).map(key => {
-    return key + '=' + query[key]
-  }).join('&')
+  return base + '?' + query2String(query)
 }

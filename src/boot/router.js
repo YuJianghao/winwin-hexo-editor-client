@@ -36,7 +36,6 @@ export default async ({ router, app, store }) => {
       ) {
         const id = to.query.id
         const payload = id && id !== 'null' ? { _id: id } : {}
-        console.log(payload)
         if (to.query.mode === 'edit') store.dispatch(actionTypes.editPostById, payload)
         if (to.query.mode === 'view') store.dispatch(actionTypes.viewPostById, payload)
       }

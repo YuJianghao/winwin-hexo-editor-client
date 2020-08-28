@@ -10,8 +10,8 @@ import * as categoryService from 'src/service/category'
 import * as tagService from 'src/service/tag'
 import * as hexoService from 'src/service/hexo'
 
-import { replaceErrorMessage, listToObject, extendQuery } from 'src/utils/common'
-import { redirect, replaceQuery, getHrefFromBaseAndQuery, getBaseAndQueryFromHref } from 'src/utils/url'
+import { listToObject, replaceErrorMessage } from 'src/utils/common'
+import { redirect, replaceQuery } from 'src/utils/url'
 
 /**
   * 验证id是否有效（无效则引发异常），是否是当前文章id
@@ -41,7 +41,7 @@ const actions = {
   async [actionTypes.init] ({ commit, dispatch }) {
     await dispatch(actionTypes.loadAll)
     commit(mutationTypes.setLoading, true)
-    redirect(replaceQuery(window.location.href, 'id', ''))
+    redirect(replaceQuery(window.location.href, undefined, 'id'))
     commit(mutationTypes.closeArticle)
   },
 
@@ -84,7 +84,7 @@ const actions = {
       if (article.categories) await dispatch('loadCategories')
       if (article.tags) await dispatch('loadTags')
       commit(mutationTypes.loadArticle, article)
-      redirect(replaceQuery(window.location.href, 'id', article._id))
+      redirect(replaceQuery(window.location.href, { id: article._id }))
     } catch (err) {
       throw replaceErrorMessage(err, '新文章创建成功，但数据更新失败，请手动刷新')
     }
@@ -168,9 +168,8 @@ const actions = {
     const force = payload.force || false
     const validId = getValidId(state, _id, force)
 
-    let { base, query } = getBaseAndQueryFromHref(window.location.href)
-    query = extendQuery(query, { id: validId })
-    const href = getHrefFromBaseAndQuery(base, query)
+    const href = replaceQuery(window.location.href, { id: validId })
+
     if (href !== window.location.href) redirect(href)
 
     let isSameArticle
@@ -216,7 +215,7 @@ const actions = {
     }
     try {
       await dispatch(actionTypes.loadAll)
-      redirect(replaceQuery(window.location.href, 'id', ''))
+      redirect(replaceQuery(window.location.href, undefined, 'id'))
     } catch (err) {
       throw replaceErrorMessage(err, '文章已删除，但数据更新失败，请手动刷新')
     }
@@ -242,7 +241,7 @@ const actions = {
     }
     try {
       await dispatch(actionTypes.loadArticles)
-      redirect(replaceQuery(window.location.href, 'id', post._id))
+      redirect(replaceQuery(window.location.href, { id: post._id }))
     } catch (err) {
       throw replaceErrorMessage(err, '文章已发布，但数据更新失败，请手动刷新')
     }
@@ -268,7 +267,7 @@ const actions = {
     }
     try {
       await dispatch(actionTypes.loadArticles)
-      redirect(replaceQuery(window.location.href, 'id', post._id))
+      redirect(replaceQuery(window.location.href, { id: post._id }))
     } catch (err) {
       throw replaceErrorMessage(err, '已取消发布，但数据更新失败，请手动刷新')
     }

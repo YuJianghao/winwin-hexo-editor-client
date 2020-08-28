@@ -141,7 +141,9 @@ import LTT from 'list-to-tree'
 import CategoryItem from 'components/HexoNavList/CategoryItem'
 import TagItem from 'components/HexoNavList/TagItem'
 import CategoryTree from 'components/HexoNavList/CategoryTree'
-import { stringSort, query2String, extendQuery } from 'src/utils/common'
+import { stringSort } from 'src/utils/common'
+import { query2String, extendQuery } from 'src/utils/url'
+
 import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoNavList',
