@@ -216,31 +216,38 @@ export default {
     }
   },
   methods: {
+    uniqueRouterPush (fullPath) {
+      if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
+    },
+    routeToQuery (q) {
+      const fullPath = `${this.$route.path}?${query2String(extendQuery(this.$route.query, q))}`
+      this.uniqueRouterPush(fullPath)
+    },
     async filterByCategoriesId (_id) {
       const query = {
         filterBy: 'categories',
         filterId: _id
       }
-      this.$router.push(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query))}`)
+      this.routeToQuery(query)
     },
     async filterByTagsId (_id) {
       const query = {
         filterBy: 'tags',
         filterId: _id
       }
-      this.$router.push(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query))}`)
+      this.routeToQuery(query)
     },
     async filterByAll () {
       const query = {
         filterBy: 'all'
       }
-      this.$router.push(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
+      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
     },
     async filterByUnCategorized () {
       const query = {
         filterBy: 'uncategorized'
       }
-      this.$router.push(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
+      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
     },
     async deploy () {
       this.$store.dispatch(actionTypes.deploy)
