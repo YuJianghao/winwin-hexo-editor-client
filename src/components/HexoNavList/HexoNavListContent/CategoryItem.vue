@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import bus from 'src/utils/bus'
 import { isOverflow } from 'src/utils/common'
 export default {
   name: 'CategoryItem',
@@ -75,11 +76,13 @@ export default {
       }
     }
   },
-  mounted () {
-    this.isOverflow = isOverflow(this.$refs.label.$el)
+  methods: {
+    onMouseEnter () {
+      this.isOverflow = isOverflow(this.$refs.label.$el)
+    }
   },
-  updated () {
-    this.isOverflow = isOverflow(this.$refs.label.$el)
+  mounted () {
+    bus.$on('on-navlisttab-resize', this.onMouseEnter)
   }
 }
 </script>

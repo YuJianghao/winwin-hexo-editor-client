@@ -1,5 +1,5 @@
 <template>
-  <div class="fit row" style="border-right:1px solid rgba(0, 0, 0, 0.12)">
+  <div class="fit row">
     <q-btn
       flat
       stretch

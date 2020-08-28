@@ -1,7 +1,7 @@
 <template>
   <div
     class="fit column"
-    style="border-right: 1px solid rgba(0, 0, 0, 0.12);user-select:none;"
+    style="user-select:none;"
   >
     <q-list
       class="bg-grey-2 q-py-xs full-width"

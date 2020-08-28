@@ -1,46 +1,57 @@
 <template>
-  <q-page
-    class="row"
-    :style-fn="pageStyle"
-  >
-    <div
-      class="col full-height"
-      style="flex:0 0 200px"
-      v-show="!editorUi.full"
+  <q-page :style-fn="pageStyle">
+    <q-splitter
+      class="fit"
+      :limits="[155,600]"
+      v-model="nav"
+      unit="px"
+      @input="onNavListTabResize"
     >
-      <slot name="nav-list" />
-    </div>
-    <div
-      class="col full-height"
-      v-show="!editorUi.full"
-      style="flex:0 0 300px"
-    >
-      <slot name="article-list" />
-    </div>
-    <div
-      class="col full-height"
-      v-if="show.editor"
-    >
-      <slot name="editor" />
-    </div>
-    <div
-      class="col full-height"
-      v-if="show.viewer"
-    >
-      <slot name="viewer" />
-    </div>
-    <div
-      class="col full-height"
-      v-if="show.welcome"
-    >
-      <slot name="welcome" />
-    </div>
-    <div
-      class="col full-height"
-      v-if="show.loading"
-    >
-      <slot name="loading" />
-    </div>
+      <template v-slot:before>
+        <slot name="nav-list" />
+      </template>
+      <template v-slot:after>
+        <q-splitter
+          v-model="list"
+          :limits="[250,600]"
+          unit="px"
+          @input="onArticleListTabResize"
+        >
+          <template v-slot:before>
+            <slot name="article-list" />
+          </template>
+          <template v-slot:after>
+            <div class="fit row">
+              <div
+                class="col full-height"
+                v-if="show.editor"
+              >
+                <slot name="editor" />
+              </div>
+              <div
+                class="col full-height"
+                v-if="show.viewer"
+              >
+                <slot name="viewer" />
+              </div>
+              <div
+                class="col full-height"
+                v-if="show.welcome"
+              >
+                <slot name="welcome" />
+              </div>
+              <div
+                class="col full-height"
+                v-if="show.loading"
+              >
+                <slot name="loading" />
+              </div>
+            </div>
+          </template>
+        </q-splitter>
+      </template>
+    </q-splitter>
+
     <q-inner-loading :showing="editorUi.loading.show">
       <q-spinner-gears
         size="50px"
@@ -51,6 +62,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+import bus from 'src/utils/bus'
 
 export default {
   name: 'HexoLayout',
@@ -59,7 +71,9 @@ export default {
   data () {
     return {
       editorData: '',
-      full: false
+      full: false,
+      nav: 200,
+      list: 300
     }
   },
   computed: {
@@ -79,7 +93,19 @@ export default {
   methods: {
     pageStyle (offset, height) {
       return 'height:' + (window.innerHeight - offset) + 'px'
+    },
+    onNavListTabResize (e) {
+      bus.$emit('on-navlisttab-resize', e)
+      localStorage.setItem('navlisttab-size', e)
+    },
+    onArticleListTabResize (e) {
+      bus.$emit('on-articlelisttab-resize', e)
+      localStorage.setItem('articlelisttab-size', e)
     }
+  },
+  created () {
+    this.nav = parseInt(localStorage.getItem('navlisttab-size') || 200)
+    this.list = parseInt(localStorage.getItem('articlelisttab-size') || 200)
   }
 }
 </script>
