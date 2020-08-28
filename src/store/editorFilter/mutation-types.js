@@ -1,6 +1,0 @@
-export const setFilterType = 'setFilterType'
-export const setFilterId = 'setFilterId'
-export const filterByAll = 'filterByAll'
-export const filterByCategoriesId = 'filterByCategoriesId'
-export const filterByTagsId = 'filterByTagsId'
-export const filterByUnCategorized = 'filterByUnCategorized'

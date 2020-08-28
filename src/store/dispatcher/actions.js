@@ -7,7 +7,6 @@ const logger = new Logger({ prefix: 'Dispatcher' })
 
 import * as actionTypes from './action-types'
 import * as editorCoreActionTypes from '../editorCore/action-types'
-import * as filterMutationTypes from '../editorFilter/mutation-types'
 import { debounce } from 'quasar'
 import { extendQuery } from 'src/utils/common'
 import { redirect, getHrefFromBaseAndQuery, getBaseAndQueryFromHref } from 'src/utils/url'
@@ -106,28 +105,6 @@ const actions = {
         message.error({ message: '文章载入失败', caption: err.message })
       }
     }
-  },
-
-  // 筛选
-
-  [actionTypes.filterByAll]: async ({ commit }) => {
-    logger.log('filterByAll')
-    commit('editorFilter/' + filterMutationTypes.filterByAll)
-  },
-
-  [actionTypes.filterByCategoriesId]: async ({ commit }, _id) => {
-    logger.log('filterByCategoriesId')
-    commit('editorFilter/' + filterMutationTypes.filterByCategoriesId, _id)
-  },
-
-  [actionTypes.filterByTagsId]: async ({ commit }, _id) => {
-    logger.log('filterByTagsId')
-    commit('editorFilter/' + filterMutationTypes.filterByTagsId, _id)
-  },
-
-  [actionTypes.filterByUnCategorized]: async ({ commit }) => {
-    logger.log('filterByUnCategorized')
-    commit('editorFilter/' + filterMutationTypes.filterByUnCategorized)
   },
 
   // 编辑
@@ -377,23 +354,6 @@ const actions = {
   [actionTypes.togglePreview]: async ({ commit }) => {
     logger.log('togglePreview')
     commit('editorUi/togglePreview')
-  },
-
-  // 排序相关
-
-  [actionTypes.setSortKey]: async ({ dispatch }, key) => {
-    logger.log('setSortKey')
-    await dispatch('editorSorter/setKey', key)
-  },
-
-  [actionTypes.setSortDirection]: async ({ dispatch }, direction) => {
-    logger.log('setSortDirection')
-    await dispatch('editorSorter/setDirection', direction)
-  },
-
-  [actionTypes.toggleSortDirection]: async ({ dispatch }) => {
-    logger.log('toggleSortDirection')
-    await dispatch('editorSorter/toggleSortDirection')
   },
 
   // 搜索
