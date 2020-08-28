@@ -1,7 +1,7 @@
 <template>
   <div
-    class="col column full-height"
-    style="border-right: 1px solid rgba(0, 0, 0, 0.12);user-select:none;flex:0 0 200px;"
+    class="fit column"
+    style="border-right: 1px solid rgba(0, 0, 0, 0.12);user-select:none;"
   >
     <q-toolbar
       class="bg-grey-2 q-px-none"
