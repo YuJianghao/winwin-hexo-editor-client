@@ -1,7 +1,6 @@
 <template>
   <div
-    class="col column"
-    v-if="show"
+    class="fit column"
   >
     <hexo-post-viewer-bar></hexo-post-viewer-bar>
     <markdown-previewer
@@ -15,7 +14,7 @@
 
 <script>
 import { date } from 'quasar'
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import MarkdownPreviewer from './MarkdownPreviewer'
 import HexoPostViewerBar from './HexoPostViewerBar'
 import * as actionTypes from 'src/store/dispatcher/action-types'
@@ -26,9 +25,6 @@ export default {
     HexoPostViewerBar
   },
   computed: {
-    show () {
-      return this.editorUiViewing
-    },
     post () {
       return this.editorCoreData.article
     },
@@ -38,10 +34,6 @@ export default {
     // externals
     ...mapState({
       editorCoreData: state => state.editorCore.data
-    }),
-    ...mapGetters({
-      editorUiViewing: 'editorUi/viewing',
-      editorUiEditing: 'editorUi/editing'
     })
   },
   methods: {

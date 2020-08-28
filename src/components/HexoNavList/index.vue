@@ -1,7 +1,7 @@
 <template>
   <div
-    class="col column full-height"
-    style="border-right: 1px solid rgba(0, 0, 0, 0.12);user-select:none;flex:0 0 200px;"
+    class="fit column"
+    style="border-right: 1px solid rgba(0, 0, 0, 0.12);user-select:none;"
   >
     <q-toolbar
       class="bg-grey-2 q-px-none"
@@ -138,11 +138,12 @@
 
 <script>
 import LTT from 'list-to-tree'
-import { mapState } from 'vuex'
 import CategoryItem from 'components/HexoNavList/CategoryItem'
 import TagItem from 'components/HexoNavList/TagItem'
 import CategoryTree from 'components/HexoNavList/CategoryTree'
 import { stringSort } from 'src/utils/common'
+import { query2String, extendQuery } from 'src/utils/url'
+
 import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoNavList',
@@ -202,35 +203,53 @@ export default {
       return ltt.GetTree() || []
     },
     selectedAll () {
-      return this.editorFilter.type === 'all'
+      return !this.selectedUncategoriezed &&
+      !this.selectedCategoriesId &&
+      !this.selectedTagsId
     },
     selectedUncategoriezed () {
-      return this.editorFilter.type === 'uncategorized'
+      return this.$route.query.filterBy === 'uncategorized'
     },
     selectedCategoriesId () {
-      return this.editorFilter.type === 'categories' ? this.editorFilter._id : null
+      return this.$route.query.filterBy === 'categories' ? this.$route.query.filterId : null
     },
     selectedTagsId () {
-      return this.editorFilter.type === 'tags' ? this.editorFilter._id : null
-    },
-    // externals
-    ...mapState({
-      editorUi: state => state.editorUi,
-      editorFilter: state => state.editorFilter
-    })
+      return this.$route.query.filterBy === 'tags' ? this.$route.query.filterId : null
+    }
   },
   methods: {
+    uniqueRouterPush (fullPath) {
+      if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
+    },
+    routeToQuery (q) {
+      const fullPath = `${this.$route.path}?${query2String(extendQuery(this.$route.query, q))}`
+      this.uniqueRouterPush(fullPath)
+    },
     async filterByCategoriesId (_id) {
-      this.$store.dispatch(actionTypes.filterByCategoriesId, _id)
+      const query = {
+        filterBy: 'categories',
+        filterId: _id
+      }
+      this.routeToQuery(query)
     },
     async filterByTagsId (_id) {
-      this.$store.dispatch(actionTypes.filterByTagsId, _id)
+      const query = {
+        filterBy: 'tags',
+        filterId: _id
+      }
+      this.routeToQuery(query)
     },
     async filterByAll () {
-      this.$store.dispatch(actionTypes.filterByAll)
+      const query = {
+        filterBy: 'all'
+      }
+      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
     },
     async filterByUnCategorized () {
-      this.$store.dispatch(actionTypes.filterByUnCategorized)
+      const query = {
+        filterBy: 'uncategorized'
+      }
+      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
     },
     async deploy () {
       this.$store.dispatch(actionTypes.deploy)

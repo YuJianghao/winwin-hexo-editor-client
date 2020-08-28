@@ -8,19 +8,19 @@
       :style="toolbarStyle"
     >
     </q-toolbar>
-    <div
-      class="col column flex-center bg-blue-1"
-      @dblclick="addPostByDefault"
-    >
+    <div class="col column flex-center">
+      <q-spinner-gears
+        size="50px"
+        color="primary"
+      />
       <h2>
-        双击此处以新建一篇文章
+        正在加载文章
       </h2>
     </div>
   </div>
 </template>
 
 <script>
-import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoWelcome',
   computed: {
@@ -30,11 +30,6 @@ export default {
         'min-height': '36px',
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
       }
-    }
-  },
-  methods: {
-    async addPostByDefault () {
-      this.$store.dispatch(actionTypes.addPostByDefault)
     }
   }
 }

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { loadLoginToken, loadRefreshToken, saveRefreshToken, saveLoginToken } from '../utils/storage'
-import { forceReloadWindow } from 'src/utils/forceReloadWindow'
+import { forceReloadWindow } from 'src/utils/url'
 import users from './users'
 import { Logger } from 'src/utils/logger'
 import message from 'src/utils/message'

@@ -72,12 +72,12 @@ const mutations = {
     state.status.lastSavedAt = time
   },
 
-  [mutationTypes.setCurrentArticleId] (state, id) {
-    state.status.currentArticleId = id
+  [mutationTypes.setLoading] (state, loading) {
+    state.status.loading = loading
   },
 
-  [mutationTypes.setArticleLoading] (state, loading) {
-    state.status.loadingArticle = loading
+  [mutationTypes.setReady] (state, ready) {
+    state.status.ready = ready
   }
 }
 export default mutations
