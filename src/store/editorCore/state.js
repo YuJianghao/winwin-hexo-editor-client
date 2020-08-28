@@ -9,7 +9,7 @@ export default function () {
     status: {
       saved: true,
       lastSavedAt: null,
-      loading: false,
+      loading: true,
       ready: false
     }
   }

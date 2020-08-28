@@ -74,12 +74,12 @@ export default {
     },
     // externals
     ...mapState({
+      published: state => state.editorCore.data.article.published,
       isFullscreen: state => state.editorUi.full
     }),
     ...mapGetters({
       tags: 'editorCore/dataPostTagsList',
-      categories: 'editorCore/dataPostCategoriesList',
-      published: 'editorCore/dataPostPublished'
+      categories: 'editorCore/dataPostCategoriesList'
     })
   },
   methods: {
@@ -99,7 +99,7 @@ export default {
       this.$store.dispatch(actionTypes.deletePostById)
     },
     onPublish () {
-      this.editorCoreDataPostPublished ? this.unpublishPostById() : this.publishPostById()
+      this.published ? this.unpublishPostById() : this.publishPostById()
     }
   }
 }

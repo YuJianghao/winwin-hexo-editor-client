@@ -9,6 +9,8 @@ import * as actionTypes from './action-types'
 import * as editorCoreActionTypes from '../editorCore/action-types'
 import * as filterMutationTypes from '../editorFilter/mutation-types'
 import { debounce } from 'quasar'
+import { extendQuery } from 'src/utils/common'
+import { redirect, getHrefFromBaseAndQuery, getBaseAndQueryFromHref } from 'src/utils/url'
 
 // 用户相关
 
@@ -77,24 +79,32 @@ const actions = {
    * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
    */
   [actionTypes.viewPostById]: async ({ rootGetters, commit, dispatch }, payload = {}) => {
-    logger.log('viewPostById', payload)
     const _id = payload._id || null
     const force = payload.force || false
-    // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
-    const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
+
+    let { base, query } = getBaseAndQueryFromHref(window.location.href)
+    query = extendQuery(query, { mode: 'view', id: _id })
+    const href = getHrefFromBaseAndQuery(base, query)
+    if (href !== window.location.href) redirect(href)
+    else {
+      logger.log('viewPostById', payload)
+
+      // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
+      const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
       (_id && (_id !== rootGetters['editorCore/dataPostId']))
-    try {
-      if (requestSave) {
-        await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          await dispatch('viewPostById', { _id, force: true })
-          resolve()
-        })
-      } else {
-        commit('editorUi/viewPost')
-        await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
+      try {
+        if (requestSave) {
+          await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+            await dispatch('viewPostById', { _id, force: true })
+            resolve()
+          })
+        } else {
+          commit('editorUi/viewPost')
+          await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
+        }
+      } catch (err) {
+        message.error({ message: '文章载入失败', caption: err.message })
       }
-    } catch (err) {
-      message.error({ message: '文章载入失败', caption: err.message })
     }
   },
 
@@ -172,23 +182,31 @@ const actions = {
    * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
    */
   [actionTypes.editPostById]: async ({ rootGetters, commit, dispatch }, payload = {}) => {
-    logger.log('editPostById', payload)
     const _id = payload._id || null
     const force = payload.force || false
-    // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
-    const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
+
+    let { base, query } = getBaseAndQueryFromHref(window.location.href)
+    query = extendQuery(query, { mode: 'edit', id: _id })
+    const href = getHrefFromBaseAndQuery(base, query)
+    if (href !== window.location.href) redirect(href)
+    else {
+      logger.log('editPostById', payload)
+
+      // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
+      const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
       (_id && (_id !== rootGetters['editorCore/dataPostId']))
-    try {
-      if (requestSave) {
-        await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          await dispatch(actionTypes.editPostByIdDispatcher, { _id, force: true })
-          resolve()
-        })
-      } else {
-        await dispatch(actionTypes.editPostByIdDispatcher, { _id, force })
+      try {
+        if (requestSave) {
+          await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
+            await dispatch(actionTypes.editPostByIdDispatcher, { _id, force: true })
+            resolve()
+          })
+        } else {
+          await dispatch(actionTypes.editPostByIdDispatcher, { _id, force })
+        }
+      } catch (err) {
+        message.error({ message: '文章载入失败', caption: err.message })
       }
-    } catch (err) {
-      message.error({ message: '文章载入失败', caption: err.message })
     }
   },
 

@@ -34,8 +34,11 @@ export default async ({ router, app, store }) => {
         (!store.state.editorCore.data.article || // 文章没打开
           to.query.id !== store.state.editorCore.data.article._id) // 打开的文章不是需要的文章
       ) {
-        if (to.query.mode === 'edit') store.dispatch(actionTypes.editPostById, { _id: to.query.id })
-        if (to.query.mode === 'view') store.dispatch(actionTypes.viewPostById, { _id: to.query.id })
+        const id = to.query.id
+        const payload = id && id !== 'null' ? { _id: id } : {}
+        console.log(payload)
+        if (to.query.mode === 'edit') store.dispatch(actionTypes.editPostById, payload)
+        if (to.query.mode === 'view') store.dispatch(actionTypes.viewPostById, payload)
       }
       next()
     } else if (isLoggedIn && toLogin) {

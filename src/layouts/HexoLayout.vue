@@ -67,9 +67,8 @@ export default {
       const obj = {}
       obj.editor = this.$route.query.mode === 'edit' && this.$route.query.id && !this.loading
       obj.viewer = this.$route.query.mode === 'view' && this.$route.query.id && !this.loading
-      obj.loading = ['edit', 'view'].includes(this.$route.query.mode) && this.loading
+      obj.loading = ['edit', 'view'].includes(this.$route.query.mode) && this.$route.query.id && this.loading
       obj.welcome = !obj.editor && !obj.viewer && !obj.loading
-      if (obj.welcome) { console.log(obj, this.editorUi) }
       return obj
     },
     ...mapState({

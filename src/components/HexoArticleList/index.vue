@@ -40,7 +40,7 @@ import pinyin from 'pinyin'
 import ListItemContextMenu from './ListItemContextMenu'
 import ListItem from './ListItem'
 import * as actionTypes from 'src/store/dispatcher/action-types'
-import { objectToList, query2String, extendQuery } from 'src/utils/common'
+import { objectToList } from 'src/utils/common'
 export default {
   name: 'HexoPostsList',
   components: {
@@ -153,12 +153,10 @@ export default {
       this.finalize(reset, 1)
     },
     viewPostById (_id) {
-      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, { mode: 'view', id: _id }))}`)
-      // this.$store.dispatch(actionTypes.viewPostById, { _id })
+      this.$store.dispatch(actionTypes.viewPostById, { _id })
     },
     editPostById (_id) {
-      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, { mode: 'edit', id: _id }))}`)
-      // this.$store.dispatch(actionTypes.editPostById, { _id })
+      this.$store.dispatch(actionTypes.editPostById, { _id })
     },
     deletePostById (_id) {
       this.$store.dispatch(actionTypes.deletePostById, { _id })
