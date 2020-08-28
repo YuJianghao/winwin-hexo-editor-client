@@ -19,12 +19,22 @@
     </div>
     <div
       class="col full-height"
-      v-if="show"
+      v-if="show.editor"
     >
       <slot name="editor" />
     </div>
-    <slot name="viewer" />
-    <slot name="welcome" />
+    <div
+      class="col full-height"
+      v-if="show.viewer"
+    >
+      <slot name="viewer" />
+    </div>
+    <div
+      class="col full-height"
+      v-if="show.welcome"
+    >
+      <slot name="welcome" />
+    </div>
     <q-inner-loading :showing="editorUi.loading.show">
       <q-spinner-gears
         size="50px"
@@ -47,11 +57,20 @@ export default {
     }
   },
   computed: {
+    show () {
+      const obj = {}
+      obj.editor = this.editing
+      obj.viewer = this.viewing
+      obj.welcome = this.unselect
+      return obj
+    },
     ...mapState({
       editorUi: state => state.editorUi
     }),
     ...mapGetters({
-      show: 'editorUi/editing',
+      unselect: 'editorUi/unselect',
+      viewing: 'editorUi/viewing',
+      editing: 'editorUi/editing',
       tagsList: 'editorCore/dataTagsList',
       articlesCount: 'editorCore/dataPostsCount',
       categoriesCount: 'editorCore/dataUnCategoriesCount',

@@ -27,10 +27,10 @@
       </div>
     </template>
     <template slot="viewer">
-      <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
+      <hexo-post-viewer></hexo-post-viewer>
     </template>
     <template slot="welcome">
-      <hexo-welcome style="max-height:100%"></hexo-welcome>
+      <hexo-welcome></hexo-welcome>
     </template>
   </hexo-layout>
 </template>

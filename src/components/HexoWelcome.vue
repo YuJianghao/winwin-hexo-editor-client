@@ -1,6 +1,6 @@
 <template>
   <div
-    class="col column"
+    class="fit column"
     style="user-select:none"
     v-if="show"
   >
