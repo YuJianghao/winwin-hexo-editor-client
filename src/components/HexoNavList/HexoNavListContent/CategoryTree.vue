@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import CategoryItem from 'components/HexoNavList/CategoryItem'
+import CategoryItem from './CategoryItem'
 export default {
   name: 'CategoryTree',
   components: {
