@@ -280,14 +280,14 @@ const actions = {
     }
   },
 
-  async [actionTypes.syncGit] ({ dispatch }) {
+  async [actionTypes.syncGit] () {
     try {
       await hexoService.syncGit()
     } catch (err) {
       throw replaceErrorMessage(err, '从git同步失败，请稍后再试')
     }
     try {
-      await dispatch(actionTypes.init)
+      redirect(replaceQuery(window.location.href, undefined, ['mode', 'id']))
     } catch (err) {
       throw replaceErrorMessage(err, '同步成功，但数据更新失败，请手动刷新')
     }

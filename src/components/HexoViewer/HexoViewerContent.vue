@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     async editPostById () {
-      this.$store.dispatch(actionTypes.editPostById)
+      this.$store.dispatch(actionTypes.editPostById, { _id: this.$route.query.id })
     },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')
