@@ -1,76 +1,80 @@
 <template>
-  <q-page
-    class="row overflow-hidden"
-    :style-fn="pageStyle"
-  >
-    <hexo-nav-list
-      v-show="!editorUi.full"
-      style="max-width:200px;max-height:100%"
-      :categoriesList="categoriesList"
-      :tagsList="tagsList"
-      :postsCount="articlesCount"
-      :unCategoriesCount="categoriesCount"
-    ></hexo-nav-list>
-    <div
-      v-show="!editorUi.full"
-      class="col column"
-      style=";flex:0 0 300px;border-right: 1px solid rgba(0, 0, 0, 0.12);"
+  <hexo-layout>
+    <bar-content-layout
+      :scroll="false"
+      slot="nav-list"
     >
-      <hexo-posts-list-bar></hexo-posts-list-bar>
-      <!-- :articleList="articleList.map(e=>e)" 是为了让prop更新 -->
-      <hexo-article-list
-        style="max-width:300px;max-height:100%"
-        :selected="article?article._id:''"
-        :articleList="articleList.map(e=>e)"
-      ></hexo-article-list>
-    </div>
-    <div
-      class="col column"
-      v-if="show"
+      <hexo-nav-list-bar slot="bar"></hexo-nav-list-bar>
+      <hexo-nav-list-content
+        slot="content"
+        :categoriesList="categoriesList"
+        :tagsList="tagsList"
+        :postsCount="articlesCount"
+        :unCategoriesCount="categoriesCount"
+      ></hexo-nav-list-content>
+    </bar-content-layout>
+    <bar-content-layout
+      :scroll="false"
+      slot="article-list"
     >
-      <hexo-editor-bar></hexo-editor-bar>
-      <hexo-article-editor
-        style="max-height:100%"
+      <hexo-article-list-bar slot="bar"></hexo-article-list-bar>
+      <hexo-article-list-content slot="content"></hexo-article-list-content>
+    </bar-content-layout>
+    <bar-content-layout slot="editor">
+      <hexo-editor-bar slot="bar"></hexo-editor-bar>
+      <hexo-editor-content
+        slot="content"
         :article="article"
         @on-update="onArticleUpdate"
-        @on-save="$store.dispatch('savePost')"
-      ></hexo-article-editor>
-    </div>
-    <hexo-post-viewer style="max-height:100%"></hexo-post-viewer>
-    <hexo-welcome style="max-height:100%"></hexo-welcome>
-    <q-inner-loading :showing="editorUi.loading.show">
-      <q-spinner-gears
-        size="50px"
-        color="primary"
-      />
-    </q-inner-loading>
-  </q-page>
+        @on-save="onSave"
+      ></hexo-editor-content>
+    </bar-content-layout>
+    <bar-content-layout slot="viewer">
+      <hexo-viewer-bar slot="bar"></hexo-viewer-bar>
+      <hexo-viewer-content slot="content"></hexo-viewer-content>
+    </bar-content-layout>
+    <template slot="welcome">
+      <hexo-welcome></hexo-welcome>
+    </template>
+    <template slot="loading">
+      <hexo-loading></hexo-loading>
+    </template>
+  </hexo-layout>
 </template>
 
 <script>
 import '../css/hexo.scss'
 
-import HexoPostsListBar from 'components/HexoToolBar/HexoPostsListBar'
-import HexoEditorBar from 'components/HexoToolBar/HexoEditorBar'
+import HexoLayout from 'layouts/HexoLayout'
+import BarContentLayout from 'layouts/BarContentLayout'
 
-import HexoNavList from 'components/HexoNavList'
-import HexoArticleList from 'components/HexoArticleList'
-import HexoArticleEditor from 'components/HexoArticleEditor'
-import HexoPostViewer from 'components/HexoPostViewer'
+import { HexoNavListBar, HexoNavListContent } from 'components/HexoNavList'
+import { HexoEditorBar, HexoEditorContent } from 'components/HexoEditor'
+import { HexoViewerBar, HexoViewerContent } from 'components/HexoViewer'
+import { HexoArticleListBar, HexoArticleListContent } from 'components/HexoArticleList'
+
 import HexoWelcome from 'components/HexoWelcome'
+import HexoLoading from 'components/HexoLoading'
 
 import { mapState, mapGetters } from 'vuex'
+
+import * as actionTypes from 'src/store/dispatcher/action-types'
 
 export default {
   name: 'Hexo',
   components: {
-    HexoArticleList,
-    HexoPostsListBar,
-    HexoPostViewer,
-    HexoNavList,
+    HexoLayout,
+    BarContentLayout,
+    HexoNavListBar,
+    HexoNavListContent,
+    HexoArticleListBar,
+    HexoArticleListContent,
+    HexoEditorBar,
+    HexoEditorContent,
+    HexoViewerBar,
+    HexoViewerContent,
     HexoWelcome,
-    HexoArticleEditor,
-    HexoEditorBar
+    HexoLoading
   },
   data () {
     return {
@@ -84,8 +88,6 @@ export default {
       editorUi: state => state.editorUi
     }),
     ...mapGetters({
-      show: 'editorUi/editing',
-      articleList: 'editorSorter/postsList',
       tagsList: 'editorCore/dataTagsList',
       articlesCount: 'editorCore/dataPostsCount',
       categoriesCount: 'editorCore/dataUnCategoriesCount',
@@ -97,17 +99,20 @@ export default {
       return 'height:' + (window.innerHeight - offset) + 'px'
     },
     onArticleUpdate (article) {
-      this.$store.dispatch('setPostByPost', article)
+      this.$store.dispatch(actionTypes.setPostByPost, article)
+    },
+    onSave () {
+      this.$store.dispatch(actionTypes.savePost)
     }
   },
   async mounted () {
-    this.$store.dispatch('init')
+    if (!this.$store.state.editorCore.status.ready) { this.$store.dispatch(actionTypes.init) }
   },
   created () {
     document.getElementById('app-message').innerHTML = '加载编辑器...'
   },
   async beforeDestory () {
-    this.$store.dispatch('destroy')
+    this.$store.dispatch(actionTypes.destroy)
   }
 }
 </script>

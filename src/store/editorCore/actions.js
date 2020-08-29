@@ -10,7 +10,8 @@ import * as categoryService from 'src/service/category'
 import * as tagService from 'src/service/tag'
 import * as hexoService from 'src/service/hexo'
 
-import { replaceErrorMessage, listToObject } from 'src/utils/common'
+import { listToObject, replaceErrorMessage } from 'src/utils/common'
+import { redirect, replaceQuery } from 'src/utils/url'
 
 /**
   * 验证id是否有效（无效则引发异常），是否是当前文章id
@@ -21,12 +22,7 @@ function getValidId (state, _id) {
   if (!state.data.article && !_id) throw new Error('No article opened, _id is required!')
   const validId = _id || state.data.article._id
   if (validId && !state.data.articles[validId]) throw new Error('Invalid article id ' + validId)
-  if (state.data.article && state.data.article._id === validId) {
-    logger.log('Use opened article', validId)
-    return { sameArticle: true, validId }
-  } else {
-    return { sameArticle: false, validId }
-  }
+  return validId
 }
 
 /**
@@ -43,8 +39,9 @@ const actions = {
    * 初始化数据
    */
   async [actionTypes.init] ({ commit, dispatch }) {
-    commit(mutationTypes.closeArticle)
+    commit(mutationTypes.setReady, true)
     await dispatch(actionTypes.loadAll)
+    commit(mutationTypes.setLoading, true)
   },
 
   /**
@@ -53,6 +50,7 @@ const actions = {
   async [actionTypes.destroy] ({ commit }) {
     commit(mutationTypes.closeArticle)
     commit(mutationTypes.resetAll)
+    commit(mutationTypes.setReady, false)
   },
 
   /**
@@ -85,6 +83,7 @@ const actions = {
       if (article.categories) await dispatch('loadCategories')
       if (article.tags) await dispatch('loadTags')
       commit(mutationTypes.loadArticle, article)
+      redirect(replaceQuery(window.location.href, { id: article._id }))
     } catch (err) {
       throw replaceErrorMessage(err, '新文章创建成功，但数据更新失败，请手动刷新')
     }
@@ -166,14 +165,34 @@ const actions = {
   async [actionTypes.loadArticleById] ({ state, commit }, payload = {}) {
     const _id = payload._id || null
     const force = payload.force || false
-    const { validId, sameArticle } = getValidId(state, _id, force)
-    if (sameArticle) return
+    const validId = getValidId(state, _id, force)
+
+    const href = replaceQuery(window.location.href, { id: validId })
+
+    if (href !== window.location.href) redirect(href)
+
+    let isSameArticle
+    if (state.data.article &&
+      state.data.article._id === validId) {
+      logger.log('Use opened article', validId)
+      isSameArticle = true
+    } else {
+      isSameArticle = false
+    }
+    if (isSameArticle) return
     checkSaved(state, force)
+    let finished = false
     try {
+      window.setTimeout(_ => {
+        if (!finished) { commit(mutationTypes.setLoading, true) }
+      }, 100)
       const article = await postService.getArticleById(validId)
       commit(mutationTypes.loadArticle, article)
     } catch (err) {
-      throw replaceErrorMessage(err, '文章获取失败，请稍后再试')
+      throw replaceErrorMessage(err, '文章获取失败，请稍后或刷新后再试')
+    } finally {
+      finished = true
+      commit(mutationTypes.setLoading, false)
     }
   },
 
@@ -186,7 +205,7 @@ const actions = {
   async [actionTypes.deleteArticleById] ({ state, commit, dispatch }, payload = {}) {
     const _id = payload._id || null
     const force = payload.force || false
-    const { validId } = getValidId(state, _id, force)
+    const validId = getValidId(state, _id, force)
     checkSaved(state, force)
     try {
       await postService.deleteArticleById(validId)
@@ -194,8 +213,8 @@ const actions = {
       throw replaceErrorMessage(err, '删除失败，请稍后再试')
     }
     try {
-      if (!_id || (state.data.article && state.data.article._id === _id)) { commit(mutationTypes.closeArticle) }
       await dispatch(actionTypes.loadAll)
+      redirect(replaceQuery(window.location.href, undefined, 'id'))
     } catch (err) {
       throw replaceErrorMessage(err, '文章已删除，但数据更新失败，请手动刷新')
     }
@@ -210,16 +229,18 @@ const actions = {
   async [actionTypes.publishPostById] ({ state, commit, dispatch }, payload = {}) {
     const _id = payload._id || null
     const force = payload.force || false
-    const { validId } = getValidId(state, _id, force)
+    const validId = getValidId(state, _id, force)
     checkSaved(state, force)
+    let post
     try {
-      const post = await hexoService.publishPost(validId)
+      post = await hexoService.publishPost(validId)
       commit(mutationTypes.loadArticle, post)
     } catch (err) {
       throw replaceErrorMessage(err, '文章发布失败，请稍后再试')
     }
     try {
       await dispatch(actionTypes.loadArticles)
+      redirect(replaceQuery(window.location.href, { id: post._id }))
     } catch (err) {
       throw replaceErrorMessage(err, '文章已发布，但数据更新失败，请手动刷新')
     }
@@ -234,16 +255,18 @@ const actions = {
   async [actionTypes.unpublishPostById] ({ state, commit, dispatch }, payload = {}) {
     const _id = payload._id || null
     const force = payload.force || false
-    const { validId } = getValidId(state, _id, force)
+    const validId = getValidId(state, _id, force)
     checkSaved(state, force)
+    let post
     try {
-      const post = await hexoService.unpublishPost(validId)
+      post = await hexoService.unpublishPost(validId)
       commit(mutationTypes.loadArticle, post)
     } catch (err) {
       throw replaceErrorMessage(err, '取消发布失败，请稍后再试')
     }
     try {
       await dispatch(actionTypes.loadArticles)
+      redirect(replaceQuery(window.location.href, { id: post._id }))
     } catch (err) {
       throw replaceErrorMessage(err, '已取消发布，但数据更新失败，请手动刷新')
     }
@@ -257,14 +280,14 @@ const actions = {
     }
   },
 
-  async [actionTypes.syncGit] ({ dispatch }) {
+  async [actionTypes.syncGit] () {
     try {
       await hexoService.syncGit()
     } catch (err) {
       throw replaceErrorMessage(err, '从git同步失败，请稍后再试')
     }
     try {
-      await dispatch(actionTypes.init)
+      redirect(replaceQuery(window.location.href, undefined, ['mode', 'id']))
     } catch (err) {
       throw replaceErrorMessage(err, '同步成功，但数据更新失败，请手动刷新')
     }
@@ -275,6 +298,22 @@ const actions = {
       await hexoService.deploy()
     } catch (err) {
       throw replaceErrorMessage(err, '部署失败，请稍后再试')
+    }
+  },
+
+  async [actionTypes.generate] () {
+    try {
+      await hexoService.generate()
+    } catch (err) {
+      throw replaceErrorMessage(err, '生成失败，请稍后再试')
+    }
+  },
+
+  async [actionTypes.clean] () {
+    try {
+      await hexoService.clean()
+    } catch (err) {
+      throw replaceErrorMessage(err, '清理失败，请稍后再试')
     }
   }
 

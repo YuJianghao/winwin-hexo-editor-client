@@ -7,7 +7,10 @@ export default function () {
       tags: {}
     },
     status: {
-      saved: true
+      saved: true,
+      lastSavedAt: null,
+      loading: true,
+      ready: false
     }
   }
 }

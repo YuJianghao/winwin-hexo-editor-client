@@ -1,8 +1,7 @@
 <template>
   <div
-    class="col column"
+    class="fit column"
     style="user-select:none"
-    v-if="show"
   >
     <q-toolbar
       class="bg-grey-2 q-px-none"
@@ -21,34 +20,21 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoWelcome',
   computed: {
-    toolbarHeight () {
-      return this.editorUi.actionbar.height
-    },
     toolbarStyle () {
       return {
-        height: this.toolbarHeight,
-        'min-height': this.toolbarHeight,
+        height: '36px',
+        'min-height': '36px',
         'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
       }
-    },
-    show () {
-      return this.editorUiUnselect
-    },
-    // externals
-    ...mapState({
-      editorUi: state => state.editorUi
-    }),
-    ...mapGetters({
-      editorUiUnselect: 'editorUi/unselect'
-    })
+    }
   },
   methods: {
     async addPostByDefault () {
-      this.$store.dispatch('addPostByDefault')
+      this.$store.dispatch(actionTypes.addPostByDefault)
     }
   }
 }

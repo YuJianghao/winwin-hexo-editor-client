@@ -26,6 +26,10 @@ export async function clean () {
   await hexo.clean()
 }
 
+export async function generate () {
+  await hexo.generate()
+}
+
 export async function search (q, size) {
   const res = await hexo.search(q, size)
   return res.data

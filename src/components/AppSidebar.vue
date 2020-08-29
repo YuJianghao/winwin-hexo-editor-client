@@ -39,39 +39,41 @@
                 class="no-border-radius"
               >
                 <span style="padding: 0 6px;">
-                  hexo-editor-client
+                  winwin-hexo-editor
                 </span>
               </q-avatar>
               <span style="padding-left:3px;">
-                v{{currentVersion}}
+                {{currentVersion}}
               </span>
             </q-chip>
           </q-item-label>
           <q-item-label
             caption
             lines="2"
-          >当前客户端版本</q-item-label>
+          >当前主程序版本</q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
   </div>
 </template>
 <script>
-import EssentialLink from '../components/EssentialLink'
-import packageJson from '../../package.json'
+import EssentialLink from 'components/EssentialLink'
+import apis from 'src/api'
 export default {
   name: 'AppSidebar',
   components: {
     EssentialLink
   },
-  computed: {
-    currentVersion () {
-      return packageJson.version
+  async beforeMount () {
+    try {
+      this.currentVersion = 'v' + await apis.info.version()
+    } catch (err) {
+      this.currentVersion = '获取失败'
     }
   },
   data () {
     return {
-
+      currentVersion: '加载中',
       essentialLinks: [
         {
           title: '项目主页',

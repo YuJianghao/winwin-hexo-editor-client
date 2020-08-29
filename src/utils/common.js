@@ -1,6 +1,5 @@
+import { Logger } from 'src/utils/logger'
 import pinyin from 'pinyin'
-import { Logger } from './logger'
-const logger = new Logger({})
 export function objectToList (obj) {
   return Object.keys(obj).map(key => obj[key])
 }
@@ -42,10 +41,10 @@ export function isEmptyObject (obj) {
 
 export function replaceErrorMessage (err, message) {
   if (process.env.DEV) {
-    logger.error(err)
-    err.message += message
+    new Logger({ prefix: 'Utils/common/error' }).warn(err)
+    err.message += message + err.code
   } else {
-    err.message = message
+    err.message = err.code + ':' + message
   }
   return err
 }
@@ -54,4 +53,8 @@ export function stringSort (strA, strB) {
   const valueA = pinyin(strA, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
   const valueB = pinyin(strB, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
   return valueA > valueB ? 1 : -1
+}
+
+export function isOverflow (el) {
+  return el.clientWidth < el.scrollWidth
 }
