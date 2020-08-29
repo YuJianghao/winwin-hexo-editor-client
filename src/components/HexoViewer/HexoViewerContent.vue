@@ -1,28 +1,21 @@
 <template>
-  <div
-    class="fit column"
-  >
-    <hexo-post-viewer-bar></hexo-post-viewer-bar>
     <markdown-previewer
-      class="col"
+      class="fit"
       :title="post.title"
       :content="post._content"
       @on-edit="editPostById"
     ></markdown-previewer>
-  </div>
 </template>
 
 <script>
 import { date } from 'quasar'
 import { mapState } from 'vuex'
-import MarkdownPreviewer from './MarkdownPreviewer'
-import HexoPostViewerBar from './HexoPostViewerBar'
+import MarkdownPreviewer from 'components/MarkdownPreviewer'
 import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoPostViewer',
   components: {
-    MarkdownPreviewer,
-    HexoPostViewerBar
+    MarkdownPreviewer
   },
   computed: {
     post () {

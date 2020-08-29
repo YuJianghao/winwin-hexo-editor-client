@@ -1,8 +1,5 @@
 <template>
-  <q-toolbar
-    class="bg-grey-2 q-px-none"
-    :style="toolbarStyle"
-  >
+  <div class="fit row">
     <q-btn
       flat
       stretch
@@ -80,10 +77,13 @@
         </q-list>
       </q-menu>
     </q-btn>
-    <div style="position:absolute;top:0;left:0" class="full-width">
-     <search-menu v-model="showSearchMenu"></search-menu>
+    <div
+      style="position:absolute;top:0;left:0"
+      class="full-width"
+    >
+      <search-menu v-model="showSearchMenu"></search-menu>
     </div>
-  </q-toolbar>
+  </div>
 </template>
 
 <script>
@@ -136,7 +136,7 @@ export default {
           return true
         case 'false':
           return false
-        default :
+        default:
           return false
       }
     }

@@ -1,19 +1,8 @@
 <template>
   <div
     class="fit column"
-    style="border-right: 1px solid rgba(0, 0, 0, 0.12);user-select:none;"
+    style="user-select:none;"
   >
-    <q-toolbar
-      class="bg-grey-2 q-px-none"
-      :style="toolbarStyle"
-    >
-      <q-toolbar-title
-        class="text-grey"
-        style="margin-left:14px;"
-      >
-        HEXO
-      </q-toolbar-title>
-    </q-toolbar>
     <q-list
       class="bg-grey-2 q-py-xs full-width"
       dense
@@ -138,9 +127,9 @@
 
 <script>
 import LTT from 'list-to-tree'
-import CategoryItem from 'components/HexoNavList/CategoryItem'
-import TagItem from 'components/HexoNavList/TagItem'
-import CategoryTree from 'components/HexoNavList/CategoryTree'
+import CategoryItem from './CategoryItem'
+import TagItem from './TagItem'
+import CategoryTree from './CategoryTree'
 import { stringSort } from 'src/utils/common'
 import { query2String, extendQuery } from 'src/utils/url'
 

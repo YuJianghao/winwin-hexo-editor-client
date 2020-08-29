@@ -1,62 +1,90 @@
 <template>
-  <q-toolbar
-    class="bg-grey-2 q-px-none"
-    :style="toolbarStyle"
-  >
+  <div class="row" style="max-height:35px;flex-wrap: nowrap">
     <q-btn
       flat
       stretch
       color="primary"
       :icon="isFullscreen?'fullscreen_exit':'fullscreen'"
       @click="toggleFull"
-    ></q-btn>
+    >
+      <q-tooltip
+        content-style="font-size: 14px"
+        transition-show="none"
+        transition-hide="none"
+        anchor="bottom middle"
+        self="center middle"
+      >
+        {{isFullscreen?'退出网页全屏':'网页全屏'}}
+      </q-tooltip>
+    </q-btn>
     <q-btn
       flat
       stretch
       :icon="published?'close':'publish'"
       :color="published?'red':'primary'"
-      :label="published?'取消发布':'发布'"
       @click="onPublish"
-    />
+    >
+      <q-tooltip
+        content-style="font-size: 14px"
+        transition-show="none"
+        transition-hide="none"
+        anchor="bottom middle"
+        self="center middle"
+      >
+        {{published?'取消发布':'发布'}}
+      </q-tooltip>
+    </q-btn>
     <q-btn
       flat
       stretch
       color="red"
       icon="delete"
-      label="删除"
       @click="deletePostById"
-    />
-    <q-btn
-      stretch
-      flat
-      @click="editPostById"
     >
-      分类：
-      {{categories.length?'':'无'}}
-      <q-badge
-        v-for="(item,key) in categories"
-        :key="key"
-        color="primary"
-        text-color="white"
-        :label="item"
-      />
+      <q-tooltip
+        content-style="font-size: 14px"
+        transition-show="none"
+        transition-hide="none"
+        anchor="bottom middle"
+        self="center middle"
+      >删除
+      </q-tooltip>
     </q-btn>
     <q-btn
       stretch
       flat
       @click="editPostById"
     >
-      标签：
-      {{tags.length?'':'无'}}
-      <q-badge
-        v-for="(item,key) in tags"
-        :key="key"
-        color="primary"
-        text-color="white"
-        :label="item"
-      />
+      <span style="white-space:nowrap">
+        分类：
+        {{categories.length?'':'无'}}
+        <q-badge
+          v-for="(item,key) in categories"
+          :key="key"
+          color="primary"
+          text-color="white"
+          :label="item"
+        />
+      </span>
     </q-btn>
-  </q-toolbar>
+    <q-btn
+      stretch
+      flat
+      @click="editPostById"
+    >
+      <span style="white-space:nowrap">
+        标签：
+        {{tags.length?'':'无'}}
+        <q-badge
+          v-for="(item,key) in tags"
+          :key="key"
+          color="primary"
+          text-color="white"
+          :label="item"
+        />
+      </span>
+    </q-btn>
+  </div>
 </template>
 
 <script>
@@ -67,9 +95,9 @@ export default {
   computed: {
     toolbarStyle () {
       return {
-        height: '36px',
-        'min-height': '36px',
-        'border-bottom': '1px solid rgba(0, 0, 0, 0.12)'
+        height: '35px',
+        'min-height': '35px',
+        'min-width': '100%'
       }
     },
     // externals

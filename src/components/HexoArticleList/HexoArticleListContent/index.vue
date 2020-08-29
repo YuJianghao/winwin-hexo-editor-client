@@ -1,7 +1,6 @@
 <template>
   <q-scroll-area
-    class="col"
-    style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
+    class="fit"
     v-if="articleList"
   >
     <q-list>
