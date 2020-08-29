@@ -2,6 +2,7 @@
   <div class="fit row" v-if="article">
     <div
       class="col column"
+      style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
     >
       <div class="overflow-hidden">
         <q-input
