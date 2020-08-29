@@ -5,7 +5,7 @@ import users from './users'
 import { Logger } from 'src/utils/logger'
 import message from 'src/utils/message'
 import { confirmDialog } from 'src/utils/dialog'
-const logger = new Logger({ prefix: 'request' })
+const logger = new Logger({ prefix: 'Request' })
 
 const request = axios.create()
 if (process.env.DEV) {
@@ -15,6 +15,7 @@ if (process.env.DEV) {
 }
 request.defaults.headers['Content-Type'] = 'application/json'
 request.interceptors.request.use((config) => {
+  logger.log(config.method.toUpperCase(), config.url)
   const token = loadLoginToken()
   token && (config.headers.Authorization = 'Bearer ' + token)
   return config

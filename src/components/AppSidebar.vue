@@ -43,7 +43,7 @@
                 </span>
               </q-avatar>
               <span style="padding-left:3px;">
-                v{{currentVersion}}
+                {{currentVersion}}
               </span>
             </q-chip>
           </q-item-label>
@@ -65,11 +65,15 @@ export default {
     EssentialLink
   },
   async beforeMount () {
-    this.currentVersion = await apis.info.version()
+    try {
+      this.currentVersion = 'v' + await apis.info.version()
+    } catch (err) {
+      this.currentVersion = '获取失败'
+    }
   },
   data () {
     return {
-      currentVersion: 'Loading',
+      currentVersion: '加载中',
       essentialLinks: [
         {
           title: '项目主页',
