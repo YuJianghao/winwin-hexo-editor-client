@@ -41,8 +41,7 @@ const actions = {
   async [actionTypes.init] ({ commit, dispatch }) {
     await dispatch(actionTypes.loadAll)
     commit(mutationTypes.setLoading, true)
-    redirect(replaceQuery(window.location.href, undefined, 'id'))
-    commit(mutationTypes.closeArticle)
+    commit(mutationTypes.setReady, true)
   },
 
   /**
@@ -190,7 +189,7 @@ const actions = {
       const article = await postService.getArticleById(validId)
       commit(mutationTypes.loadArticle, article)
     } catch (err) {
-      throw replaceErrorMessage(err, '文章获取失败，请稍后再试')
+      throw replaceErrorMessage(err, '文章获取失败，请稍后或刷新后再试')
     } finally {
       finished = true
       commit(mutationTypes.setLoading, false)

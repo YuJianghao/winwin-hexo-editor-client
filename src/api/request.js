@@ -24,13 +24,16 @@ request.interceptors.response.use((res) => {
 }, async (err) => {
   if (err.response) {
     err.response.message = err.response.data.message
+    err.code = err.response.status
     if (err.response.status === 401) {
       logger.log('access token expire')
       await users.refreshToken()
       err.config.url = err.config.url.slice(err.config.baseURL.length)
       return request(err.config)
     }
+    return Promise.reject(err)
   }
+  return Promise.reject(err)
 })
 
 const refresh = axios.create()

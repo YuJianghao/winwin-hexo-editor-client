@@ -12,6 +12,7 @@ export function init (state) {
 }
 export function destroy (state) {
   state.full = false
+  hideLoading(state)
 }
 export function showLoading (state, payload = {}) {
   logger.log('showLoading')

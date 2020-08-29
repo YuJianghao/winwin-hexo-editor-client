@@ -43,9 +43,9 @@ export function isEmptyObject (obj) {
 export function replaceErrorMessage (err, message) {
   if (process.env.DEV) {
     logger.error(err)
-    err.message += message
+    err.message += message + err.code
   } else {
-    err.message = message
+    err.message = err.code + ':' + message
   }
   return err
 }
