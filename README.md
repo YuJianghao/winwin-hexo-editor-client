@@ -67,7 +67,27 @@ All kinds of PR are welcomed, including crazy change!
 
 - [koel - A personal music streaming server that works](https://github.com/phanan/koel) ([homepage](https://koel.phanan.net/)). Koel shows me how to use stores to manage data!
 
+- [Yank Note - 一款面向程序员的 Markdown 笔记应用](https://github.com/purocean/yn)
+
 ## Release Note
+
+### 0.5.0
+
+#### 功能更新
+
+- 添加deploy、generate、clean命令
+- 添加单独的编辑和删除按钮
+- 对于超长分类名的支持
+- 自动保存
+- 加入可调整布局
+
+#### 改进
+
+- 添加主程序版本号到侧栏
+- 改进网络缓慢时的加载动画
+- 改用路由
+- 改善异步竞态问题
+- 其他优化
 
 ### 0.4.0
 
