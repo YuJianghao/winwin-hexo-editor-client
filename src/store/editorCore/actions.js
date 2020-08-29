@@ -39,13 +39,9 @@ const actions = {
    * 初始化数据
    */
   async [actionTypes.init] ({ commit, dispatch }) {
-    try {
-      commit(mutationTypes.setReady, true)
-      await dispatch(actionTypes.loadAll)
-      commit(mutationTypes.setLoading, true)
-    } catch (_) {
-      dispatch(actions[actionTypes.destroy])
-    }
+    commit(mutationTypes.setReady, true)
+    await dispatch(actionTypes.loadAll)
+    commit(mutationTypes.setLoading, true)
   },
 
   /**

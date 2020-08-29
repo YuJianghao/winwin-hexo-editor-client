@@ -44,7 +44,7 @@ const actions = {
       await dispatch('editorSearch/init')
     } catch (err) {
       if (err.status === 401) return
-      message.error({ message: '初始化失败', caption: err.code })
+      message.error({ message: '初始化失败' })
     } finally {
       commit('editorUi/hideLoading')
     }
