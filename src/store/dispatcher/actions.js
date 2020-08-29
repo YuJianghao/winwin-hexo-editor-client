@@ -44,8 +44,7 @@ const actions = {
       await dispatch('editorSearch/init')
     } catch (err) {
       if (err.status === 401) return
-      message.error({ message: '初始化失败', caption: err.message })
-      throw err
+      message.error({ message: '初始化失败' })
     } finally {
       commit('editorUi/hideLoading')
     }
@@ -77,6 +76,7 @@ const actions = {
    * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
    */
   [actionTypes.viewPostById]: async ({ rootGetters, commit, dispatch }, payload = {}) => {
+    logger.log('viewPostById', payload)
     const _id = payload._id || null
     const force = payload.force || false
 
@@ -93,7 +93,7 @@ const actions = {
         const href = replaceQuery(window.location.href, { mode: 'view', id: _id })
         if (href !== window.location.href) redirect(href)
         else {
-          logger.log('viewPostById', payload)
+          logger.log('doViewPostById', payload)
           await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
         }
       }
@@ -151,6 +151,7 @@ const actions = {
    * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
    */
   [actionTypes.editPostById]: async ({ rootGetters, commit, dispatch }, payload = {}) => {
+    logger.log('editPostById', payload)
     const _id = payload._id || null
     const force = payload.force || false
 
@@ -160,26 +161,19 @@ const actions = {
     try {
       if (requestSave) {
         await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          await dispatch(actionTypes.editPostByIdDispatcher, { _id, force: true })
+          await dispatch(actionTypes.editPostById, { _id, force: true })
           resolve()
         })
       } else {
-        await dispatch(actionTypes.editPostByIdDispatcher, { _id, force })
+        const href = replaceQuery(window.location.href, { mode: 'edit', id: _id })
+        if (href !== window.location.href) redirect(href)
+        else {
+          logger.log('doEditPostById', payload)
+          await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
+        }
       }
     } catch (err) {
       message.error({ message: '文章载入失败', caption: err.message })
-    }
-  },
-
-  [actionTypes.editPostByIdDispatcher]: async ({ commit, dispatch }, payload = {}) => {
-    logger.log('editPostByIdDispatcher', payload)
-    const _id = payload._id || null
-    const force = payload.force || false
-    const href = replaceQuery(window.location.href, { mode: 'edit', id: _id })
-    if (href !== window.location.href) redirect(href)
-    else {
-      logger.log('editPostById', payload)
-      await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
     }
   },
 

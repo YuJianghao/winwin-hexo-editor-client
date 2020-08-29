@@ -1,3 +1,5 @@
+import { Logger } from 'src/utils/logger'
+
 /**
  * Force reloading window regardless of "Confirm before reload" setting.
  * This is handy for certain cases, for example Last.fm connect/disconnect.
@@ -12,6 +14,8 @@ export const forceReloadWindow = () => {
 }
 
 export const redirect = url => {
+  const logger = new Logger({ prefix: 'Utils/url/redirect' })
+  logger.log(getBaseAndQueryFromHref(url))
   window.location.href = url
 }
 

@@ -88,7 +88,6 @@ export default {
       editorUi: state => state.editorUi
     }),
     ...mapGetters({
-      show: 'editorUi/editing',
       tagsList: 'editorCore/dataTagsList',
       articlesCount: 'editorCore/dataPostsCount',
       categoriesCount: 'editorCore/dataUnCategoriesCount',
