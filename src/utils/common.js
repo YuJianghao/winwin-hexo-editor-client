@@ -1,3 +1,4 @@
+import { Logger } from 'src/utils/logger'
 import pinyin from 'pinyin'
 export function objectToList (obj) {
   return Object.keys(obj).map(key => obj[key])
@@ -40,6 +41,7 @@ export function isEmptyObject (obj) {
 
 export function replaceErrorMessage (err, message) {
   if (process.env.DEV) {
+    new Logger({ prefix: 'Utils/common/error' }).warn(err)
     err.message += message + err.code
   } else {
     err.message = err.code + ':' + message

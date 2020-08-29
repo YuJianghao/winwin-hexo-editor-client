@@ -44,6 +44,7 @@ const actions = {
       await dispatch('editorSearch/init')
     } catch (err) {
       if (err.status === 401) return
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '初始化失败' })
     } finally {
       commit('editorUi/hideLoading')
@@ -63,6 +64,7 @@ const actions = {
       message.success({ message: '重载成功' })
     } catch (err) {
       if (err.status === 401) return
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '重载失败', caption: err.message })
     } finally {
       commit('editorUi/hideLoading')
@@ -98,6 +100,7 @@ const actions = {
         }
       }
     } catch (err) {
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '文章载入失败', caption: err.message })
     }
   },
@@ -121,6 +124,7 @@ const actions = {
       }
     } catch (err) {
       if (err.status === 401) return
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '新建失败', caption: err.message })
     }
   },
@@ -139,6 +143,7 @@ const actions = {
       try {
         await dispatch('editorCore/' + editorCoreActionTypes.deleteArticleById, { _id })
       } catch (err) {
+        if (err.name === 'AsyncRaceAbort') return
         message.error({ message: '删除失败', caption: err.message })
       } finally {
         resolve()
@@ -173,6 +178,7 @@ const actions = {
         }
       }
     } catch (err) {
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '文章载入失败', caption: err.message })
     }
   },
@@ -195,6 +201,7 @@ const actions = {
         await dispatch('editorCore/' + editorCoreActionTypes.publishPostById, { _id, force })
       }
     } catch (err) {
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '发布失败', caption: err.message })
     }
   },
@@ -220,6 +227,7 @@ const actions = {
         })
       }
     } catch (err) {
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '发布失败', caption: err.message })
     }
   },
@@ -241,6 +249,7 @@ const actions = {
         message.success({ message: '部署完成' })
       } catch (err) {
         if (err.status === 503) err.message = '请配置`hexo deploy`命令'
+        if (err.name === 'AsyncRaceAbort') return
         message.error({ message: '部署失败', caption: err.message })
       } finally {
         commit('editorUi/hideLoading')
@@ -256,6 +265,7 @@ const actions = {
       await dispatch('editorCore/' + editorCoreActionTypes.generate)
       message.success({ message: '生成完成' })
     } catch (err) {
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '生成失败', caption: err.message })
     } finally {
       commit('editorUi/hideLoading')
@@ -269,6 +279,7 @@ const actions = {
       await dispatch('editorCore/' + editorCoreActionTypes.clean)
       message.success({ message: '清理完成' })
     } catch (err) {
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '清理失败', caption: err.message })
     } finally {
       commit('editorUi/hideLoading')
@@ -284,6 +295,7 @@ const actions = {
         message.success({ message: '同步完成' })
       } catch (err) {
         if (err.status === 503) err.message = '请配置Git命令'
+        if (err.name === 'AsyncRaceAbort') return
         message.error({ message: '同步失败', caption: err.message })
       } finally {
         commit('editorUi/hideLoading')
@@ -300,6 +312,7 @@ const actions = {
       message.success({ message: '同步完成' })
     } catch (err) {
       if (err.status === 503) err.message = '请配置Git远端仓库'
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
       commit('editorUi/hideLoading')
@@ -320,6 +333,7 @@ const actions = {
       if (err.status === 404) {
         err.message = '列表已更新，请刷新'
       }
+      if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '保存失败', caption: err.message })
     } finally {
       commit('editorUi/hideLoading')
