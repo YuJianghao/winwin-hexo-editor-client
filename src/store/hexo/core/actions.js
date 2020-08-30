@@ -106,6 +106,8 @@ const actions = {
   async [actionTypes.loadArticles] ({ commit }) {
     try {
       const articles = await postService.getArticleList()
+
+      // TODO:如果post和page的_id重复了就会报错
       commit(mutationTypes.loadArticles, listToObject(articles))
     } catch (err) {
       throw replaceErrorMessage(err, '文章列表获取失败，请稍后再试')
