@@ -181,7 +181,8 @@ const actions = {
       window.setTimeout(_ => {
         if (!finished) { commit(mutationTypes.setLoading, true) }
       }, 100)
-      const article = await postService.getArticleById(validId)
+      const isPage = state.data.articles[validId].layout === 'page'
+      const article = await postService.getArticleById(validId, isPage)
       commit(mutationTypes.loadArticle, article)
     } catch (err) {
       throw replaceErrorMessage(err, '文章获取失败，请稍后或刷新后再试')

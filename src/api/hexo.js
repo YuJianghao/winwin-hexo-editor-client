@@ -49,6 +49,10 @@ function factory (opts) {
       if (!id) throw new Error('id(post id) is required')
       return request.get(fullUrl('/post/' + id))
     },
+    getPage: async (id) => {
+      if (!id) throw new Error('id(post id) is required')
+      return request.get(fullUrl('/page/' + id))
+    },
     updatePost: async (id, post) => {
       if (!id) throw new Error('id(post id) is required')
       return request.put(fullUrl('/post/' + id), post)
