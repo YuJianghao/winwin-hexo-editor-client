@@ -45,6 +45,9 @@ function factory (opts) {
     addPost: async (options) => {
       return request.post(fullUrl('/post'), options)
     },
+    addPage: async (options) => {
+      return request.post(fullUrl('/page'), options)
+    },
     getPost: async (id) => {
       if (!id) throw new Error('id(post id) is required')
       return request.get(fullUrl('/post/' + id))
@@ -56,6 +59,10 @@ function factory (opts) {
     updatePost: async (id, post) => {
       if (!id) throw new Error('id(post id) is required')
       return request.put(fullUrl('/post/' + id), post)
+    },
+    updatePage: async (id, post) => {
+      if (!id) throw new Error('id(post id) is required')
+      return request.put(fullUrl('/page/' + id), post)
     },
     deletePost: async (id) => {
       if (!id) throw new Error('id(post id) is required')

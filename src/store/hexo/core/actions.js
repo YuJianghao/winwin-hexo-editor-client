@@ -74,7 +74,7 @@ const actions = {
       const defaultOpt = {
         title: '新文章'
       }
-      article = await postService.addArticle(Object.assign(defaultOpt, payload.options))
+      article = await postService.addArticle(Object.assign(defaultOpt, payload.options), payload.options.isPage)
     } catch (err) {
       throw replaceErrorMessage(err, '新建文章失败，请稍后再试')
     }
@@ -83,7 +83,7 @@ const actions = {
       if (article.categories) await dispatch('loadCategories')
       if (article.tags) await dispatch('loadTags')
       commit(mutationTypes.loadArticle, article)
-      redirect(replaceQuery(window.location.href, { id: article._id }))
+      redirect(replaceQuery(window.location.href, { mode: 'edit', id: article._id }))
     } catch (err) {
       throw replaceErrorMessage(err, '新文章创建成功，但数据更新失败，请手动刷新')
     }
@@ -146,7 +146,8 @@ const actions = {
   */
   async [actionTypes.saveArticle] ({ state, dispatch, commit }) {
     try {
-      await postService.saveArticle(state.data.article)
+      const isPage = state.data.article.layout === 'page'
+      await postService.saveArticle(state.data.article, isPage)
       commit(mutationTypes.saveArticle)
     } catch (err) {
       throw replaceErrorMessage(err, '保存失败，请稍后再试')

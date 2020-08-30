@@ -5,9 +5,9 @@
   >
     <q-card class="q-dialog-plugin">
       <q-card-section>
-        <div class="text-h6">新建文章</div>
+        <div class="text-h6">新建{{isPage?'页面':'文章'}}</div>
       </q-card-section>
-      <q-separator/>
+      <q-separator />
       <q-card-section>
         <q-input
           v-model="title"
@@ -16,20 +16,29 @@
           stack-label
           @keyup="title=title.trimLeft()"
         />
-        <q-input
-          v-model="slug"
-          type="text"
-          :label="slugLabel"
-          :disable="useRandomSlug"
-          ref="slug"
-          stack-label
-          @keyup="slug=slug.trimLeft()"
-        />
+        <template v-if="!isPage">
+          <q-input
+            v-model="slug"
+            type="text"
+            :label="slugLabel"
+            :disable="useRandomSlug"
+            ref="slug"
+            stack-label
+            @keyup="slug=slug.trimLeft()"
+          />
+        </template>
         <q-toggle
-          v-model="useRandomSlug"
-          :label="useRandomSlug?'随机slug':'默认slug'"
+          v-model="isPage"
+          :label="isPage?'新页面':'新文章'"
           left-label
         />
+        <template v-if="!isPage">
+          <q-toggle
+            v-model="useRandomSlug"
+            :label="useRandomSlug?'随机slug':'默认slug'"
+            left-label
+          />
+        </template>
       </q-card-section>
 
       <!-- 按钮示例 -->
@@ -59,7 +68,8 @@ export default {
     return {
       title: '',
       slug: '',
-      useRandomSlug: true
+      useRandomSlug: true,
+      isPage: false
     }
   },
   props: {
@@ -114,7 +124,10 @@ export default {
       // 是必需的
       const options = {}
       if (this.title.trim()) options.title = this.title.trim()
-      if (this.slug.trim()) options.slug = this.slug.trim()
+      if (!this.isPage) {
+        if (this.slug.trim()) options.slug = this.slug.trim()
+      }
+      options.isPage = this.isPage
       this.$emit('ok', options)
       // 或带有有效负载：this.$emit('ok', { ... })
 
