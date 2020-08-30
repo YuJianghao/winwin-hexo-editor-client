@@ -9,20 +9,22 @@
       :date="article.date"
       @on-change="e=>$emit('on-date-update', e)"
     ></date-editor>
-    <date-editor
-      label="更新"
-      :date="article.updated"
-      @on-change="e=>$emit('on-updated-update', e)"
-    ></date-editor>
-    <category-editor
-      :categories="article.categories"
-      @on-update="e=>$emit('on-category-update',e)"
-    ></category-editor>
-    <tag-editor
-      :tags="article.tags || []"
-      @on-update="e=>$emit('on-tag-update',e)"
-    ></tag-editor>
-    <q-separator />
+    <template v-if="article.layout!=='page'">
+      <date-editor
+        label="更新"
+        :date="article.updated"
+        @on-change="e=>$emit('on-updated-update', e)"
+      ></date-editor>
+      <category-editor
+        :categories="article.categories"
+        @on-update="e=>$emit('on-category-update',e)"
+      ></category-editor>
+      <tag-editor
+        :tags="article.tags || []"
+        @on-update="e=>$emit('on-tag-update',e)"
+      ></tag-editor>
+      <q-separator />
+    </template>
     <meta-title title="Front-matters"></meta-title>
     <frontmatter-editor
       :frontmatters="article.frontmatters"

@@ -108,6 +108,9 @@ function factory (opts) {
         return request.get(fullUrl(`/search?q=${q}`))
       }
     },
+    getRestrictedKeys: async () => {
+      return request.get(fullUrl('/restrictedkeys'))
+    },
     _action: async (name) => {
       return request.post(fullUrl('/' + name))
     }

@@ -126,8 +126,9 @@ export default {
       if (this.title.trim()) options.title = this.title.trim()
       if (!this.isPage) {
         if (this.slug.trim()) options.slug = this.slug.trim()
+      } else {
+        options.layout = 'page'
       }
-      options.isPage = this.isPage
       this.$emit('ok', options)
       // 或带有有效负载：this.$emit('ok', { ... })
 

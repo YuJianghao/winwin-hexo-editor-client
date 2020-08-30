@@ -41,6 +41,8 @@ const actions = {
   async [actionTypes.init] ({ commit, dispatch }) {
     commit(mutationTypes.setReady, true)
     await dispatch(actionTypes.loadAll)
+    const { post, page } = await hexoService.getRestrictedKeys()
+    commit(mutationTypes.setRestrictedkeys, { post, page })
     commit(mutationTypes.setLoading, true)
   },
 
@@ -74,7 +76,8 @@ const actions = {
       const defaultOpt = {
         title: '新文章'
       }
-      article = await postService.addArticle(Object.assign(defaultOpt, payload.options), payload.options.isPage)
+      console.log(payload.options)
+      article = await postService.addArticle(Object.assign(defaultOpt, payload.options), payload.options.layout === 'page')
     } catch (err) {
       throw replaceErrorMessage(err, '新建文章失败，请稍后再试')
     }
@@ -148,7 +151,8 @@ const actions = {
   async [actionTypes.saveArticle] ({ state, dispatch, commit }) {
     try {
       const isPage = state.data.article.layout === 'page'
-      await postService.saveArticle(state.data.article, isPage)
+      const article = Object.assign({}, state.data.article)
+      await postService.saveArticle(article, isPage)
       commit(mutationTypes.saveArticle)
     } catch (err) {
       throw replaceErrorMessage(err, '保存失败，请稍后再试')

@@ -44,6 +44,7 @@ const actions = {
       await dispatch('hexoCore/' + hexoCoreActionTypes.init)
       await dispatch('hexoSearch/init')
     } catch (err) {
+      if (process.env.DEV)logger.warn(err)
       if (err.status === 401) return
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '初始化失败' })
