@@ -23,6 +23,20 @@ const users = {
     const data = await refresh.get('/token/refresh')
     saveLoginToken(data.data.token)
     return data
+  },
+  listAPIKEY: async () => {
+    logger.log('listAPIKEY')
+    const data = await request.get('/token/apikeys')
+    return data.data.apikeys
+  },
+  requestAPIKEY: async () => {
+    logger.log('requestAPIKEY')
+    const data = await request.post('/token/apikey')
+    return data.data.token
+  },
+  removeAPIKEY: async (issuedAt) => {
+    logger.log('requestAPIKEY')
+    return request.delete('/token/apikey', { data: { issuedAt } })
   }
 }
 
