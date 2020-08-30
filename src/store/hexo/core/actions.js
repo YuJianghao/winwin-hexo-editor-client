@@ -149,11 +149,6 @@ const actions = {
     } catch (err) {
       throw replaceErrorMessage(err, '保存失败，请稍后再试')
     }
-    try {
-      await dispatch(actionTypes.loadAll)
-    } catch (err) {
-      throw replaceErrorMessage(err, '文章已保存，但数据更新失败，请手动刷新')
-    }
   },
 
   /**

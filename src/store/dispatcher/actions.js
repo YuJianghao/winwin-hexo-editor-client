@@ -15,12 +15,10 @@ import * as dialogTypes from 'src/service/DialogService/dialog-types'
 
 const actions = {
   [actionTypes.login]: async ({ dispatch }, { username, password }) => {
-    logger.log('login')
     await dispatch('user/login', { username, password })
   },
 
   [actionTypes.logout]: async ({ rootGetters, commit, dispatch }) => {
-    logger.log('logout')
     if (!rootGetters['hexoCore/isPostSaved']) {
       const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
         message: '要退出么，未保存的文件会丢失',
@@ -39,7 +37,6 @@ const actions = {
   // 组件生命周期相关
 
   [actionTypes.init]: async ({ commit, dispatch }) => {
-    logger.log('init')
     try {
       commit('hexoUi/init')
       commit('hexoUi/showLoading')
@@ -56,7 +53,6 @@ const actions = {
   },
 
   [actionTypes.destroy]: async ({ commit, dispatch }) => {
-    logger.log('destroy')
     commit('hexoUi/destroy')
     await dispatch('hexoCore/' + hexoCoreActionTypes.destroy)
   },
@@ -82,7 +78,6 @@ const actions = {
    * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
    */
   [actionTypes.viewPostById]: async ({ rootGetters, commit, dispatch }, payload = {}) => {
-    logger.log('viewPostById', payload)
     const _id = payload._id || null
     const force = payload.force || false
 
@@ -105,7 +100,6 @@ const actions = {
         const href = replaceQuery(window.location.href, { mode: 'view', id: _id })
         if (href !== window.location.href) redirect(href)
         else {
-          logger.log('doViewPostById', payload)
           await dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
         }
       }
@@ -118,7 +112,6 @@ const actions = {
   // 编辑
 
   [actionTypes.addPostByDefault]: async ({ rootGetters, commit, dispatch }) => {
-    logger.log('addPostByDefault')
     try {
       if (!rootGetters['hexoCore/isPostSaved']) {
         const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
@@ -148,7 +141,6 @@ const actions = {
    * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
    */
   [actionTypes.deletePostById]: async ({ rootState, dispatch }, payload = {}) => {
-    logger.log('deletePostById', payload)
     const { _id } = payload
     const post = rootState.hexoCore.data.articles[_id || rootState.hexoCore.data.article._id]
     const message = `你确认要删除《${post.title}》么？`
@@ -176,7 +168,6 @@ const actions = {
    * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
    */
   [actionTypes.editPostById]: async ({ rootGetters, commit, dispatch }, payload = {}) => {
-    logger.log('editPostById', payload)
     const _id = payload._id || null
     const force = payload.force || false
 
@@ -199,7 +190,6 @@ const actions = {
         const href = replaceQuery(window.location.href, { mode: 'edit', id: _id })
         if (href !== window.location.href) redirect(href)
         else {
-          logger.log('doEditPostById', payload)
           await dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
         }
       }
@@ -214,7 +204,6 @@ const actions = {
    * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
    */
   [actionTypes.publishPostById]: async ({ getters, rootGetters, dispatch }, payload = {}) => {
-    logger.log('publishPostById', payload)
     const _id = payload._id || null
     const force = payload.force || false
     try {
@@ -243,7 +232,6 @@ const actions = {
    * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
    */
   [actionTypes.unpublishPostById]: async ({ rootGetters, dispatch }, payload = {}) => {
-    logger.log('unpublishPostById', payload)
     const _id = payload._id || null
     const force = payload.force || false
     try {
@@ -276,7 +264,6 @@ const actions = {
   },
 
   [actionTypes.setPostByPost]: async ({ dispatch }, article) => {
-    logger.log('setPostByPost')
     await dispatch('hexoCore/' + hexoCoreActionTypes.updateArticle, article)
     await dispatch(actionTypes.autoSavePost, true)
   },
@@ -284,7 +271,6 @@ const actions = {
   // 操作相关
 
   [actionTypes.deploy]: async ({ commit, dispatch }) => {
-    logger.log('deploy')
     const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
       message: '确定部署博客么？',
       focus: 'ok'
@@ -304,7 +290,6 @@ const actions = {
   },
 
   [actionTypes.generate]: async ({ commit, dispatch }) => {
-    logger.log('generate')
     try {
       commit('hexoUi/showLoading', { message: '正在生成', delay: 100 })
       await dispatch('hexoCore/' + hexoCoreActionTypes.generate)
@@ -318,7 +303,6 @@ const actions = {
   },
 
   [actionTypes.clean]: async ({ commit, dispatch }) => {
-    logger.log('clean')
     try {
       commit('hexoUi/showLoading', { message: '正在清理', delay: 100 })
       await dispatch('hexoCore/' + hexoCoreActionTypes.clean)
@@ -332,7 +316,6 @@ const actions = {
   },
 
   [actionTypes.syncGit]: async ({ commit, dispatch }) => {
-    logger.log('syncGit')
     const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
       message: '确定从git同步么？未保存到git的文件将丢失',
       okLabel: '放弃文件并同步',
@@ -356,7 +339,6 @@ const actions = {
   },
 
   [actionTypes.saveGit]: async ({ commit, dispatch }) => {
-    logger.log('saveGit')
     try {
       commit('hexoUi/showLoading', { message: '正在同步到GIT', delay: 100 })
       await dispatch('hexoCore/' + hexoCoreActionTypes.saveGit)
@@ -371,11 +353,6 @@ const actions = {
   },
 
   [actionTypes.savePost]: async ({ commit, dispatch }, isAuto) => {
-    if (isAuto) {
-      logger.log('autoSavePost')
-    } else {
-      logger.log('savePost')
-    }
     try {
       if (!isAuto) commit('hexoUi/showLoading', { message: '正在保存', delay: 100 })
       await dispatch('hexoCore/' + hexoCoreActionTypes.saveArticle)
@@ -394,14 +371,12 @@ const actions = {
   // ui相关
 
   [actionTypes.toggleFull]: async ({ commit }) => {
-    logger.log('toggleFull')
     commit('hexoUi/toggleFull')
   },
 
   // 搜索
 
   [actionTypes.search]: async ({ dispatch }, payload) => {
-    logger.log('search', payload)
     const q = payload.q || ''
     const size = payload.size || ''
     await dispatch('hexoSearch/search', { q, size })

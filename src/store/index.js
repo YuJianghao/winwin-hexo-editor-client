@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import dispatcher from './dispatcher'
 import user from './user'
 import { core, ui, search } from './hexo'
+import createLogger from 'vuex/dist/logger'
 
 // import example from './module-example'
 
@@ -10,6 +11,14 @@ Vue.use(Vuex)
 const state = {}
 
 const mutations = {}
+
+const plugins = process.env.DEV ? [createLogger({
+  logActions: true,
+  logMutations: true,
+  filter (mutation) {
+    return mutation.type.indexOf('hexoUi/') === 0
+  }
+})] : []
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -30,6 +39,7 @@ export default function (/* { ssrContext } */) {
       hexoSearch: search,
       user
     },
+    plugins,
 
     // enable strict mode (adds overhead!)
     // for dev mode only
