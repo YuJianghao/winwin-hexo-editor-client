@@ -13,6 +13,7 @@
           :input-style="inputStyle"
           @input="updateTitle"
           class="editor-title"
+          :disable="isPage"
         >
         </q-input>
       </div>
@@ -63,6 +64,9 @@ export default {
     }
   },
   computed: {
+    isPage () {
+      return this.article.layout === 'page'
+    },
     inputStyle () {
       return {
         'font-size': this.titleSize + 'rem',

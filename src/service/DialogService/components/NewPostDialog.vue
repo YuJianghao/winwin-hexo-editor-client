@@ -93,7 +93,10 @@ export default {
       return false
     },
     titleLabel () {
-      return `标题（${this.useRandomSlug ? '可选' : '必填'}）`
+      let str = '标题'
+      if (this.isPage)str += '（必填且不可更改）'
+      else if (this.useRandomSlug)str += '（可选）'
+      return str
     },
     slugLabel () {
       return `slug${this.useRandomSlug ? '' : '（可选）'}`
