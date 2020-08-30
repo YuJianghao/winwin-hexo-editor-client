@@ -84,13 +84,13 @@ export default {
   computed: {
     // externals
     ...mapState({
-      articles: state => state.editorCore.data.articles,
-      result: state => state.editorSearch.result,
-      size: state => state.editorSearch.size,
-      serverQ: state => state.editorSearch.q
+      articles: state => state.hexoCore.data.articles,
+      result: state => state.hexoSearch.result,
+      size: state => state.hexoSearch.size,
+      serverQ: state => state.hexoSearch.q
     }),
     ...mapGetters({
-      resultByPost: 'editorSearch/resultByPost'
+      resultByPost: 'hexoSearch/resultByPost'
     })
   },
   methods: {

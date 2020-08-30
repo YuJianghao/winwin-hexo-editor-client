@@ -2,7 +2,7 @@ import * as hexoService from 'src/service/hexo'
 
 import { Logger } from 'src/utils/logger'
 
-const logger = new Logger({ prefix: 'editorSearch/Actions' })
+const logger = new Logger({ prefix: 'hexoSearch/Actions' })
 /*
 export function someAction (context) {
 }

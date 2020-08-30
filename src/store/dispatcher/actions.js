@@ -5,7 +5,7 @@ import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'Dispatcher' })
 
 import * as actionTypes from './action-types'
-import * as editorCoreActionTypes from '../editor/core/action-types'
+import * as hexoCoreActionTypes from '../hexo/core/action-types'
 import { debounce } from 'quasar'
 import { redirect, replaceQuery } from 'src/utils/url'
 import dialogService from 'src/service/DialogService'
@@ -16,12 +16,12 @@ import * as dialogTypes from 'src/service/DialogService/dialog-types'
 const actions = {
   [actionTypes.login]: async ({ dispatch }, { username, password }) => {
     logger.log('login')
-    await dispatch('globalUser/login', { username, password })
+    await dispatch('user/login', { username, password })
   },
 
   [actionTypes.logout]: async ({ rootGetters, commit, dispatch }) => {
     logger.log('logout')
-    if (!rootGetters['editorCore/isPostSaved']) {
+    if (!rootGetters['hexoCore/isPostSaved']) {
       const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
         message: '要退出么，未保存的文件会丢失',
         okLabel: '退出',
@@ -32,10 +32,10 @@ const actions = {
       })
       if (type !== 'ok') return
       await dispatch('destroy')
-      commit('globalUser/logout')
+      commit('user/logout')
     } else {
       await dispatch('destroy')
-      commit('globalUser/logout')
+      commit('user/logout')
     }
   },
 
@@ -44,37 +44,37 @@ const actions = {
   [actionTypes.init]: async ({ commit, dispatch }) => {
     logger.log('init')
     try {
-      commit('editorUi/init')
-      commit('editorUi/showLoading')
-      commit('globalUser/init')
-      await dispatch('editorCore/' + editorCoreActionTypes.init)
-      await dispatch('editorSearch/init')
+      commit('hexoUi/init')
+      commit('hexoUi/showLoading')
+      commit('user/init')
+      await dispatch('hexoCore/' + hexoCoreActionTypes.init)
+      await dispatch('hexoSearch/init')
     } catch (err) {
       if (err.status === 401) return
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '初始化失败' })
     } finally {
-      commit('editorUi/hideLoading')
+      commit('hexoUi/hideLoading')
     }
   },
 
   [actionTypes.destroy]: async ({ commit, dispatch }) => {
     logger.log('destroy')
-    commit('editorUi/destroy')
-    await dispatch('editorCore/' + editorCoreActionTypes.destroy)
+    commit('hexoUi/destroy')
+    await dispatch('hexoCore/' + hexoCoreActionTypes.destroy)
   },
 
   [actionTypes.reload]: async ({ commit, dispatch }, force = false) => {
     try {
-      commit('editorUi/showLoading')
-      await dispatch('editorCore/' + editorCoreActionTypes.reload, force)
+      commit('hexoUi/showLoading')
+      await dispatch('hexoCore/' + hexoCoreActionTypes.reload, force)
       message.success({ message: '重载成功' })
     } catch (err) {
       if (err.status === 401) return
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '重载失败', caption: err.message })
     } finally {
-      commit('editorUi/hideLoading')
+      commit('hexoUi/hideLoading')
     }
   },
 
@@ -90,8 +90,8 @@ const actions = {
     const force = payload.force || false
 
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
-    const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
-      (_id && (_id !== rootGetters['editorCore/dataPostId']))
+    const requestSave = (!force && !rootGetters['hexoCore/isPostSaved']) &&
+      (_id && (_id !== rootGetters['hexoCore/dataPostId']))
     try {
       if (requestSave) {
         const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
@@ -109,7 +109,7 @@ const actions = {
         if (href !== window.location.href) redirect(href)
         else {
           logger.log('doViewPostById', payload)
-          await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
+          await dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
         }
       }
     } catch (err) {
@@ -123,7 +123,7 @@ const actions = {
   [actionTypes.addPostByDefault]: async ({ rootGetters, commit, dispatch }) => {
     logger.log('addPostByDefault')
     try {
-      if (!rootGetters['editorCore/isPostSaved']) {
+      if (!rootGetters['hexoCore/isPostSaved']) {
         const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
           message: '要离开么，未保存的文件会丢失',
           okLabel: '离开',
@@ -136,7 +136,7 @@ const actions = {
       }
       const { type, data } = await dialogService.create(dialogTypes.NewPostDialog)
       if (type === 'ok') {
-        await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { data })
+        await dispatch('hexoCore/' + hexoCoreActionTypes.addArticleBase, { data })
       }
     } catch (err) {
       if (process.env.DEV)logger.warn(err)
@@ -153,7 +153,7 @@ const actions = {
   [actionTypes.deletePostById]: async ({ rootState, dispatch }, payload = {}) => {
     logger.log('deletePostById', payload)
     const { _id } = payload
-    const post = rootState.editorCore.data.articles[_id || rootState.editorCore.data.article._id]
+    const post = rootState.hexoCore.data.articles[_id || rootState.hexoCore.data.article._id]
     const message = `你确认要删除《${post.title}》么？`
     // if (post.date)message += `（最后编辑于${date.formatDate(post.date, 'YYYY年MM月DD日 HH:mm:ss')}）`
 
@@ -167,7 +167,7 @@ const actions = {
     })
     if (type !== 'ok') return
     try {
-      await dispatch('editorCore/' + editorCoreActionTypes.deleteArticleById, { _id })
+      await dispatch('hexoCore/' + hexoCoreActionTypes.deleteArticleById, { _id })
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '删除失败', caption: err.message })
@@ -184,8 +184,8 @@ const actions = {
     const force = payload.force || false
 
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
-    const requestSave = (!force && !rootGetters['editorCore/isPostSaved']) &&
-      (_id && (_id !== rootGetters['editorCore/dataPostId']))
+    const requestSave = (!force && !rootGetters['hexoCore/isPostSaved']) &&
+      (_id && (_id !== rootGetters['hexoCore/dataPostId']))
     try {
       if (requestSave) {
         const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
@@ -203,7 +203,7 @@ const actions = {
         if (href !== window.location.href) redirect(href)
         else {
           logger.log('doEditPostById', payload)
-          await dispatch('editorCore/' + editorCoreActionTypes.loadArticleById, { _id, force })
+          await dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
         }
       }
     } catch (err) {
@@ -221,7 +221,7 @@ const actions = {
     const _id = payload._id || null
     const force = payload.force || false
     try {
-      if (!force && !rootGetters['editorCore/isPostSaved']) {
+      if (!force && !rootGetters['hexoCore/isPostSaved']) {
         const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
           message: '要退出么，未保存的文件会丢失',
           okLabel: '退出',
@@ -233,7 +233,7 @@ const actions = {
         if (type !== 'ok') return
         await dispatch(actionTypes.publishPostById, { _id, force: true })
       } else {
-        await dispatch('editorCore/' + editorCoreActionTypes.publishPostById, { _id, force })
+        await dispatch('hexoCore/' + hexoCoreActionTypes.publishPostById, { _id, force })
       }
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
@@ -250,7 +250,7 @@ const actions = {
     const _id = payload._id || null
     const force = payload.force || false
     try {
-      if (!force && !rootGetters['editorCore/isPostSaved']) {
+      if (!force && !rootGetters['hexoCore/isPostSaved']) {
         const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
           message: '你确认要取消发布么？未保存的文件会丢失',
           okLabel: '继续取消发布',
@@ -270,7 +270,7 @@ const actions = {
           focus: 'cancel'
         })
         if (type !== 'ok') return
-        await dispatch('editorCore/' + editorCoreActionTypes.unpublishPostById, { _id, force })
+        await dispatch('hexoCore/' + hexoCoreActionTypes.unpublishPostById, { _id, force })
       }
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
@@ -280,7 +280,7 @@ const actions = {
 
   [actionTypes.setPostByPost]: async ({ dispatch }, article) => {
     logger.log('setPostByPost')
-    await dispatch('editorCore/' + editorCoreActionTypes.updateArticle, article)
+    await dispatch('hexoCore/' + hexoCoreActionTypes.updateArticle, article)
     await dispatch(actionTypes.autoSavePost, true)
   },
 
@@ -294,43 +294,43 @@ const actions = {
     })
     if (type !== 'ok') return
     try {
-      commit('editorUi/showLoading', { message: '正在部署', delay: 100 })
-      await dispatch('editorCore/' + editorCoreActionTypes.deploy)
+      commit('hexoUi/showLoading', { message: '正在部署', delay: 100 })
+      await dispatch('hexoCore/' + hexoCoreActionTypes.deploy)
       message.success({ message: '部署完成' })
     } catch (err) {
       if (err.status === 503) err.message = '请配置`hexo deploy`命令'
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '部署失败', caption: err.message })
     } finally {
-      commit('editorUi/hideLoading')
+      commit('hexoUi/hideLoading')
     }
   },
 
   [actionTypes.generate]: async ({ commit, dispatch }) => {
     logger.log('generate')
     try {
-      commit('editorUi/showLoading', { message: '正在生成', delay: 100 })
-      await dispatch('editorCore/' + editorCoreActionTypes.generate)
+      commit('hexoUi/showLoading', { message: '正在生成', delay: 100 })
+      await dispatch('hexoCore/' + hexoCoreActionTypes.generate)
       message.success({ message: '生成完成' })
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '生成失败', caption: err.message })
     } finally {
-      commit('editorUi/hideLoading')
+      commit('hexoUi/hideLoading')
     }
   },
 
   [actionTypes.clean]: async ({ commit, dispatch }) => {
     logger.log('clean')
     try {
-      commit('editorUi/showLoading', { message: '正在清理', delay: 100 })
-      await dispatch('editorCore/' + editorCoreActionTypes.clean)
+      commit('hexoUi/showLoading', { message: '正在清理', delay: 100 })
+      await dispatch('hexoCore/' + hexoCoreActionTypes.clean)
       message.success({ message: '清理完成' })
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '清理失败', caption: err.message })
     } finally {
-      commit('editorUi/hideLoading')
+      commit('hexoUi/hideLoading')
     }
   },
 
@@ -346,30 +346,30 @@ const actions = {
     })
     if (type !== 'ok') return
     try {
-      commit('editorUi/showLoading', { message: '正在从GIT同步', delay: 100 })
-      await dispatch('editorCore/' + editorCoreActionTypes.syncGit)
+      commit('hexoUi/showLoading', { message: '正在从GIT同步', delay: 100 })
+      await dispatch('hexoCore/' + hexoCoreActionTypes.syncGit)
       message.success({ message: '同步完成' })
     } catch (err) {
       if (err.status === 503) err.message = '请配置Git命令'
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
-      commit('editorUi/hideLoading')
+      commit('hexoUi/hideLoading')
     }
   },
 
   [actionTypes.saveGit]: async ({ commit, dispatch }) => {
     logger.log('saveGit')
     try {
-      commit('editorUi/showLoading', { message: '正在同步到GIT', delay: 100 })
-      await dispatch('editorCore/' + editorCoreActionTypes.saveGit)
+      commit('hexoUi/showLoading', { message: '正在同步到GIT', delay: 100 })
+      await dispatch('hexoCore/' + hexoCoreActionTypes.saveGit)
       message.success({ message: '同步完成' })
     } catch (err) {
       if (err.status === 503) err.message = '请配置Git远端仓库'
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
-      commit('editorUi/hideLoading')
+      commit('hexoUi/hideLoading')
     }
   },
 
@@ -380,8 +380,8 @@ const actions = {
       logger.log('savePost')
     }
     try {
-      if (!isAuto) commit('editorUi/showLoading', { message: '正在保存', delay: 100 })
-      await dispatch('editorCore/' + editorCoreActionTypes.saveArticle)
+      if (!isAuto) commit('hexoUi/showLoading', { message: '正在保存', delay: 100 })
+      await dispatch('hexoCore/' + hexoCoreActionTypes.saveArticle)
       if (!isAuto) message.success({ message: '保存成功' })
     } catch (err) {
       if (err.status === 404) {
@@ -390,7 +390,7 @@ const actions = {
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '保存失败', caption: err.message })
     } finally {
-      commit('editorUi/hideLoading')
+      commit('hexoUi/hideLoading')
     }
   },
 
@@ -398,7 +398,7 @@ const actions = {
 
   [actionTypes.toggleFull]: async ({ commit }) => {
     logger.log('toggleFull')
-    commit('editorUi/toggleFull')
+    commit('hexoUi/toggleFull')
   },
 
   // 搜索
@@ -407,7 +407,7 @@ const actions = {
     logger.log('search', payload)
     const q = payload.q || ''
     const size = payload.size || ''
-    await dispatch('editorSearch/search', { q, size })
+    await dispatch('hexoSearch/search', { q, size })
   }
 }
 actions[actionTypes.autoSavePost] = debounce(actions[actionTypes.savePost], 3000)

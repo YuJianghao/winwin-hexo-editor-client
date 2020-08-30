@@ -95,10 +95,10 @@ export default {
     },
     // externals
     ...mapState({
-      isFullscreen: state => state.editorUi.full,
-      published: state => state.editorCore.data.article.published,
-      rawLastSavedAt: state => state.editorCore.status.lastSavedAt,
-      saved: state => state.editorCore.status.saved
+      isFullscreen: state => state.hexoUi.full,
+      published: state => state.hexoCore.data.article.published,
+      rawLastSavedAt: state => state.hexoCore.status.lastSavedAt,
+      saved: state => state.hexoCore.status.saved
     })
   },
   methods: {

@@ -23,10 +23,10 @@ export default async ({ router, app, store }) => {
     if (!isFirst) {
       Loading.show()
     }
-    if (!app.store.state.globalUser.inited) {
-      app.store.commit('globalUser/init')
+    if (!app.store.state.user.inited) {
+      app.store.commit('user/init')
     }
-    const isLoggedIn = app.store.state.globalUser.isLoggedIn
+    const isLoggedIn = app.store.state.user.isLoggedIn
     const toLogin = to.path === '/login'
     // 真值表干的漂亮啊！
     //                     toLogin
@@ -42,11 +42,11 @@ export default async ({ router, app, store }) => {
           replace: true
         })
       } else if (to.query.id && ['edit', 'view'].includes(to.query.mode) && // 前提：确实要查看或编辑文章
-        (!store.state.editorCore.data.article || // 文章没打开
-          to.query.id !== store.state.editorCore.data.article._id) // 打开的文章不是需要的文章
+        (!store.state.hexoCore.data.article || // 文章没打开
+          to.query.id !== store.state.hexoCore.data.article._id) // 打开的文章不是需要的文章
       ) {
         let id = to.query.id
-        const state = store.state.editorCore
+        const state = store.state.hexoCore
         id = id || state.data.article._id
         if (id && !state.data.articles[id]) {
           const str = replaceQuery(to.fullPath, undefined, ['id', 'mode'])

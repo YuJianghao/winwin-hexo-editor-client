@@ -94,9 +94,9 @@ export default {
       return obj
     },
     ...mapState({
-      showLoading: state => state.editorUi.loading.show,
-      full: state => state.editorUi.full,
-      loading: state => state.editorCore.status.loading
+      showLoading: state => state.hexoUi.loading.show,
+      full: state => state.hexoUi.full,
+      loading: state => state.hexoCore.status.loading
     })
   },
   watch: {

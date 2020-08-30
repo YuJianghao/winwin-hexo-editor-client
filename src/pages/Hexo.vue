@@ -84,14 +84,14 @@ export default {
   },
   computed: {
     ...mapState({
-      article: state => state.editorCore.data.article,
-      editorUi: state => state.editorUi
+      article: state => state.hexoCore.data.article,
+      hexoUi: state => state.hexoUi
     }),
     ...mapGetters({
-      tagsList: 'editorCore/dataTagsList',
-      articlesCount: 'editorCore/dataPostsCount',
-      categoriesCount: 'editorCore/dataUnCategoriesCount',
-      categoriesList: 'editorCore/dataCategoriesList'
+      tagsList: 'hexoCore/dataTagsList',
+      articlesCount: 'hexoCore/dataPostsCount',
+      categoriesCount: 'hexoCore/dataUnCategoriesCount',
+      categoriesList: 'hexoCore/dataCategoriesList'
     })
   },
   methods: {
@@ -106,7 +106,7 @@ export default {
     }
   },
   async mounted () {
-    if (!this.$store.state.editorCore.status.ready) { this.$store.dispatch(actionTypes.init) }
+    if (!this.$store.state.hexoCore.status.ready) { this.$store.dispatch(actionTypes.init) }
   },
   created () {
     document.getElementById('app-message').innerHTML = '加载编辑器...'
