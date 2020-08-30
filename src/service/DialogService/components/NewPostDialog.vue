@@ -27,6 +27,16 @@
             @keyup="slug=slug.trimLeft()"
           />
         </template>
+        <template v-if="isPage">
+          <q-input
+            v-model="path"
+            type="text"
+            label="path（必填且不可更改）"
+            ref="path"
+            stack-label
+            @keyup="path=path.trimLeft()"
+          />
+        </template>
         <q-toggle
           v-model="isPage"
           :label="isPage?'新页面':'新文章'"
@@ -68,6 +78,7 @@ export default {
     return {
       title: '',
       slug: '',
+      path: '',
       useRandomSlug: true,
       isPage: false
     }
@@ -86,6 +97,10 @@ export default {
   },
   computed: {
     valideOptions () {
+      if (this.isPage) {
+        if (!this.path.trim()) return false
+        return true
+      }
       if (this.useRandomSlug) return true
       if (!this.title.trim()) return false
       if (this.slug === '') return true
@@ -94,7 +109,7 @@ export default {
     },
     titleLabel () {
       let str = '标题'
-      if (this.isPage)str += '（必填且不可更改）'
+      if (this.isPage)str += '（可选）'
       else if (this.useRandomSlug)str += '（可选）'
       return str
     },
@@ -131,6 +146,7 @@ export default {
         if (this.slug.trim()) options.slug = this.slug.trim()
       } else {
         options.layout = 'page'
+        options.path = this.path
       }
       this.$emit('ok', options)
       // 或带有有效负载：this.$emit('ok', { ... })

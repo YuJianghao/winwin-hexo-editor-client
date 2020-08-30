@@ -13,7 +13,6 @@
           :input-style="inputStyle"
           @input="updateTitle"
           class="editor-title"
-          :disable="isPage"
         >
         </q-input>
       </div>
