@@ -5,7 +5,7 @@ import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'Dispatcher' })
 
 import * as actionTypes from './action-types'
-import * as editorCoreActionTypes from '../editorCore/action-types'
+import * as editorCoreActionTypes from '../editor/core/action-types'
 import { debounce } from 'quasar'
 import { redirect, replaceQuery } from 'src/utils/url'
 import dialogService from 'src/service/DialogService'

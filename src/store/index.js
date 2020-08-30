@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import dispatcher from './dispatcher'
-import globalUser from './globalUser'
-import editorUi from './editorUi'
-import editorCore from './editorCore'
-import editorSearch from './editorSearch'
+import globalUser from './user'
+import { core, ui, search } from './editor'
 
 // import example from './module-example'
 
@@ -27,9 +25,9 @@ export default function (/* { ssrContext } */) {
     mutations,
     modules: {
       dispatcher,
-      editorUi,
-      editorCore,
-      editorSearch,
+      editorUi: ui,
+      editorCore: core,
+      editorSearch: search,
       globalUser
       // example
     },
