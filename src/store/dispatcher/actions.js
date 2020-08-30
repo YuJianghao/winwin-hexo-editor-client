@@ -126,7 +126,7 @@ const actions = {
       }
       const { type, data } = await dialogService.create(dialogTypes.NewPostDialog)
       if (type === 'ok') {
-        await dispatch('hexoCore/' + hexoCoreActionTypes.addArticleBase, { data })
+        await dispatch('hexoCore/' + hexoCoreActionTypes.addArticleBase, { options: data })
       }
     } catch (err) {
       if (process.env.DEV)logger.warn(err)
