@@ -100,6 +100,9 @@ export default {
         'min-width': '100%'
       }
     },
+    id () {
+      return this.$route.query.id
+    },
     // externals
     ...mapState({
       article: state => state.hexoCore.data.article,
@@ -113,19 +116,19 @@ export default {
   },
   methods: {
     async editPostById () {
-      this.$store.dispatch(actionTypes.editPostById)
+      this.$store.dispatch(actionTypes.editPostById, { _id: this.id })
     },
     async publishPostById () {
-      this.$store.dispatch(actionTypes.publishPostById)
+      this.$store.dispatch(actionTypes.publishPostById, { _id: this.id })
     },
     async unpublishPostById () {
-      this.$store.dispatch(actionTypes.unpublishPostById)
+      this.$store.dispatch(actionTypes.unpublishPostById, { _id: this.id })
     },
     async toggleFull () {
       this.$store.dispatch(actionTypes.toggleFull)
     },
     async deletePostById () {
-      this.$store.dispatch(actionTypes.deletePostById)
+      this.$store.dispatch(actionTypes.deletePostById, { _id: this.id })
     },
     onPublish () {
       this.published ? this.unpublishPostById() : this.publishPostById()

@@ -9,8 +9,8 @@
     >
       <q-tooltip
         content-style="font-size: 14px"
-        transition-show="jump-down"
-        transition-hide="jump-up"
+        transition-show="none"
+        transition-hide="none"
         anchor="bottom middle"
         self="center middle"
       >
@@ -27,8 +27,8 @@
     >
       <q-tooltip
         content-style="font-size: 14px"
-        transition-show="jump-down"
-        transition-hide="jump-up"
+        transition-show="none"
+        transition-hide="none"
         anchor="bottom middle"
         self="center middle"
       >
@@ -50,11 +50,20 @@
       color="primary"
       icon="unfold_more"
     >
+      <q-tooltip
+        content-style="font-size: 14px"
+        transition-show="none"
+        transition-hide="none"
+        anchor="bottom middle"
+        self="center middle"
+      >
+        排序
+      </q-tooltip>
       <q-menu
         anchor="bottom right"
         self="top right"
-        transition-show="jump-down"
-        transition-hide="jump-up"
+        transition-show="none"
+        transition-hide="none"
       >
         <q-list
           style="min-width: 100px"

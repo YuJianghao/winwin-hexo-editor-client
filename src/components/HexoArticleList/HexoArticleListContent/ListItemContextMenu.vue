@@ -3,8 +3,8 @@
     touch-position
     context-menu
     no-refocus
-    transition-show="jump-up"
-    transition-hide="jump-down"
+    transition-show="none"
+    transition-hide="none"
     anchor="center right"
     self="top left"
     @contextmenu.prevent=""
