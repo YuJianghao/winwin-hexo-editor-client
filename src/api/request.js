@@ -6,7 +6,7 @@ import { Logger } from 'src/utils/logger'
 import message from 'src/utils/message'
 import dialogService from 'src/service/DialogService'
 import * as DialogTypes from 'src/service/DialogService/dialog-types'
-const loggerRTC = new Logger({ prefix: 'RequestTokenCollection' })
+const loggerRTC = new Logger({ prefix: 'RTC' })
 class RequestTokenCollection {
   constructor () {
     this._data = {}
@@ -55,7 +55,6 @@ if (process.env.DEV) {
 }
 request.defaults.headers['Content-Type'] = 'application/json'
 request.interceptors.request.use((config) => {
-  logger.log(config.method.toUpperCase(), config.url)
   if (!config.noAsyncRace) {
     config.cancelToken = requestRTC.addRequest(config.method, config.url)
   }
