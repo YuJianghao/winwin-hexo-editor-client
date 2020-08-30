@@ -234,8 +234,9 @@ const actions = {
     checkSaved(state, force)
     let post
     try {
+      const needReloadArticle = state.data.article && validId === state.data.article._id
       post = await hexoService.publishPost(validId)
-      commit(mutationTypes.loadArticle, post)
+      if (needReloadArticle)commit(mutationTypes.loadArticle, post)
     } catch (err) {
       throw replaceErrorMessage(err, '文章发布失败，请稍后再试')
     }
@@ -260,8 +261,9 @@ const actions = {
     checkSaved(state, force)
     let post
     try {
+      const needReloadArticle = state.data.article && validId === state.data.article._id
       post = await hexoService.unpublishPost(validId)
-      commit(mutationTypes.loadArticle, post)
+      if (needReloadArticle)commit(mutationTypes.loadArticle, post)
     } catch (err) {
       throw replaceErrorMessage(err, '取消发布失败，请稍后再试')
     }
