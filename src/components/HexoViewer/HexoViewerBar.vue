@@ -1,5 +1,9 @@
 <template>
-  <div class="row" style="max-height:35px;flex-wrap: nowrap" v-if="article">
+  <div
+    class="row"
+    style="max-height:35px;flex-wrap: nowrap"
+    v-if="article"
+  >
     <q-btn
       flat
       stretch
@@ -50,40 +54,58 @@
       >删除
       </q-tooltip>
     </q-btn>
-    <q-btn
-      stretch
-      flat
-      @click="editPostById"
-    >
-      <span style="white-space:nowrap">
-        分类：
-        {{categories.length?'':'无'}}
-        <q-badge
-          v-for="(item,key) in categories"
-          :key="key"
-          color="primary"
-          text-color="white"
-          :label="item"
-        />
-      </span>
-    </q-btn>
-    <q-btn
-      stretch
-      flat
-      @click="editPostById"
-    >
-      <span style="white-space:nowrap">
-        标签：
-        {{tags.length?'':'无'}}
-        <q-badge
-          v-for="(item,key) in tags"
-          :key="key"
-          color="primary"
-          text-color="white"
-          :label="item"
-        />
-      </span>
-    </q-btn>
+    <template v-if="!isPage">
+      <q-btn
+        stretch
+        flat
+        @click="editPostById"
+      >
+        <span style="white-space:nowrap">
+          分类：
+          {{categories.length?'':'无'}}
+          <q-badge
+            v-for="(item,key) in categories"
+            :key="key"
+            color="primary"
+            text-color="white"
+            :label="item"
+          />
+        </span>
+      </q-btn>
+      <q-btn
+        stretch
+        flat
+        @click="editPostById"
+      >
+        <span style="white-space:nowrap">
+          标签：
+          {{tags.length?'':'无'}}
+          <q-badge
+            v-for="(item,key) in tags"
+            :key="key"
+            color="primary"
+            text-color="white"
+            :label="item"
+          />
+        </span>
+      </q-btn>
+    </template>
+    <template v-else>
+      <q-btn
+        stretch
+        flat
+        @click="editPostById"
+      >
+        <span style="white-space:nowrap">
+          PATH：
+          <q-badge
+            color="primary"
+            text-color="white"
+            :label="article.path"
+          />
+        </span>
+      </q-btn>
+    </template>
   </div>
 </template>
 
@@ -102,6 +124,9 @@ export default {
     },
     id () {
       return this.$route.query.id
+    },
+    isPage () {
+      return this.article.layout === 'page'
     },
     // externals
     ...mapState({

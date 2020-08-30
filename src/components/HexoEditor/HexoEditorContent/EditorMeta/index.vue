@@ -4,6 +4,19 @@
     v-if="article"
   >
     <meta-title title="详细信息"></meta-title>
+    <q-item
+      dense
+      v-if="isPage"
+    >
+      <q-item-section avatar>
+        PATH
+      </q-item-section>
+      <q-item-section>
+        <q-item-label>
+          {{article.path}}
+        </q-item-label>
+      </q-item-section>
+    </q-item>
     <date-editor
       label="发布"
       :date="article.date"
@@ -53,6 +66,11 @@ export default {
     TagEditor,
     CategoryEditor,
     DateEditor
+  },
+  computed: {
+    isPage () {
+      return this.article.layout === 'page'
+    }
   }
 }
 </script>
