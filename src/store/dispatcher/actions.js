@@ -113,18 +113,19 @@ const actions = {
     logger.log('addPostByDefault')
     try {
       if (!rootGetters['editorCore/isPostSaved']) {
-        await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          const { type, data } = await dialogService.create(DialogTypes.NewPostDialog)
-          if (type === 'ok') {
-            await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { force: true, options: data })
-            resolve()
-          }
+        const { type } = await dialogService.create(DialogTypes.ConfirmDialog, {
+          message: '要离开么，未保存的文件会丢失',
+          okLabel: '离开',
+          okColor: 'red',
+          cancelLabel: '返回',
+          cancelColor: 'primary',
+          focus: 'cancel'
         })
-      } else {
-        const { type, data } = await dialogService.create(DialogTypes.NewPostDialog)
-        if (type === 'ok') {
-          await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { data })
-        }
+        if (type !== 'ok') return
+      }
+      const { type, data } = await dialogService.create(DialogTypes.NewPostDialog)
+      if (type === 'ok') {
+        await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { data })
       }
     } catch (err) {
       if (process.env.DEV)logger.warn(err)

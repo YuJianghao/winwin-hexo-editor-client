@@ -16,20 +16,44 @@ class DialogService {
   }
 
   async create (name, opt) {
-    return this._dialogs[name].dialog(opt)
+    return new Promise((resolve, reject) => {
+      return this._dialogs[name].dialog(opt, resolve, reject)
+    })
   }
 }
 const dialogService = new DialogService()
 
-dialogService.registerDialog(DialogTypes.NewPostDialog, () => {
-  return new Promise(resolve => {
-    Dialog.create({
-      component: NewPostDialog
-    })
-      .onOk(e => resolve({ type: 'ok', data: e }))
-      .onCancel(e => resolve({ type: 'cancel', data: e }))
-      .onDismiss(e => resolve({ type: 'dismiss', data: e }))
+dialogService.registerDialog(DialogTypes.NewPostDialog, (opt, resolve) => {
+  Dialog.create({
+    component: NewPostDialog
   })
+    .onOk(e => resolve({ type: 'ok', data: e }))
+    .onCancel(e => resolve({ type: 'cancel', data: e }))
+    .onDismiss(e => resolve({ type: 'dismiss', data: e }))
+})
+
+dialogService.registerDialog(DialogTypes.ConfirmDialog, (opt, resolve) => {
+  // ensure options
+  const config = {
+    title: opt.title || '确认',
+    message: opt.message,
+    ok: {
+      label: opt.okLabel || '确定',
+      color: opt.okColor || 'primary',
+      flat: true
+    },
+    cancel: {
+      label: opt.cancelLabel || '返回',
+      color: opt.cancelColor || 'grey',
+      flat: true
+    },
+    focus: opt.focus
+  }
+
+  Dialog.create(config)
+    .onOk(e => resolve({ type: 'ok', data: e }))
+    .onCancel(e => resolve({ type: 'cancel', data: e }))
+    .onDismiss(e => resolve({ type: 'dismiss', data: e }))
 })
 
 export default dialogService
