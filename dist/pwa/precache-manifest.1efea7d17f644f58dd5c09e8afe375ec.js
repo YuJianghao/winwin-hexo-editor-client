@@ -12,7 +12,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/5.a4e9c4c7.css"
   },
   {
-    "revision": "1ab60fa3c56aed121cec",
+    "revision": "8fc5391e8d2ed2217814",
     "url": "css/app.543f640c.css"
   },
   {
@@ -60,7 +60,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/hexo-editor-logo.de328791.png"
   },
   {
-    "revision": "408f8399677ffea722a3fb68f82d39e1",
+    "revision": "2e094c5643343fbdb8a3eaff4100ed1b",
     "url": "index.html"
   },
   {
@@ -80,8 +80,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/6.815cfbb3.js"
   },
   {
-    "revision": "1ab60fa3c56aed121cec",
-    "url": "js/app.5fb3c475.js"
+    "revision": "8fc5391e8d2ed2217814",
+    "url": "js/app.ee41ebba.js"
   },
   {
     "revision": "81764f61c34f09d19414",
