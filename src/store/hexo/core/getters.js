@@ -9,7 +9,13 @@ export function isPostSaved (state) {
 // ============
 
 export function dataPostsCount (state) {
-  return dataPostsList(state).length
+  return dataPostsList(state).filter(item => item.layout !== 'page' && item.published).length
+}
+export function dataDraftsCount (state) {
+  return dataPostsList(state).filter(item => item.layout !== 'page' && !item.published).length
+}
+export function dataPagesCount (state) {
+  return dataPostsList(state).filter(item => item.layout === 'page').length
 }
 export function dataPostsList (state) {
   return objectToList(state.data.articles)

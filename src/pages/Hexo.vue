@@ -9,7 +9,9 @@
         slot="content"
         :categoriesList="categoriesList"
         :tagsList="tagsList"
-        :postsCount="articlesCount"
+        :postsCount="postsCount"
+        :draftsCount="draftsCount"
+        :pagesCount="pagesCount"
         :unCategoriesCount="categoriesCount"
       ></hexo-nav-list-content>
     </bar-content-layout>
@@ -89,7 +91,9 @@ export default {
     }),
     ...mapGetters({
       tagsList: 'hexoCore/dataTagsList',
-      articlesCount: 'hexoCore/dataPostsCount',
+      postsCount: 'hexoCore/dataPostsCount',
+      draftsCount: 'hexoCore/dataDraftsCount',
+      pagesCount: 'hexoCore/dataPagesCount',
       categoriesCount: 'hexoCore/dataUnCategoriesCount',
       categoriesList: 'hexoCore/dataCategoriesList'
     })
