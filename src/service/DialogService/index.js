@@ -1,7 +1,7 @@
 import { objectHasKey } from 'src/utils/object'
 import { Dialog } from 'quasar'
 import NewPostDialog from './components/NewPostDialog'
-import * as DialogTypes from 'src/service/DialogService/dialog-types'
+import * as dialogTypes from 'src/service/DialogService/dialog-types'
 
 class DialogService {
   constructor () {
@@ -23,7 +23,7 @@ class DialogService {
 }
 const dialogService = new DialogService()
 
-dialogService.registerDialog(DialogTypes.NewPostDialog, (opt, resolve) => {
+dialogService.registerDialog(dialogTypes.NewPostDialog, (opt, resolve) => {
   Dialog.create({
     component: NewPostDialog
   })
@@ -32,7 +32,7 @@ dialogService.registerDialog(DialogTypes.NewPostDialog, (opt, resolve) => {
     .onDismiss(e => resolve({ type: 'dismiss', data: e }))
 })
 
-dialogService.registerDialog(DialogTypes.ConfirmDialog, (opt, resolve) => {
+dialogService.registerDialog(dialogTypes.ConfirmDialog, (opt, resolve) => {
   // ensure options
   const config = {
     title: opt.title || '确认',
