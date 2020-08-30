@@ -34,7 +34,7 @@ export default async ({ router, app, store }) => {
     // isLoggedIn true   /home   next
     //            false  next    /login
     if (isLoggedIn ^ toLogin) {
-      if (isFirst) await store.dispatch(actionTypes.init)
+      if (isLoggedIn && isFirst) await store.dispatch(actionTypes.init)
       if (Object.keys(to.query).includes('mode') && !to.query.id) {
         const str = replaceQuery(to.fullPath, undefined, ['mode'])
         next({

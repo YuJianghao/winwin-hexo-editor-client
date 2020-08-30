@@ -71,6 +71,18 @@ All kinds of PR are welcomed, including crazy change!
 
 ## Release Note
 
+### 0.5.3
+
+- 修复路由bug,again*2
+
+### 0.5.2
+
+- 修复路由bug,again
+
+### 0.5.1
+
+- 修复路由bug
+
 ### 0.5.0
 
 #### 功能更新
