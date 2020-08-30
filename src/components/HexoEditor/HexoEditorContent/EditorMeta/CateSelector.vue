@@ -110,7 +110,7 @@ export default {
     },
     availableCategories () {
       const ac = []
-      ac.push.apply(ac, this.editorCoreDataCategoriesNameList)
+      ac.push.apply(ac, this.hexoCoreDataCategoriesNameList)
       this.categories.forEach(pc => {
         if (!ac.includes(pc)) { ac.push(pc) }
       })
@@ -118,7 +118,7 @@ export default {
     },
     // externals
     ...mapGetters({
-      editorCoreDataCategoriesNameList: 'editorCore/dataCategoriesNameList'
+      hexoCoreDataCategoriesNameList: 'hexoCore/dataCategoriesNameList'
     })
   },
   methods: {

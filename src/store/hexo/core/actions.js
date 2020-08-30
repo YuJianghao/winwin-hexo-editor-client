@@ -2,7 +2,7 @@ import * as mutationTypes from './mutation-types'
 import * as actionTypes from './action-types'
 
 import { Logger } from 'src/utils/logger'
-const logger = new Logger({ prefix: 'EditorCore/Actions' })
+const logger = new Logger({ prefix: 'hexoCore/Actions' })
 
 // services
 import * as postService from 'src/service/post'

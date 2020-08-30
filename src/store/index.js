@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import dispatcher from './dispatcher'
-import globalUser from './globalUser'
-import editorUi from './editorUi'
-import editorCore from './editorCore'
-import editorSearch from './editorSearch'
+import user from './user'
+import { core, ui, search } from './hexo'
 
 // import example from './module-example'
 
@@ -27,11 +25,10 @@ export default function (/* { ssrContext } */) {
     mutations,
     modules: {
       dispatcher,
-      editorUi,
-      editorCore,
-      editorSearch,
-      globalUser
-      // example
+      hexoUi: ui,
+      hexoCore: core,
+      hexoSearch: search,
+      user
     },
 
     // enable strict mode (adds overhead!)

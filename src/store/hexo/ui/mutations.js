@@ -1,11 +1,6 @@
 import { Logger } from 'src/utils/logger'
-const logger = new Logger({ prefix: 'EditorUI/Mutations' })
-// import { Dialog } from 'quasar'
+const logger = new Logger({ prefix: 'hexoUi/Mutations' })
 
-/*
-export function someMutation (state) {
-}
-*/
 export function init (state) {
   state.full = false
   hideLoading(state)

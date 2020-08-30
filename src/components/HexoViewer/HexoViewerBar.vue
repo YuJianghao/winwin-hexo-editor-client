@@ -102,12 +102,12 @@ export default {
     },
     // externals
     ...mapState({
-      published: state => state.editorCore.data.article.published,
-      isFullscreen: state => state.editorUi.full
+      published: state => state.hexoCore.data.article.published,
+      isFullscreen: state => state.hexoUi.full
     }),
     ...mapGetters({
-      tags: 'editorCore/dataPostTagsList',
-      categories: 'editorCore/dataPostCategoriesList'
+      tags: 'hexoCore/dataPostTagsList',
+      categories: 'hexoCore/dataPostCategoriesList'
     })
   },
   methods: {

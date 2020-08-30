@@ -19,14 +19,14 @@ export default {
   },
   computed: {
     post () {
-      return this.editorCoreData.article
+      return this.hexoCoreData.article
     },
     title () {
       return `# ${this.post.title}\n`
     },
     // externals
     ...mapState({
-      editorCoreData: state => state.editorCore.data
+      hexoCoreData: state => state.hexoCore.data
     })
   },
   methods: {

@@ -134,9 +134,9 @@ export default {
       return this.$route.query.id
     },
     ...mapState({
-      categories: state => state.editorCore.data.categories,
-      tags: state => state.editorCore.data.tags,
-      articles: state => state.editorCore.data.articles
+      categories: state => state.hexoCore.data.categories,
+      tags: state => state.hexoCore.data.tags,
+      articles: state => state.hexoCore.data.articles
     })
   },
   methods: {
