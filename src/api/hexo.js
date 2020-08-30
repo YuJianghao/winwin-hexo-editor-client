@@ -68,6 +68,10 @@ function factory (opts) {
       if (!id) throw new Error('id(post id) is required')
       return request.delete(fullUrl('/post/' + id))
     },
+    deletePage: async (id) => {
+      if (!id) throw new Error('id(post id) is required')
+      return request.delete(fullUrl('/page/' + id))
+    },
     publishPost: async (id) => {
       if (!id) throw new Error('id(post id) is required')
       return request.post(fullUrl('/post/' + id + '/publish'))

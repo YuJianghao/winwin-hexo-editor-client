@@ -83,6 +83,7 @@ const actions = {
       if (article.categories) await dispatch('loadCategories')
       if (article.tags) await dispatch('loadTags')
       commit(mutationTypes.loadArticle, article)
+      commit(mutationTypes.setLoading, false)
       redirect(replaceQuery(window.location.href, { mode: 'edit', id: article._id }))
     } catch (err) {
       throw replaceErrorMessage(err, '新文章创建成功，但数据更新失败，请手动刷新')
@@ -207,7 +208,8 @@ const actions = {
     const validId = getValidId(state, _id, force)
     checkSaved(state, force)
     try {
-      await postService.deleteArticleById(validId)
+      const isPage = state.data.article.layout === 'page'
+      await postService.deleteArticleById(validId, isPage)
     } catch (err) {
       throw replaceErrorMessage(err, '删除失败，请稍后再试')
     }
