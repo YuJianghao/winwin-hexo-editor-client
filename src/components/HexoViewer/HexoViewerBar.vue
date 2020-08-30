@@ -27,6 +27,7 @@
       :icon="published?'close':'publish'"
       :color="published?'red':'primary'"
       @click="onPublish"
+      v-if="!isPage"
     >
       <q-tooltip
         content-style="font-size: 14px"
@@ -36,6 +37,22 @@
         self="center middle"
       >
         {{published?'取消发布':'发布'}}
+      </q-tooltip>
+    </q-btn>
+    <q-btn
+      flat
+      stretch
+      color="primary"
+      icon="edit"
+      @click="editPostById"
+    >
+      <q-tooltip
+        content-style="font-size: 14px"
+        transition-show="none"
+        transition-hide="none"
+        anchor="bottom middle"
+        self="center middle"
+      >编辑
       </q-tooltip>
     </q-btn>
     <q-btn

@@ -23,6 +23,7 @@
       :icon="published?'close':'publish'"
       :color="published?'red':'primary'"
       @click="onPublish"
+      v-if="!isPage"
     >
       <q-tooltip
         content-style="font-size: 14px"
@@ -92,6 +93,9 @@ export default {
         'min-height': '35px',
         'min-width': '100%'
       }
+    },
+    isPage () {
+      return this.article.layout === 'page'
     },
     // externals
     ...mapState({
