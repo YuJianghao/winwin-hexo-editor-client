@@ -1,6 +1,5 @@
 
 // import { date } from 'quasar'
-import { confirmDialog, newPostDialog } from 'src/utils/dialog'
 import message from 'src/utils/message'
 import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'Dispatcher' })
@@ -9,6 +8,8 @@ import * as actionTypes from './action-types'
 import * as editorCoreActionTypes from '../editorCore/action-types'
 import { debounce } from 'quasar'
 import { redirect, replaceQuery } from 'src/utils/url'
+import dialogService from 'src/service/DialogService'
+import * as dialogTypes from 'src/service/DialogService/dialog-types'
 
 // 用户相关
 
@@ -21,11 +22,17 @@ const actions = {
   [actionTypes.logout]: async ({ rootGetters, commit, dispatch }) => {
     logger.log('logout')
     if (!rootGetters['editorCore/isPostSaved']) {
-      await confirmDialog(null, '要退出么，未保存的文件会丢失', '退出', 'red', '返回', 'primary', 'cancel', async resolve => {
-        await dispatch('destroy')
-        commit('globalUser/logout')
-        resolve()
+      const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+        message: '要退出么，未保存的文件会丢失',
+        okLabel: '退出',
+        okColor: 'red',
+        cancelLabel: '返回',
+        cancelColor: 'primary',
+        focus: 'cancel'
       })
+      if (type !== 'ok') return
+      await dispatch('destroy')
+      commit('globalUser/logout')
     } else {
       await dispatch('destroy')
       commit('globalUser/logout')
@@ -87,10 +94,16 @@ const actions = {
       (_id && (_id !== rootGetters['editorCore/dataPostId']))
     try {
       if (requestSave) {
-        await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          await dispatch('viewPostById', { _id, force: true })
-          resolve()
+        const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+          message: '要退出么，未保存的文件会丢失',
+          okLabel: '退出',
+          okColor: 'red',
+          cancelLabel: '返回',
+          cancelColor: 'primary',
+          focus: 'cancel'
         })
+        if (type !== 'ok') return
+        await dispatch('viewPostById', { _id, force: true })
       } else {
         const href = replaceQuery(window.location.href, { mode: 'view', id: _id })
         if (href !== window.location.href) redirect(href)
@@ -111,18 +124,22 @@ const actions = {
     logger.log('addPostByDefault')
     try {
       if (!rootGetters['editorCore/isPostSaved']) {
-        await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          newPostDialog(async (options) => {
-            await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { force: true, options })
-            resolve()
-          })
+        const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+          message: '要离开么，未保存的文件会丢失',
+          okLabel: '离开',
+          okColor: 'red',
+          cancelLabel: '返回',
+          cancelColor: 'primary',
+          focus: 'cancel'
         })
-      } else {
-        await newPostDialog(async (options) => {
-          await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { options })
-        })
+        if (type !== 'ok') return
+      }
+      const { type, data } = await dialogService.create(dialogTypes.NewPostDialog)
+      if (type === 'ok') {
+        await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { data })
       }
     } catch (err) {
+      if (process.env.DEV)logger.warn(err)
       if (err.status === 401) return
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '新建失败', caption: err.message })
@@ -139,16 +156,22 @@ const actions = {
     const post = rootState.editorCore.data.articles[_id || rootState.editorCore.data.article._id]
     const message = `你确认要删除《${post.title}》么？`
     // if (post.date)message += `（最后编辑于${date.formatDate(post.date, 'YYYY年MM月DD日 HH:mm:ss')}）`
-    return confirmDialog('删除确认', message, '删除', 'red', null, 'primary', 'cancel', async resolve => {
-      try {
-        await dispatch('editorCore/' + editorCoreActionTypes.deleteArticleById, { _id })
-      } catch (err) {
-        if (err.name === 'AsyncRaceAbort') return
-        message.error({ message: '删除失败', caption: err.message })
-      } finally {
-        resolve()
-      }
+
+    const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+      title: '删除确认',
+      message,
+      okLabel: '删除',
+      okColor: 'red',
+      cancelColor: 'primary',
+      focus: 'cancel'
     })
+    if (type !== 'ok') return
+    try {
+      await dispatch('editorCore/' + editorCoreActionTypes.deleteArticleById, { _id })
+    } catch (err) {
+      if (err.name === 'AsyncRaceAbort') return
+      message.error({ message: '删除失败', caption: err.message })
+    }
   },
 
   /**
@@ -165,10 +188,16 @@ const actions = {
       (_id && (_id !== rootGetters['editorCore/dataPostId']))
     try {
       if (requestSave) {
-        await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          await dispatch(actionTypes.editPostById, { _id, force: true })
-          resolve()
+        const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+          message: '要退出么，未保存的文件会丢失',
+          okLabel: '退出',
+          okColor: 'red',
+          cancelLabel: '返回',
+          cancelColor: 'primary',
+          focus: 'cancel'
         })
+        if (type !== 'ok') return
+        await dispatch(actionTypes.editPostById, { _id, force: true })
       } else {
         const href = replaceQuery(window.location.href, { mode: 'edit', id: _id })
         if (href !== window.location.href) redirect(href)
@@ -193,10 +222,16 @@ const actions = {
     const force = payload.force || false
     try {
       if (!force && !rootGetters['editorCore/isPostSaved']) {
-        await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          await dispatch(actionTypes.publishPostById, { _id, force: true })
-          resolve()
+        const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+          message: '要退出么，未保存的文件会丢失',
+          okLabel: '退出',
+          okColor: 'red',
+          cancelLabel: '返回',
+          cancelColor: 'primary',
+          focus: 'cancel'
         })
+        if (type !== 'ok') return
+        await dispatch(actionTypes.publishPostById, { _id, force: true })
       } else {
         await dispatch('editorCore/' + editorCoreActionTypes.publishPostById, { _id, force })
       }
@@ -216,15 +251,26 @@ const actions = {
     const force = payload.force || false
     try {
       if (!force && !rootGetters['editorCore/isPostSaved']) {
-        await confirmDialog(null, '你确认要取消发布么？未保存的文件会丢失', '继续取消发布', 'red', '返回', 'primary', 'cancel', async resolve => {
-          await dispatch(actionTypes.unpublishPostById, { _id, force: true })
-          resolve()
+        const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+          message: '你确认要取消发布么？未保存的文件会丢失',
+          okLabel: '继续取消发布',
+          okColor: 'red',
+          cancelLabel: '返回',
+          cancelColor: 'primary',
+          focus: 'cancel'
         })
+        if (type !== 'ok') return
+        await dispatch(actionTypes.unpublishPostById, { _id, force: true })
       } else {
-        await confirmDialog(null, '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更', '取消发布', 'red', null, 'primary', 'cancel', async resolve => {
-          await dispatch('editorCore/' + editorCoreActionTypes.unpublishPostById, { _id, force })
-          resolve()
+        const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+          message: '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更',
+          okLabel: '取消发布',
+          okColor: 'red',
+          cancelColor: 'primary',
+          focus: 'cancel'
         })
+        if (type !== 'ok') return
+        await dispatch('editorCore/' + editorCoreActionTypes.unpublishPostById, { _id, force })
       }
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
@@ -242,20 +288,22 @@ const actions = {
 
   [actionTypes.deploy]: async ({ commit, dispatch }) => {
     logger.log('deploy')
-    await confirmDialog(null, '确定部署博客么？', null, null, null, null, 'ok', async resolve => {
-      try {
-        commit('editorUi/showLoading', { message: '正在部署', delay: 100 })
-        await dispatch('editorCore/' + editorCoreActionTypes.deploy)
-        message.success({ message: '部署完成' })
-      } catch (err) {
-        if (err.status === 503) err.message = '请配置`hexo deploy`命令'
-        if (err.name === 'AsyncRaceAbort') return
-        message.error({ message: '部署失败', caption: err.message })
-      } finally {
-        commit('editorUi/hideLoading')
-        resolve()
-      }
+    const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+      message: '确定部署博客么？',
+      focus: 'ok'
     })
+    if (type !== 'ok') return
+    try {
+      commit('editorUi/showLoading', { message: '正在部署', delay: 100 })
+      await dispatch('editorCore/' + editorCoreActionTypes.deploy)
+      message.success({ message: '部署完成' })
+    } catch (err) {
+      if (err.status === 503) err.message = '请配置`hexo deploy`命令'
+      if (err.name === 'AsyncRaceAbort') return
+      message.error({ message: '部署失败', caption: err.message })
+    } finally {
+      commit('editorUi/hideLoading')
+    }
   },
 
   [actionTypes.generate]: async ({ commit, dispatch }) => {
@@ -288,20 +336,26 @@ const actions = {
 
   [actionTypes.syncGit]: async ({ commit, dispatch }) => {
     logger.log('syncGit')
-    await confirmDialog(null, '确定从git同步么？未保存到git的文件将丢失', '放弃文件并同步', 'red', '返回', 'primary', 'cancel', async resolve => {
-      try {
-        commit('editorUi/showLoading', { message: '正在从GIT同步', delay: 100 })
-        await dispatch('editorCore/' + editorCoreActionTypes.syncGit)
-        message.success({ message: '同步完成' })
-      } catch (err) {
-        if (err.status === 503) err.message = '请配置Git命令'
-        if (err.name === 'AsyncRaceAbort') return
-        message.error({ message: '同步失败', caption: err.message })
-      } finally {
-        commit('editorUi/hideLoading')
-        resolve()
-      }
+    const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+      message: '确定从git同步么？未保存到git的文件将丢失',
+      okLabel: '放弃文件并同步',
+      okColor: 'red',
+      cancelLabel: '返回',
+      cancelColor: 'primary',
+      focus: 'cancel'
     })
+    if (type !== 'ok') return
+    try {
+      commit('editorUi/showLoading', { message: '正在从GIT同步', delay: 100 })
+      await dispatch('editorCore/' + editorCoreActionTypes.syncGit)
+      message.success({ message: '同步完成' })
+    } catch (err) {
+      if (err.status === 503) err.message = '请配置Git命令'
+      if (err.name === 'AsyncRaceAbort') return
+      message.error({ message: '同步失败', caption: err.message })
+    } finally {
+      commit('editorUi/hideLoading')
+    }
   },
 
   [actionTypes.saveGit]: async ({ commit, dispatch }) => {
