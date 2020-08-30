@@ -33,11 +33,18 @@
     >
       <q-item-section>
         <q-item-label class="ellipsis">
-          <q-badge
+          <q-icon
+            name="insert_drive_file"
             :color="selected?'grey-8':'grey'"
             class="q-mr-xs"
-            v-if="!post.published"
-          >草稿</q-badge>
+            v-if="post.layout==='page'"
+          />
+          <q-icon
+            name="drafts"
+            :color="selected?'grey-8':'grey'"
+            class="q-mr-xs"
+            v-else-if="!post.published"
+          />
           <span
             class="text-bold q-pr-lg"
             :class="selected?'text-primary':'text-grey-10'"
