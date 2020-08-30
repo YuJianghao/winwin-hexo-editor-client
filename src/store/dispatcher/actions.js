@@ -1,6 +1,6 @@
 
 // import { date } from 'quasar'
-import { confirmDialog, newPostDialog } from 'src/utils/dialog'
+import { confirmDialog } from 'src/utils/dialog'
 import message from 'src/utils/message'
 import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'Dispatcher' })
@@ -9,6 +9,8 @@ import * as actionTypes from './action-types'
 import * as editorCoreActionTypes from '../editorCore/action-types'
 import { debounce } from 'quasar'
 import { redirect, replaceQuery } from 'src/utils/url'
+import dialogService from 'src/service/DialogService'
+import * as DialogTypes from 'src/service/DialogService/dialog-types'
 
 // 用户相关
 
@@ -112,17 +114,20 @@ const actions = {
     try {
       if (!rootGetters['editorCore/isPostSaved']) {
         await confirmDialog(null, '要离开么，未保存的文件会丢失', '离开', 'red', '返回', 'primary', 'cancel', async resolve => {
-          newPostDialog(async (options) => {
-            await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { force: true, options })
+          const { type, data } = await dialogService.create(DialogTypes.NewPostDialog)
+          if (type === 'ok') {
+            await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { force: true, options: data })
             resolve()
-          })
+          }
         })
       } else {
-        await newPostDialog(async (options) => {
-          await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { options })
-        })
+        const { type, data } = await dialogService.create(DialogTypes.NewPostDialog)
+        if (type === 'ok') {
+          await dispatch('editorCore/' + editorCoreActionTypes.addArticleBase, { data })
+        }
       }
     } catch (err) {
+      if (process.env.DEV)logger.warn(err)
       if (err.status === 401) return
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '新建失败', caption: err.message })
