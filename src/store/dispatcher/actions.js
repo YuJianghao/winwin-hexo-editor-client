@@ -31,12 +31,9 @@ const actions = {
         focus: 'cancel'
       })
       if (type !== 'ok') return
-      await dispatch('destroy')
-      commit('user/logout')
-    } else {
-      await dispatch('destroy')
-      commit('user/logout')
     }
+    await dispatch('destroy')
+    commit('user/logout')
   },
 
   // 组件生命周期相关

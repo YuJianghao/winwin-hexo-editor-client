@@ -1,5 +1,5 @@
 <template>
-  <div class="row" style="max-height:35px;flex-wrap: nowrap">
+  <div class="row" style="max-height:35px;flex-wrap: nowrap" v-if="article">
     <q-btn
       flat
       stretch
@@ -102,6 +102,7 @@ export default {
     },
     // externals
     ...mapState({
+      article: state => state.hexoCore.data.article,
       published: state => state.hexoCore.data.article.published,
       isFullscreen: state => state.hexoUi.full
     }),

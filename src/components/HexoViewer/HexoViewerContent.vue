@@ -1,8 +1,9 @@
 <template>
     <markdown-previewer
+    v-if="article"
       class="fit"
-      :title="post.title"
-      :content="post._content"
+      :title="article.title"
+      :content="article._content"
       @on-edit="editPostById"
     ></markdown-previewer>
 </template>
@@ -18,15 +19,12 @@ export default {
     MarkdownPreviewer
   },
   computed: {
-    post () {
-      return this.hexoCoreData.article
-    },
     title () {
-      return `# ${this.post.title}\n`
+      return `# ${this.article.title}\n`
     },
     // externals
     ...mapState({
-      hexoCoreData: state => state.hexoCore.data
+      article: state => state.hexoCore.data.article
     })
   },
   methods: {
