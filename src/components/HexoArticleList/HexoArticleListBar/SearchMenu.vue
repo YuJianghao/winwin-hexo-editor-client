@@ -34,7 +34,19 @@
         @click="viewPostById(item._id)"
       >
         <q-item-section>
-          <q-item-label class="text-bold">{{articles[item._id].title}}</q-item-label>
+          <q-item-label class="text-bold">
+            <q-icon
+              name="insert_drive_file"
+              color="grey'"
+              class="q-mr-xs"
+              v-if="articles[item._id].layout==='page'"
+            />
+            <q-icon
+              name="drafts"
+              color="grey'"
+              class="q-mr-xs"
+              v-else-if="!articles[item._id].published"
+            />{{articles[item._id].title}}</q-item-label>
           <q-item-label
             caption
             class="ellipsis-3-lines"

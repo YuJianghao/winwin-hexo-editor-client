@@ -45,17 +45,32 @@ function factory (opts) {
     addPost: async (options) => {
       return request.post(fullUrl('/post'), options)
     },
+    addPage: async (options) => {
+      return request.post(fullUrl('/page'), options)
+    },
     getPost: async (id) => {
       if (!id) throw new Error('id(post id) is required')
       return request.get(fullUrl('/post/' + id))
+    },
+    getPage: async (id) => {
+      if (!id) throw new Error('id(post id) is required')
+      return request.get(fullUrl('/page/' + id))
     },
     updatePost: async (id, post) => {
       if (!id) throw new Error('id(post id) is required')
       return request.put(fullUrl('/post/' + id), post)
     },
+    updatePage: async (id, post) => {
+      if (!id) throw new Error('id(post id) is required')
+      return request.put(fullUrl('/page/' + id), post)
+    },
     deletePost: async (id) => {
       if (!id) throw new Error('id(post id) is required')
       return request.delete(fullUrl('/post/' + id))
+    },
+    deletePage: async (id) => {
+      if (!id) throw new Error('id(post id) is required')
+      return request.delete(fullUrl('/page/' + id))
     },
     publishPost: async (id) => {
       if (!id) throw new Error('id(post id) is required')
@@ -92,6 +107,9 @@ function factory (opts) {
       } else {
         return request.get(fullUrl(`/search?q=${q}`))
       }
+    },
+    getRestrictedKeys: async () => {
+      return request.get(fullUrl('/restrictedkeys'))
     },
     _action: async (name) => {
       return request.post(fullUrl('/' + name))

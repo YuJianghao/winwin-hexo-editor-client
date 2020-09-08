@@ -140,6 +140,7 @@
 import { mapActions } from 'vuex'
 import { getDatetimeStringNoSec } from 'src/utils/post'
 import * as actionTypes from 'src/store/dispatcher/action-types'
+import { postCategoriesRaw2Array2d } from 'src/utils/common'
 export default {
   name: 'PostContextMenu',
   props: {
@@ -159,9 +160,7 @@ export default {
         ? [this.contextMenuArticle.tags] : this.contextMenuArticle.tags
     },
     categories () {
-      if (!this.contextMenuArticle.categories) return []
-      return typeof this.contextMenuArticle.categories === 'string'
-        ? [this.contextMenuArticle.categories] : this.contextMenuArticle.categories
+      return postCategoriesRaw2Array2d(this.contextMenuArticle.categories)[0]
     },
     show () {
       return this.id && this.contextMenuArticle

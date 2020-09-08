@@ -41,6 +41,8 @@ const actions = {
   async [actionTypes.init] ({ commit, dispatch }) {
     commit(mutationTypes.setReady, true)
     await dispatch(actionTypes.loadAll)
+    const { post, page } = await hexoService.getRestrictedKeys()
+    commit(mutationTypes.setRestrictedkeys, { post, page })
     commit(mutationTypes.setLoading, true)
   },
 
@@ -74,7 +76,8 @@ const actions = {
       const defaultOpt = {
         title: '新文章'
       }
-      article = await postService.addArticle(Object.assign(defaultOpt, payload.options))
+      console.log(payload.options)
+      article = await postService.addArticle(Object.assign(defaultOpt, payload.options), payload.options.layout === 'page')
     } catch (err) {
       throw replaceErrorMessage(err, '新建文章失败，请稍后再试')
     }
@@ -83,7 +86,8 @@ const actions = {
       if (article.categories) await dispatch('loadCategories')
       if (article.tags) await dispatch('loadTags')
       commit(mutationTypes.loadArticle, article)
-      redirect(replaceQuery(window.location.href, { id: article._id }))
+      commit(mutationTypes.setLoading, false)
+      redirect(replaceQuery(window.location.href, { mode: 'edit', id: article._id }))
     } catch (err) {
       throw replaceErrorMessage(err, '新文章创建成功，但数据更新失败，请手动刷新')
     }
@@ -106,6 +110,8 @@ const actions = {
   async [actionTypes.loadArticles] ({ commit }) {
     try {
       const articles = await postService.getArticleList()
+
+      // TODO:如果post和page的_id重复了就会报错
       commit(mutationTypes.loadArticles, listToObject(articles))
     } catch (err) {
       throw replaceErrorMessage(err, '文章列表获取失败，请稍后再试')
@@ -144,7 +150,9 @@ const actions = {
   */
   async [actionTypes.saveArticle] ({ state, dispatch, commit }) {
     try {
-      await postService.saveArticle(state.data.article)
+      const isPage = state.data.article.layout === 'page'
+      const article = Object.assign({}, state.data.article)
+      await postService.saveArticle(article, isPage)
       commit(mutationTypes.saveArticle)
     } catch (err) {
       throw replaceErrorMessage(err, '保存失败，请稍后再试')
@@ -181,7 +189,8 @@ const actions = {
       window.setTimeout(_ => {
         if (!finished) { commit(mutationTypes.setLoading, true) }
       }, 100)
-      const article = await postService.getArticleById(validId)
+      const isPage = state.data.articles[validId].layout === 'page'
+      const article = await postService.getArticleById(validId, isPage)
       commit(mutationTypes.loadArticle, article)
     } catch (err) {
       throw replaceErrorMessage(err, '文章获取失败，请稍后或刷新后再试')
@@ -203,7 +212,8 @@ const actions = {
     const validId = getValidId(state, _id, force)
     checkSaved(state, force)
     try {
-      await postService.deleteArticleById(validId)
+      const isPage = state.data.article.layout === 'page'
+      await postService.deleteArticleById(validId, isPage)
     } catch (err) {
       throw replaceErrorMessage(err, '删除失败，请稍后再试')
     }
@@ -228,8 +238,9 @@ const actions = {
     checkSaved(state, force)
     let post
     try {
+      const needReloadArticle = state.data.article && validId === state.data.article._id
       post = await hexoService.publishPost(validId)
-      commit(mutationTypes.loadArticle, post)
+      if (needReloadArticle)commit(mutationTypes.loadArticle, post)
     } catch (err) {
       throw replaceErrorMessage(err, '文章发布失败，请稍后再试')
     }
@@ -254,8 +265,9 @@ const actions = {
     checkSaved(state, force)
     let post
     try {
+      const needReloadArticle = state.data.article && validId === state.data.article._id
       post = await hexoService.unpublishPost(validId)
-      commit(mutationTypes.loadArticle, post)
+      if (needReloadArticle)commit(mutationTypes.loadArticle, post)
     } catch (err) {
       throw replaceErrorMessage(err, '取消发布失败，请稍后再试')
     }

@@ -5,9 +5,9 @@
   >
     <q-card class="q-dialog-plugin">
       <q-card-section>
-        <div class="text-h6">新建文章</div>
+        <div class="text-h6">新建{{isPage?'页面':'文章'}}</div>
       </q-card-section>
-      <q-separator/>
+      <q-separator />
       <q-card-section>
         <q-input
           v-model="title"
@@ -16,20 +16,39 @@
           stack-label
           @keyup="title=title.trimLeft()"
         />
-        <q-input
-          v-model="slug"
-          type="text"
-          :label="slugLabel"
-          :disable="useRandomSlug"
-          ref="slug"
-          stack-label
-          @keyup="slug=slug.trimLeft()"
-        />
+        <template v-if="!isPage">
+          <q-input
+            v-model="slug"
+            type="text"
+            :label="slugLabel"
+            :disable="useRandomSlug"
+            ref="slug"
+            stack-label
+            @keyup="slug=slug.trimLeft()"
+          />
+        </template>
+        <template v-if="isPage">
+          <q-input
+            v-model="path"
+            type="text"
+            label="path（必填且不可更改）"
+            ref="path"
+            stack-label
+            @keyup="path=path.trimLeft()"
+          />
+        </template>
         <q-toggle
-          v-model="useRandomSlug"
-          :label="useRandomSlug?'随机slug':'默认slug'"
+          v-model="isPage"
+          :label="isPage?'新页面':'新文章'"
           left-label
         />
+        <template v-if="!isPage">
+          <q-toggle
+            v-model="useRandomSlug"
+            :label="useRandomSlug?'随机slug':'默认slug'"
+            left-label
+          />
+        </template>
       </q-card-section>
 
       <!-- 按钮示例 -->
@@ -59,7 +78,9 @@ export default {
     return {
       title: '',
       slug: '',
-      useRandomSlug: true
+      path: '',
+      useRandomSlug: true,
+      isPage: false
     }
   },
   props: {
@@ -76,6 +97,10 @@ export default {
   },
   computed: {
     valideOptions () {
+      if (this.isPage) {
+        if (!this.path.trim()) return false
+        return true
+      }
       if (this.useRandomSlug) return true
       if (!this.title.trim()) return false
       if (this.slug === '') return true
@@ -83,7 +108,10 @@ export default {
       return false
     },
     titleLabel () {
-      return `标题（${this.useRandomSlug ? '可选' : '必填'}）`
+      let str = '标题'
+      if (this.isPage)str += '（可选）'
+      else if (this.useRandomSlug)str += '（可选）'
+      return str
     },
     slugLabel () {
       return `slug${this.useRandomSlug ? '' : '（可选）'}`
@@ -114,7 +142,12 @@ export default {
       // 是必需的
       const options = {}
       if (this.title.trim()) options.title = this.title.trim()
-      if (this.slug.trim()) options.slug = this.slug.trim()
+      if (!this.isPage) {
+        if (this.slug.trim()) options.slug = this.slug.trim()
+      } else {
+        options.layout = 'page'
+        options.path = this.path
+      }
       this.$emit('ok', options)
       // 或带有有效负载：this.$emit('ok', { ... })
 

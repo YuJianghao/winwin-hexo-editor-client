@@ -34,3 +34,8 @@ export async function search (q, size) {
   const res = await hexo.search(q, size)
   return res.data
 }
+
+export async function getRestrictedKeys () {
+  const res = await hexo.getRestrictedKeys()
+  return res.data.restrictedKeys
+}
