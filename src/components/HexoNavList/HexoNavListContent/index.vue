@@ -84,10 +84,29 @@
         >
           <category-item
             label="全部"
-            :badge="postsCount"
+            :badge="articleCount"
             @on-click="filterByAll"
             :selected="selectedAll"
           ></category-item>
+          <category-item
+            label="文章"
+            :badge="postsCount"
+            @on-click="filterByPost"
+            :selected="selectedPost"
+          ></category-item>
+          <category-item
+            label="草稿"
+            :badge="draftsCount"
+            @on-click="filterByDraft"
+            :selected="selectedDraft"
+          ><q-icon class="q-ml-xs" :class="selectedDraft?'':'text-grey'" name="drafts" /></category-item>
+          <category-item
+            label="页面"
+            :badge="pagesCount"
+            @on-click="filterByPages"
+            :selected="selectedPages"
+          ><q-icon class="q-ml-xs" :class="selectedPages?'':'text-grey'" name="insert_drive_file" /></category-item>
+          <q-separator spaced />
           <category-tree
             :nodes="categoriesTreeList"
             node_key="_id"
@@ -145,7 +164,15 @@ export default {
       type: Array,
       default: () => []
     },
+    pagesCount: {
+      type: Number,
+      default: 0
+    },
     postsCount: {
+      type: Number,
+      default: 0
+    },
+    draftsCount: {
       type: Number,
       default: 0
     },
@@ -165,6 +192,9 @@ export default {
     TagItem
   },
   computed: {
+    articleCount () {
+      return this.postsCount + this.draftsCount + this.pagesCount
+    },
     toolbarStyle () {
       return {
         'min-height': '36px',
@@ -192,9 +222,21 @@ export default {
       return ltt.GetTree() || []
     },
     selectedAll () {
-      return !this.selectedUncategoriezed &&
-      !this.selectedCategoriesId &&
-      !this.selectedTagsId
+      return !this.selectedPost &&
+      !this.selectedDraft &&
+        !this.selectedPages &&
+        !this.selectedUncategoriezed &&
+        !this.selectedCategoriesId &&
+        !this.selectedTagsId
+    },
+    selectedPost () {
+      return this.$route.query.filterBy === 'posts'
+    },
+    selectedDraft () {
+      return this.$route.query.filterBy === 'drafts'
+    },
+    selectedPages () {
+      return this.$route.query.filterBy === 'pages'
     },
     selectedUncategoriezed () {
       return this.$route.query.filterBy === 'uncategorized'
@@ -228,9 +270,27 @@ export default {
       }
       this.routeToQuery(query)
     },
+    async filterByPost () {
+      const query = {
+        filterBy: 'posts'
+      }
+      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
+    },
+    async filterByDraft () {
+      const query = {
+        filterBy: 'drafts'
+      }
+      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
+    },
     async filterByAll () {
       const query = {
         filterBy: 'all'
+      }
+      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
+    },
+    async filterByPages () {
+      const query = {
+        filterBy: 'pages'
       }
       this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
     },

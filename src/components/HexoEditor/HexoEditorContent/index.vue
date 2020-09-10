@@ -63,6 +63,9 @@ export default {
     }
   },
   computed: {
+    isPage () {
+      return this.article.layout === 'page'
+    },
     inputStyle () {
       return {
         'font-size': this.titleSize + 'rem',

@@ -3,10 +3,10 @@
     class="fit"
     v-if="articleList"
   >
-    <q-list>
+    <q-list style="user-select:none">
       <q-item v-if="empty">
         <q-item-section>
-          <q-item-label>没有文章</q-item-label>
+          <q-item-label>没有内容</q-item-label>
         </q-item-section>
       </q-item>
       <list-item
@@ -63,9 +63,7 @@ export default {
       return this.articleList.length === 0
     },
     filterBy () {
-      const by = this.$route.query.filterBy
-      if (['all', 'categories', 'tags', 'uncategorized'].includes(by)) return by
-      return 'all'
+      return this.$route.query.filterBy
     },
     filterId () {
       return this.$route.query.filterId
@@ -90,6 +88,15 @@ export default {
       // filter
       const allArticles = objectToList(this.articles)
       switch (this.filterBy) {
+        case 'posts':
+          articles = allArticles.filter(article => article.layout !== 'page' && article.published)
+          break
+        case 'pages':
+          articles = allArticles.filter(article => article.layout === 'page')
+          break
+        case 'drafts':
+          articles = allArticles.filter(article => article.layout !== 'page' && !article.published)
+          break
         case 'categories':
           articles = (() => {
             const category = this.categories[this.filterId]

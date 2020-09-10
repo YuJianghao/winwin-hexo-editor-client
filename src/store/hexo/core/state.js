@@ -11,6 +11,10 @@ export default function () {
       lastSavedAt: null,
       loading: true,
       ready: false
+    },
+    restrictedkeys: {
+      post: [],
+      page: []
     }
   }
 }

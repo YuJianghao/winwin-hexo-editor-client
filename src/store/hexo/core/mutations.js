@@ -78,6 +78,11 @@ const mutations = {
 
   [mutationTypes.setReady] (state, ready) {
     state.status.ready = ready
+  },
+
+  [mutationTypes.setRestrictedkeys] (state, { post, page }) {
+    state.restrictedkeys.post = post
+    state.restrictedkeys.page = page
   }
 }
 export default mutations
