@@ -162,7 +162,6 @@ import CategoryItem from './CategoryItem'
 import TagItem from './TagItem'
 import CategoryTree from './CategoryTree'
 import { stringSort } from 'src/utils/common'
-import { query2String, extendQuery } from 'src/utils/url'
 import { mapMutations, mapState } from 'vuex'
 
 import * as filterMutationTypes from 'src/store/hexo/filter/mutation-types'
@@ -271,10 +270,6 @@ export default {
   methods: {
     uniqueRouterPush (fullPath) {
       if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
-    },
-    routeToQuery (q) {
-      const fullPath = `${this.$route.path}?${query2String(extendQuery(this.$route.query, q))}`
-      this.uniqueRouterPush(fullPath)
     },
     async filterByCategoriesId (_id) {
       this.setFilter({ by: filterByType.CATEGORIES, id: _id })
