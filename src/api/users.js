@@ -8,7 +8,7 @@ const logger = new Logger({ prefix: 'request/users' })
 const users = {
   getLoginToken: async (name, pass) => {
     logger.log('getLoginToken')
-    const data = await request.get('/token/', {
+    const data = await request.post('/auth/token', {
       auth: {
         username: name,
         password: pass
@@ -20,23 +20,23 @@ const users = {
   },
   refreshToken: async () => {
     logger.log('refreshToken')
-    const data = await refresh.get('/token/refresh')
+    const data = await refresh.post('/auth/refresh')
     saveLoginToken(data.data.token)
     return data
   },
   listAPIKEY: async () => {
     logger.log('listAPIKEY')
-    const data = await request.get('/token/apikeys')
+    const data = await request.get('/auth/apikeys')
     return data.data.apikeys
   },
   requestAPIKEY: async () => {
     logger.log('requestAPIKEY')
-    const data = await request.post('/token/apikey')
+    const data = await request.post('/auth/apikeytoken')
     return data.data.token
   },
   removeAPIKEY: async (issuedAt) => {
     logger.log('requestAPIKEY')
-    return request.delete('/token/apikey', { data: { issuedAt } })
+    return request.delete('/auth/apikey', { data: { issuedAt } })
   }
 }
 
