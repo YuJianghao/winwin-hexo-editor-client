@@ -154,6 +154,11 @@ export default {
       return this.$store.state.user.isLoggedIn
     }
   },
+  watch: {
+    showPanel (v) {
+      if (v) this.refreshAPIKEYS()
+    }
+  },
   methods: {
     formatDate (d) {
       return date.formatDate(new Date(d), 'YYYY年M月D日 H:mm') || '无'
@@ -171,7 +176,12 @@ export default {
       await this.refreshAPIKEYS()
     },
     async refreshAPIKEYS () {
-      this.apikeys = await apis.users.listAPIKEY()
+      if (!this.isLoggedIn) return
+      try {
+        this.apikeys = await apis.users.listAPIKEY()
+      } catch (_) {
+        this.apikeys = []
+      }
     }
   },
   async created () {

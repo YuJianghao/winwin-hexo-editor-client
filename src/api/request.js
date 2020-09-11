@@ -76,13 +76,16 @@ request.interceptors.response.use((res) => {
   if (err.response) {
     err.response.message = err.response.data.message
     err.code = err.response.status
+    err.message = err.response.message
     if (err.response.status === 401) {
-      logger.log('access token expire')
-      await users.refreshToken()
-      err.config.url = err.config.url.slice(err.config.baseURL.length)
-      return request(err.config)
+      if (err.config.headers.Authorization && err.config.headers.Authorization.indexOf('Basic') === -1) {
+        logger.log('access token expire')
+        await users.refreshToken()
+        err.config.url = err.config.url.slice(err.config.baseURL.length)
+        return request(err.config)
+      }
+      err.message = '用户名或密码错误'
     }
-    return Promise.reject(err)
   }
   return Promise.reject(err)
 })
