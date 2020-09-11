@@ -99,13 +99,25 @@
             :badge="draftsCount"
             @on-click="filterByDraft"
             :selected="selectedDraft"
-          ><q-icon class="q-ml-xs" :class="selectedDraft?'':'text-grey'" name="drafts" /></category-item>
+          >
+            <q-icon
+              class="q-ml-xs"
+              :class="selectedDraft?'':'text-grey'"
+              name="drafts"
+            />
+          </category-item>
           <category-item
             label="页面"
             :badge="pagesCount"
             @on-click="filterByPages"
             :selected="selectedPages"
-          ><q-icon class="q-ml-xs" :class="selectedPages?'':'text-grey'" name="insert_drive_file" /></category-item>
+          >
+            <q-icon
+              class="q-ml-xs"
+              :class="selectedPages?'':'text-grey'"
+              name="insert_drive_file"
+            />
+          </category-item>
           <q-separator spaced />
           <category-tree
             :nodes="categoriesTreeList"
@@ -150,9 +162,12 @@ import CategoryItem from './CategoryItem'
 import TagItem from './TagItem'
 import CategoryTree from './CategoryTree'
 import { stringSort } from 'src/utils/common'
-import { query2String, extendQuery } from 'src/utils/url'
+import { mapMutations, mapState } from 'vuex'
 
-import * as actionTypes from 'src/store/dispatcher/action-types'
+import * as filterMutationTypes from 'src/store/hexo/filter/mutation-types'
+import * as filterByType from 'src/store/hexo/filter/by-types'
+import DispatcherService from 'src/service/DispatcherService'
+
 export default {
   name: 'HexoNavList',
   props: {
@@ -223,98 +238,78 @@ export default {
     },
     selectedAll () {
       return !this.selectedPost &&
-      !this.selectedDraft &&
+        !this.selectedDraft &&
         !this.selectedPages &&
         !this.selectedUncategoriezed &&
         !this.selectedCategoriesId &&
         !this.selectedTagsId
     },
     selectedPost () {
-      return this.$route.query.filterBy === 'posts'
+      return this.filterBy === filterByType.POSTS
     },
     selectedDraft () {
-      return this.$route.query.filterBy === 'drafts'
+      return this.filterBy === filterByType.DRAFTS
     },
     selectedPages () {
-      return this.$route.query.filterBy === 'pages'
+      return this.filterBy === filterByType.PAGES
     },
     selectedUncategoriezed () {
-      return this.$route.query.filterBy === 'uncategorized'
+      return this.filterBy === filterByType.UNCATEGORIZED
     },
     selectedCategoriesId () {
-      return this.$route.query.filterBy === 'categories' ? this.$route.query.filterId : null
+      return this.filterBy === filterByType.CATEGORIES ? this.filterId : null
     },
     selectedTagsId () {
-      return this.$route.query.filterBy === 'tags' ? this.$route.query.filterId : null
-    }
+      return this.filterBy === filterByType.TAGS ? this.filterId : null
+    },
+    ...mapState('hexoFilter', {
+      filterBy: state => state.by,
+      filterId: state => state.id
+    })
   },
   methods: {
     uniqueRouterPush (fullPath) {
       if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
     },
-    routeToQuery (q) {
-      const fullPath = `${this.$route.path}?${query2String(extendQuery(this.$route.query, q))}`
-      this.uniqueRouterPush(fullPath)
-    },
     async filterByCategoriesId (_id) {
-      const query = {
-        filterBy: 'categories',
-        filterId: _id
-      }
-      this.routeToQuery(query)
+      this.setFilter({ by: filterByType.CATEGORIES, id: _id })
     },
     async filterByTagsId (_id) {
-      const query = {
-        filterBy: 'tags',
-        filterId: _id
-      }
-      this.routeToQuery(query)
+      this.setFilter({ by: filterByType.TAGS, id: _id })
     },
     async filterByPost () {
-      const query = {
-        filterBy: 'posts'
-      }
-      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
+      this.setFilter({ by: filterByType.POSTS })
     },
     async filterByDraft () {
-      const query = {
-        filterBy: 'drafts'
-      }
-      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
+      this.setFilter({ by: filterByType.DRAFTS })
     },
     async filterByAll () {
-      const query = {
-        filterBy: 'all'
-      }
-      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
+      this.setFilter({ by: filterByType.ALL })
     },
     async filterByPages () {
-      const query = {
-        filterBy: 'pages'
-      }
-      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
+      this.setFilter({ by: filterByType.PAGES })
     },
     async filterByUnCategorized () {
-      const query = {
-        filterBy: 'uncategorized'
-      }
-      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, query, ['filterId']))}`)
+      this.setFilter({ by: filterByType.UNCATEGORIZED })
     },
     async deploy () {
-      this.$store.dispatch(actionTypes.deploy)
+      DispatcherService.deploy()
     },
     async clean () {
-      this.$store.dispatch(actionTypes.clean)
+      DispatcherService.clean()
     },
     async generate () {
-      this.$store.dispatch(actionTypes.generate)
+      DispatcherService.generate()
     },
     async syncGit () {
-      this.$store.dispatch(actionTypes.syncGit)
+      DispatcherService.syncGit()
     },
     async saveGit () {
-      this.$store.dispatch(actionTypes.saveGit)
-    }
+      DispatcherService.saveGit()
+    },
+    ...mapMutations('hexoFilter', {
+      setFilter: filterMutationTypes.SET_FILTER
+    })
   }
 }
 </script>

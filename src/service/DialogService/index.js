@@ -1,4 +1,4 @@
-import { objectHasKey } from 'src/utils/object'
+import { objectHasKey } from 'src/utils/common'
 import { Dialog } from 'quasar'
 import NewPostDialog from './components/NewPostDialog'
 import * as dialogTypes from 'src/service/DialogService/dialog-types'

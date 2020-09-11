@@ -137,10 +137,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import { getDatetimeStringNoSec } from 'src/utils/post'
-import * as actionTypes from 'src/store/dispatcher/action-types'
 import { postCategoriesRaw2Array2d } from 'src/utils/common'
+import DispatcherService from 'src/service/DispatcherService'
 export default {
   name: 'PostContextMenu',
   props: {
@@ -177,30 +176,25 @@ export default {
   },
   methods: {
     onAdd () {
-      this.$store.dispatch(actionTypes.addPostByDefault)
+      DispatcherService.addPostByDefault()
       // TODO 需要处理新建文章的分类逻辑
     },
     onView () {
-      this.$store.dispatch(actionTypes.viewPostById, { _id: this.id })
+      DispatcherService.viewPostById(this.id)
     },
     onEdit () {
-      this.$store.dispatch(actionTypes.editPostById, { _id: this.id })
+      DispatcherService.editPostById(this.id)
     },
     onPublish () {
       if (this.published) {
-        this.unpublishPostById({ _id: this.id })
+        DispatcherService.unpublishPostById(this.id)
       } else {
-        this.publishPostById({ _id: this.id })
+        DispatcherService.publishPostById(this.id)
       }
     },
     onDelete () {
-      this.$store.dispatch(actionTypes.deletePostById, { _id: this.id })
-    },
-    // externals
-    ...mapActions([
-      'publishPostById',
-      'unpublishPostById'
-    ])
+      DispatcherService.deletePostById(this.id)
+    }
   }
 }
 </script>

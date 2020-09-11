@@ -4,11 +4,10 @@ import { saveLoginToken, saveRefreshToken } from '../utils/storage'
 
 import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'request/users' })
-
 const users = {
   getLoginToken: async (name, pass) => {
     logger.log('getLoginToken')
-    const data = await request.post('/auth/token', {
+    const data = await request.post('/auth/token', {}, {
       auth: {
         username: name,
         password: pass

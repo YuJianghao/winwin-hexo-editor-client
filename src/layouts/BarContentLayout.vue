@@ -1,5 +1,5 @@
 <template>
-  <div class="fit column">
+  <div class="fit column relative-position">
     <q-scroll-area
       class="col full-width bg-grey-2"
       style="flex:0 0 36px;border-bottom:1px solid rgba(0, 0, 0, 0.12)"
@@ -34,6 +34,7 @@
     >
       <slot name="content" />
     </div>
+    <slot/>
   </div>
 </template>
 

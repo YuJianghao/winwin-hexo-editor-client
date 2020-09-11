@@ -5,8 +5,38 @@ const routes = [
     redirect: '/home',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: 'home', component: () => import('pages/Hexo.vue') },
-      { path: 'login', component: () => import('pages/Login.vue') }
+      {
+        path: 'home',
+        component: () => import('pages/Hexo.vue'),
+        children: [
+          {
+            path: 'edit/:id',
+            name: 'edit',
+            component: () => import('components/HexoEditor/index.vue')
+          },
+          {
+            path: 'view/:id',
+            name: 'view',
+            component: () => import('components/HexoViewer/index.vue')
+          },
+          {
+            path: 'welcome',
+            component: () => import('components/HexoWelcome.vue')
+          },
+          {
+            path: '',
+            redirect: 'welcome'
+          },
+          {
+            path: '*',
+            redirect: 'welcome'
+          }
+        ]
+      },
+      {
+        path: 'login',
+        component: () => import('pages/Login.vue')
+      }
     ]
   }
 ]

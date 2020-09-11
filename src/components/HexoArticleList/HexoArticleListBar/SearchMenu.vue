@@ -69,7 +69,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import * as actionTypes from 'src/store/dispatcher/action-types'
+import DispatcherService from 'src/service/DispatcherService'
 export default {
   name: 'SearchMenu',
   props: {
@@ -108,10 +108,10 @@ export default {
   methods: {
     search () {
       this.showResult = true
-      this.$store.dispatch(actionTypes.search, { q: this.q })
+      DispatcherService.search(this.q)
     },
     viewPostById (_id) {
-      this.$store.dispatch(actionTypes.viewPostById, { _id })
+      DispatcherService.viewPostById(_id)
     }
   }
 }

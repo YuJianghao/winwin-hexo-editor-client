@@ -1,4 +1,3 @@
-import { Logger } from 'src/utils/logger'
 import pinyin from 'pinyin'
 export function objectToList (obj) {
   return Object.keys(obj).map(key => obj[key])
@@ -35,26 +34,28 @@ export function postCategoriesRaw2Array2d (categories) {
   }
 }
 
-export function isEmptyObject (obj) {
-  return Object.keys(obj).length === 0
-}
-
-export function replaceErrorMessage (err, message) {
-  if (process.env.DEV) {
-    new Logger({ prefix: 'Utils/common/error' }).warn(err)
-    err.message += message + err.code
-  } else {
-    err.message = err.code + ':' + message
-  }
-  return err
-}
-
 export function stringSort (strA, strB) {
   const valueA = pinyin(strA, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
   const valueB = pinyin(strB, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
   return valueA > valueB ? 1 : -1
 }
-
 export function isOverflow (el) {
   return el.clientWidth < el.scrollWidth
+}
+
+export function objectHasKey (obj, key) {
+  return Object.keys(obj).includes(key)
+}
+
+/**
+ * Force reloading window regardless of "Confirm before reload" setting.
+ * This is handy for certain cases, for example Last.fm connect/disconnect.
+ */
+export const forceReloadWindow = () => {
+  if (window.__UNIT_TESTING__) {
+    return
+  }
+
+  window.onbeforeunload = () => { }
+  window.location.reload()
 }

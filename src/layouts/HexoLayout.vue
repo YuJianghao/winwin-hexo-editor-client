@@ -20,36 +20,13 @@
           unit="px"
           @input="onArticleListTabResize"
         >
-          <template
-            v-slot:before
-          >
+          <template v-slot:before>
             <slot name="article-list" />
           </template>
           <template v-slot:after>
             <div class="fit row">
-              <div
-                class="col full-height"
-                v-if="show.editor"
-              >
-                <slot name="editor" />
-              </div>
-              <div
-                class="col full-height"
-                v-if="show.viewer"
-              >
-                <slot name="viewer" />
-              </div>
-              <div
-                class="col full-height"
-                v-if="show.welcome"
-              >
-                <slot name="welcome" />
-              </div>
-              <div
-                class="col full-height"
-                v-if="show.loading"
-              >
-                <slot name="loading" />
+              <div class="col full-height">
+                <router-view />
               </div>
             </div>
           </template>
@@ -85,14 +62,6 @@ export default {
     }
   },
   computed: {
-    show () {
-      const obj = {}
-      obj.editor = this.$route.query.mode === 'edit' && this.$route.query.id && !this.loading
-      obj.viewer = this.$route.query.mode === 'view' && this.$route.query.id && !this.loading
-      obj.loading = ['edit', 'view'].includes(this.$route.query.mode) && this.$route.query.id && this.loading
-      obj.welcome = !obj.editor && !obj.viewer && !obj.loading
-      return obj
-    },
     ...mapState({
       showLoading: state => state.hexoUi.loading.show,
       full: state => state.hexoUi.full,
