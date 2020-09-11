@@ -36,7 +36,7 @@
           flat
           stretch
           icon="book"
-          v-show="!isLoginPage&&$route.path.indexOf('welcome')===-1"
+          v-show="!isLoginPage&&$route.path.indexOf('home')===-1"
           :to="{name:'welcome'}"
         >
           <q-tooltip
