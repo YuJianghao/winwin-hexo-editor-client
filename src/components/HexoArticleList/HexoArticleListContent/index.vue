@@ -34,11 +34,10 @@
 
 <script>
 import { mapState } from 'vuex'
-import pinyin from 'pinyin'
 
 import ListItemContextMenu from './ListItemContextMenu'
 import ListItem from './ListItem'
-import { objectToList } from 'src/utils/common'
+import { objectToList, stringSort } from 'src/utils/common'
 import * as filterByType from 'src/store/hexo/filter/by-types'
 import DispatcherService from 'src/service/DispatcherService'
 
@@ -108,11 +107,10 @@ export default {
 
       articles = articles.sort((a, b) => {
         if (typeof a[this.sortBy] === 'undefined') return -1
-        let valueA = a[this.sortBy]
-        let valueB = b[this.sortBy]
+        const valueA = a[this.sortBy]
+        const valueB = b[this.sortBy]
         if (typeof valueA === 'string') {
-          valueA = pinyin(valueA, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
-          valueB = pinyin(valueB, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
+          return stringSort(valueA, valueB) * (this.sortDirection ? 1 : -1)
         }
         return (valueA > valueB ^ !this.sortDirection) ? 1 : -1
       })
