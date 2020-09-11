@@ -25,6 +25,7 @@ export default async ({ router, app, store }) => {
     }
     if (!app.store.state.user.inited) {
       app.store.commit('user/init')
+      await app.store.dispatch('user/info')
     }
     const isLoggedIn = app.store.state.user.isLoggedIn
     const toLogin = to.path === '/login'

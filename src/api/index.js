@@ -1,6 +1,7 @@
 import hexo from './hexo'
 import users from './users'
 import info from './info'
+import settings from './settings'
 import { request } from './request'
 
 const apis = {
@@ -9,7 +10,8 @@ const apis = {
     axios: request
   }),
   users,
-  info
+  info,
+  settings
 }
 
 export default apis

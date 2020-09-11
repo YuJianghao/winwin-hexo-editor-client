@@ -14,14 +14,58 @@
         <q-toolbar-title>
           Hexo Editor
         </q-toolbar-title>
-          <hexo-devices></hexo-devices>
+        <hexo-devices></hexo-devices>
         <q-btn
-          class="q-ml-md"
+          icon="settings"
+          v-show="!isLoginPage&&$route.path.indexOf('settings')===-1"
+          flat
+          stretch
+          :to="{name:'settings'}"
+        >
+          <q-tooltip
+            content-style="font-size: 14px"
+            transition-show="none"
+            transition-hide="none"
+            anchor="bottom middle"
+            self="center middle"
+          >
+            设置
+          </q-tooltip>
+        </q-btn>
+        <q-btn
+          flat
+          stretch
+          icon="book"
+          v-show="!isLoginPage&&$route.path.indexOf('welcome')===-1"
+          :to="{name:'welcome'}"
+        >
+          <q-tooltip
+            content-style="font-size: 14px"
+            transition-show="none"
+            transition-hide="none"
+            anchor="bottom middle"
+            self="center middle"
+          >
+            编辑博客
+          </q-tooltip>
+        </q-btn>
+        <q-btn
           v-show="!isLoginPage"
           flat
-          label="退出"
+          icon="logout"
+          stretch
           @click="onLogout"
-        />
+        >
+          <q-tooltip
+            content-style="font-size: 14px"
+            transition-show="none"
+            transition-hide="none"
+            anchor="bottom middle"
+            self="center middle"
+          >
+            退出
+          </q-tooltip>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
