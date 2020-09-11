@@ -3,6 +3,7 @@
 import * as actionTypes from './action-types'
 import dialogService from 'src/service/DialogService'
 import * as dialogTypes from 'src/service/DialogService/dialog-types'
+import DispatcherService from 'src/service/DispatcherService'
 
 // 用户相关
 
@@ -23,7 +24,7 @@ const actions = {
       })
       if (type !== 'ok') return
     }
-    await dispatch('destroy')
+    await DispatcherService.destory()
     commit('user/logout')
   }
 }
