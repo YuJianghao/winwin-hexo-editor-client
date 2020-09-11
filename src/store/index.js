@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import dispatcher from './dispatcher'
 import user from './user'
-import { core, ui, search } from './hexo'
+import { core, ui, search, filter } from './hexo'
 import createLogger from 'vuex/dist/logger'
 
 // import example from './module-example'
@@ -37,6 +37,7 @@ export default function (/* { ssrContext } */) {
       hexoUi: ui,
       hexoCore: core,
       hexoSearch: search,
+      hexoFilter: filter,
       user
     },
     plugins,
