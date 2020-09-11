@@ -45,7 +45,7 @@ export default {
   },
   data () {
     return {
-      dateModel: date.formatDate(new Date(this.date), 'YYYY-MM-DD HH:mm:ss')
+      dateModel: null
     }
   },
   computed: {
@@ -56,13 +56,19 @@ export default {
   },
   watch: {
     date (v) {
-      this.dateModel = date.formatDate(new Date(v), 'YYYY-MM-DD HH:mm:ss')
+      this.format(v)
     }
   },
   methods: {
+    format (v) {
+      this.dateModel = date.formatDate(v ? new Date(v) : new Date(), 'YYYY-MM-DD HH:mm:ss')
+    },
     onBeforeHide () {
       this.$emit('on-change', new Date(this.dateModel).getTime())
     }
+  },
+  mounted () {
+    this.format(this.date)
   }
 }
 </script>

@@ -20,6 +20,7 @@
     <date-editor
       label="发布"
       :date="article.date"
+      v-if="article.published"
       @on-change="e=>$emit('on-date-update', e)"
     ></date-editor>
     <template v-if="article.layout!=='page'">
