@@ -8,7 +8,11 @@
 </template>
 
 <script>
+import dispatcherService from './service/DispatcherService'
 export default {
-  name: 'App'
+  name: 'App',
+  mounted () {
+    dispatcherService.setContext(this)
+  }
 }
 </script>

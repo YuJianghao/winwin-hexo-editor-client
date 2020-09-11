@@ -128,7 +128,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import * as actionTypes from 'src/store/dispatcher/action-types'
+import DispatcherService from 'src/service/DispatcherService'
 export default {
   name: 'HexoPostViewerBar',
   computed: {
@@ -158,19 +158,19 @@ export default {
   },
   methods: {
     async editPostById () {
-      this.$store.dispatch(actionTypes.editPostById, { _id: this.id })
+      DispatcherService.editPostById(this.id)
     },
     async publishPostById () {
-      this.$store.dispatch(actionTypes.publishPostById, { _id: this.id })
+      DispatcherService.publishPostById(this.id)
     },
     async unpublishPostById () {
-      this.$store.dispatch(actionTypes.unpublishPostById, { _id: this.id })
+      DispatcherService.unpublishPostById(this.id)
     },
     async toggleFull () {
-      this.$store.dispatch(actionTypes.toggleFull)
+      DispatcherService.toggleFull()
     },
     async deletePostById () {
-      this.$store.dispatch(actionTypes.deletePostById, { _id: this.id })
+      DispatcherService.deletePostById(this.id)
     },
     onPublish () {
       this.published ? this.unpublishPostById() : this.publishPostById()

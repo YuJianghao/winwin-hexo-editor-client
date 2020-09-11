@@ -38,9 +38,9 @@ import pinyin from 'pinyin'
 
 import ListItemContextMenu from './ListItemContextMenu'
 import ListItem from './ListItem'
-import * as actionTypes from 'src/store/dispatcher/action-types'
 import { objectToList } from 'src/utils/common'
 import * as filterByType from 'src/store/hexo/filter/by-types'
+import DispatcherService from 'src/service/DispatcherService'
 
 export default {
   name: 'HexoPostsList',
@@ -119,7 +119,7 @@ export default {
       return articles
     },
     id () {
-      return this.$route.query.id
+      return this.$route.params.id
     },
     ...mapState({
       categories: state => state.hexoCore.data.categories,
@@ -145,13 +145,27 @@ export default {
       this.finalize(reset, 1)
     },
     viewPostById (_id) {
-      this.$store.dispatch(actionTypes.viewPostById, { _id })
+      if (this.$route.name !== 'view' || this.$route.params.id !== _id) {
+        this.$router.push({
+          name: 'view',
+          params: {
+            id: _id
+          }
+        })
+      }
     },
     editPostById (_id) {
-      this.$store.dispatch(actionTypes.editPostById, { _id })
+      if (this.$route.name !== 'edit' || this.$route.params.id !== _id) {
+        this.$router.push({
+          name: 'edit',
+          params: {
+            id: _id
+          }
+        })
+      }
     },
     deletePostById (_id) {
-      this.$store.dispatch(actionTypes.deletePostById, { _id })
+      DispatcherService.deletePostById(_id)
     },
     finalize (reset, duration) {
       this.timer = setTimeout(() => {
