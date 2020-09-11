@@ -40,6 +40,8 @@ import ListItemContextMenu from './ListItemContextMenu'
 import ListItem from './ListItem'
 import * as actionTypes from 'src/store/dispatcher/action-types'
 import { objectToList } from 'src/utils/common'
+import * as filterByType from 'src/store/hexo/filter/by-types'
+
 export default {
   name: 'HexoPostsList',
   components: {
@@ -62,42 +64,21 @@ export default {
     empty () {
       return this.articleList.length === 0
     },
-    filterBy () {
-      return this.$route.query.filterBy
-    },
-    filterId () {
-      return this.$route.query.filterId
-    },
-    sortBy () {
-      const by = this.$route.query.sortBy
-      if (['title', 'date'].includes(by)) return by
-      return 'date'
-    },
-    sortAscend () {
-      switch (this.$route.query.sortAscend) {
-        case 'true':
-          return true
-        case 'false':
-          return false
-        default :
-          return false
-      }
-    },
     articleList () {
       let articles = []
       // filter
       const allArticles = objectToList(this.articles)
       switch (this.filterBy) {
-        case 'posts':
+        case filterByType.POSTS:
           articles = allArticles.filter(article => article.layout !== 'page' && article.published)
           break
-        case 'pages':
+        case filterByType.PAGES:
           articles = allArticles.filter(article => article.layout === 'page')
           break
-        case 'drafts':
+        case filterByType.DRAFTS:
           articles = allArticles.filter(article => article.layout !== 'page' && !article.published)
           break
-        case 'categories':
+        case filterByType.CATEGORIES:
           articles = (() => {
             const category = this.categories[this.filterId]
             if (category && allArticles.length > 0) {
@@ -107,7 +88,7 @@ export default {
             }
           })()
           break
-        case 'tags':
+        case filterByType.TAGS:
           articles = (() => {
             const tag = this.tags[this.filterId]
             if (tag && allArticles.length > 0) {
@@ -117,7 +98,7 @@ export default {
             }
           })()
           break
-        case 'uncategorized':
+        case filterByType.UNCATEGORIZED:
           articles = allArticles.filter(article => !article.categories)
           break
         default:
@@ -133,7 +114,7 @@ export default {
           valueA = pinyin(valueA, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
           valueB = pinyin(valueB, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
         }
-        return valueA > valueB ^ !this.sortAscend ? 1 : -1
+        return (valueA > valueB ^ !this.sortDirection) ? 1 : -1
       })
       return articles
     },
@@ -144,6 +125,14 @@ export default {
       categories: state => state.hexoCore.data.categories,
       tags: state => state.hexoCore.data.tags,
       articles: state => state.hexoCore.data.articles
+    }),
+    ...mapState('hexoFilter', {
+      filterBy: state => state.by,
+      filterId: state => state.id
+    }),
+    ...mapState('hexoSorter', {
+      sortBy: state => state.by,
+      sortDirection: state => state.direction
     })
   },
   methods: {

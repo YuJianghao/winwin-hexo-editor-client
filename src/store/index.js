@@ -2,7 +2,13 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import dispatcher from './dispatcher'
 import user from './user'
-import { core, ui, search } from './hexo'
+import {
+  core,
+  ui,
+  search,
+  filter,
+  sorter
+} from './hexo'
 import createLogger from 'vuex/dist/logger'
 
 // import example from './module-example'
@@ -16,7 +22,9 @@ const plugins = process.env.DEV ? [createLogger({
   logActions: true,
   logMutations: true,
   filter (mutation) {
-    return mutation.type.indexOf('hexoUi/') === 0
+    return mutation.type.indexOf('hexoUi/') === 0 ||
+      mutation.type.indexOf('hexoFilter/') === 0 ||
+      mutation.type.indexOf('hexoSorter/') === 0
   }
 })] : []
 /*
@@ -37,6 +45,8 @@ export default function (/* { ssrContext } */) {
       hexoUi: ui,
       hexoCore: core,
       hexoSearch: search,
+      hexoFilter: filter,
+      hexoSorter: sorter,
       user
     },
     plugins,
