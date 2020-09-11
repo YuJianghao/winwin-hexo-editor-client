@@ -34,16 +34,11 @@ export function postCategoriesRaw2Array2d (categories) {
   }
 }
 
-export function isEmptyObject (obj) {
-  return Object.keys(obj).length === 0
-}
-
 export function stringSort (strA, strB) {
   const valueA = pinyin(strA, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
   const valueB = pinyin(strB, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
   return valueA > valueB ? 1 : -1
 }
-
 export function isOverflow (el) {
   return el.clientWidth < el.scrollWidth
 }
