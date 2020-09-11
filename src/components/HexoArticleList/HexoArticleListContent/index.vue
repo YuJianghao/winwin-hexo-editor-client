@@ -64,21 +64,6 @@ export default {
     empty () {
       return this.articleList.length === 0
     },
-    sortBy () {
-      const by = this.$route.query.sortBy
-      if (['title', 'date'].includes(by)) return by
-      return 'date'
-    },
-    sortAscend () {
-      switch (this.$route.query.sortAscend) {
-        case 'true':
-          return true
-        case 'false':
-          return false
-        default :
-          return false
-      }
-    },
     articleList () {
       let articles = []
       // filter
@@ -129,7 +114,7 @@ export default {
           valueA = pinyin(valueA, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
           valueB = pinyin(valueB, { style: pinyin.STYLE_NORMAL }).join('').toLowerCase()
         }
-        return valueA > valueB ^ !this.sortAscend ? 1 : -1
+        return (valueA > valueB ^ !this.sortDirection) ? 1 : -1
       })
       return articles
     },
@@ -144,6 +129,10 @@ export default {
     ...mapState('hexoFilter', {
       filterBy: state => state.by,
       filterId: state => state.id
+    }),
+    ...mapState('hexoSorter', {
+      sortBy: state => state.by,
+      sortDirection: state => state.direction
     })
   },
   methods: {
