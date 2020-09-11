@@ -98,9 +98,9 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import SearchMenu from './SearchMenu'
-import * as actionTypes from 'src/store/dispatcher/action-types'
 import * as sorterByTypes from 'src/store/hexo/sorter/by-types'
 import * as sorterMutationTypes from 'src/store/hexo/sorter/mutation-types'
+import DispatcherService from 'src/service/DispatcherService'
 export default {
   name: 'HexoPostsListBar',
   components: {
@@ -146,10 +146,10 @@ export default {
       if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
     },
     async addPostByDefault () {
-      this.$store.dispatch(actionTypes.addPostByDefault)
+      DispatcherService.addPostByDefault()
     },
     async reload () {
-      this.$store.dispatch(actionTypes.reload, true)
+      await DispatcherService.reload(true)
     },
     onSortBy (by, direction) {
       this.setSorter({ by, direction })

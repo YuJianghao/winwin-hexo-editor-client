@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import * as actionTypes from 'src/store/dispatcher/action-types'
+import DispatcherService from 'src/service/DispatcherService'
 export default {
   name: 'HexoWelcome',
   computed: {
@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     async addPostByDefault () {
-      this.$store.dispatch(actionTypes.addPostByDefault)
+      DispatcherService.addPostByDefault()
     }
   }
 }

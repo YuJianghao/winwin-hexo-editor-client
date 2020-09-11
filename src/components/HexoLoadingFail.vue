@@ -9,12 +9,9 @@
     >
     </q-toolbar>
     <div class="col column flex-center">
-      <q-spinner-gears
-        size="50px"
-        color="primary"
-      />
-      <h2>
-        正在加载...
+      <q-icon name="close" color="red" size="xx-large"/>
+      <h2 class="text-red">
+        文章载入失败
       </h2>
     </div>
   </div>
@@ -22,7 +19,7 @@
 
 <script>
 export default {
-  name: 'HexoLoading',
+  name: 'HexoLoadingFail',
   computed: {
     toolbarStyle () {
       return {

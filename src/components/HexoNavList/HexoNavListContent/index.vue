@@ -167,7 +167,7 @@ import { mapMutations, mapState } from 'vuex'
 
 import * as filterMutationTypes from 'src/store/hexo/filter/mutation-types'
 import * as filterByType from 'src/store/hexo/filter/by-types'
-import * as actionTypes from 'src/store/dispatcher/action-types'
+import DispatcherService from 'src/service/DispatcherService'
 
 export default {
   name: 'HexoNavList',
@@ -298,19 +298,19 @@ export default {
       this.setFilter({ by: filterByType.UNCATEGORIZED })
     },
     async deploy () {
-      this.$store.dispatch(actionTypes.deploy)
+      DispatcherService.deploy()
     },
     async clean () {
-      this.$store.dispatch(actionTypes.clean)
+      DispatcherService.clean()
     },
     async generate () {
-      this.$store.dispatch(actionTypes.generate)
+      DispatcherService.generate()
     },
     async syncGit () {
-      this.$store.dispatch(actionTypes.syncGit)
+      DispatcherService.syncGit()
     },
     async saveGit () {
-      this.$store.dispatch(actionTypes.saveGit)
+      DispatcherService.saveGit()
     },
     ...mapMutations('hexoFilter', {
       setFilter: filterMutationTypes.SET_FILTER

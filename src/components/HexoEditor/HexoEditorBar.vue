@@ -70,8 +70,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import * as actionTypes from 'src/store/dispatcher/action-types'
 import { date } from 'quasar'
+import DispatcherService from 'src/service/DispatcherService'
 export default {
   name: 'HexoEditorBar',
   components: {
@@ -108,19 +108,19 @@ export default {
   },
   methods: {
     async publishPostById () {
-      this.$store.dispatch(actionTypes.publishPostById)
+      DispatcherService.publishPostById()
     },
     async unpublishPostById () {
-      this.$store.dispatch(actionTypes.unpublishPostById)
+      DispatcherService.unpublishPostById()
     },
     async toggleFull () {
-      this.$store.dispatch(actionTypes.toggleFull)
+      DispatcherService.toggleFull()
     },
     async deletePostById () {
-      this.$store.dispatch(actionTypes.deletePostById)
+      DispatcherService.deletePostById()
     },
     async savePost () {
-      this.$store.dispatch(actionTypes.savePost)
+      DispatcherService.savePost()
     },
     onPublish () {
       this.published ? this.unpublishPostById() : this.publishPostById()
