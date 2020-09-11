@@ -91,6 +91,7 @@ class DispatcherService {
 
   // #region Post
   async viewPostById (_id = null, force = false) {
+    if (force) this.cancelSave()
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
     const requestSave = (!force && !this.getters['hexoCore/isPostSaved']) &&
       (_id && (_id !== this.getters['hexoCore/dataPostId']))
@@ -105,7 +106,7 @@ class DispatcherService {
           focus: 'cancel'
         })
         if (type !== 'ok') return
-        await this.dispatch('viewPostById', { _id, force: true })
+        this.viewPostById(_id, true)
       } else {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
       }
@@ -128,6 +129,7 @@ class DispatcherService {
         })
         if (type !== 'ok') return
       }
+      this.cancelSave()
       const { type, data } = await DialogService.create(DialogTypes.NewPostDialog)
       if (type === 'ok') {
         const newId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.addArticleBase, { options: data })
@@ -162,6 +164,7 @@ class DispatcherService {
     })
     if (type !== 'ok') return
     try {
+      this.cancelSave()
       const deletedId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.deleteArticleById, { _id })
       if (deletedId === this.route.params.id && this.route.path !== '/home') { this.router.push('/home') }
     } catch (err) {
@@ -175,6 +178,7 @@ class DispatcherService {
   }
 
   async editPostById (_id = null, force = false) {
+    if (force) this.cancelSave()
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
     const requestSave = (!force && !this.getters['hexoCore/isPostSaved']) &&
       (_id && (_id !== this.getters['hexoCore/dataPostId']))
@@ -200,6 +204,7 @@ class DispatcherService {
   }
 
   async publishPostById (_id = null, force = false) {
+    if (force) this.cancelSave()
     try {
       if (!force && !this.getters['hexoCore/isPostSaved']) {
         const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
@@ -230,6 +235,7 @@ class DispatcherService {
   }
 
   async unpublishPostById (_id = null, force = false) {
+    if (force) this.cancelSave()
     try {
       if (!force && !this.getters['hexoCore/isPostSaved']) {
         const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
@@ -272,8 +278,17 @@ class DispatcherService {
     await this.autoSavePost()
   }
 
+  cancelSave () {
+    this.saveCanceled = true
+  }
+
   async savePost (isAuto, ctx) {
+    // TODO: 需要改进
     const that = ctx || this
+    if (that.saveCanceled) {
+      that.saveCanceled = false
+      return
+    }
     try {
       if (!isAuto) that.commit('hexoUi/showLoading', { message: '正在保存', delay: 100 })
       await that.dispatch('hexoCore/' + hexoCoreActionTypes.saveArticle)
