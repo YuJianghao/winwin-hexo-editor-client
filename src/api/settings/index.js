@@ -1,5 +1,7 @@
 import user from './user'
+import hexo from './hexo'
 const settings = {
-  user
+  user,
+  hexo
 }
 export default settings
