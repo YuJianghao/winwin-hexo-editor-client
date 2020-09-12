@@ -34,7 +34,7 @@ export default {
   name: 'SettingsUser',
   data () {
     return {
-      usernameModel: this.username,
+      usernameModel: null,
       password: null
     }
   },
@@ -59,6 +59,9 @@ export default {
         message.error({ message: '保存成功', caption: err.message })
       }
     }
+  },
+  mounted () {
+    this.usernameModel = this.username
   }
 }
 </script>

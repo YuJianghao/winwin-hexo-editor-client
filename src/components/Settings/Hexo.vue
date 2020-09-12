@@ -32,6 +32,7 @@
 </template>
 <script>
 import message from 'src/utils/message'
+import DispatcherService from 'src/service/DispatcherService'
 export default {
   name: 'SettingsHexo',
   data () {
@@ -48,6 +49,9 @@ export default {
       try {
         await this.$apis.settings.hexo.setHexoRoot(this.hexoRoot)
         message.success({ message: '保存成功' })
+        DispatcherService.destory().then(_ => {
+          DispatcherService.init()
+        })
         this.errorMessage = ''
       } catch (err) {
         if (err.response && err.response.status === 400) {

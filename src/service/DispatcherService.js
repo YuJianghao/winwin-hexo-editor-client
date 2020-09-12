@@ -1,5 +1,9 @@
 import { debounce } from 'quasar'
 import * as hexoCoreActionTypes from 'src/store/hexo/core/action-types'
+import * as hexoFilterMutationTypes from 'src/store/hexo/filter/mutation-types'
+import * as hexoFilterByTypes from 'src/store/hexo/filter/by-types'
+import * as hexoSorterMutationTypes from 'src/store/hexo/sorter/mutation-types'
+import * as hexoSorterByTypes from 'src/store/hexo/sorter/by-types'
 import DialogService from './DialogService'
 import * as DialogTypes from 'src/service/DialogService/dialog-types'
 import { Logger } from 'src/utils/logger'
@@ -55,6 +59,8 @@ class DispatcherService {
       this.commit('user/init')
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.init)
       await this.dispatch('hexoSearch/init')
+      this.commit('hexoFilter/' + hexoFilterMutationTypes.SET_FILTER, { by: hexoFilterByTypes.ALL })
+      this.commit('hexoSorter/' + hexoSorterMutationTypes.SET_SORTER, { by: hexoSorterByTypes.DATE })
     } catch (err) {
       if (process.env.DEV)logger.warn(err)
       if (err.status === 401) return
@@ -67,6 +73,7 @@ class DispatcherService {
 
   async destory () {
     this.commit('hexoUi/destroy')
+    this.commit('hexoFilter/' + hexoFilterMutationTypes.SET_FILTER, { by: hexoFilterByTypes.ALL })
     await this.dispatch('hexoCore/' + hexoCoreActionTypes.destroy)
   }
 
