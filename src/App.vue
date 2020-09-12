@@ -1,7 +1,6 @@
 <template>
   <div
     id="q-app"
-    @contextmenu.prevent=""
   >
     <router-view />
   </div>

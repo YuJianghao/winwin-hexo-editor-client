@@ -15,7 +15,7 @@ const users = {
     })
     saveLoginToken(data.data.token)
     saveRefreshToken(data.data.refreshToken)
-    return data
+    return data.data
   },
   refreshToken: async () => {
     logger.log('refreshToken')

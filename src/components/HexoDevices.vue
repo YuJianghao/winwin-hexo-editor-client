@@ -1,6 +1,7 @@
 <template>
   <q-btn
     flat
+    stretch
     :label="isLoggedIn?'设备授权':'服务器地址'"
   >
     <q-menu
