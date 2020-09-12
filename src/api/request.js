@@ -3,8 +3,6 @@ import users from './users'
 import { loadLoginToken, loadRefreshToken, saveRefreshToken, saveLoginToken } from 'src/utils/storage'
 import { forceReloadWindow } from 'src/utils/common'
 import { Logger } from 'src/utils/logger'
-import message from 'src/utils/message'
-import { DialogService, DialogType } from 'src/service/DialogService'
 const loggerRTC = new Logger({ prefix: 'RTC' })
 class RequestTokenCollection {
   constructor () {
@@ -111,18 +109,6 @@ refresh.interceptors.response.use((res) => {
       logger.log('refresh token expire')
       saveLoginToken('')
       saveRefreshToken('')
-      message.error({ message: '登录过期，即将跳转到登录页', position: 'bottom', progress: true })
-
-      const { type } = await DialogService.create(DialogType.ConfirmDialog, {
-        title: '登录过期',
-        message: '开发阶段可能丢失数据，请确认数据完整或手动保存后重新登录',
-        okLabel: '放弃数据并转到登录页面',
-        okColor: 'red',
-        cancelLabel: '稍等，我需要保存数据',
-        cancelColor: 'primary',
-        focus: 'ok'
-      })
-      if (type !== 'ok') return
       forceReloadWindow()
     }
   }
