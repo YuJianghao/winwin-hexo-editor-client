@@ -42,13 +42,14 @@ import 'monaco-editor/esm/vs/editor/contrib/links/links.js'
 
 import 'monaco-editor/esm/vs/editor/contrib/multicursor/multicursor.js'
 import 'monaco-editor/esm/vs/editor/contrib/wordHighlighter/wordHighlighter.js'
-import 'monaco-editor/esm/vs/base/browser/ui/codiconLabel/codiconLabel.js'
+// import 'monaco-editor/esm/vs/base/browser/ui/codiconLabel/codiconLabel.js'
 import 'monaco-editor/esm/vs/editor/contrib/find/findController.js'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 import 'monaco-editor/esm/vs/basic-languages/monaco.contribution'
 // import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
 import myTheme from './theme'
-import MarkdownExtension from './markdown-extension'
+// import MarkdownExtension from './markdown-extension'
+import * as MonacoMarkdown from 'monaco-markdown'
 export default {
   name: 'MonacoEditor',
   props: {
@@ -155,8 +156,9 @@ export default {
         return null
       }
     })
-
-    MarkdownExtension.activate(this.editor)
+    const extension = new MonacoMarkdown.MonacoMarkdownExtension()
+    extension.activate(this.editor)
+    // MarkdownExtension.activate(this.editor)
 
     this.editor.onDidChangeModelContent(() => {
       const value = this.editor.getValue()
