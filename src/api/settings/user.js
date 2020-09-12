@@ -6,5 +6,12 @@ export default {
   },
   updateUserInfo: async (username, password) => {
     return request.put('/settings/user', { username, password })
+  },
+  getUserInfoById: async id => {
+    const res = await request.get('/settings/user/' + id)
+    return res.data.user
+  },
+  updateUserInfoById: async (id, username, password) => {
+    return request.put('/settings/user/' + id, { username, password })
   }
 }
