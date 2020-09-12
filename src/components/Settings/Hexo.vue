@@ -54,7 +54,7 @@ export default {
         })
         this.errorMessage = ''
       } catch (err) {
-        if (err.response && err.response.status === 400) {
+        if (err.response && err.response.status === 404) {
           this.errorMessage = `${err.response.data.data.path} 不是有效hexo博客`
         } else {
           message.error({ message: '保存失败', caption: err.message })
