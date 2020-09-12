@@ -87,6 +87,7 @@
 <script>
 import AppSidebar from 'components/AppSidebar'
 import HexoDevices from 'components/HexoDevices'
+import { DialogService, DialogType } from 'src/service/DialogService'
 export default {
   name: 'MainLayout',
   components: {
@@ -105,8 +106,14 @@ export default {
   },
   methods: {
     async onLogout () {
-      await this.$store.dispatch('logout')
-      this.$router.push('/login')
+      const { type } = await DialogService.create(DialogType.ConfirmDialog, {
+        title: '退出确认',
+        message: '确定要退出么?'
+      })
+      if (type === 'ok') {
+        await this.$store.dispatch('logout')
+        this.$router.push('/login')
+      }
     }
   }
 }
