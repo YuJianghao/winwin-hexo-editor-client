@@ -48,7 +48,6 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 import 'monaco-editor/esm/vs/basic-languages/monaco.contribution'
 // import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
 import myTheme from './theme'
-// import MarkdownExtension from './markdown-extension'
 import * as MonacoMarkdown from 'monaco-markdown'
 export default {
   name: 'MonacoEditor',
@@ -97,7 +96,8 @@ export default {
       wordWrap: 'on',
       lineNumbers: 'off',
       cursorBlinking: 'smooth',
-      fontFamily: 'Menlo,Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace'
+      fontFamily: 'Menlo,Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace',
+      contextmenu: false // 反正也很少用，关掉避免出现概率为30%的误操作bug：打开右键菜单后会立即执行鼠标指针所在的操作。
     }
     this.editor = monaco.editor.create(dom, editorOptions)
 
@@ -116,10 +116,6 @@ export default {
 
       // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
       keybindingContext: null,
-
-      contextMenuGroupId: 'navigation',
-
-      contextMenuOrder: 1.5,
 
       // Method that will be executed when the action is triggered.
       // @param editor The editor instance is passed in as a convinience
@@ -145,10 +141,6 @@ export default {
       // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
       keybindingContext: null,
 
-      contextMenuGroupId: 'navigation',
-
-      contextMenuOrder: 1.5,
-
       // Method that will be executed when the action is triggered.
       // @param editor The editor instance is passed in as a convinience
       run: (editor) => {
@@ -158,7 +150,14 @@ export default {
     })
     const extension = new MonacoMarkdown.MonacoMarkdownExtension()
     extension.activate(this.editor)
-    // MarkdownExtension.activate(this.editor)
+
+    // 以下属于黑魔法
+    // const contextmenu = this.editor.getContribution('editor.contrib.contextmenu')
+    // const realMethod = contextmenu._onContextMenu
+    // contextmenu._onContextMenu = function () {
+    //   //  contextmenu._contextViewService.contextView.view
+    //   realMethod.apply(contextmenu, arguments)
+    // }
 
     this.editor.onDidChangeModelContent(() => {
       const value = this.editor.getValue()
