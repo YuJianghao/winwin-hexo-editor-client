@@ -21,6 +21,7 @@ const routes = [
           },
           {
             path: 'welcome',
+            name: 'welcome',
             component: () => import('components/HexoWelcome.vue')
           },
           {
@@ -34,10 +35,37 @@ const routes = [
         ]
       },
       {
+        path: 'settings',
+        name: 'settings',
+        redirect: { name: 's_user' },
+        component: () => import('pages/Settings.vue'),
+        children: [
+          {
+            path: 'user',
+            name: 's_user',
+            component: () => import('components/Settings/User.vue')
+          },
+          {
+            path: 'hexo',
+            name: 's_hexo',
+            component: () => import('components/Settings/Hexo.vue')
+          },
+          {
+            path: 'security',
+            name: 's_security',
+            component: () => import('components/Settings/Security.vue')
+          }
+        ]
+      },
+      {
         path: 'login',
         component: () => import('pages/Login.vue')
       }
     ]
+  },
+  {
+    path: '/install',
+    component: () => import('pages/Install.vue')
   }
 ]
 

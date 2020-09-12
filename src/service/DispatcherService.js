@@ -1,7 +1,10 @@
 import { debounce } from 'quasar'
 import * as hexoCoreActionTypes from 'src/store/hexo/core/action-types'
-import DialogService from './DialogService'
-import * as DialogTypes from 'src/service/DialogService/dialog-types'
+import * as hexoFilterMutationTypes from 'src/store/hexo/filter/mutation-types'
+import * as hexoFilterByTypes from 'src/store/hexo/filter/by-types'
+import * as hexoSorterMutationTypes from 'src/store/hexo/sorter/mutation-types'
+import * as hexoSorterByTypes from 'src/store/hexo/sorter/by-types'
+import { DialogService, DialogType } from './DialogService'
 import { Logger } from 'src/utils/logger'
 import message from 'src/utils/message'
 const logger = new Logger({ prefix: 'DispatcherService' })
@@ -55,6 +58,8 @@ class DispatcherService {
       this.commit('user/init')
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.init)
       await this.dispatch('hexoSearch/init')
+      this.commit('hexoFilter/' + hexoFilterMutationTypes.SET_FILTER, { by: hexoFilterByTypes.ALL })
+      this.commit('hexoSorter/' + hexoSorterMutationTypes.SET_SORTER, { by: hexoSorterByTypes.DATE })
     } catch (err) {
       if (process.env.DEV)logger.warn(err)
       if (err.status === 401) return
@@ -67,6 +72,7 @@ class DispatcherService {
 
   async destory () {
     this.commit('hexoUi/destroy')
+    this.commit('hexoFilter/' + hexoFilterMutationTypes.SET_FILTER, { by: hexoFilterByTypes.ALL })
     await this.dispatch('hexoCore/' + hexoCoreActionTypes.destroy)
   }
 
@@ -91,12 +97,13 @@ class DispatcherService {
 
   // #region Post
   async viewPostById (_id = null, force = false) {
+    if (force) this.cancelSave()
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
     const requestSave = (!force && !this.getters['hexoCore/isPostSaved']) &&
       (_id && (_id !== this.getters['hexoCore/dataPostId']))
     try {
       if (requestSave) {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '要退出么，未保存的文件会丢失',
           okLabel: '退出',
           okColor: 'red',
@@ -105,7 +112,7 @@ class DispatcherService {
           focus: 'cancel'
         })
         if (type !== 'ok') return
-        await this.dispatch('viewPostById', { _id, force: true })
+        this.viewPostById(_id, true)
       } else {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
       }
@@ -118,7 +125,7 @@ class DispatcherService {
   async addPostByDefault () {
     try {
       if (!this.getters['hexoCore/isPostSaved']) {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '要离开么，未保存的文件会丢失',
           okLabel: '离开',
           okColor: 'red',
@@ -128,7 +135,8 @@ class DispatcherService {
         })
         if (type !== 'ok') return
       }
-      const { type, data } = await DialogService.create(DialogTypes.NewPostDialog)
+      this.cancelSave()
+      const { type, data } = await DialogService.create(DialogType.NewPostDialog)
       if (type === 'ok') {
         const newId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.addArticleBase, { options: data })
         console.log(newId)
@@ -152,7 +160,7 @@ class DispatcherService {
     const message = `你确认要删除《${post.title}》么？`
     // if (post.date)message += `（最后编辑于${date.formatDate(post.date, 'YYYY年MM月DD日 HH:mm:ss')}）`
 
-    const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+    const { type } = await DialogService.create(DialogType.ConfirmDialog, {
       title: '删除确认',
       message,
       okLabel: '删除',
@@ -162,6 +170,7 @@ class DispatcherService {
     })
     if (type !== 'ok') return
     try {
+      this.cancelSave()
       const deletedId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.deleteArticleById, { _id })
       if (deletedId === this.route.params.id && this.route.path !== '/home') { this.router.push('/home') }
     } catch (err) {
@@ -175,12 +184,13 @@ class DispatcherService {
   }
 
   async editPostById (_id = null, force = false) {
+    if (force) this.cancelSave()
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
     const requestSave = (!force && !this.getters['hexoCore/isPostSaved']) &&
       (_id && (_id !== this.getters['hexoCore/dataPostId']))
     try {
       if (requestSave) {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '要退出么，未保存的文件会丢失',
           okLabel: '退出',
           okColor: 'red',
@@ -200,9 +210,10 @@ class DispatcherService {
   }
 
   async publishPostById (_id = null, force = false) {
+    if (force) this.cancelSave()
     try {
       if (!force && !this.getters['hexoCore/isPostSaved']) {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '要退出么，未保存的文件会丢失',
           okLabel: '退出',
           okColor: 'red',
@@ -230,9 +241,10 @@ class DispatcherService {
   }
 
   async unpublishPostById (_id = null, force = false) {
+    if (force) this.cancelSave()
     try {
       if (!force && !this.getters['hexoCore/isPostSaved']) {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '你确认要取消发布么？未保存的文件会丢失',
           okLabel: '继续取消发布',
           okColor: 'red',
@@ -243,7 +255,7 @@ class DispatcherService {
         if (type !== 'ok') return
         this.publishPostById(_id, true)
       } else {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更',
           okLabel: '取消发布',
           okColor: 'red',
@@ -272,8 +284,17 @@ class DispatcherService {
     await this.autoSavePost()
   }
 
+  cancelSave () {
+    this.saveCanceled = true
+  }
+
   async savePost (isAuto, ctx) {
+    // TODO: 需要改进
     const that = ctx || this
+    if (that.saveCanceled) {
+      that.saveCanceled = false
+      return
+    }
     try {
       if (!isAuto) that.commit('hexoUi/showLoading', { message: '正在保存', delay: 100 })
       await that.dispatch('hexoCore/' + hexoCoreActionTypes.saveArticle)
@@ -296,7 +317,7 @@ class DispatcherService {
 
   // #region hexo actions
   async deploy () {
-    const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+    const { type } = await DialogService.create(DialogType.ConfirmDialog, {
       message: '确定部署博客么？',
       focus: 'ok'
     })
@@ -343,7 +364,7 @@ class DispatcherService {
 
   // #region git actions
   async syncGit () {
-    const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+    const { type } = await DialogService.create(DialogType.ConfirmDialog, {
       message: '确定从git同步么？未保存到git的文件将丢失',
       okLabel: '放弃文件并同步',
       okColor: 'red',

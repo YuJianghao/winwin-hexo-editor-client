@@ -1,8 +1,7 @@
 
 // import { date } from 'quasar'
 import * as actionTypes from './action-types'
-import dialogService from 'src/service/DialogService'
-import * as dialogTypes from 'src/service/DialogService/dialog-types'
+import { DialogService, DialogType } from 'src/service/DialogService'
 import DispatcherService from 'src/service/DispatcherService'
 
 // 用户相关
@@ -14,7 +13,7 @@ const actions = {
 
   [actionTypes.logout]: async ({ rootGetters, commit, dispatch }) => {
     if (!rootGetters['hexoCore/isPostSaved']) {
-      const { type } = await dialogService.create(dialogTypes.ConfirmDialog, {
+      const { type } = await DialogService.create(DialogType.ConfirmDialog, {
         message: '要退出么，未保存的文件会丢失',
         okLabel: '退出',
         okColor: 'red',

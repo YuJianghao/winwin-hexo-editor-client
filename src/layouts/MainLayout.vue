@@ -1,5 +1,8 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout
+    view="lHh Lpr lFf"
+    @contextmenu.prevent=""
+  >
     <q-header :elevated="!isLoginPage">
       <q-toolbar>
         <q-btn
@@ -14,14 +17,58 @@
         <q-toolbar-title>
           Hexo Editor
         </q-toolbar-title>
-          <hexo-devices></hexo-devices>
+        <hexo-devices></hexo-devices>
         <q-btn
-          class="q-ml-md"
+          icon="settings"
+          v-show="!isLoginPage&&$route.path.indexOf('settings')===-1"
+          flat
+          stretch
+          :to="{name:'settings'}"
+        >
+          <q-tooltip
+            content-style="font-size: 14px"
+            transition-show="none"
+            transition-hide="none"
+            anchor="bottom middle"
+            self="center middle"
+          >
+            设置
+          </q-tooltip>
+        </q-btn>
+        <q-btn
+          flat
+          stretch
+          icon="book"
+          v-show="!isLoginPage&&$route.path.indexOf('home')===-1"
+          :to="{name:'welcome'}"
+        >
+          <q-tooltip
+            content-style="font-size: 14px"
+            transition-show="none"
+            transition-hide="none"
+            anchor="bottom middle"
+            self="center middle"
+          >
+            编辑博客
+          </q-tooltip>
+        </q-btn>
+        <q-btn
           v-show="!isLoginPage"
           flat
-          label="退出"
+          icon="logout"
+          stretch
           @click="onLogout"
-        />
+        >
+          <q-tooltip
+            content-style="font-size: 14px"
+            transition-show="none"
+            transition-hide="none"
+            anchor="bottom middle"
+            self="center middle"
+          >
+            退出
+          </q-tooltip>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -43,6 +90,7 @@
 <script>
 import AppSidebar from 'components/AppSidebar'
 import HexoDevices from 'components/HexoDevices'
+import { DialogService, DialogType } from 'src/service/DialogService'
 export default {
   name: 'MainLayout',
   components: {
@@ -61,8 +109,14 @@ export default {
   },
   methods: {
     async onLogout () {
-      await this.$store.dispatch('logout')
-      this.$router.push('/login')
+      const { type } = await DialogService.create(DialogType.ConfirmDialog, {
+        title: '退出确认',
+        message: '确定要退出么?'
+      })
+      if (type === 'ok') {
+        await this.$store.dispatch('logout')
+        this.$router.push('/login')
+      }
     }
   }
 }
