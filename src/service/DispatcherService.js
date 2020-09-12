@@ -4,8 +4,7 @@ import * as hexoFilterMutationTypes from 'src/store/hexo/filter/mutation-types'
 import * as hexoFilterByTypes from 'src/store/hexo/filter/by-types'
 import * as hexoSorterMutationTypes from 'src/store/hexo/sorter/mutation-types'
 import * as hexoSorterByTypes from 'src/store/hexo/sorter/by-types'
-import DialogService from './DialogService'
-import * as DialogTypes from 'src/service/DialogService/dialog-types'
+import { DialogService, DialogType } from './DialogService'
 import { Logger } from 'src/utils/logger'
 import message from 'src/utils/message'
 const logger = new Logger({ prefix: 'DispatcherService' })
@@ -104,7 +103,7 @@ class DispatcherService {
       (_id && (_id !== this.getters['hexoCore/dataPostId']))
     try {
       if (requestSave) {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '要退出么，未保存的文件会丢失',
           okLabel: '退出',
           okColor: 'red',
@@ -126,7 +125,7 @@ class DispatcherService {
   async addPostByDefault () {
     try {
       if (!this.getters['hexoCore/isPostSaved']) {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '要离开么，未保存的文件会丢失',
           okLabel: '离开',
           okColor: 'red',
@@ -137,7 +136,7 @@ class DispatcherService {
         if (type !== 'ok') return
       }
       this.cancelSave()
-      const { type, data } = await DialogService.create(DialogTypes.NewPostDialog)
+      const { type, data } = await DialogService.create(DialogType.NewPostDialog)
       if (type === 'ok') {
         const newId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.addArticleBase, { options: data })
         console.log(newId)
@@ -161,7 +160,7 @@ class DispatcherService {
     const message = `你确认要删除《${post.title}》么？`
     // if (post.date)message += `（最后编辑于${date.formatDate(post.date, 'YYYY年MM月DD日 HH:mm:ss')}）`
 
-    const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+    const { type } = await DialogService.create(DialogType.ConfirmDialog, {
       title: '删除确认',
       message,
       okLabel: '删除',
@@ -191,7 +190,7 @@ class DispatcherService {
       (_id && (_id !== this.getters['hexoCore/dataPostId']))
     try {
       if (requestSave) {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '要退出么，未保存的文件会丢失',
           okLabel: '退出',
           okColor: 'red',
@@ -214,7 +213,7 @@ class DispatcherService {
     if (force) this.cancelSave()
     try {
       if (!force && !this.getters['hexoCore/isPostSaved']) {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '要退出么，未保存的文件会丢失',
           okLabel: '退出',
           okColor: 'red',
@@ -245,7 +244,7 @@ class DispatcherService {
     if (force) this.cancelSave()
     try {
       if (!force && !this.getters['hexoCore/isPostSaved']) {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '你确认要取消发布么？未保存的文件会丢失',
           okLabel: '继续取消发布',
           okColor: 'red',
@@ -256,7 +255,7 @@ class DispatcherService {
         if (type !== 'ok') return
         this.publishPostById(_id, true)
       } else {
-        const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+        const { type } = await DialogService.create(DialogType.ConfirmDialog, {
           message: '你确认要取消发布么？取消后无法撤销，再次发布的文章地址也会变更',
           okLabel: '取消发布',
           okColor: 'red',
@@ -318,7 +317,7 @@ class DispatcherService {
 
   // #region hexo actions
   async deploy () {
-    const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+    const { type } = await DialogService.create(DialogType.ConfirmDialog, {
       message: '确定部署博客么？',
       focus: 'ok'
     })
@@ -365,7 +364,7 @@ class DispatcherService {
 
   // #region git actions
   async syncGit () {
-    const { type } = await DialogService.create(DialogTypes.ConfirmDialog, {
+    const { type } = await DialogService.create(DialogType.ConfirmDialog, {
       message: '确定从git同步么？未保存到git的文件将丢失',
       okLabel: '放弃文件并同步',
       okColor: 'red',
