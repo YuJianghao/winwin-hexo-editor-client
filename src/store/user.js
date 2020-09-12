@@ -1,6 +1,5 @@
 import { loadLoginToken, saveLoginToken } from 'src/utils/storage'
-import users from 'src/api/users'
-import settings from 'src/api/settings'
+import apis from 'src/api'
 
 const mutations = {
   init (state) {
@@ -30,11 +29,11 @@ export default {
   mutations,
   actions: {
     async info ({ commit }) {
-      const data = await settings.user.getUserInfo()
+      const data = await apis.settings.user.getUserInfo()
       commit('setUserInfo', { username: data.username, id: data._id })
     },
     async  login ({ commit }, { username, password }) {
-      const data = await users.getLoginToken(username, password)
+      const data = await apis.users.getLoginToken(username, password)
       commit('login')
       commit('setUserInfo', { username: data.name, id: data.id })
     }
