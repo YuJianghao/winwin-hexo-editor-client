@@ -7,6 +7,7 @@
         v-model="usernameModel"
         type="text"
         label="用户名"
+        filled
       />
       <q-input
         stack-label
@@ -14,6 +15,7 @@
         v-model="password"
         type="password"
         label="密码"
+        filled
       />
       <q-btn
         color="primary"
@@ -48,10 +50,14 @@ export default {
   },
   methods: {
     async onSubmit () {
-      await this.$apis.settings.user.updateUserInfo(this.usernameModel, this.password)
-      this.$store.dispatch('user/info')
-      this.password = null
-      message.success({ message: '保存成功' })
+      try {
+        await this.$apis.settings.user.updateUserInfo(this.usernameModel, this.password)
+        this.$store.dispatch('user/info')
+        this.password = null
+        message.success({ message: '保存成功' })
+      } catch (err) {
+        message.error({ message: '保存成功', caption: err.message })
+      }
     }
   }
 }
