@@ -1,5 +1,8 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout
+    view="lHh Lpr lFf"
+    @contextmenu.prevent=""
+  >
     <q-header :elevated="!isLoginPage">
       <q-toolbar>
         <q-btn

@@ -1,8 +1,11 @@
 let isFirst = true
 let isFirstToHome = true
+let isInstallChecked = false
+let installed
 import { Loading } from 'quasar'
 import DispatcherService from 'src/service/DispatcherService'
 import { Logger } from 'src/utils/logger'
+import apis from 'src/api'
 
 const logger = new Logger({ prefix: 'Router' })
 
@@ -20,13 +23,38 @@ export default async ({ router, app, store }) => {
   })
   router.beforeEach(async (to, from, next) => {
     logger.log('to', to.fullPath)
+    if (!isInstallChecked) {
+      try {
+        await apis.install.checkInstalled()
+        installed = false
+      } catch {
+        installed = true
+      } finally {
+        isInstallChecked = true
+      }
+      if (!installed) {
+        next('/install')
+        return
+      }
+    }
+    if (to.path === '/install') {
+      if (installed) {
+        next('/')
+        return
+      } else {
+        next()
+        return
+      }
+    }
     if (!DispatcherService.ready)DispatcherService.setContext(app)
     if (!isFirst) {
       Loading.show()
     }
     if (!app.store.state.user.inited) {
       app.store.commit('user/init')
-      await app.store.dispatch('user/info')
+      try {
+        await app.store.dispatch('user/info')
+      } catch (_) {}
     }
     const isLoggedIn = app.store.state.user.isLoggedIn
     const toLogin = to.path === '/login'

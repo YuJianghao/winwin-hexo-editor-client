@@ -2,6 +2,7 @@ import hexo from './hexo'
 import users from './users'
 import info from './info'
 import settings from './settings'
+import install from './install'
 import { request } from './request'
 
 const apis = {
@@ -11,7 +12,8 @@ const apis = {
   }),
   users,
   info,
-  settings
+  settings,
+  install
 }
 
 export default apis

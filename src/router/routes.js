@@ -62,6 +62,10 @@ const routes = [
         component: () => import('pages/Login.vue')
       }
     ]
+  },
+  {
+    path: '/install',
+    component: () => import('pages/Install.vue')
   }
 ]
 
