@@ -10,8 +10,8 @@
       </q-item-label>
     </q-item-section>
     <q-item-section class="text-right">
-      <q-item-label>
-        {{keybind}}
+      <q-item-label :style="$q.platform.is.mac?'letter-spacing:2px':''">
+       {{keybind}}
       </q-item-label>
     </q-item-section>
   </q-item>
