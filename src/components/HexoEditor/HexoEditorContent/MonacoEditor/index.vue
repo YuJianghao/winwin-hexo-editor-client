@@ -1,5 +1,8 @@
 <template>
-  <div ref="monaco-editor"></div>
+  <div>
+    <div ref="monaco-editor" class="fit"></div>
+    <context-menu :bus="bus" v-model="openContextMenu"></context-menu>
+  </div>
 </template>
 <script>
 // import 'monaco-editor/esm/vs/editor/browser/controller/coreCommands.js'
@@ -49,6 +52,8 @@ import 'monaco-editor/esm/vs/basic-languages/monaco.contribution'
 // import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
 import myTheme from './theme'
 import * as MonacoMarkdown from 'monaco-markdown'
+import { EditorActionType } from './utils'
+import ContextMenu from './ContextMenu'
 export default {
   name: 'MonacoEditor',
   props: {
@@ -58,6 +63,18 @@ export default {
     position: {
       type: Number,
       default: 0
+    },
+    bus: {
+      type: Object,
+      required: true
+    }
+  },
+  components: {
+    ContextMenu
+  },
+  data () {
+    return {
+      openContextMenu: false
     }
   },
   watch: {
@@ -155,9 +172,13 @@ export default {
     // const contextmenu = this.editor.getContribution('editor.contrib.contextmenu')
     // const realMethod = contextmenu._onContextMenu
     // contextmenu._onContextMenu = function () {
-    //   //  contextmenu._contextViewService.contextView.view
+    //   console.log(contextmenu._contextViewService.contextView.view)
     //   realMethod.apply(contextmenu, arguments)
     // }
+
+    this.editor.onMouseDown(() => {
+      this.openContextMenu = false
+    })
 
     this.editor.onDidChangeModelContent(() => {
       const value = this.editor.getValue()
@@ -185,10 +206,20 @@ export default {
     this.timer = window.setInterval(() => {
       this.editor.layout()
     }, 100)
+    const editor = this.editor
+    Object.keys(EditorActionType).map(key => {
+      this.bus.$on(EditorActionType[key], _ => {
+        console.log(EditorActionType[key])
+        editor.trigger('source', EditorActionType[key])
+      })
+    })
   },
   beforeDestroy () {
     this.editor.dispose()
     window.clearInterval(this.timer)
+    Object.keys(EditorActionType).map(key => {
+      this.bus.$off(key)
+    })
   }
 }
 </script>
