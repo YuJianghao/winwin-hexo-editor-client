@@ -25,7 +25,7 @@
           </template>
           <template v-slot:after>
             <div class="fit row">
-              <div class="col full-height">
+              <div class="col full-height overflow-hidden">
                 <router-view />
               </div>
             </div>

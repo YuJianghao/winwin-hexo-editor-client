@@ -1,5 +1,8 @@
 <template>
-  <div class="fit row" v-if="article">
+  <div
+    class="fit row"
+    v-if="article"
+  >
     <div
       class="col column"
       style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
@@ -16,14 +19,21 @@
         >
         </q-input>
       </div>
-      <monaco-editor
-        class="col"
-        style="flex:1;height:0;max-width:100%"
-        :value="article._content"
-        @input="updateContent"
-        @on-save="saveArticle"
-        @on-toggle-preview="togglePreview"
-      ></monaco-editor>
+      <div
+        class="col row"
+        style="height:0"
+      >
+        <action-sidebar style="border-right: 1px solid rgba(0, 0, 0, 0.12);" :bus="bus"></action-sidebar>
+        <monaco-editor
+          class="col"
+          style="width:0"
+          :value="article._content"
+          :bus="bus"
+          @input="updateContent"
+          @on-save="saveArticle"
+          @on-toggle-preview="togglePreview"
+        ></monaco-editor>
+      </div>
     </div>
     <editor-meta
       class="col"
@@ -42,8 +52,10 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import MonacoEditor from './MonacoEditor'
 import EditorMeta from './EditorMeta'
+import ActionSidebar from './ActionSidebar'
 export default {
   name: 'HexoEditor',
   props: {
@@ -54,12 +66,14 @@ export default {
   },
   components: {
     MonacoEditor,
-    EditorMeta
+    EditorMeta,
+    ActionSidebar
   },
   data () {
     return {
       height: 42,
-      scrollEventEnable: true
+      scrollEventEnable: true,
+      bus: new Vue()
     }
   },
   computed: {
