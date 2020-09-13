@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "dc3271ed17afc9b8fd77",
+    "revision": "f717ca6af4b5b575b001",
     "url": "css/3.a8154ce6.css"
   },
   {
-    "revision": "733215bd75061a521d04",
+    "revision": "eab90a4e4d73b92df37b",
     "url": "css/4.157b2415.css"
   },
   {
@@ -20,12 +20,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/8.a4e9c4c7.css"
   },
   {
-    "revision": "9e0183f41346cf8ee31b",
+    "revision": "e64275439d104a92d44b",
     "url": "css/app.543f640c.css"
   },
   {
-    "revision": "467e45576309dea3cfe0",
-    "url": "css/monaco.2ef2445c.css"
+    "revision": "caab6fe4a1e6ee475b2b",
+    "url": "css/monaco.5876fc93.css"
+  },
+  {
+    "revision": "52bd403da67794f5a045e10f298a7988",
+    "url": "editor.worker.js"
   },
   {
     "revision": "5cb7edfceb233100075dc9a1e12e8da3",
@@ -52,10 +56,6 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "fonts/KFOmCnqEu92Fr1Mu4mxM.49ae34d4.woff"
   },
   {
-    "revision": "a609dc0f334a7d4e64205247c4e8b97c",
-    "url": "fonts/codicon.9242107d.ttf"
-  },
-  {
     "revision": "29b882f018fa6fe75fd338aaae6235b8",
     "url": "fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNa.f2a09334.woff"
   },
@@ -68,7 +68,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/hexo-editor-logo.de328791.png"
   },
   {
-    "revision": "660efc08663b8c95f2c1fcf9950ae413",
+    "revision": "ad58a7d6368654347bd9373190ce8f1f",
     "url": "index.html"
   },
   {
@@ -92,12 +92,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/14.af0419fa.js"
   },
   {
-    "revision": "dc3271ed17afc9b8fd77",
-    "url": "js/3.dc3271ed.js"
+    "revision": "f717ca6af4b5b575b001",
+    "url": "js/3.f717ca6a.js"
   },
   {
-    "revision": "733215bd75061a521d04",
-    "url": "js/4.733215bd.js"
+    "revision": "eab90a4e4d73b92df37b",
+    "url": "js/4.eab90a4e.js"
   },
   {
     "revision": "04d1a5f2b452a33403b4",
@@ -120,12 +120,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/9.c74c5f62.js"
   },
   {
-    "revision": "9e0183f41346cf8ee31b",
-    "url": "js/app.878d2936.js"
+    "revision": "e64275439d104a92d44b",
+    "url": "js/app.173d60b9.js"
   },
   {
-    "revision": "467e45576309dea3cfe0",
-    "url": "js/monaco.467e4557.js"
+    "revision": "caab6fe4a1e6ee475b2b",
+    "url": "js/monaco.caab6fe4.js"
   },
   {
     "revision": "d1e0510388077a362f03",
