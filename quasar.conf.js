@@ -1,6 +1,7 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 module.exports = function (ctx) {
   return {
@@ -99,20 +100,19 @@ module.exports = function (ctx) {
           test: /monaco/,
           name: 'monaco'
         }
+
         cfg.optimization.splitChunks.cacheGroups.highlightjs = {
           test: /highlight.js/,
           name: 'highlightjs'
         }
-        // QMarkdown需要用到，所以不能用cdn
-        // cfg.optimization.splitChunks.cacheGroups.markdown = {
-        //   test: /markdown-it/,
-        //   name: 'markdownit'
-        // }
 
         cfg.externals = {
           'highlight.js': 'hljs'
-          // 'markdown-it': 'markdownit'
         }
+
+        cfg.plugins.push(new MonacoWebpackPlugin({
+          languages: ['markdown']
+        }))
       }
     },
 

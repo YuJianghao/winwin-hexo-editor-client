@@ -68,6 +68,7 @@ class DispatcherService {
     } finally {
       this.commit('hexoUi/hideLoading')
     }
+    this.autoSavePost = debounce(this.savePost, 3000)
   }
 
   async destory () {
@@ -281,23 +282,22 @@ class DispatcherService {
 
   async setPostByPost (article) {
     await this.dispatch('hexoCore/' + hexoCoreActionTypes.updateArticle, article)
-    await this.autoSavePost()
+    await this.autoSavePost(true)
   }
 
   cancelSave () {
     this.saveCanceled = true
   }
 
-  async savePost (isAuto, ctx) {
+  async savePost (isAuto) {
     // TODO: 需要改进
-    const that = ctx || this
-    if (that.saveCanceled) {
-      that.saveCanceled = false
+    if (this.saveCanceled) {
+      this.saveCanceled = false
       return
     }
     try {
-      if (!isAuto) that.commit('hexoUi/showLoading', { message: '正在保存', delay: 100 })
-      await that.dispatch('hexoCore/' + hexoCoreActionTypes.saveArticle)
+      if (!isAuto) this.commit('hexoUi/showLoading', { message: '正在保存', delay: 100 })
+      await this.dispatch('hexoCore/' + hexoCoreActionTypes.saveArticle)
       if (!isAuto) message.success({ message: '保存成功' })
     } catch (err) {
       if (err.status === 404) {
@@ -306,12 +306,8 @@ class DispatcherService {
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '保存失败', caption: err.message })
     } finally {
-      that.commit('hexoUi/hideLoading')
+      this.commit('hexoUi/hideLoading')
     }
-  }
-
-  async autoSavePost () {
-    return debounce(this.savePost, 3000)(true, this)
   }
   // #endregion
 
