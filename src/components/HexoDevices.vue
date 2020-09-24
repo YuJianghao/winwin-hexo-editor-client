@@ -10,6 +10,7 @@
       :content-style="'user-select:none;'+(isLoggedIn?'min-width:300px':'')"
       transition-hide="none"
       transition-show="none"
+      persistent
     >
       <template v-if="isLoggedIn">
         <q-toolbar
@@ -74,7 +75,7 @@
                   flat
                   dense
                   icon="delete"
-                  @click="removeAPIKEY(item.issuedAt)"
+                  @click="removeAPIKEY(item._id)"
                 />
               </div>
             </q-item-section>
@@ -104,7 +105,7 @@
         v-model="requestApikeyDialog"
         persistent
       >
-        <q-card>
+        <q-card style="max-width:300px;min-width:200px">
           <q-toolbar
             class="bg-grey-2"
             style="min-height:36px;user-select:none"
@@ -123,7 +124,6 @@
           <q-img
             :src="apikeyImg"
             :ratio="1"
-            style="max-width:300px;min-width:200px"
             class="bg-grey-2"
             spinner-color="primary"
           />
@@ -172,8 +172,8 @@ export default {
       }))
       this.requestApikeyDialog = true
     },
-    async removeAPIKEY (issuedAt) {
-      await apis.users.removeAPIKEY(issuedAt)
+    async removeAPIKEY (id) {
+      await apis.users.removeAPIKEY(id)
       await this.refreshAPIKEYS()
     },
     async refreshAPIKEYS () {
