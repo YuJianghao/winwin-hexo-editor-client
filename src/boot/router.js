@@ -22,6 +22,15 @@ export default async ({ router, app, store }) => {
   })
   router.beforeEach(async (to, from, next) => {
     logger.log('to', to.fullPath)
+    if (to.path === '/install') {
+      if (installed) {
+        next('/')
+        return
+      } else {
+        next()
+        return
+      }
+    }
     if (!installed) {
       try {
         await apis.install.checkInstalled()
@@ -31,15 +40,6 @@ export default async ({ router, app, store }) => {
       }
       if (!installed) {
         next('/install')
-        return
-      }
-    }
-    if (to.path === '/install') {
-      if (installed) {
-        next('/')
-        return
-      } else {
-        next()
         return
       }
     }
