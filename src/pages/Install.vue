@@ -8,6 +8,7 @@
         <span class="text-h5"> winwin-hexo-editor </span>
       </q-banner>
       <q-stepper
+        v-if="!finished"
         class="col"
         v-model="step"
         ref="stepper"
@@ -184,11 +185,29 @@
           </q-banner>
         </template>
       </q-stepper>
+      <div
+        class="col bg-white q-pa-lg"
+        color="primary"
+        flat
+        v-else
+      >
+        <q-markdown
+          :src="finishedmd"
+          class="q-py-xl"
+        ></q-markdown>
+        <q-btn
+          stretch
+          color="primary"
+          @click="onFinished"
+          label="开始使用"
+        />
+      </div>
     </div>
   </div>
 </template>
 <script>
 import welcomemd from '../markdown/install/welcome.md'
+import finishedmd from '../markdown/install/finished.md'
 import usermd from '../markdown/install/user.md'
 import hexomd from '../markdown/install/hexo.md'
 import securitymd from '../markdown/install/security.md'
@@ -199,6 +218,8 @@ export default {
   name: 'Install',
   data () {
     return {
+      finished: false,
+      finishedmd,
       welcomemd,
       usermd,
       hexomd,
@@ -265,6 +286,9 @@ export default {
     isValid (config) {
       return config.filter(item => item.rules && item.rules.length).filter(item => item.rules[0](item.value) !== true).length === 0
     },
+    onFinished () {
+      this.$router.push('/')
+    },
     async doInstall () {
       const data = {}
       this.allConfig.filter(item => !!item.value).map(item => {
@@ -275,10 +299,8 @@ export default {
           message: '正在安装'
         })
         await this.$apis.install.do(data)
-        DialogService.create(DialogType.ConfirmDialog, {
-          title: '安装成功'
-        })
-        this.$router.push('/')
+        Loading.hide()
+        this.finished = true
       } catch (err) {
         Loading.hide()
         if (err.response && err.response.status === 400) {

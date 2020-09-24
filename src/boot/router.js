@@ -22,15 +22,6 @@ export default async ({ router, app, store }) => {
   })
   router.beforeEach(async (to, from, next) => {
     logger.log('to', to.fullPath)
-    if (to.path === '/install') {
-      if (installed) {
-        next('/')
-        return
-      } else {
-        next()
-        return
-      }
-    }
     if (!installed) {
       try {
         await apis.install.checkInstalled()
@@ -38,11 +29,23 @@ export default async ({ router, app, store }) => {
       } catch {
         installed = true
       }
-      if (!installed) {
-        next('/install')
-        return
-      }
     }
+    const toInstall = to.path === '/install'
+    //                  installed
+    //                  true   false
+    // toinstall true   /      next()
+    //           false  none /install
+    if (installed && toInstall) {
+      next('/')
+      return
+    } else if (!installed && toInstall) {
+      next()
+      return
+    } else if (!installed && !toInstall) {
+      next('/install')
+      return
+    }
+
     if (!DispatcherService.ready)DispatcherService.setContext(app)
     if (!isFirst) {
       Loading.show()
