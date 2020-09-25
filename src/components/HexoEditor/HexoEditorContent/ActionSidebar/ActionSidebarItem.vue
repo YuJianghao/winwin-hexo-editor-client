@@ -1,10 +1,11 @@
 <template>
   <q-btn
     color="grey-8"
-    dense
     flat
+    dense
     stretch
     @click="$emit('on-click')"
+    style="width:30px;height:30px"
   >
     <q-icon
       :name="icon"
@@ -16,16 +17,22 @@
       v-if="tip"
       transition-hide="none"
       transition-show="none"
-      anchor="center right"
-      self="center left"
+      :anchor="vertical?'center right':'bottom middle'"
+      :self="vertical?'center left':'top middle'"
     >
       {{tip}}
     </q-tooltip>
   </q-btn>
 </template>
 <script>
+import { DirectionType } from '../types'
 export default {
   name: 'ActionSidebarItem',
-  props: ['icon', 'tip']
+  props: ['icon', 'tip', 'direction'],
+  computed: {
+    vertical () {
+      return this.direction === DirectionType.vertical
+    }
+  }
 }
 </script>

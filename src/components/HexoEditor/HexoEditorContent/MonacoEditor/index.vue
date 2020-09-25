@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <div ref="monaco-editor" class="fit"></div>
+  <div class="fit">
+    <q-scroll-area class="fit" ref="container">
+      <div ref="monaco-editor" :style="style"></div>
+    </q-scroll-area>
     <context-menu :bus="bus" v-model="openContextMenu"></context-menu>
   </div>
 </template>
@@ -74,7 +76,16 @@ export default {
   },
   data () {
     return {
-      openContextMenu: false
+      openContextMenu: false,
+      rect: {
+        height: 0,
+        width: 0
+      }
+    }
+  },
+  computed: {
+    style () {
+      return `width:${this.rect.width}px;height:${this.rect.height}px`
     }
   },
   watch: {
@@ -203,9 +214,8 @@ export default {
       this.$emit('on-scroll', e)
       this.lastScrollTop = e.scrollTop
     })
-    this.timer = window.setInterval(() => {
-      this.editor.layout()
-    }, 100)
+    this.timer = window.setInterval(this.layout, 100)
+    window.addEventListener('resize', this.layout)
     const editor = this.editor
     Object.keys(EditorActionType).map(key => {
       this.bus.$on(EditorActionType[key], _ => {
@@ -214,9 +224,17 @@ export default {
       })
     })
   },
+  methods: {
+    layout () {
+      this.rect.height = this.$refs.container.$el.clientHeight
+      this.rect.width = this.$refs.container.$el.clientWidth
+      this.editor.layout()
+    }
+  },
   beforeDestroy () {
     this.editor.dispose()
     window.clearInterval(this.timer)
+    window.removeEventListener('resize', this.layout)
     Object.keys(EditorActionType).map(key => {
       this.bus.$off(key)
     })

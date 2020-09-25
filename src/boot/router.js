@@ -29,20 +29,23 @@ export default async ({ router, app, store }) => {
       } catch {
         installed = true
       }
-      if (!installed) {
-        next('/install')
-        return
-      }
     }
-    if (to.path === '/install') {
-      if (installed) {
-        next('/')
-        return
-      } else {
-        next()
-        return
-      }
+    const toInstall = to.path === '/install'
+    //                  installed
+    //                  true   false
+    // toinstall true   /      next()
+    //           false  none /install
+    if (installed && toInstall) {
+      next('/')
+      return
+    } else if (!installed && toInstall) {
+      next()
+      return
+    } else if (!installed && !toInstall) {
+      next('/install')
+      return
     }
+
     if (!DispatcherService.ready)DispatcherService.setContext(app)
     if (!isFirst) {
       Loading.show()

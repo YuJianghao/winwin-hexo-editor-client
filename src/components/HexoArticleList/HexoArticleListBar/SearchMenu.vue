@@ -2,10 +2,11 @@
   <q-menu
     anchor="top middle"
     self="top middle"
-    content-style="width: 300px"
     content-class="shadow-24 flex column no-wrap"
     v-model="show"
     class="search-menu"
+    fit
+    @hide="onHide"
   >
     <div class="search-input bg-white">
       <q-input
@@ -106,6 +107,10 @@ export default {
     })
   },
   methods: {
+    onHide () {
+      this.q = ''
+      DispatcherService.search()
+    },
     search () {
       this.showResult = true
       DispatcherService.search(this.q)

@@ -33,9 +33,9 @@ const users = {
     const data = await request.post('/auth/apikeytoken')
     return data.data.token
   },
-  removeAPIKEY: async (issuedAt) => {
+  removeAPIKEY: async (id) => {
     logger.log('requestAPIKEY')
-    return request.delete('/auth/apikey', { data: { issuedAt } })
+    return request.delete('/auth/apikey/' + id)
   }
 }
 
