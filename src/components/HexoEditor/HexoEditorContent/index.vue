@@ -22,18 +22,50 @@
       <div
         class="col row"
         style="height:0"
+        v-if="isSidebarVertial"
       >
-        <action-sidebar style="border-right: 1px solid rgba(0, 0, 0, 0.12);" :bus="bus"></action-sidebar>
-        <monaco-editor
+        <div
+          class="full-height"
+          style="border-right: 1px solid rgba(0, 0, 0, 0.12)"
+        >
+          <action-sidebar
+            :bus="bus"
+            :direction="sidebarDirection"
+          ></action-sidebar>
+        </div>
+        <div
           class="col"
           style="width:0"
-          :value="article._content"
-          :bus="bus"
-          @input="updateContent"
-          @on-save="saveArticle"
-          @on-toggle-preview="togglePreview"
-        ></monaco-editor>
+        >
+          <monaco-editor
+            :value="article._content"
+            :bus="bus"
+            @input="updateContent"
+            @on-save="saveArticle"
+            @on-toggle-preview="togglePreview"
+          ></monaco-editor>
+        </div>
       </div>
+      <template v-else>
+        <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.12)">
+          <action-sidebar
+            :bus="bus"
+            :direction="sidebarDirection"
+          ></action-sidebar>
+        </div>
+        <div
+          class="col"
+          style="height:0"
+        >
+          <monaco-editor
+            :value="article._content"
+            :bus="bus"
+            @input="updateContent"
+            @on-save="saveArticle"
+            @on-toggle-preview="togglePreview"
+          ></monaco-editor>
+        </div>
+      </template>
     </div>
     <editor-meta
       class="col"
@@ -56,6 +88,7 @@ import Vue from 'vue'
 import MonacoEditor from './MonacoEditor'
 import EditorMeta from './EditorMeta'
 import ActionSidebar from './ActionSidebar'
+import { DirectionType } from './types'
 export default {
   name: 'HexoEditor',
   props: {
@@ -73,10 +106,14 @@ export default {
     return {
       height: 42,
       scrollEventEnable: true,
-      bus: new Vue()
+      bus: new Vue(),
+      sidebarDirection: DirectionType.vertical
     }
   },
   computed: {
+    isSidebarVertial () {
+      return this.sidebarDirection === DirectionType.vertical
+    },
     isPage () {
       return this.article.layout === 'page'
     },
