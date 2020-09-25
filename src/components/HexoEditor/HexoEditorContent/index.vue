@@ -23,16 +23,24 @@
         class="col row"
         style="height:0"
       >
-        <action-sidebar style="border-right: 1px solid rgba(0, 0, 0, 0.12);" :bus="bus"></action-sidebar>
-        <monaco-editor
+        <div
+          class="full-height"
+          style="border-right: 1px solid rgba(0, 0, 0, 0.12)"
+        >
+          <action-sidebar :bus="bus"></action-sidebar>
+        </div>
+        <div
           class="col"
           style="width:0"
-          :value="article._content"
-          :bus="bus"
-          @input="updateContent"
-          @on-save="saveArticle"
-          @on-toggle-preview="togglePreview"
-        ></monaco-editor>
+        >
+          <monaco-editor
+            :value="article._content"
+            :bus="bus"
+            @input="updateContent"
+            @on-save="saveArticle"
+            @on-toggle-preview="togglePreview"
+          ></monaco-editor>
+        </div>
       </div>
     </div>
     <editor-meta

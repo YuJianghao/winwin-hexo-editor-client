@@ -1,10 +1,10 @@
 <template>
   <q-btn
     color="grey-8"
-    dense
     flat
     stretch
     @click="$emit('on-click')"
+    style="width:30px"
   >
     <q-icon
       :name="icon"
