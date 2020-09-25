@@ -4,8 +4,8 @@ export default {
     const res = await request.get('/settings/user')
     return res.data.user
   },
-  updateUserInfo: async (username, password) => {
-    return request.put('/settings/user', { username, password })
+  updateUserInfo: async (username, oldpassword, password) => {
+    return request.put('/settings/user', { username, oldpassword, password })
   },
   getUserInfoById: async id => {
     const res = await request.get('/settings/user/' + id)
