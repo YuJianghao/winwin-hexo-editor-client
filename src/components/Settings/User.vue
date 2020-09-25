@@ -12,9 +12,29 @@
       <q-input
         stack-label
         class="q-mb-md"
+        v-model="oldpassword"
+        type="password"
+        label="旧密码"
+        error-message="旧密码错误"
+        :error="oldpasswordErrored"
+        filled
+      />
+      <q-input
+        stack-label
+        class="q-mb-md"
         v-model="password"
         type="password"
-        label="密码"
+        label="新密码"
+        filled
+      />
+      <q-input
+        stack-label
+        class="q-mb-md"
+        v-model="confirmpassword"
+        type="password"
+        label="确认密码"
+        error-message="密码不一致"
+        :error="!!password&&!!confirmpassword&&(password!==confirmpassword)"
         filled
       />
       <q-btn
@@ -34,8 +54,11 @@ export default {
   name: 'SettingsUser',
   data () {
     return {
-      usernameModel: null,
-      password: null
+      usernameModel: '',
+      oldpassword: '',
+      password: '',
+      confirmpassword: '',
+      oldpasswordErrored: false
     }
   },
   computed: {
@@ -51,12 +74,20 @@ export default {
   methods: {
     async onSubmit () {
       try {
-        await this.$apis.settings.user.updateUserInfo(this.usernameModel, this.password)
+        await this.$apis.settings.user.updateUserInfo(this.usernameModel, this.oldpassword, this.password)
         this.$store.dispatch('user/info')
-        this.password = null
         message.success({ message: '保存成功' })
       } catch (err) {
-        message.error({ message: '保存成功', caption: err.message })
+        if (err.response.status === 403) {
+          this.oldpasswordErrored = true
+        } else {
+          this.oldpasswordErrored = false
+          message.error({ message: '保存失败', caption: err.message })
+        }
+      } finally {
+        this.oldpassword = ''
+        this.password = ''
+        this.confirmpassword = ''
       }
     }
   },
