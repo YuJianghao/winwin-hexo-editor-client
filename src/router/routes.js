@@ -64,6 +64,10 @@ const routes = [
     ]
   },
   {
+    path: '/apidoc',
+    component: () => import('pages/Swagger.vue')
+  },
+  {
     path: '/install',
     component: () => import('pages/Install.vue')
   }
