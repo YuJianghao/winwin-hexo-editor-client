@@ -338,8 +338,8 @@ class DispatcherService {
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.deploy)
       message.success({ message: '部署完成' })
     } catch (err) {
-      if (err.status === 503) err.message = '请配置`hexo deploy`命令'
       if (err.name === 'AsyncRaceAbort') return
+      if (err.status === 503) err.message = '请配置`hexo deploy`命令'
       message.error({ message: '部署失败', caption: err.message })
     } finally {
       this.commit('hexoUi/hideLoading')
@@ -353,6 +353,7 @@ class DispatcherService {
       message.success({ message: '生成完成' })
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
+      if (err.status === 503) err.message = '请配置`hexo generate`命令'
       message.error({ message: '生成失败', caption: err.message })
     } finally {
       this.commit('hexoUi/hideLoading')
@@ -366,6 +367,7 @@ class DispatcherService {
       message.success({ message: '清理完成' })
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
+      if (err.status === 503) err.message = '请配置`hexo clean`命令'
       message.error({ message: '清理失败', caption: err.message })
     } finally {
       this.commit('hexoUi/hideLoading')
@@ -389,7 +391,7 @@ class DispatcherService {
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.syncGit)
       message.success({ message: '同步完成' })
     } catch (err) {
-      if (err.status === 503) err.message = '请配置Git命令'
+      if (err.status === 503) err.message = '请配置`git reset --hard && git pull`命令'
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
@@ -403,7 +405,7 @@ class DispatcherService {
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.saveGit)
       message.success({ message: '同步完成' })
     } catch (err) {
-      if (err.status === 503) err.message = '请配置Git远端仓库'
+      if (err.status === 503) err.message = '请配置`git add . --all && git commit && git push`命令'
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
