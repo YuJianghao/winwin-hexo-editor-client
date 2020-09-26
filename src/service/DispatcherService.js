@@ -172,7 +172,7 @@ class DispatcherService {
     if (type !== 'ok') return
     try {
       this.cancelSave()
-      const deletedId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.deleteArticleById, { _id })
+      const deletedId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.deleteArticleById, { _id, force: true })
       if (deletedId === this.route.params.id && this.route.path !== '/home') { this.router.push('/home') }
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
