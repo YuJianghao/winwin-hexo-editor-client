@@ -97,11 +97,13 @@ class DispatcherService {
   // #endregion
 
   // #region Post
-  async viewPostById (_id = null, force = false) {
+  async viewPostById (_id, force = false) {
+    if (!_id) throw new Error('_id is required')
     if (force) this.cancelSave()
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
-    const requestSave = (!force && !this.getters['hexoCore/isPostSaved']) &&
-      (_id && (_id !== this.getters['hexoCore/dataPostId']))
+    const requestSave = !force && // 非强制
+     !this.getters['hexoCore/isPostSaved'] && // 打开的文件已更改
+      (_id !== this.getters['hexoCore/dataPostId']) // 新文件不是已打开的文件
     try {
       if (requestSave) {
         const { type } = await DialogService.create(DialogType.ConfirmDialog, {
@@ -114,6 +116,13 @@ class DispatcherService {
         })
         if (type !== 'ok') return
         this.viewPostById(_id, true)
+      } else if (this.route.name !== 'view_article' || this.route.params.id !== _id) {
+        this.router.push({
+          name: 'view_article',
+          params: {
+            id: _id
+          }
+        })
       } else {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
       }
@@ -140,9 +149,8 @@ class DispatcherService {
       const { type, data } = await DialogService.create(DialogType.NewPostDialog)
       if (type === 'ok') {
         const newId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.addArticleBase, { options: data })
-        console.log(newId)
         this.router.push({
-          name: 'edit',
+          name: 'edit_article',
           params: {
             id: newId
           }
@@ -201,6 +209,13 @@ class DispatcherService {
         })
         if (type !== 'ok') return
         await this.editPostById(_id, true)
+      } else if (this.route.name !== 'edit_article' || this.route.params.id !== _id) {
+        this.router.push({
+          name: 'edit_article',
+          params: {
+            id: _id
+          }
+        })
       } else {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
       }

@@ -187,11 +187,12 @@ const actions = {
   /**
   * 从id载入文章
   * @param {Object} payload 参数
-  * @param {String} [payload._id] 需要加载的文章id，默认未当前已打开文章
+  * @param {String} payload._id 需要加载的文章id，默认未当前已打开文章
   * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
   */
   async [actionTypes.loadArticleById] ({ state, commit }, payload = {}) {
-    const _id = payload._id || null
+    const _id = payload._id
+    if (!_id) throw new ActionError(actionTypes.loadArticleById, '_id is required')
     const force = payload.force || false
     const validId = getValidId(state, _id, force)
 

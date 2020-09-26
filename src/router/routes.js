@@ -11,12 +11,12 @@ const routes = [
         children: [
           {
             path: 'edit/:id',
-            name: 'edit',
+            name: 'edit_article',
             component: () => import('components/HexoEditor/index.vue')
           },
           {
             path: 'view/:id',
-            name: 'view',
+            name: 'view_article',
             component: () => import('components/HexoViewer/index.vue')
           },
           {

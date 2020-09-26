@@ -268,9 +268,6 @@ export default {
     })
   },
   methods: {
-    uniqueRouterPush (fullPath) {
-      if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
-    },
     async filterByCategoriesId (_id) {
       this.setFilter({ by: filterByType.CATEGORIES, id: _id })
     },
