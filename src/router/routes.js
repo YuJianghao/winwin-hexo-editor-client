@@ -46,6 +46,11 @@ const routes = [
             component: () => import('components/Settings/User.vue')
           },
           {
+            path: 'ui',
+            name: 's_ui',
+            component: () => import('components/Settings/Ui.vue')
+          },
+          {
             path: 'hexo',
             name: 's_hexo',
             component: () => import('components/Settings/Hexo.vue')

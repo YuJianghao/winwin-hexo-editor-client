@@ -14,6 +14,11 @@
           label="账户"
         />
         <q-route-tab
+          :to="{name:'s_ui'}"
+          icon="style"
+          label="外观"
+        />
+        <q-route-tab
           :to="{name:'s_hexo'}"
           icon="book"
           label="博客"

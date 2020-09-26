@@ -219,7 +219,6 @@ export default {
     const editor = this.editor
     Object.keys(EditorActionType).map(key => {
       this.bus.$on(EditorActionType[key], _ => {
-        console.log(EditorActionType[key])
         editor.trigger('source', EditorActionType[key])
       })
     })

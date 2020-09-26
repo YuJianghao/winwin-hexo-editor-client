@@ -83,7 +83,6 @@ export default {
       try {
         this.isOverflow = isOverflow(this.$refs.label.$el)
       } catch (e) {
-        console.log(e)
         this.isOverflow = true
       }
     }
