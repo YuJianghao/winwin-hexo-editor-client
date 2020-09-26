@@ -142,9 +142,6 @@ export default {
     })
   },
   methods: {
-    uniqueRouterPush (fullPath) {
-      if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
-    },
     async addPostByDefault () {
       DispatcherService.addPostByDefault()
     },

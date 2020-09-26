@@ -145,7 +145,7 @@ export default {
     viewPostById (_id) {
       if (this.$route.name !== 'view' || this.$route.params.id !== _id) {
         this.$router.push({
-          name: 'view',
+          name: 'view_article',
           params: {
             id: _id
           }

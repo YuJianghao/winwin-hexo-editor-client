@@ -16,7 +16,7 @@ const routes = [
           },
           {
             path: 'view/:id',
-            name: 'view',
+            name: 'view_article',
             component: () => import('components/HexoViewer/index.vue')
           },
           {
