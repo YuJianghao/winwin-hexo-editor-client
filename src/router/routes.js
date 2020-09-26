@@ -11,7 +11,7 @@ const routes = [
         children: [
           {
             path: 'edit/:id',
-            name: 'edit',
+            name: 'edit_article',
             component: () => import('components/HexoEditor/index.vue')
           },
           {

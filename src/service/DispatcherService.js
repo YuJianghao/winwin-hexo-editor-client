@@ -149,9 +149,8 @@ class DispatcherService {
       const { type, data } = await DialogService.create(DialogType.NewPostDialog)
       if (type === 'ok') {
         const newId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.addArticleBase, { options: data })
-        console.log(newId)
         this.router.push({
-          name: 'edit',
+          name: 'edit_article',
           params: {
             id: newId
           }
@@ -210,6 +209,13 @@ class DispatcherService {
         })
         if (type !== 'ok') return
         await this.editPostById(_id, true)
+      } else if (this.route.name !== 'edit_article' || this.route.params.id !== _id) {
+        this.router.push({
+          name: 'edit_article',
+          params: {
+            id: _id
+          }
+        })
       } else {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
       }
