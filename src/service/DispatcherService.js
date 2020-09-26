@@ -7,12 +7,14 @@ import * as hexoSorterByTypes from 'src/store/hexo/sorter/by-types'
 import { DialogService, DialogType } from './DialogService'
 import { Logger } from 'src/utils/logger'
 import message from 'src/utils/message'
+import { UserConfigActionsType, UserConfigMutationsType } from 'src/store/user_config'
 const logger = new Logger({ prefix: 'DispatcherService' })
 
 class DispatcherService {
   constructor () {
     this.ready = false
     this.message = message
+    this.inited = false
   }
 
   // #region internal functions
@@ -58,8 +60,10 @@ class DispatcherService {
       this.commit('user/init')
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.init)
       await this.dispatch('hexoSearch/init')
+      await this.dispatch('userConfig/' + UserConfigActionsType.INIT)
       this.commit('hexoFilter/' + hexoFilterMutationTypes.SET_FILTER, { by: hexoFilterByTypes.ALL })
       this.commit('hexoSorter/' + hexoSorterMutationTypes.SET_SORTER, { by: hexoSorterByTypes.DATE })
+      this.inited = true
     } catch (err) {
       if (process.env.DEV)logger.warn(err)
       if (err.status === 401) return
@@ -75,6 +79,7 @@ class DispatcherService {
     this.commit('hexoUi/destroy')
     this.commit('hexoFilter/' + hexoFilterMutationTypes.SET_FILTER, { by: hexoFilterByTypes.ALL })
     await this.dispatch('hexoCore/' + hexoCoreActionTypes.destroy)
+    this.inited = false
   }
 
   // #endregion
@@ -423,6 +428,18 @@ class DispatcherService {
   // #region search
   async search (q = '', size = '') {
     await this.dispatch('hexoSearch/search', { q, size })
+  }
+
+  async loadUiConfig () {
+    await this.dispatch('userConfig/' + UserConfigActionsType.LOAD_UI_CONFIG)
+  }
+
+  async setUiConfig (config) {
+    await this.commit('userConfig/' + UserConfigMutationsType.SET_UI_CONFIG, config)
+  }
+
+  async saveUiConfig () {
+    await this.dispatch('userConfig/' + UserConfigActionsType.SAVE_UI_CONFIG)
   }
 }
 

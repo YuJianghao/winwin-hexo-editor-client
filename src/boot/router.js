@@ -1,5 +1,4 @@
 let isFirst = true
-let isFirstToHome = true
 let installed = false
 import { Loading } from 'quasar'
 import DispatcherService from 'src/service/DispatcherService'
@@ -60,16 +59,14 @@ export default async ({ router, app, store }) => {
     }
     const isLoggedIn = app.store.state.user.isLoggedIn
     const toLogin = to.path === '/login'
-    const toHome = to.path.indexOf('/home') === 0
     // 真值表干的漂亮啊！
     //                     toLogin
     //                   true    false
     // isLoggedIn true   /home   next
     //            false  next    /login
     if (isLoggedIn ^ toLogin) {
-      if (isLoggedIn && toHome && isFirstToHome) {
+      if (isLoggedIn && !DispatcherService.inited) {
         await DispatcherService.init()
-        isFirstToHome = false
       }
       const isEdit = path => /^.*\/edit\/((?:[^/]+?))(?:\/(?=$))?$/i.test(path)
       const isView = path => /^.*\/view\/((?:[^/]+?))(?:\/(?=$))?$/i.test(path)

@@ -47,6 +47,7 @@
     "axios": "^0.18.1",
     "highlight.js": "^9.18.1",
     "list-to-tree": "^2.2.3",
+    "lodash": "^4.17.20",
     "markdown-it": "^10.0.0",
     "monaco-editor": "0.17.1",
     "monaco-editor-webpack-plugin": "1.7.0",
