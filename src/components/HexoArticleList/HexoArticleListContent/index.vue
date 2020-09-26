@@ -134,33 +134,19 @@ export default {
     })
   },
   methods: {
-    onLeft ({ reset, _id }) {
+    async onLeft ({ reset, _id }) {
       this.editPostById(_id)
       this.finalize(reset, 1)
     },
-    onRight ({ reset, _id }) {
+    async onRight ({ reset, _id }) {
       this.deletePostById(_id)
       this.finalize(reset, 1)
     },
     viewPostById (_id) {
-      if (this.$route.name !== 'view' || this.$route.params.id !== _id) {
-        this.$router.push({
-          name: 'view_article',
-          params: {
-            id: _id
-          }
-        })
-      }
+      DispatcherService.viewPostById(_id)
     },
     editPostById (_id) {
-      if (this.$route.name !== 'edit' || this.$route.params.id !== _id) {
-        this.$router.push({
-          name: 'edit_article',
-          params: {
-            id: _id
-          }
-        })
-      }
+      DispatcherService.editPostById(_id)
     },
     deletePostById (_id) {
       DispatcherService.deletePostById(_id)
