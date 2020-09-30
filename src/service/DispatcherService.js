@@ -414,7 +414,10 @@ class DispatcherService {
         await this.editPostById(this.route.params.id, true)
       }
     } catch (err) {
-      if (err.status === 503) err.message = '请配置`git reset --hard && git pull`命令'
+      if (err.status === 503) {
+        message.warning({ message: '本地git重置成功', caption: '未检查到远端仓库，无法同步' })
+        return
+      }
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
@@ -428,7 +431,9 @@ class DispatcherService {
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.saveGit)
       message.success({ message: '同步完成' })
     } catch (err) {
-      if (err.status === 503) err.message = '请配置`git add . --all && git commit && git push`命令'
+      if (err.status === 503) {
+        message.warning({ message: '本地git保存成功', caption: '未检查到远端仓库，无法同步' })
+      }
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
