@@ -174,7 +174,7 @@ const actions = {
   * 从id载入文章
   * @param {Object} payload 参数
   * @param {String} payload._id 需要加载的文章id，默认未当前已打开文章
-  * @param {Boolean} [payload.force] 是否放弃当前未保存的更改
+  * @param {Boolean} [payload.force] 是否强制载入，放弃当前数据从服务器载入新数据
   */
   async [actionTypes.loadArticleById] ({ state, commit }, payload = {}) {
     const _id = payload._id
@@ -185,12 +185,14 @@ const actions = {
     let isSameArticle
     if (state.data.article &&
       state.data.article._id === validId) {
-      logger.log('Use opened article', validId)
       isSameArticle = true
     } else {
       isSameArticle = false
     }
-    if (isSameArticle) return
+    if (!force && isSameArticle) {
+      logger.log('Use opened article', validId)
+      return
+    }
     checkSaved(state, force)
     try {
       const isPage = state.data.articles[validId].layout === 'page'
