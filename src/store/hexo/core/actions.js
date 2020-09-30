@@ -8,7 +8,7 @@ const logger = new Logger({ prefix: 'hexoCore/Actions' })
 import { PostService } from 'src/service/post_service'
 import { CategoryService } from 'src/service/category_service'
 import { TagService } from 'src/service/tag_service'
-import { HexoService } from 'src/service/hexo_service'
+import { HexoService, HexoServiceError } from 'src/service/hexo_service'
 
 import { listToObject } from 'src/utils/common'
 import { HexoCoreError } from './errors'
@@ -319,7 +319,7 @@ const actions = {
       await HexoService.deploy()
     } catch (err) {
       let message = '部署失败，请稍后再试'
-      if (err.code === HexoService.HexoServiceError.HEXO_CANT_DEPLOY) {
+      if (err.code === HexoServiceError.HEXO_CANT_DEPLOY) {
         message = err.message
       }
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, message, actionTypes.deploy)
