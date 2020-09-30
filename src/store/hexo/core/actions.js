@@ -288,16 +288,21 @@ const actions = {
   },
 
   async [actionTypes.saveGit] () {
+    let remote
     try {
-      await hexoService.saveGit()
+      const res = await hexoService.saveGit()
+      remote = res.remote
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '保存到git失败，请稍后再试', actionTypes.saveGit)
     }
+    return { remote }
   },
 
   async [actionTypes.syncGit] ({ dispatch }) {
+    let remote
     try {
-      await hexoService.syncGit()
+      const res = await hexoService.syncGit()
+      remote = res.remote
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '从git同步失败，请稍后再试', actionTypes.syncGit)
     }
@@ -306,6 +311,7 @@ const actions = {
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.LOAD_ERROR, '同步成功，但数据更新失败，请手动刷新')
     }
+    return { remote }
   },
 
   async [actionTypes.deploy] () {

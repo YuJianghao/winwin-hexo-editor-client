@@ -405,8 +405,8 @@ class DispatcherService {
     if (type !== 'ok') return
     try {
       this.commit('hexoUi/showLoading', { message: '正在从GIT同步', delay: 100 })
-      await this.dispatch('hexoCore/' + hexoCoreActionTypes.syncGit)
-      message.success({ message: '同步完成' })
+      const { remote } = await this.dispatch('hexoCore/' + hexoCoreActionTypes.syncGit)
+      message.success({ message: remote ? '同步完成' : '仓库重置完成', caption: remote ? '' : '未配置远端仓库，无法从远端同步' })
       const name = this.route.name
       if (name === 'view_article') {
         await this.viewPostById(this.route.params.id, true)
@@ -428,12 +428,9 @@ class DispatcherService {
   async saveGit () {
     try {
       this.commit('hexoUi/showLoading', { message: '正在同步到GIT', delay: 100 })
-      await this.dispatch('hexoCore/' + hexoCoreActionTypes.saveGit)
-      message.success({ message: '同步完成' })
+      const { remote } = await this.dispatch('hexoCore/' + hexoCoreActionTypes.saveGit)
+      message.success({ message: remote ? '同步完成' : '仓库提交完成', caption: remote ? '' : '未配置远端仓库，无法同步到远端' })
     } catch (err) {
-      if (err.status === 503) {
-        message.warning({ message: '本地git保存成功', caption: '未检查到远端仓库，无法同步' })
-      }
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
