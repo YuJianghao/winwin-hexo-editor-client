@@ -8,6 +8,7 @@ import { DialogService, DialogType } from './DialogService'
 import { Logger } from 'src/utils/logger'
 import message from 'src/utils/message'
 import { UserConfigActionsType, UserConfigMutationsType } from 'src/store/user_config'
+import { HexoCoreError } from 'src/store/hexo/core/errors'
 const logger = new Logger({ prefix: 'DispatcherService' })
 
 class DispatcherService {
@@ -132,6 +133,10 @@ class DispatcherService {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
       }
     } catch (err) {
+      if (err.code === HexoCoreError.INVALID_ID) {
+        this.router.push('/')
+        return
+      }
       if (process.env.DEV)logger.warn(err)
       throw err
     }
@@ -225,6 +230,10 @@ class DispatcherService {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
       }
     } catch (err) {
+      if (err.code === HexoCoreError.INVALID_ID) {
+        this.router.push('/')
+        return
+      }
       if (process.env.DEV)logger.warn(err)
       throw err
     }
