@@ -11,11 +11,13 @@ export async function unpublishPost (_id) {
 }
 
 export async function syncGit () {
-  await hexo.syncGit()
+  const res = await hexo.syncGit()
+  return res.data
 }
 
 export async function saveGit () {
-  await hexo.saveGit()
+  const res = await hexo.saveGit()
+  return res.data
 }
 
 export async function deploy () {
