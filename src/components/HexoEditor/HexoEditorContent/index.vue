@@ -85,10 +85,12 @@
 
 <script>
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 import MonacoEditor from './MonacoEditor'
 import EditorMeta from './EditorMeta'
 import ActionSidebar from './ActionSidebar'
 import { DirectionType } from './types'
+import { UserConfigGettersType } from 'src/store/user_config'
 export default {
   name: 'HexoEditor',
   props: {
@@ -106,11 +108,13 @@ export default {
     return {
       height: 42,
       scrollEventEnable: true,
-      bus: new Vue(),
-      sidebarDirection: DirectionType.vertical
+      bus: new Vue()
     }
   },
   computed: {
+    sidebarDirection () {
+      return this.fullUiConfig.editor.toolbar.direction
+    },
     isSidebarVertial () {
       return this.sidebarDirection === DirectionType.vertical
     },
@@ -126,7 +130,10 @@ export default {
     titleSize () {
       const size = this.height / 66
       return size > 1 ? size : 1
-    }
+    },
+    ...mapGetters('userConfig', {
+      fullUiConfig: UserConfigGettersType.fullUiConfig
+    })
   },
   methods: {
     updateTitle (e) {

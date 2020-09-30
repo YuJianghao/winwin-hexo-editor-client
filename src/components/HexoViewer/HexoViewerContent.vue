@@ -29,7 +29,7 @@ export default {
   methods: {
     async editPostById () {
       this.$router.push({
-        name: 'edit',
+        name: 'edit_article',
         params: {
           id: this.$route.params.id
         }

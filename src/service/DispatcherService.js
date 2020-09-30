@@ -7,12 +7,15 @@ import * as hexoSorterByTypes from 'src/store/hexo/sorter/by-types'
 import { DialogService, DialogType } from './DialogService'
 import { Logger } from 'src/utils/logger'
 import message from 'src/utils/message'
+import { UserConfigActionsType, UserConfigMutationsType } from 'src/store/user_config'
+import { HexoCoreError } from 'src/store/hexo/core/errors'
 const logger = new Logger({ prefix: 'DispatcherService' })
 
 class DispatcherService {
   constructor () {
     this.ready = false
     this.message = message
+    this.inited = false
   }
 
   // #region internal functions
@@ -58,8 +61,10 @@ class DispatcherService {
       this.commit('user/init')
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.init)
       await this.dispatch('hexoSearch/init')
+      await this.dispatch('userConfig/' + UserConfigActionsType.INIT)
       this.commit('hexoFilter/' + hexoFilterMutationTypes.SET_FILTER, { by: hexoFilterByTypes.ALL })
       this.commit('hexoSorter/' + hexoSorterMutationTypes.SET_SORTER, { by: hexoSorterByTypes.DATE })
+      this.inited = true
     } catch (err) {
       if (process.env.DEV)logger.warn(err)
       if (err.status === 401) return
@@ -68,13 +73,15 @@ class DispatcherService {
     } finally {
       this.commit('hexoUi/hideLoading')
     }
-    this.autoSavePost = debounce(this.savePost, 3000)
+    this.debouncedSavePost = debounce(this.savePost, 3000)
+    this.autoSavePost = _ => this.debouncedSavePost(true)
   }
 
   async destory () {
     this.commit('hexoUi/destroy')
     this.commit('hexoFilter/' + hexoFilterMutationTypes.SET_FILTER, { by: hexoFilterByTypes.ALL })
     await this.dispatch('hexoCore/' + hexoCoreActionTypes.destroy)
+    this.inited = false
   }
 
   // #endregion
@@ -97,11 +104,13 @@ class DispatcherService {
   // #endregion
 
   // #region Post
-  async viewPostById (_id = null, force = false) {
+  async viewPostById (_id, force = false) {
+    if (!_id) throw new Error('_id is required')
     if (force) this.cancelSave()
     // 如果不是强制且没有保存，且不是当前已经打开的文章，则请求保存
-    const requestSave = (!force && !this.getters['hexoCore/isPostSaved']) &&
-      (_id && (_id !== this.getters['hexoCore/dataPostId']))
+    const requestSave = !force && // 非强制
+     !this.getters['hexoCore/isPostSaved'] && // 打开的文件已更改
+      (_id !== this.getters['hexoCore/dataPostId']) // 新文件不是已打开的文件
     try {
       if (requestSave) {
         const { type } = await DialogService.create(DialogType.ConfirmDialog, {
@@ -116,8 +125,20 @@ class DispatcherService {
         this.viewPostById(_id, true)
       } else {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
+        if (this.route.name !== 'view_article' || this.route.params.id !== _id) {
+          this.router.push({
+            name: 'view_article',
+            params: {
+              id: _id
+            }
+          })
+        }
       }
     } catch (err) {
+      if (err.code === HexoCoreError.INVALID_ID) {
+        this.router.push('/')
+        return
+      }
       if (process.env.DEV)logger.warn(err)
       throw err
     }
@@ -140,9 +161,8 @@ class DispatcherService {
       const { type, data } = await DialogService.create(DialogType.NewPostDialog)
       if (type === 'ok') {
         const newId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.addArticleBase, { options: data })
-        console.log(newId)
         this.router.push({
-          name: 'edit',
+          name: 'edit_article',
           params: {
             id: newId
           }
@@ -172,7 +192,7 @@ class DispatcherService {
     if (type !== 'ok') return
     try {
       this.cancelSave()
-      const deletedId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.deleteArticleById, { _id })
+      const deletedId = await this.dispatch('hexoCore/' + hexoCoreActionTypes.deleteArticleById, { _id, force: true })
       if (deletedId === this.route.params.id && this.route.path !== '/home') { this.router.push('/home') }
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
@@ -203,8 +223,20 @@ class DispatcherService {
         await this.editPostById(_id, true)
       } else {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
+        if (this.route.name !== 'edit_article' || this.route.params.id !== _id) {
+          this.router.push({
+            name: 'edit_article',
+            params: {
+              id: _id
+            }
+          })
+        }
       }
     } catch (err) {
+      if (err.code === HexoCoreError.INVALID_ID) {
+        this.router.push('/')
+        return
+      }
       if (process.env.DEV)logger.warn(err)
       throw err
     }
@@ -282,16 +314,16 @@ class DispatcherService {
 
   async setPostByPost (article) {
     await this.dispatch('hexoCore/' + hexoCoreActionTypes.updateArticle, article)
-    await this.autoSavePost(true)
+    await this.autoSavePost()
   }
 
   cancelSave () {
+    logger.log('auto save canceled')
     this.saveCanceled = true
   }
 
   async savePost (isAuto) {
-    // TODO: 需要改进
-    if (this.saveCanceled) {
+    if (isAuto && this.saveCanceled) {
       this.saveCanceled = false
       return
     }
@@ -323,8 +355,8 @@ class DispatcherService {
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.deploy)
       message.success({ message: '部署完成' })
     } catch (err) {
-      if (err.status === 503) err.message = '请配置`hexo deploy`命令'
       if (err.name === 'AsyncRaceAbort') return
+      if (err.status === 503) err.message = '请配置`hexo deploy`命令'
       message.error({ message: '部署失败', caption: err.message })
     } finally {
       this.commit('hexoUi/hideLoading')
@@ -338,6 +370,7 @@ class DispatcherService {
       message.success({ message: '生成完成' })
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
+      if (err.status === 503) err.message = '请配置`hexo generate`命令'
       message.error({ message: '生成失败', caption: err.message })
     } finally {
       this.commit('hexoUi/hideLoading')
@@ -351,6 +384,7 @@ class DispatcherService {
       message.success({ message: '清理完成' })
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
+      if (err.status === 503) err.message = '请配置`hexo clean`命令'
       message.error({ message: '清理失败', caption: err.message })
     } finally {
       this.commit('hexoUi/hideLoading')
@@ -373,8 +407,17 @@ class DispatcherService {
       this.commit('hexoUi/showLoading', { message: '正在从GIT同步', delay: 100 })
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.syncGit)
       message.success({ message: '同步完成' })
+      const name = this.route.name
+      if (name === 'view_article') {
+        await this.viewPostById(this.route.params.id, true)
+      } else if (name === 'edit_article') {
+        await this.editPostById(this.route.params.id, true)
+      }
     } catch (err) {
-      if (err.status === 503) err.message = '请配置Git命令'
+      if (err.status === 503) {
+        message.warning({ message: '本地git重置成功', caption: '未检查到远端仓库，无法同步' })
+        return
+      }
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
@@ -388,7 +431,9 @@ class DispatcherService {
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.saveGit)
       message.success({ message: '同步完成' })
     } catch (err) {
-      if (err.status === 503) err.message = '请配置Git远端仓库'
+      if (err.status === 503) {
+        message.warning({ message: '本地git保存成功', caption: '未检查到远端仓库，无法同步' })
+      }
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
@@ -406,6 +451,18 @@ class DispatcherService {
   // #region search
   async search (q = '', size = '') {
     await this.dispatch('hexoSearch/search', { q, size })
+  }
+
+  async loadUiConfig () {
+    await this.dispatch('userConfig/' + UserConfigActionsType.LOAD_UI_CONFIG)
+  }
+
+  async setUiConfig (config) {
+    await this.commit('userConfig/' + UserConfigMutationsType.SET_UI_CONFIG, config)
+  }
+
+  async saveUiConfig () {
+    await this.dispatch('userConfig/' + UserConfigActionsType.SAVE_UI_CONFIG)
   }
 }
 

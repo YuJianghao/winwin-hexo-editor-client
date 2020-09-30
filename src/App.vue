@@ -7,11 +7,11 @@
 </template>
 
 <script>
-import dispatcherService from './service/DispatcherService'
+import DispatcherService from './service/DispatcherService'
 export default {
   name: 'App',
   mounted () {
-    dispatcherService.setContext(this)
+    DispatcherService.setContext(this)
   }
 }
 </script>

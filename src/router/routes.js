@@ -11,12 +11,12 @@ const routes = [
         children: [
           {
             path: 'edit/:id',
-            name: 'edit',
+            name: 'edit_article',
             component: () => import('components/HexoEditor/index.vue')
           },
           {
             path: 'view/:id',
-            name: 'view',
+            name: 'view_article',
             component: () => import('components/HexoViewer/index.vue')
           },
           {
@@ -46,6 +46,11 @@ const routes = [
             component: () => import('components/Settings/User.vue')
           },
           {
+            path: 'ui',
+            name: 's_ui',
+            component: () => import('components/Settings/Ui.vue')
+          },
+          {
             path: 'hexo',
             name: 's_hexo',
             component: () => import('components/Settings/Hexo.vue')
@@ -62,6 +67,10 @@ const routes = [
         component: () => import('pages/Login.vue')
       }
     ]
+  },
+  {
+    path: '/apidoc',
+    component: () => import('pages/Swagger.vue')
   },
   {
     path: '/install',

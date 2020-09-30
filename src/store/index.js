@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import dispatcher from './dispatcher'
 import user from './user'
+import { store as userConfig } from './user_config'
 import {
   core,
   ui,
@@ -47,7 +48,8 @@ export default function (/* { ssrContext } */) {
       hexoSearch: search,
       hexoFilter: filter,
       hexoSorter: sorter,
-      user
+      user,
+      userConfig
     },
     plugins,
 
