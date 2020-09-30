@@ -318,7 +318,11 @@ const actions = {
     try {
       await hexoService.deploy()
     } catch (err) {
-      throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '部署失败，请稍后再试', actionTypes.deploy)
+      let message = '部署失败，请稍后再试'
+      if (err.code === hexoService.HexoServiceError.HEXO_CANT_DEPLOY) {
+        message = err.message
+      }
+      throw new HexoCoreError(HexoCoreError.ACTION_ERROR, message, actionTypes.deploy)
     }
   },
 
