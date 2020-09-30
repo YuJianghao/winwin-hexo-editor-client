@@ -4,12 +4,12 @@ import * as hexoFilterMutationTypes from 'src/store/hexo/filter/mutation-types'
 import * as hexoFilterByTypes from 'src/store/hexo/filter/by-types'
 import * as hexoSorterMutationTypes from 'src/store/hexo/sorter/mutation-types'
 import * as hexoSorterByTypes from 'src/store/hexo/sorter/by-types'
-import { DialogService, DialogType } from './DialogService'
+import { DialogService, DialogType } from './dialog_service'
 import { Logger } from 'src/utils/logger'
 import message from 'src/utils/message'
 import { UserConfigActionsType, UserConfigMutationsType } from 'src/store/user_config'
 import { HexoCoreError } from 'src/store/hexo/core/errors'
-const logger = new Logger({ prefix: 'DispatcherService' })
+const logger = new Logger({ prefix: 'dispatcher_service' })
 
 class DispatcherService {
   constructor () {

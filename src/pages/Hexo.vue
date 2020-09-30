@@ -45,7 +45,7 @@ import HexoLoading from 'components/HexoLoading'
 
 import { mapState, mapGetters } from 'vuex'
 
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 
 export default {
   name: 'Hexo',

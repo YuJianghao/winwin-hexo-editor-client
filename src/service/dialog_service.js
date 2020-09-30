@@ -1,6 +1,6 @@
 import { objectHasKey } from 'src/utils/common'
 import { Dialog } from 'quasar'
-import NewPostDialog from './components/NewPostDialog'
+import NewPostDialog from 'components/Dialogs/NewPostDialog'
 class DialogType {}
 DialogType.NewPostDialog = 'NewPostDialog'
 DialogType.ConfirmDialog = 'ConfirmDialog'

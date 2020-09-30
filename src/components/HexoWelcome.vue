@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 export default {
   name: 'HexoWelcome',
   computed: {

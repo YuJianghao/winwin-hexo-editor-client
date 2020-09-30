@@ -1,8 +1,8 @@
 
 // import { date } from 'quasar'
 import * as actionTypes from './action-types'
-import { DialogService, DialogType } from 'src/service/DialogService'
-import DispatcherService from 'src/service/DispatcherService'
+import { DialogService, DialogType } from 'src/service/dialog_service'
+import DispatcherService from 'src/service/dispatcher_service'
 
 // 用户相关
 

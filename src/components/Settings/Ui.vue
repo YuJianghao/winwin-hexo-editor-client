@@ -45,7 +45,7 @@
 <script>
 import message from 'src/utils/message'
 import { UserConfigGettersType } from 'src/store/user_config'
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 import { DirectionType } from '../HexoEditor/HexoEditorContent/types'
 import { cloneDeep } from 'lodash'
 export default {
