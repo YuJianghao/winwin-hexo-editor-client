@@ -51,8 +51,8 @@
   </div>
 </template>
 <script>
-import DispatcherService from 'src/service/DispatcherService'
-import { DialogService, DialogType } from 'src/service/DialogService'
+import DispatcherService from 'src/service/dispatcher_service'
+import { DialogService, DialogType } from 'src/service/dialog_service'
 import message from 'src/utils/message'
 export default {
   name: 'SettingsSecurity',

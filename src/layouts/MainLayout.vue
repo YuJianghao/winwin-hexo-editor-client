@@ -90,7 +90,7 @@
 <script>
 import AppSidebar from 'components/AppSidebar'
 import HexoDevices from 'components/HexoDevices'
-import { DialogService, DialogType } from 'src/service/DialogService'
+import { DialogService, DialogType } from 'src/service/dialog_service'
 export default {
   name: 'MainLayout',
   components: {

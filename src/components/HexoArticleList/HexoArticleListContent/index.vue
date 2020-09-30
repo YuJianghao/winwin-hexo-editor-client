@@ -39,7 +39,7 @@ import ListItemContextMenu from './ListItemContextMenu'
 import ListItem from './ListItem'
 import { objectToList, stringSort } from 'src/utils/common'
 import * as filterByType from 'src/store/hexo/filter/by-types'
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 
 export default {
   name: 'HexoPostsList',

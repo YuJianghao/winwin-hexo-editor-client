@@ -32,7 +32,7 @@
 </template>
 <script>
 import message from 'src/utils/message'
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 export default {
   name: 'SettingsHexo',
   data () {

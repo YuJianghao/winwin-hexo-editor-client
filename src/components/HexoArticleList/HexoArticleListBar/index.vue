@@ -100,7 +100,7 @@ import { mapState, mapMutations } from 'vuex'
 import SearchMenu from './SearchMenu'
 import * as sorterByTypes from 'src/store/hexo/sorter/by-types'
 import * as sorterMutationTypes from 'src/store/hexo/sorter/mutation-types'
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 export default {
   name: 'HexoPostsListBar',
   components: {

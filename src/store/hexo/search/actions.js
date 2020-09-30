@@ -1,4 +1,4 @@
-import * as hexoService from 'src/service/hexo'
+import { HexoService } from 'src/service/hexo_service'
 
 import { Logger } from 'src/utils/logger'
 
@@ -15,7 +15,7 @@ export async function search ({ state, commit, dispatch }, payload = {}) {
     return {}
   }
   const size = payload.size || state.size
-  const res = await hexoService.search(q, size)
+  const res = await HexoService.search(q, size)
   commit('setQ', res.q)
   commit('setResult', res.result)
   commit('setSize', res.size)
