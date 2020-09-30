@@ -1,6 +1,15 @@
 import apis from 'src/api'
 const hexo = apis.hexo
 
+export class HexoServiceError extends Error {
+  constructor (code, message) {
+    super(message)
+    this.code = code
+    Error.captureStackTrace(this)
+  }
+}
+HexoServiceError.HEXO_CANT_DEPLOY = 'HEXO_CANT_DEPLOY'
+
 export async function publishPost (_id) {
   const res = await hexo.publishPost(_id)
   return res.data.post
@@ -21,7 +30,14 @@ export async function saveGit () {
 }
 
 export async function deploy () {
-  await hexo.deploy()
+  try {
+    await hexo.deploy()
+  } catch (err) {
+    if (err.response && err.response.status === 503) {
+      throw new HexoServiceError(HexoServiceError.HEXO_CANT_DEPLOY, '请配置`hexo deploy`命令')
+    }
+    throw err
+  }
 }
 
 export async function clean () {
