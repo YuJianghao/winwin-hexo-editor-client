@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { merge } from 'lodash'
 import apis from 'src/api'
 import { DirectionType } from 'src/components/HexoEditor/HexoEditorContent/types'
 export class UserConfigMutationsType { }
@@ -20,7 +20,7 @@ UserConfigGettersType.fullUiConfig = 'fullUiConfig'
 const objparser = (obj = {}, schema, defaultObj) => {
   if (!schema) throw new Error('schema is required')
   if (!defaultObj) throw new Error('defaultObj is required')
-  const newObj = _.merge({}, obj, defaultObj)
+  const newObj = merge({}, obj, defaultObj)
   Object.keys(newObj).map(key => {
     if (schema[key]) {
       if (typeof schema[key] === 'function') {
