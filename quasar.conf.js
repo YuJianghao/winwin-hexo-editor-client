@@ -101,6 +101,11 @@ module.exports = function (ctx) {
           name: 'monaco'
         }
 
+        cfg.optimization.splitChunks.cacheGroups.swaggerui = {
+          test: /swagger-ui/,
+          name: 'swagger-ui'
+        }
+
         cfg.optimization.splitChunks.cacheGroups.highlightjs = {
           test: /highlight.js/,
           name: 'highlightjs'
