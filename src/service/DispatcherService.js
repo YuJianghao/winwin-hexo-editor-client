@@ -73,7 +73,8 @@ class DispatcherService {
     } finally {
       this.commit('hexoUi/hideLoading')
     }
-    this.autoSavePost = debounce(this.savePost, 3000)
+    this.debouncedSavePost = debounce(this.savePost, 3000)
+    this.autoSavePost = _ => this.debouncedSavePost(true)
   }
 
   async destory () {
@@ -122,15 +123,16 @@ class DispatcherService {
         })
         if (type !== 'ok') return
         this.viewPostById(_id, true)
-      } else if (this.route.name !== 'view_article' || this.route.params.id !== _id) {
-        this.router.push({
-          name: 'view_article',
-          params: {
-            id: _id
-          }
-        })
       } else {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
+        if (this.route.name !== 'view_article' || this.route.params.id !== _id) {
+          this.router.push({
+            name: 'view_article',
+            params: {
+              id: _id
+            }
+          })
+        }
       }
     } catch (err) {
       if (err.code === HexoCoreError.INVALID_ID) {
@@ -219,15 +221,16 @@ class DispatcherService {
         })
         if (type !== 'ok') return
         await this.editPostById(_id, true)
-      } else if (this.route.name !== 'edit_article' || this.route.params.id !== _id) {
-        this.router.push({
-          name: 'edit_article',
-          params: {
-            id: _id
-          }
-        })
       } else {
         await this.dispatch('hexoCore/' + hexoCoreActionTypes.loadArticleById, { _id, force })
+        if (this.route.name !== 'edit_article' || this.route.params.id !== _id) {
+          this.router.push({
+            name: 'edit_article',
+            params: {
+              id: _id
+            }
+          })
+        }
       }
     } catch (err) {
       if (err.code === HexoCoreError.INVALID_ID) {
@@ -311,16 +314,16 @@ class DispatcherService {
 
   async setPostByPost (article) {
     await this.dispatch('hexoCore/' + hexoCoreActionTypes.updateArticle, article)
-    await this.autoSavePost(true)
+    await this.autoSavePost()
   }
 
   cancelSave () {
+    logger.log('auto save canceled')
     this.saveCanceled = true
   }
 
   async savePost (isAuto) {
-    // TODO: 需要改进
-    if (this.saveCanceled) {
+    if (isAuto && this.saveCanceled) {
       this.saveCanceled = false
       return
     }
@@ -404,6 +407,12 @@ class DispatcherService {
       this.commit('hexoUi/showLoading', { message: '正在从GIT同步', delay: 100 })
       await this.dispatch('hexoCore/' + hexoCoreActionTypes.syncGit)
       message.success({ message: '同步完成' })
+      const name = this.route.name
+      if (name === 'view_article') {
+        await this.viewPostById(this.route.params.id, true)
+      } else if (name === 'edit_article') {
+        await this.editPostById(this.route.params.id, true)
+      }
     } catch (err) {
       if (err.status === 503) err.message = '请配置`git reset --hard && git pull`命令'
       if (err.name === 'AsyncRaceAbort') return
