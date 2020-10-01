@@ -45,8 +45,9 @@
 <script>
 import message from 'src/utils/message'
 import { UserConfigGettersType } from 'src/store/user_config'
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 import { DirectionType } from '../HexoEditor/HexoEditorContent/types'
+import { cloneDeep } from 'lodash'
 export default {
   name: 'SettingsHexo',
   computed: {
@@ -58,7 +59,7 @@ export default {
         return this.$store.getters['userConfig/' + UserConfigGettersType.fullUiConfig].editor.toolbar.direction
       },
       async set (v) {
-        const config = JSON.parse(JSON.stringify(this.$store.state.userConfig.ui))
+        const config = cloneDeep(this.$store.state.userConfig.ui)
         config.editor.toolbar.direction = v
         await DispatcherService.setUiConfig(config)
         await this.onSubmit()

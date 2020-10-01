@@ -5,10 +5,10 @@ import { Logger } from 'src/utils/logger'
 const logger = new Logger({ prefix: 'hexoCore/Actions' })
 
 // services
-import * as postService from 'src/service/post'
-import * as categoryService from 'src/service/category'
-import * as tagService from 'src/service/tag'
-import * as hexoService from 'src/service/hexo'
+import { PostService } from 'src/service/post_service'
+import { CategoryService } from 'src/service/category_service'
+import { TagService } from 'src/service/tag_service'
+import { HexoService, HexoServiceError } from 'src/service/hexo_service'
 
 import { listToObject } from 'src/utils/common'
 import { HexoCoreError } from './errors'
@@ -42,7 +42,7 @@ const actions = {
     commit(mutationTypes.setReady, true)
     await dispatch(actionTypes.loadAll)
     try {
-      const { post, page } = await hexoService.getRestrictedKeys()
+      const { post, page } = await HexoService.getRestrictedKeys()
       commit(mutationTypes.setRestrictedkeys, { post, page })
       commit(mutationTypes.setLoading, true)
     } catch (_) {
@@ -80,7 +80,7 @@ const actions = {
       const defaultOpt = {
         title: '新文章'
       }
-      article = await postService.addArticle(Object.assign(defaultOpt, payload.options), payload.options.layout === 'page')
+      article = await PostService.addArticle(Object.assign(defaultOpt, payload.options), payload.options.layout === 'page')
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '新建文章失败，请稍后再试', actionTypes.addArticleBase)
     }
@@ -116,7 +116,7 @@ const actions = {
   */
   async [actionTypes.loadArticles] ({ commit }) {
     try {
-      const articles = await postService.getArticleList()
+      const articles = await PostService.getArticleList()
 
       // TODO:如果post和page的_id重复了就会报错
       commit(mutationTypes.loadArticles, listToObject(articles))
@@ -129,7 +129,7 @@ const actions = {
   */
   async [actionTypes.loadCategories] ({ commit }) {
     try {
-      const categories = await categoryService.getCategories()
+      const categories = await CategoryService.getCategories()
       commit(mutationTypes.loadCategories, listToObject(categories))
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '分类获取失败，请稍后再试', actionTypes.loadCategories)
@@ -141,7 +141,7 @@ const actions = {
   */
   async [actionTypes.loadTags] ({ commit }) {
     try {
-      const tags = await tagService.getTags()
+      const tags = await TagService.getTags()
       commit(mutationTypes.loadTags, listToObject(tags))
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '标签获取失败，请稍后再试', actionTypes.loadTags)
@@ -159,7 +159,7 @@ const actions = {
     try {
       const isPage = state.data.article.layout === 'page'
       const article = Object.assign({}, state.data.article)
-      await postService.saveArticle(article, isPage)
+      await PostService.saveArticle(article, isPage)
       commit(mutationTypes.saveArticle)
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '保存失败，请稍后再试', actionTypes.saveArticle)
@@ -196,7 +196,7 @@ const actions = {
     checkSaved(state, force)
     try {
       const isPage = state.data.articles[validId].layout === 'page'
-      const article = await postService.getArticleById(validId, isPage)
+      const article = await PostService.getArticleById(validId, isPage)
       commit(mutationTypes.loadArticle, article)
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '文章获取失败，请稍后或刷新后再试', actionTypes.loadArticleById)
@@ -217,7 +217,7 @@ const actions = {
     checkSaved(state, force)
     try {
       const isPage = state.data.articles[validId].layout === 'page'
-      await postService.deleteArticleById(validId, isPage)
+      await PostService.deleteArticleById(validId, isPage)
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '删除失败，请稍后再试', actionTypes.deleteArticleById)
     }
@@ -242,7 +242,7 @@ const actions = {
     checkSaved(state, force)
     let post
     try {
-      post = await hexoService.publishPost(validId)
+      post = await HexoService.publishPost(validId)
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '文章发布失败，请稍后再试', actionTypes.publishPostById)
     }
@@ -271,7 +271,7 @@ const actions = {
     let post
     try {
       const needReloadArticle = state.data.article && validId === state.data.article._id
-      post = await hexoService.unpublishPost(validId)
+      post = await HexoService.unpublishPost(validId)
       if (needReloadArticle)commit(mutationTypes.loadArticle, post)
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '取消发布失败，请稍后再试', actionTypes.unpublishPostById)
@@ -288,16 +288,21 @@ const actions = {
   },
 
   async [actionTypes.saveGit] () {
+    let remote
     try {
-      await hexoService.saveGit()
+      const res = await HexoService.saveGit()
+      remote = res.remote
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '保存到git失败，请稍后再试', actionTypes.saveGit)
     }
+    return { remote }
   },
 
   async [actionTypes.syncGit] ({ dispatch }) {
+    let remote
     try {
-      await hexoService.syncGit()
+      const res = await HexoService.syncGit()
+      remote = res.remote
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '从git同步失败，请稍后再试', actionTypes.syncGit)
     }
@@ -306,19 +311,24 @@ const actions = {
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.LOAD_ERROR, '同步成功，但数据更新失败，请手动刷新')
     }
+    return { remote }
   },
 
   async [actionTypes.deploy] () {
     try {
-      await hexoService.deploy()
+      await HexoService.deploy()
     } catch (err) {
-      throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '部署失败，请稍后再试', actionTypes.deploy)
+      let message = '部署失败，请稍后再试'
+      if (err.code === HexoServiceError.HEXO_CANT_DEPLOY) {
+        message = err.message
+      }
+      throw new HexoCoreError(HexoCoreError.ACTION_ERROR, message, actionTypes.deploy)
     }
   },
 
   async [actionTypes.generate] () {
     try {
-      await hexoService.generate()
+      await HexoService.generate()
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '生成失败，请稍后再试', actionTypes.generate)
     }
@@ -326,7 +336,7 @@ const actions = {
 
   async [actionTypes.clean] () {
     try {
-      await hexoService.clean()
+      await HexoService.clean()
     } catch (err) {
       throw new HexoCoreError(HexoCoreError.ACTION_ERROR, '清理失败，请稍后再试', actionTypes.clean)
     }

@@ -4,12 +4,12 @@ import * as hexoFilterMutationTypes from 'src/store/hexo/filter/mutation-types'
 import * as hexoFilterByTypes from 'src/store/hexo/filter/by-types'
 import * as hexoSorterMutationTypes from 'src/store/hexo/sorter/mutation-types'
 import * as hexoSorterByTypes from 'src/store/hexo/sorter/by-types'
-import { DialogService, DialogType } from './DialogService'
+import { DialogService, DialogType } from './dialog_service'
 import { Logger } from 'src/utils/logger'
 import message from 'src/utils/message'
 import { UserConfigActionsType, UserConfigMutationsType } from 'src/store/user_config'
 import { HexoCoreError } from 'src/store/hexo/core/errors'
-const logger = new Logger({ prefix: 'DispatcherService' })
+const logger = new Logger({ prefix: 'dispatcher_service' })
 
 class DispatcherService {
   constructor () {
@@ -356,7 +356,6 @@ class DispatcherService {
       message.success({ message: '部署完成' })
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
-      if (err.status === 503) err.message = '请配置`hexo deploy`命令'
       message.error({ message: '部署失败', caption: err.message })
     } finally {
       this.commit('hexoUi/hideLoading')
@@ -370,7 +369,6 @@ class DispatcherService {
       message.success({ message: '生成完成' })
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
-      if (err.status === 503) err.message = '请配置`hexo generate`命令'
       message.error({ message: '生成失败', caption: err.message })
     } finally {
       this.commit('hexoUi/hideLoading')
@@ -384,7 +382,6 @@ class DispatcherService {
       message.success({ message: '清理完成' })
     } catch (err) {
       if (err.name === 'AsyncRaceAbort') return
-      if (err.status === 503) err.message = '请配置`hexo clean`命令'
       message.error({ message: '清理失败', caption: err.message })
     } finally {
       this.commit('hexoUi/hideLoading')
@@ -405,8 +402,8 @@ class DispatcherService {
     if (type !== 'ok') return
     try {
       this.commit('hexoUi/showLoading', { message: '正在从GIT同步', delay: 100 })
-      await this.dispatch('hexoCore/' + hexoCoreActionTypes.syncGit)
-      message.success({ message: '同步完成' })
+      const { remote } = await this.dispatch('hexoCore/' + hexoCoreActionTypes.syncGit)
+      message.success({ message: remote ? '同步完成' : '仓库重置完成', caption: remote ? '' : '未配置远端仓库，无法从远端同步' })
       const name = this.route.name
       if (name === 'view_article') {
         await this.viewPostById(this.route.params.id, true)
@@ -414,10 +411,6 @@ class DispatcherService {
         await this.editPostById(this.route.params.id, true)
       }
     } catch (err) {
-      if (err.status === 503) {
-        message.warning({ message: '本地git重置成功', caption: '未检查到远端仓库，无法同步' })
-        return
-      }
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {
@@ -428,12 +421,9 @@ class DispatcherService {
   async saveGit () {
     try {
       this.commit('hexoUi/showLoading', { message: '正在同步到GIT', delay: 100 })
-      await this.dispatch('hexoCore/' + hexoCoreActionTypes.saveGit)
-      message.success({ message: '同步完成' })
+      const { remote } = await this.dispatch('hexoCore/' + hexoCoreActionTypes.saveGit)
+      message.success({ message: remote ? '同步完成' : '仓库提交完成', caption: remote ? '' : '未配置远端仓库，无法同步到远端' })
     } catch (err) {
-      if (err.status === 503) {
-        message.warning({ message: '本地git保存成功', caption: '未检查到远端仓库，无法同步' })
-      }
       if (err.name === 'AsyncRaceAbort') return
       message.error({ message: '同步失败', caption: err.message })
     } finally {

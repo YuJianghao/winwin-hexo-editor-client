@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import DispatcherService from './service/DispatcherService'
+import DispatcherService from './service/dispatcher_service'
 export default {
   name: 'App',
   mounted () {

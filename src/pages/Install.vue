@@ -212,7 +212,7 @@ import usermd from '../markdown/install/user.md'
 import hexomd from '../markdown/install/hexo.md'
 import securitymd from '../markdown/install/security.md'
 import message from 'src/utils/message'
-import { DialogService, DialogType } from 'src/service/DialogService'
+import { DialogService, DialogType } from 'src/service/dialog_service'
 import { Loading } from 'quasar'
 export default {
   name: 'Install',

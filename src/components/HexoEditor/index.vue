@@ -24,7 +24,7 @@ import HexoEditorContent from './HexoEditorContent'
 import HexoLoading from 'components/HexoLoading'
 import HexoLoadingFail from 'components/HexoLoadingFail'
 
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 
 export default {
   name: 'HexoEditor',

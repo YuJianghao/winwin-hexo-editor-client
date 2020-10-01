@@ -1,39 +1,39 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c7bae9d9fff2de41ec23",
-    "url": "css/11.44216e80.css"
+    "revision": "c224a7ebe4f7908422e2",
+    "url": "css/10.a4e9c4c7.css"
   },
   {
-    "revision": "5c4b4f32c01c73417b58",
-    "url": "css/3.a8154ce6.css"
+    "revision": "be0b0f0792fe88d14ad5",
+    "url": "css/4.a8154ce6.css"
   },
   {
-    "revision": "82b6b649ab5558393c66",
-    "url": "css/4.157b2415.css"
+    "revision": "3f9d86d0265d654bedba",
+    "url": "css/5.157b2415.css"
   },
   {
-    "revision": "3521bbde08a89832d875",
-    "url": "css/5.87ca3573.css"
+    "revision": "189a6d84f13d66ad6122",
+    "url": "css/6.87ca3573.css"
   },
   {
-    "revision": "00bc9ae09f742d287ade",
-    "url": "css/7.3d5d40ae.css"
+    "revision": "2fc65667374b138c8add",
+    "url": "css/8.759e1023.css"
   },
   {
-    "revision": "1d5a8927d3ade2b0b2ac",
-    "url": "css/8.95771bbc.css"
+    "revision": "c3acae29e789f8d4d9fd",
+    "url": "css/9.f9804b99.css"
   },
   {
-    "revision": "86929e382c8dc7329246",
-    "url": "css/9.a4e9c4c7.css"
-  },
-  {
-    "revision": "f111916c3765bfa2efe9",
+    "revision": "b57d80b0eacc610a7fba",
     "url": "css/app.543f640c.css"
   },
   {
     "revision": "caab6fe4a1e6ee475b2b",
     "url": "css/monaco.5876fc93.css"
+  },
+  {
+    "revision": "ce87d3e68a8655fce403",
+    "url": "css/swagger-ui.44216e80.css"
   },
   {
     "revision": "52bd403da67794f5a045e10f298a7988",
@@ -76,28 +76,28 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/hexo-editor-logo.de328791.png"
   },
   {
-    "revision": "d0cdc65d54e8893285d90b38dd2a6791",
+    "revision": "e89876b329eb44ebc97a85020253c8fc",
     "url": "index.html"
   },
   {
-    "revision": "ad79d3f30222579e7256",
-    "url": "js/10.ad79d3f3.js"
+    "revision": "c224a7ebe4f7908422e2",
+    "url": "js/10.c224a7eb.js"
   },
   {
-    "revision": "c7bae9d9fff2de41ec23",
-    "url": "js/11.c7bae9d9.js"
+    "revision": "3e22d32b86fe2b0d879e",
+    "url": "js/11.3e22d32b.js"
   },
   {
-    "revision": "e80d8fde6f3fc075bcf9",
-    "url": "js/12.e80d8fde.js"
+    "revision": "6422eb725d87c8d2a225",
+    "url": "js/12.6422eb72.js"
   },
   {
-    "revision": "49ae2147b6d69e1a4db6",
-    "url": "js/13.49ae2147.js"
+    "revision": "2c5d7ce1ea6223b7864a",
+    "url": "js/13.2c5d7ce1.js"
   },
   {
-    "revision": "8fdda66721f0ba88e35e",
-    "url": "js/14.8fdda667.js"
+    "revision": "2f6d425a518362809adf",
+    "url": "js/14.2f6d425a.js"
   },
   {
     "revision": "f919bb8c07288a554ab2",
@@ -108,44 +108,48 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/16.5d866abc.js"
   },
   {
-    "revision": "5c4b4f32c01c73417b58",
-    "url": "js/3.5c4b4f32.js"
+    "revision": "90121b0040d44cf1589e",
+    "url": "js/17.90121b00.js"
   },
   {
-    "revision": "82b6b649ab5558393c66",
-    "url": "js/4.82b6b649.js"
+    "revision": "be0b0f0792fe88d14ad5",
+    "url": "js/4.be0b0f07.js"
   },
   {
-    "revision": "3521bbde08a89832d875",
-    "url": "js/5.3521bbde.js"
+    "revision": "3f9d86d0265d654bedba",
+    "url": "js/5.3f9d86d0.js"
   },
   {
-    "revision": "c141f163eb1dd2c97549",
-    "url": "js/6.c141f163.js"
+    "revision": "189a6d84f13d66ad6122",
+    "url": "js/6.189a6d84.js"
   },
   {
-    "revision": "00bc9ae09f742d287ade",
-    "url": "js/7.00bc9ae0.js"
+    "revision": "444b3f39a3c621d8a09c",
+    "url": "js/7.444b3f39.js"
   },
   {
-    "revision": "1d5a8927d3ade2b0b2ac",
-    "url": "js/8.1d5a8927.js"
+    "revision": "2fc65667374b138c8add",
+    "url": "js/8.2fc65667.js"
   },
   {
-    "revision": "86929e382c8dc7329246",
-    "url": "js/9.86929e38.js"
+    "revision": "c3acae29e789f8d4d9fd",
+    "url": "js/9.c3acae29.js"
   },
   {
-    "revision": "f111916c3765bfa2efe9",
-    "url": "js/app.ae4b2b61.js"
+    "revision": "b57d80b0eacc610a7fba",
+    "url": "js/app.c00e2c80.js"
   },
   {
     "revision": "caab6fe4a1e6ee475b2b",
     "url": "js/monaco.caab6fe4.js"
   },
   {
-    "revision": "1ff698252d221ed0e622",
-    "url": "js/vendor.1ff69825.js"
+    "revision": "ce87d3e68a8655fce403",
+    "url": "js/swagger-ui.ce87d3e6.js"
+  },
+  {
+    "revision": "6621bdb3b8b7933c1e6d",
+    "url": "js/vendor.6621bdb3.js"
   },
   {
     "revision": "85f3ec0979beb52f0ecd9069eee832cd",

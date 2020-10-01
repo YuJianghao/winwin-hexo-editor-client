@@ -1,7 +1,7 @@
 let isFirst = true
 let installed = false
 import { Loading } from 'quasar'
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 import { Logger } from 'src/utils/logger'
 import apis from 'src/api'
 

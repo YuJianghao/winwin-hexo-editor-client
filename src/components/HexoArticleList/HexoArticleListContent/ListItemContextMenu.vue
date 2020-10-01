@@ -139,7 +139,7 @@
 <script>
 import { getDatetimeStringNoSec } from 'src/utils/post'
 import { postCategoriesRaw2Array2d } from 'src/utils/common'
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 export default {
   name: 'PostContextMenu',
   props: {

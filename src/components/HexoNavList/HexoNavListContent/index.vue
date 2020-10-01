@@ -166,7 +166,7 @@ import { mapMutations, mapState } from 'vuex'
 
 import * as filterMutationTypes from 'src/store/hexo/filter/mutation-types'
 import * as filterByType from 'src/store/hexo/filter/by-types'
-import DispatcherService from 'src/service/DispatcherService'
+import DispatcherService from 'src/service/dispatcher_service'
 
 export default {
   name: 'HexoNavList',
