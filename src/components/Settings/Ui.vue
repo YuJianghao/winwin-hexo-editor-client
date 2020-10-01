@@ -59,7 +59,9 @@ export default {
         return this.$store.getters['userConfig/' + UserConfigGettersType.fullUiConfig].editor.toolbar.direction
       },
       async set (v) {
-        const config = cloneDeep(this.$store.state.userConfig.ui)
+        const config = cloneDeep(this.$store.state.userConfig.ui) || {}
+        config.editor = config.editor || {}
+        config.editor.toolbar = config.editor.toolbar || {}
         config.editor.toolbar.direction = v
         await DispatcherService.setUiConfig(config)
         await this.onSubmit()
