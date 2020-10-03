@@ -1,5 +1,8 @@
 <template>
-  <div class="fit row" v-if="article">
+  <div
+    class="fit row"
+    v-if="article"
+  >
     <div
       class="col column"
       style="border-right: 1px solid rgba(0, 0, 0, 0.12);"
@@ -16,14 +19,53 @@
         >
         </q-input>
       </div>
-      <monaco-editor
-        class="col"
-        style="flex:1;height:0;max-width:100%"
-        :value="article._content"
-        @input="updateContent"
-        @on-save="saveArticle"
-        @on-toggle-preview="togglePreview"
-      ></monaco-editor>
+      <div
+        class="col row"
+        style="height:0"
+        v-if="isSidebarVertial"
+      >
+        <div
+          class="full-height"
+          style="border-right: 1px solid rgba(0, 0, 0, 0.12)"
+        >
+          <action-sidebar
+            :bus="bus"
+            :direction="sidebarDirection"
+          ></action-sidebar>
+        </div>
+        <div
+          class="col"
+          style="width:0"
+        >
+          <monaco-editor
+            :value="article._content"
+            :bus="bus"
+            @input="updateContent"
+            @on-save="saveArticle"
+            @on-toggle-preview="togglePreview"
+          ></monaco-editor>
+        </div>
+      </div>
+      <template v-else>
+        <div style="border-bottom: 1px solid rgba(0, 0, 0, 0.12)">
+          <action-sidebar
+            :bus="bus"
+            :direction="sidebarDirection"
+          ></action-sidebar>
+        </div>
+        <div
+          class="col"
+          style="height:0"
+        >
+          <monaco-editor
+            :value="article._content"
+            :bus="bus"
+            @input="updateContent"
+            @on-save="saveArticle"
+            @on-toggle-preview="togglePreview"
+          ></monaco-editor>
+        </div>
+      </template>
     </div>
     <editor-meta
       class="col"
@@ -42,8 +84,13 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import { mapGetters } from 'vuex'
 import MonacoEditor from './MonacoEditor'
 import EditorMeta from './EditorMeta'
+import ActionSidebar from './ActionSidebar'
+import { DirectionType } from './types'
+import { UserConfigGettersType } from 'src/store/user_config'
 export default {
   name: 'HexoEditor',
   props: {
@@ -54,15 +101,26 @@ export default {
   },
   components: {
     MonacoEditor,
-    EditorMeta
+    EditorMeta,
+    ActionSidebar
   },
   data () {
     return {
       height: 42,
-      scrollEventEnable: true
+      scrollEventEnable: true,
+      bus: new Vue()
     }
   },
   computed: {
+    sidebarDirection () {
+      return this.fullUiConfig.editor.toolbar.direction
+    },
+    isSidebarVertial () {
+      return this.sidebarDirection === DirectionType.vertical
+    },
+    isPage () {
+      return this.article.layout === 'page'
+    },
     inputStyle () {
       return {
         'font-size': this.titleSize + 'rem',
@@ -72,7 +130,10 @@ export default {
     titleSize () {
       const size = this.height / 66
       return size > 1 ? size : 1
-    }
+    },
+    ...mapGetters('userConfig', {
+      fullUiConfig: UserConfigGettersType.fullUiConfig
+    })
   },
   methods: {
     updateTitle (e) {

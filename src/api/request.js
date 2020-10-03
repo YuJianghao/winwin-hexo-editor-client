@@ -1,11 +1,9 @@
 import axios from 'axios'
-import { loadLoginToken, loadRefreshToken, saveRefreshToken, saveLoginToken } from '../utils/storage'
-import { forceReloadWindow } from 'src/utils/url'
 import users from './users'
+import { loadLoginToken, loadRefreshToken, saveRefreshToken, saveLoginToken } from 'src/utils/storage'
+import { forceReloadWindow } from 'src/utils/common'
 import { Logger } from 'src/utils/logger'
-import message from 'src/utils/message'
-import { confirmDialog } from 'src/utils/dialog'
-const loggerRTC = new Logger({ prefix: 'RequestTokenCollection' })
+const loggerRTC = new Logger({ prefix: 'RTC' })
 class RequestTokenCollection {
   constructor () {
     this._data = {}
@@ -54,7 +52,6 @@ if (process.env.DEV) {
 }
 request.defaults.headers['Content-Type'] = 'application/json'
 request.interceptors.request.use((config) => {
-  logger.log(config.method.toUpperCase(), config.url)
   if (!config.noAsyncRace) {
     config.cancelToken = requestRTC.addRequest(config.method, config.url)
   }
@@ -76,13 +73,16 @@ request.interceptors.response.use((res) => {
   if (err.response) {
     err.response.message = err.response.data.message
     err.code = err.response.status
+    err.message = err.response.message
     if (err.response.status === 401) {
-      logger.log('access token expire')
-      await users.refreshToken()
-      err.config.url = err.config.url.slice(err.config.baseURL.length)
-      return request(err.config)
+      if (err.config.headers.Authorization && err.config.headers.Authorization.indexOf('Basic') === -1) {
+        logger.log('access token expire')
+        await users.refreshToken()
+        err.config.url = err.config.url.slice(err.config.baseURL.length)
+        return request(err.config)
+      }
+      err.message = '用户名或密码错误'
     }
-    return Promise.reject(err)
   }
   return Promise.reject(err)
 })
@@ -109,14 +109,7 @@ refresh.interceptors.response.use((res) => {
       logger.log('refresh token expire')
       saveLoginToken('')
       saveRefreshToken('')
-      message.error({ message: '登录过期，即将跳转到登录页', position: 'bottom', progress: true })
-      // return new Promise(resolve => {
-      //   window.setTimeout(() => {
-      //     forceReloadWindow()
-      //     resolve()
-      //   }, 3000)
-      // })
-      await confirmDialog('登录过期', '开发阶段可能丢失数据，请确认数据完整或手动保存后重新登录', '放弃数据并转到登录页面', 'red', '稍等，我需要保存数据', null, 'ok', forceReloadWindow)
+      forceReloadWindow()
     }
   }
   return Promise.reject(err.response || err)

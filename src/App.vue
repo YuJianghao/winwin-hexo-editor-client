@@ -1,14 +1,17 @@
 <template>
   <div
     id="q-app"
-    @contextmenu.prevent=""
   >
     <router-view />
   </div>
 </template>
 
 <script>
+import DispatcherService from './service/dispatcher_service'
 export default {
-  name: 'App'
+  name: 'App',
+  mounted () {
+    DispatcherService.setContext(this)
+  }
 }
 </script>

@@ -9,8 +9,8 @@
     >
       <q-tooltip
         content-style="font-size: 14px"
-        transition-show="jump-down"
-        transition-hide="jump-up"
+        transition-show="none"
+        transition-hide="none"
         anchor="bottom middle"
         self="center middle"
       >
@@ -27,8 +27,8 @@
     >
       <q-tooltip
         content-style="font-size: 14px"
-        transition-show="jump-down"
-        transition-hide="jump-up"
+        transition-show="none"
+        transition-hide="none"
         anchor="bottom middle"
         self="center middle"
       >
@@ -50,11 +50,20 @@
       color="primary"
       icon="unfold_more"
     >
+      <q-tooltip
+        content-style="font-size: 14px"
+        transition-show="none"
+        transition-hide="none"
+        anchor="bottom middle"
+        self="center middle"
+      >
+        排序
+      </q-tooltip>
       <q-menu
         anchor="bottom right"
         self="top right"
-        transition-show="jump-down"
-        transition-hide="jump-up"
+        transition-show="none"
+        transition-hide="none"
       >
         <q-list
           style="min-width: 100px"
@@ -87,9 +96,11 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import SearchMenu from './SearchMenu'
-import * as actionTypes from 'src/store/dispatcher/action-types'
-import { query2String, extendQuery } from 'src/utils/url'
+import * as sorterByTypes from 'src/store/hexo/sorter/by-types'
+import * as sorterMutationTypes from 'src/store/hexo/sorter/mutation-types'
+import DispatcherService from 'src/service/dispatcher_service'
 export default {
   name: 'HexoPostsListBar',
   components: {
@@ -99,8 +110,8 @@ export default {
     return {
       showSearchMenu: false,
       sortOptions: [
-        { key: 'title', name: '标题' },
-        { key: 'date', name: '编辑日期' }
+        { key: sorterByTypes.TITLE, name: '标题' },
+        { key: sorterByTypes.DATE, name: '编辑日期' }
       ]
     }
   },
@@ -119,44 +130,30 @@ export default {
           items.push(Object.assign({},
             Object.assign(item, {
               direction: direction,
-              selected: this.sortBy === item.key && this.sortAscend === direction
+              selected: this.sortBy === item.key && this.sortDirection === direction
             })))
         })
       })
       return items
     },
-    sortBy () {
-      const by = this.$route.query.sortBy
-      if (['title', 'date'].includes(by)) return by
-      return 'date'
-    },
-    sortAscend () {
-      switch (this.$route.query.sortAscend) {
-        case 'true':
-          return true
-        case 'false':
-          return false
-        default:
-          return false
-      }
-    }
+    ...mapState('hexoSorter', {
+      sortBy: state => state.by,
+      sortDirection: state => state.direction
+    })
   },
   methods: {
-    uniqueRouterPush (fullPath) {
-      if (this.$route.fullPath !== fullPath) { this.$router.push(fullPath) }
-    },
     async addPostByDefault () {
-      this.$store.dispatch(actionTypes.addPostByDefault)
+      DispatcherService.addPostByDefault()
     },
     async reload () {
-      this.$store.dispatch(actionTypes.reload, true)
+      await DispatcherService.reload(true)
     },
-    onSortBy (key, direction) {
-      this.uniqueRouterPush(`${this.$route.path}?${query2String(extendQuery(this.$route.query, {
-        sortBy: key,
-        sortAscend: direction
-      }))}`)
-    }
+    onSortBy (by, direction) {
+      this.setSorter({ by, direction })
+    },
+    ...mapMutations('hexoSorter', {
+      setSorter: sorterMutationTypes.SET_SORTER
+    })
   }
 }
 </script>

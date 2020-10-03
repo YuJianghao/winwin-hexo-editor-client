@@ -1,5 +1,6 @@
-const loginToken = 'WINWIN_HEXO_EDITOR_LOGIN_TOKEN'
-const refreshToken = 'WINWIN_HEXO_EDITOR_REFRESH_TOKEN'
+const prefix = 'WINWIN_HEXO_EDITOR_'
+const loginToken = prefix + 'LOGIN_TOKEN'
+const refreshToken = prefix + 'REFRESH_TOKEN'
 
 export function saveLoginToken (token) {
   try {

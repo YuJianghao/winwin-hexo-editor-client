@@ -1,10 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import dispatcher from './dispatcher'
-import globalUser from './globalUser'
-import editorUi from './editorUi'
-import editorCore from './editorCore'
-import editorSearch from './editorSearch'
+import user from './user'
+import { store as userConfig } from './user_config'
+import {
+  core,
+  ui,
+  search,
+  filter,
+  sorter
+} from './hexo'
+import createLogger from 'vuex/dist/logger'
 
 // import example from './module-example'
 
@@ -12,6 +18,16 @@ Vue.use(Vuex)
 const state = {}
 
 const mutations = {}
+
+const plugins = process.env.DEV ? [createLogger({
+  logActions: true,
+  logMutations: true,
+  filter (mutation) {
+    return mutation.type.indexOf('hexoUi/') === 0 ||
+      mutation.type.indexOf('hexoFilter/') === 0 ||
+      mutation.type.indexOf('hexoSorter/') === 0
+  }
+})] : []
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -27,12 +43,15 @@ export default function (/* { ssrContext } */) {
     mutations,
     modules: {
       dispatcher,
-      editorUi,
-      editorCore,
-      editorSearch,
-      globalUser
-      // example
+      hexoUi: ui,
+      hexoCore: core,
+      hexoSearch: search,
+      hexoFilter: filter,
+      hexoSorter: sorter,
+      user,
+      userConfig
     },
+    plugins,
 
     // enable strict mode (adds overhead!)
     // for dev mode only

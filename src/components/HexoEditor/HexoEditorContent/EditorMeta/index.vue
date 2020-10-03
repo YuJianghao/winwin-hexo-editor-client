@@ -4,25 +4,41 @@
     v-if="article"
   >
     <meta-title title="详细信息"></meta-title>
+    <q-item
+      dense
+      v-if="isPage"
+    >
+      <q-item-section avatar>
+        PATH
+      </q-item-section>
+      <q-item-section>
+        <q-item-label>
+          {{article.path}}
+        </q-item-label>
+      </q-item-section>
+    </q-item>
     <date-editor
       label="发布"
       :date="article.date"
+      v-if="article.published"
       @on-change="e=>$emit('on-date-update', e)"
     ></date-editor>
-    <date-editor
-      label="更新"
-      :date="article.updated"
-      @on-change="e=>$emit('on-updated-update', e)"
-    ></date-editor>
-    <category-editor
-      :categories="article.categories"
-      @on-update="e=>$emit('on-category-update',e)"
-    ></category-editor>
-    <tag-editor
-      :tags="article.tags || []"
-      @on-update="e=>$emit('on-tag-update',e)"
-    ></tag-editor>
-    <q-separator />
+    <template v-if="article.layout!=='page'">
+      <date-editor
+        label="更新"
+        :date="article.updated"
+        @on-change="e=>$emit('on-updated-update', e)"
+      ></date-editor>
+      <category-editor
+        :categories="article.categories"
+        @on-update="e=>$emit('on-category-update',e)"
+      ></category-editor>
+      <tag-editor
+        :tags="article.tags || []"
+        @on-update="e=>$emit('on-tag-update',e)"
+      ></tag-editor>
+      <q-separator />
+    </template>
     <meta-title title="Front-matters"></meta-title>
     <frontmatter-editor
       :frontmatters="article.frontmatters"
@@ -51,6 +67,11 @@ export default {
     TagEditor,
     CategoryEditor,
     DateEditor
+  },
+  computed: {
+    isPage () {
+      return this.article.layout === 'page'
+    }
   }
 }
 </script>

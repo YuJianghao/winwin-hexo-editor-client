@@ -21,8 +21,9 @@
         class="ellipsis"
         ref="label"
       >
-        <q-icon :name="isParent?'arrow_right':''" />
+        <q-icon :name="isParent&&level?'arrow_right':''" />
         {{label}}
+        <slot />
       </q-item-label>
     </q-item-section>
     <q-item-section avatar>
@@ -72,7 +73,8 @@ export default {
   computed: {
     style () {
       return {
-        'padding-left': 8 + this.level * 12 + 'px'
+        'margin-left': '-4px',
+        'padding-left': 0 + this.level * 12 + 'px'
       }
     }
   },
@@ -81,7 +83,6 @@ export default {
       try {
         this.isOverflow = isOverflow(this.$refs.label.$el)
       } catch (e) {
-        console.log(e)
         this.isOverflow = true
       }
     }

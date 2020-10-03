@@ -1,5 +1,5 @@
 <template>
-  <div class="row" style="max-height:35px;flex-wrap: nowrap">
+  <div class="row" style="max-height:35px;flex-wrap: nowrap" v-if="article">
     <q-btn
       flat
       stretch
@@ -23,6 +23,7 @@
       :icon="published?'close':'publish'"
       :color="published?'red':'primary'"
       @click="onPublish"
+      v-if="!isPage"
     >
       <q-tooltip
         content-style="font-size: 14px"
@@ -69,8 +70,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import * as actionTypes from 'src/store/dispatcher/action-types'
 import { date } from 'quasar'
+import DispatcherService from 'src/service/dispatcher_service'
 export default {
   name: 'HexoEditorBar',
   components: {
@@ -93,29 +94,33 @@ export default {
         'min-width': '100%'
       }
     },
+    isPage () {
+      return this.article.layout === 'page'
+    },
     // externals
     ...mapState({
-      isFullscreen: state => state.editorUi.full,
-      published: state => state.editorCore.data.article.published,
-      rawLastSavedAt: state => state.editorCore.status.lastSavedAt,
-      saved: state => state.editorCore.status.saved
+      isFullscreen: state => state.hexoUi.full,
+      article: state => state.hexoCore.data.article,
+      published: state => state.hexoCore.data.article.published,
+      rawLastSavedAt: state => state.hexoCore.status.lastSavedAt,
+      saved: state => state.hexoCore.status.saved
     })
   },
   methods: {
     async publishPostById () {
-      this.$store.dispatch(actionTypes.publishPostById)
+      DispatcherService.publishPostById()
     },
     async unpublishPostById () {
-      this.$store.dispatch(actionTypes.unpublishPostById)
+      DispatcherService.unpublishPostById()
     },
     async toggleFull () {
-      this.$store.dispatch(actionTypes.toggleFull)
+      DispatcherService.toggleFull()
     },
     async deletePostById () {
-      this.$store.dispatch(actionTypes.deletePostById)
+      DispatcherService.deletePostById()
     },
     async savePost () {
-      this.$store.dispatch(actionTypes.savePost)
+      DispatcherService.savePost()
     },
     onPublish () {
       this.published ? this.unpublishPostById() : this.publishPostById()

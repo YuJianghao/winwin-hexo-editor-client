@@ -73,7 +73,7 @@ export default {
   computed: {
     availableTags () {
       const at = []
-      at.push.apply(at, this.editorCoreDataTagsNameList)
+      at.push.apply(at, this.hexoCoreDataTagsNameList)
       this.postTags.map(tag => {
         if (!at.includes(tag)) at.push(tag)
       })
@@ -89,7 +89,7 @@ export default {
     },
     // externals
     ...mapGetters({
-      editorCoreDataTagsNameList: 'editorCore/dataTagsNameList'
+      hexoCoreDataTagsNameList: 'hexoCore/dataTagsNameList'
     })
   },
   methods: {

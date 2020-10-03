@@ -14,7 +14,7 @@
         color="primary"
       />
       <h2>
-        正在加载文章
+        正在加载...
       </h2>
     </div>
   </div>
@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  name: 'HexoWelcome',
+  name: 'HexoLoading',
   computed: {
     toolbarStyle () {
       return {

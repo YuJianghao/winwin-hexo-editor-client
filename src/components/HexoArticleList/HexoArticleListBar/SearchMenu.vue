@@ -2,10 +2,11 @@
   <q-menu
     anchor="top middle"
     self="top middle"
-    content-style="width: 300px"
     content-class="shadow-24 flex column no-wrap"
     v-model="show"
     class="search-menu"
+    fit
+    @hide="onHide"
   >
     <div class="search-input bg-white">
       <q-input
@@ -34,7 +35,19 @@
         @click="viewPostById(item._id)"
       >
         <q-item-section>
-          <q-item-label class="text-bold">{{articles[item._id].title}}</q-item-label>
+          <q-item-label class="text-bold">
+            <q-icon
+              name="insert_drive_file"
+              color="grey'"
+              class="q-mr-xs"
+              v-if="articles[item._id].layout==='page'"
+            />
+            <q-icon
+              name="drafts"
+              color="grey'"
+              class="q-mr-xs"
+              v-else-if="!articles[item._id].published"
+            />{{articles[item._id].title}}</q-item-label>
           <q-item-label
             caption
             class="ellipsis-3-lines"
@@ -57,7 +70,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import * as actionTypes from 'src/store/dispatcher/action-types'
+import DispatcherService from 'src/service/dispatcher_service'
 export default {
   name: 'SearchMenu',
   props: {
@@ -84,22 +97,26 @@ export default {
   computed: {
     // externals
     ...mapState({
-      articles: state => state.editorCore.data.articles,
-      result: state => state.editorSearch.result,
-      size: state => state.editorSearch.size,
-      serverQ: state => state.editorSearch.q
+      articles: state => state.hexoCore.data.articles,
+      result: state => state.hexoSearch.result,
+      size: state => state.hexoSearch.size,
+      serverQ: state => state.hexoSearch.q
     }),
     ...mapGetters({
-      resultByPost: 'editorSearch/resultByPost'
+      resultByPost: 'hexoSearch/resultByPost'
     })
   },
   methods: {
+    onHide () {
+      this.q = ''
+      DispatcherService.search()
+    },
     search () {
       this.showResult = true
-      this.$store.dispatch(actionTypes.search, { q: this.q })
+      DispatcherService.search(this.q)
     },
     viewPostById (_id) {
-      this.$store.dispatch(actionTypes.viewPostById, { _id })
+      DispatcherService.viewPostById(_id)
     }
   }
 }

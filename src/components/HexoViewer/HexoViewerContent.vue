@@ -1,8 +1,9 @@
 <template>
     <markdown-previewer
+    v-if="article"
       class="fit"
-      :title="post.title"
-      :content="post._content"
+      :title="article.title"
+      :content="article._content"
       @on-edit="editPostById"
     ></markdown-previewer>
 </template>
@@ -11,27 +12,28 @@
 import { date } from 'quasar'
 import { mapState } from 'vuex'
 import MarkdownPreviewer from 'components/MarkdownPreviewer'
-import * as actionTypes from 'src/store/dispatcher/action-types'
 export default {
   name: 'HexoPostViewer',
   components: {
     MarkdownPreviewer
   },
   computed: {
-    post () {
-      return this.editorCoreData.article
-    },
     title () {
-      return `# ${this.post.title}\n`
+      return `# ${this.article.title}\n`
     },
     // externals
     ...mapState({
-      editorCoreData: state => state.editorCore.data
+      article: state => state.hexoCore.data.article
     })
   },
   methods: {
     async editPostById () {
-      this.$store.dispatch(actionTypes.editPostById, { _id: this.$route.query.id })
+      this.$router.push({
+        name: 'edit_article',
+        params: {
+          id: this.$route.params.id
+        }
+      })
     },
     getDateString (d) {
       return date.formatDate(d, 'YYYY年MM月DD日 HH:mm:ss')

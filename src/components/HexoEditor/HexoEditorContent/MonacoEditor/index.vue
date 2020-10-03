@@ -1,5 +1,10 @@
 <template>
-  <div ref="monaco-editor"></div>
+  <div class="fit">
+    <q-scroll-area class="fit" ref="container">
+      <div ref="monaco-editor" :style="style"></div>
+    </q-scroll-area>
+    <context-menu :bus="bus" v-model="openContextMenu"></context-menu>
+  </div>
 </template>
 <script>
 // import 'monaco-editor/esm/vs/editor/browser/controller/coreCommands.js'
@@ -42,13 +47,15 @@ import 'monaco-editor/esm/vs/editor/contrib/links/links.js'
 
 import 'monaco-editor/esm/vs/editor/contrib/multicursor/multicursor.js'
 import 'monaco-editor/esm/vs/editor/contrib/wordHighlighter/wordHighlighter.js'
-import 'monaco-editor/esm/vs/base/browser/ui/codiconLabel/codiconLabel.js'
+// import 'monaco-editor/esm/vs/base/browser/ui/codiconLabel/codiconLabel.js'
 import 'monaco-editor/esm/vs/editor/contrib/find/findController.js'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js'
 import 'monaco-editor/esm/vs/basic-languages/monaco.contribution'
 // import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
 import myTheme from './theme'
-import MarkdownExtension from './markdown-extension'
+import * as MonacoMarkdown from 'monaco-markdown'
+import { EditorActionType } from './utils'
+import ContextMenu from './ContextMenu'
 export default {
   name: 'MonacoEditor',
   props: {
@@ -58,6 +65,27 @@ export default {
     position: {
       type: Number,
       default: 0
+    },
+    bus: {
+      type: Object,
+      required: true
+    }
+  },
+  components: {
+    ContextMenu
+  },
+  data () {
+    return {
+      openContextMenu: false,
+      rect: {
+        height: 0,
+        width: 0
+      }
+    }
+  },
+  computed: {
+    style () {
+      return `width:${this.rect.width}px;height:${this.rect.height}px`
     }
   },
   watch: {
@@ -96,7 +124,8 @@ export default {
       wordWrap: 'on',
       lineNumbers: 'off',
       cursorBlinking: 'smooth',
-      fontFamily: 'Menlo,Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace'
+      fontFamily: 'Menlo,Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace',
+      contextmenu: false // 反正也很少用，关掉避免出现概率为30%的误操作bug：打开右键菜单后会立即执行鼠标指针所在的操作。
     }
     this.editor = monaco.editor.create(dom, editorOptions)
 
@@ -115,10 +144,6 @@ export default {
 
       // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
       keybindingContext: null,
-
-      contextMenuGroupId: 'navigation',
-
-      contextMenuOrder: 1.5,
 
       // Method that will be executed when the action is triggered.
       // @param editor The editor instance is passed in as a convinience
@@ -144,10 +169,6 @@ export default {
       // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
       keybindingContext: null,
 
-      contextMenuGroupId: 'navigation',
-
-      contextMenuOrder: 1.5,
-
       // Method that will be executed when the action is triggered.
       // @param editor The editor instance is passed in as a convinience
       run: (editor) => {
@@ -155,8 +176,20 @@ export default {
         return null
       }
     })
+    const extension = new MonacoMarkdown.MonacoMarkdownExtension()
+    extension.activate(this.editor)
 
-    MarkdownExtension.activate(this.editor)
+    // 以下属于黑魔法
+    // const contextmenu = this.editor.getContribution('editor.contrib.contextmenu')
+    // const realMethod = contextmenu._onContextMenu
+    // contextmenu._onContextMenu = function () {
+    //   console.log(contextmenu._contextViewService.contextView.view)
+    //   realMethod.apply(contextmenu, arguments)
+    // }
+
+    this.editor.onMouseDown(() => {
+      this.openContextMenu = false
+    })
 
     this.editor.onDidChangeModelContent(() => {
       const value = this.editor.getValue()
@@ -181,13 +214,29 @@ export default {
       this.$emit('on-scroll', e)
       this.lastScrollTop = e.scrollTop
     })
-    this.timer = window.setInterval(() => {
+    this.timer = window.setInterval(this.layout, 100)
+    window.addEventListener('resize', this.layout)
+    const editor = this.editor
+    Object.keys(EditorActionType).map(key => {
+      this.bus.$on(EditorActionType[key], _ => {
+        editor.trigger('source', EditorActionType[key])
+      })
+    })
+  },
+  methods: {
+    layout () {
+      this.rect.height = this.$refs.container.$el.clientHeight
+      this.rect.width = this.$refs.container.$el.clientWidth
       this.editor.layout()
-    }, 100)
+    }
   },
   beforeDestroy () {
     this.editor.dispose()
     window.clearInterval(this.timer)
+    window.removeEventListener('resize', this.layout)
+    Object.keys(EditorActionType).map(key => {
+      this.bus.$off(key)
+    })
   }
 }
 </script>

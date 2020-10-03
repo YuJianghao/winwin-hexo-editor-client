@@ -9,7 +9,9 @@
         slot="content"
         :categoriesList="categoriesList"
         :tagsList="tagsList"
-        :postsCount="articlesCount"
+        :postsCount="postsCount"
+        :draftsCount="draftsCount"
+        :pagesCount="pagesCount"
         :unCategoriesCount="categoriesCount"
       ></hexo-nav-list-content>
     </bar-content-layout>
@@ -19,19 +21,6 @@
     >
       <hexo-article-list-bar slot="bar"></hexo-article-list-bar>
       <hexo-article-list-content slot="content"></hexo-article-list-content>
-    </bar-content-layout>
-    <bar-content-layout slot="editor">
-      <hexo-editor-bar slot="bar"></hexo-editor-bar>
-      <hexo-editor-content
-        slot="content"
-        :article="article"
-        @on-update="onArticleUpdate"
-        @on-save="onSave"
-      ></hexo-editor-content>
-    </bar-content-layout>
-    <bar-content-layout slot="viewer">
-      <hexo-viewer-bar slot="bar"></hexo-viewer-bar>
-      <hexo-viewer-content slot="content"></hexo-viewer-content>
     </bar-content-layout>
     <template slot="welcome">
       <hexo-welcome></hexo-welcome>
@@ -49,8 +38,6 @@ import HexoLayout from 'layouts/HexoLayout'
 import BarContentLayout from 'layouts/BarContentLayout'
 
 import { HexoNavListBar, HexoNavListContent } from 'components/HexoNavList'
-import { HexoEditorBar, HexoEditorContent } from 'components/HexoEditor'
-import { HexoViewerBar, HexoViewerContent } from 'components/HexoViewer'
 import { HexoArticleListBar, HexoArticleListContent } from 'components/HexoArticleList'
 
 import HexoWelcome from 'components/HexoWelcome'
@@ -58,7 +45,7 @@ import HexoLoading from 'components/HexoLoading'
 
 import { mapState, mapGetters } from 'vuex'
 
-import * as actionTypes from 'src/store/dispatcher/action-types'
+import DispatcherService from 'src/service/dispatcher_service'
 
 export default {
   name: 'Hexo',
@@ -69,10 +56,6 @@ export default {
     HexoNavListContent,
     HexoArticleListBar,
     HexoArticleListContent,
-    HexoEditorBar,
-    HexoEditorContent,
-    HexoViewerBar,
-    HexoViewerContent,
     HexoWelcome,
     HexoLoading
   },
@@ -84,14 +67,16 @@ export default {
   },
   computed: {
     ...mapState({
-      article: state => state.editorCore.data.article,
-      editorUi: state => state.editorUi
+      article: state => state.hexoCore.data.article,
+      hexoUi: state => state.hexoUi
     }),
     ...mapGetters({
-      tagsList: 'editorCore/dataTagsList',
-      articlesCount: 'editorCore/dataPostsCount',
-      categoriesCount: 'editorCore/dataUnCategoriesCount',
-      categoriesList: 'editorCore/dataCategoriesList'
+      tagsList: 'hexoCore/dataTagsList',
+      postsCount: 'hexoCore/dataPostsCount',
+      draftsCount: 'hexoCore/dataDraftsCount',
+      pagesCount: 'hexoCore/dataPagesCount',
+      categoriesCount: 'hexoCore/dataUnCategoriesCount',
+      categoriesList: 'hexoCore/dataCategoriesList'
     })
   },
   methods: {
@@ -99,20 +84,22 @@ export default {
       return 'height:' + (window.innerHeight - offset) + 'px'
     },
     onArticleUpdate (article) {
-      this.$store.dispatch(actionTypes.setPostByPost, article)
+      DispatcherService.setPostByPost(article)
     },
     onSave () {
-      this.$store.dispatch(actionTypes.savePost)
+      DispatcherService.savePost()
     }
   },
   async mounted () {
-    if (!this.$store.state.editorCore.status.ready) { this.$store.dispatch(actionTypes.init) }
+    if (!this.$store.state.hexoCore.status.ready) {
+      DispatcherService.init()
+    }
   },
   created () {
     document.getElementById('app-message').innerHTML = '加载编辑器...'
   },
   async beforeDestory () {
-    this.$store.dispatch(actionTypes.destroy)
+    DispatcherService.destory()
   }
 }
 </script>
