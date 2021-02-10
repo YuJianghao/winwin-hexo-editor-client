@@ -1,1 +1,74 @@
 // app global css in SCSS form
+.q-menu{
+  transition:.2s !important
+}
+.split .nav-part {
+  background-color: #1f1f1f;
+
+  .title {
+    font-weight: bolder;
+  }
+
+  .count {
+    color: $grey-5;
+    font-size: smaller;
+  }
+
+  .count::before {
+    content: " ";
+  }
+
+  .tags {
+    margin-left: 28px;
+  }
+}
+
+.split .list-part {
+  background-color: #282828;
+}
+
+.split .view-part {
+  background-color: #323232;
+}
+body{
+  font-family:"PingFang SC",
+  "Lantinghei SC",
+  "Microsoft YaHei",
+  "HanHei SC",
+  "Helvetica Neue",
+  "Open Sans",
+  Arial,
+  "Hiragino Sans GB",
+  "微软雅黑",
+  STHeiti,
+  "WenQuanYi Micro Hei",
+  SimSun,
+  sans-serif !important;
+  user-select: none;
+}
+.nav-part .q-item.item,
+.nav-part .q-item.title{
+  margin: 2px 4px 2px 16px;
+  padding: 0 2px 0 16px;
+  border-radius: 6px;
+  color: $grey-3;
+}
+.nav-part .q-list--dense>.q-item,
+.nav-part .q-item--dense{
+  min-height: 28px;
+}
+.nav-part .q-item__section--side{
+  padding-right: 8px;
+}
+.list-part{
+  .drop-handler{
+    &:hover{
+      cursor: pointer;
+    }
+  }
+  .article-list{
+    .q-item{
+      padding: 20px 10px 20px 20px;
+    }
+  }
+}
