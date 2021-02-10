@@ -45,14 +45,22 @@ export async function newPostOrPage({ commit, dispatch }, opt = {}) {
     dispatch('listCategories')
   } else commit('successNewPage', res)
 }
-export async function updatePostOrPage({ commit, dispatch }, opt = {}) {
+export async function updatePostOrPage({ state, commit, dispatch }, opt = {}) {
   if (opt.id === undefined) throw new Error('id is required')
   if (opt.page === undefined) throw new Error('page(boolean) is required')
-  if (opt.obj === undefined) throw new Error('obj is required')
   if (!opt.page) commit('requestUpdatePost', opt.id)
   else commit('requestUpdatePage'.opt.id)
   try {
-    const res = await services.hexo.updatePostOrPage(opt.id, opt.page, opt.obj)
+    const obj = {}
+    if (!opt.page) {
+      Object.assign(obj, state.posts.data[opt.id].data.fm)
+      Object.assign(obj, state.posts.data[opt.id].modify)
+    } else {
+      Object.assign(obj, state.pages.data[opt.id].data.fm)
+      Object.assign(obj, state.pages.data[opt.id].modify)
+    }
+    if (opt.obj) Object.assign(obj, opt.obj)
+    const res = await services.hexo.updatePostOrPage(opt.id, opt.page, obj)
     if (!opt.page) {
       commit('successUpdatePost', res)
       dispatch('listTags')
