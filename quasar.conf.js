@@ -19,7 +19,7 @@ module.exports = function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-      
+
       'i18n',
       'axios',
     ],
@@ -64,8 +64,8 @@ module.exports = function (/* ctx */) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/handling-webpack
-      extendWebpack (cfg) {
-cfg.module.rules.push({
+      extendWebpack(cfg) {
+        cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
@@ -76,6 +76,15 @@ cfg.module.rules.push({
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:5777/',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/api': ''
+          }
+        }
+      },
       https: false,
       port: 8080,
       open: true // opens browser window automatically
@@ -190,7 +199,7 @@ cfg.module.rules.push({
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack (/* cfg */) {
+      extendWebpack(/* cfg */) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
       }
