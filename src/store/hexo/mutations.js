@@ -10,7 +10,8 @@ export function successListPosts(state, postsList) {
     const obj = {}
     obj.status = 'ready'
     obj.data = post
-    state.posts.data[post._id] = obj
+    obj.modify = {}
+    Vue.set(state.posts.data, post._id, obj)
   })
   state.posts.err = ''
 }
@@ -30,7 +31,8 @@ export function successListPages(state, pagesList) {
     const obj = {}
     obj.status = 'ready'
     obj.data = page
-    state.pages.data[page._id] = obj
+    obj.modify = {}
+    Vue.set(state.pages.data, page._id, obj)
   })
   state.pages.err = ''
 }
@@ -101,6 +103,7 @@ export function requestUpdatePost(state, id) {
 export function successUpdatePost(state, post) {
   state.posts.data[post._id].status = 'ready'
   state.posts.data[post._id].data = post
+  state.posts.data[post._id].modify = {}
   state.posts.data[post._id].err = ''
 }
 export function failedUpdatePost(state, { id, err }) {
@@ -114,6 +117,7 @@ export function requestUpdatepage(state, id) {
 export function successUpdatepage(state, page) {
   state.pages.data[page._id].status = 'ready'
   state.pages.data[page._id].data = page
+  state.pages.data[page._id].modify = {}
   state.pages.data[page._id].err = ''
 }
 export function failedUpdatepage(state, { id, err }) {
@@ -127,5 +131,13 @@ export function successDeletePost(state, id) {
 }
 export function successDeletePage(state, id) {
   Vue.delete(state.pages.page, id)
+}
+//#endregion
+//#region edit
+export function editPost(state, { id, obj }) {
+  Vue.set(state.posts.data[id], 'modify', obj)
+}
+export function editPage(state, { id, obj }) {
+  Vue.set(state.pages.data[id], 'modify', obj)
 }
 //#endregion
