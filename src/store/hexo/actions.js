@@ -35,22 +35,41 @@ export async function listCategories({ commit }) {
     commit('failedListCategories', err)
   }
 }
-export async function newPostOrPage({ dispatch }, opt = {}) {
+export async function newPostOrPage({ commit, dispatch }, opt = {}) {
   // TODO:添加文章的状态管理，fakeID？
   if (opt.title === undefined) throw new Error('title is required')
-  await services.hexo.newPostOrPage(opt.title, opt)
-  // TODO 更新本地数据
+  const res = await services.hexo.newPostOrPage(opt.title, opt)
+  if (res.__post) {
+    commit('successNewPost', res)
+    dispatch('listTags')
+    dispatch('listCategories')
+  } else commit('successNewPage', res)
 }
-export async function updatePostOrPage({ dispatch }, opt = {}) {
+export async function updatePostOrPage({ commit, dispatch }, opt = {}) {
   if (opt.id === undefined) throw new Error('id is required')
-  if (opt.page === undefined) throw new Error('page is required')
+  if (opt.page === undefined) throw new Error('page(boolean) is required')
   if (opt.obj === undefined) throw new Error('obj is required')
-  await services.hexo.updatePostOrPage(opt.id, opt.page, opt.obj)
-  // TODO 更新本地数据
+  if (!opt.page) commit('requestUpdatePost', opt.id)
+  else commit('requestUpdatePage'.opt.id)
+  try {
+    const res = await services.hexo.updatePostOrPage(opt.id, opt.page, opt.obj)
+    if (!opt.page) {
+      commit('successUpdatePost', res)
+      dispatch('listTags')
+      dispatch('listCategories')
+    } else commit('successUpdatePage', res)
+  } catch (err) {
+    if (!opt.page) commit('failedUpdatePost', { id: opt.id, err })
+    else commit('failedUpdatePage', { id: opt.id, err })
+  }
 }
-export async function deletePostOrPage({ dispatch }, opt = {}) {
+export async function deletePostOrPage({ commit, dispatch }, opt = {}) {
   if (opt.id === undefined) throw new Error('id is required')
   if (opt.page === undefined) throw new Error('page is required')
-  await services.hexo.deletePostOrPage(opt.id, opt.page, opt.obj)
-  // TODO 更新本地数据
+  await services.hexo.deletePostOrPage(opt.id, opt.page)
+  if (!opt.page) {
+    commit('successDeletePost', opt.id)
+    dispatch('listTags')
+    dispatch('listCategories')
+  } else commit('successDeletePage', opt.id)
 }

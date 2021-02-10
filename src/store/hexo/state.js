@@ -4,10 +4,11 @@ export default function () {
       loading: false,
       data: {
         // xxx: {
-        //   status: 'ready', // 'edited', 'loading'
+        //   status: 'ready', // 'edited', 'saving','loading',
         //   data: {
         //     xxx: xxx
-        //   }
+        //   },
+        //   err: ''
         // }
       },
       err: ''
