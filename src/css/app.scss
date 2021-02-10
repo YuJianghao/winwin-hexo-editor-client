@@ -1,15 +1,1 @@
 // app global css in SCSS form
-
-.ww-nofity {
-  width: 300px;
-}
-.q-loading{
-  backdrop-filter: blur(3px);
-  user-select: none;
-  &::before{
-    opacity: .3;
-  }
-  & div:last-child{
-    font-size: 21px;
-  }
-}
