@@ -1,6 +1,6 @@
 <template>
-  <q-page :style-fn="styleFn" class="bg-dark-2 column">
-    <div class="flex flex-center col">
+  <q-page :style-fn="styleFn" class="bg-dark-2 column overflow-auto no-wrap">
+    <div class="flex flex-center" style="flex:1 0 0">
       <q-form
         @submit="onSubmit"
         @reset="onReset"
@@ -13,19 +13,19 @@
             style="max-width:100px;margin:0 auto;display:block"
           />
         </div>
-        <p class="text-grey-6 text-center" style="font-size:large">
+        <p class="text-grey-6 text-center text-no-wrap" style="font-size:large">
           登录到 Hexo editor
         </p>
         <m-input
           v-model="name"
-          :error="!!error"
           type="text"
+          :error="error"
           icon="person"
         ></m-input>
         <m-input
           v-model="pass"
-          :error="!!error"
           type="password"
+          :error="error"
           icon="security"
         ></m-input>
         <div class="row">
@@ -54,7 +54,10 @@
         </div>
       </q-form>
     </div>
-    <div class="text-center text-grey-6 text-h6" style="font-size:x-small">
+    <div
+      class="text-center text-grey-6 text-h6 text-no-wrap"
+      style="font-size:x-small"
+    >
       ©️ 2019 ~ {{ year }} winwin_2011
     </div>
   </q-page>
@@ -79,7 +82,7 @@ export default {
       return new Date().getFullYear();
     },
     ...mapState("user", {
-      error: state => state.err
+      error: state => state.err.indexOf("wrong") >= 0
       // TODO: 处理详细的错误代码
     })
   },
@@ -91,15 +94,10 @@ export default {
     },
     onReset() {},
     async onSubmit() {
-      try {
-        await this.$store.dispatch("user/login", {
-          name: this.name,
-          pass: this.pass
-        });
-      } catch (err) {
-        this.error = true;
-        console.dir(err);
-      }
+      await this.$store.dispatch("user/login", {
+        name: this.name,
+        pass: this.pass
+      });
     }
   }
 };
