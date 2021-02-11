@@ -168,6 +168,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import NavPart from "../components/NavPart";
 import MInput from "../components/MInput";
 export default {
@@ -181,6 +182,11 @@ export default {
       nav: 200,
       list: 320
     };
+  },
+  computed: {
+    ...mapGetters("hexo", {
+      treeNodes: "categoriesTreeNodes"
+    })
   },
   methods: {
     styleFn(offset, height) {

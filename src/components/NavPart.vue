@@ -55,25 +55,25 @@
           icon="archive"
           title="全部"
           color="green"
-          :count="16"
+          :count="totalCount"
         ></nav-list-item>
         <nav-list-item
           icon="create"
           title="文章"
           color="primary"
-          :count="16"
+          :count="postCount"
         ></nav-list-item>
         <nav-list-item
           icon="drafts"
           title="草稿"
           color="yellow-8"
-          :count="16"
+          :count="draftCount"
         ></nav-list-item>
         <nav-list-item
           icon="insert_drive_file"
           title="页面"
           color="cyan"
-          :count="16"
+          :count="pageCount"
         ></nav-list-item>
       </q-list>
       <q-item class="text-bold title">
@@ -82,20 +82,11 @@
         </q-item-section>
       </q-item>
       <q-list dense>
-        <nav-list-item
-          icon="folder"
-          title="代码"
-          color="yellow-6"
-          :count="16"
-        ></nav-list-item>
-        <nav-list-item
-          icon="folder"
-          title="代码"
-          color="yellow-6"
-          :count="16"
-          :indent="1"
-          selected
-        ></nav-list-item>
+        <category-item
+          v-for="node in categoriesTreeNodes"
+          :key="node._id"
+          :node="node"
+        ></category-item>
       </q-list>
       <q-item class="text-bold title">
         <q-item-section>
@@ -107,12 +98,15 @@
           square
           clickable
           class="bg-grey-8 text-grey-4"
-          dense
           :ripple="false"
-          size="small"
+          size="xx-small"
+          v-for="tag in tagsList"
+          :key="tag._id"
         >
-          <q-avatar color="grey-9" text-color="white">50</q-avatar>
-          vue3
+          <q-avatar color="grey-9" text-color="white" class="q-mr-xs">{{
+            tag.posts.length
+          }}</q-avatar>
+          {{ tag.name }}
         </q-chip>
       </div>
     </q-scroll-area>
@@ -141,15 +135,28 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import NavListItem from "./NavListItem";
+import CategoryItem from "./CategoryItem";
 import Settings from "./Settings";
 export default {
   name: "NavPart",
   components: {
-    NavListItem
+    NavListItem,
+    CategoryItem
   },
   data() {
     return {};
+  },
+  computed: {
+    ...mapGetters("hexo", [
+      "categoriesTreeNodes",
+      "tagsList",
+      "postCount",
+      "pageCount",
+      "totalCount",
+      "draftCount"
+    ])
   },
   methods: {
     onSettings() {
