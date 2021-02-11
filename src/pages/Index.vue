@@ -138,47 +138,44 @@
                       >
                     </q-item-section>
                   </q-item>
-                  <template v-for="n in 100">
-                    <q-separator
-                      :key="n"
-                      dark
-                      class="bg-grey-9"
-                      style="margin-left:20px"
-                    />
-                    <q-item clickable :key="n">
-                      <q-item-section>
-                        <q-item-label class="text-grey-3 text-bold"
-                          >PowerShell美化指南
-                        </q-item-label>
-                        <q-item-label caption lines="3" class="text-grey-5"
-                          >安装Windows
-                          Terminal然后美化PowerShell。记得先看完本文流程再打开推荐的文章！不然容易搞错哦！Windows
-                          Terminal 设置
-                          首先从应用商店安装然后需要配置右键打开。参照这篇文章。
-                        </q-item-label>
-                        <q-item-label>
-                          <q-badge
-                            color="grey-9"
-                            text-color="grey-6"
-                            class="q-mr-xs"
-                            label="Powershell"
-                          />
-                          <q-badge
-                            color="grey-9"
-                            text-color="grey-6"
-                            class="q-mr-xs"
-                            label="Windows"
-                          />
-                        </q-item-label>
-                        <q-item-label
-                          class="text-blue q-pt-sm"
-                          style="font-size:xx-small"
-                        >
-                          9天前</q-item-label
-                        >
-                      </q-item-section>
-                    </q-item>
-                  </template>
+                  <q-separator
+                    dark
+                    class="bg-grey-9"
+                    style="margin-left:20px"
+                  />
+                  <q-item clickable>
+                    <q-item-section>
+                      <q-item-label class="text-grey-3 text-bold"
+                        >PowerShell美化指南
+                      </q-item-label>
+                      <q-item-label caption lines="3" class="text-grey-5"
+                        >安装Windows
+                        Terminal然后美化PowerShell。记得先看完本文流程再打开推荐的文章！不然容易搞错哦！Windows
+                        Terminal 设置
+                        首先从应用商店安装然后需要配置右键打开。参照这篇文章。
+                      </q-item-label>
+                      <q-item-label>
+                        <q-badge
+                          color="grey-9"
+                          text-color="grey-6"
+                          class="q-mr-xs"
+                          label="Powershell"
+                        />
+                        <q-badge
+                          color="grey-9"
+                          text-color="grey-6"
+                          class="q-mr-xs"
+                          label="Windows"
+                        />
+                      </q-item-label>
+                      <q-item-label
+                        class="text-blue q-pt-sm"
+                        style="font-size:xx-small"
+                      >
+                        9天前</q-item-label
+                      >
+                    </q-item-section>
+                  </q-item>
                 </q-list>
               </q-scroll-area>
             </div>

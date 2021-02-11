@@ -1,4 +1,6 @@
+import auth from './auth'
 import hexo from './hexo'
 export default {
-  hexo
+  auth,
+  hexo,
 }
