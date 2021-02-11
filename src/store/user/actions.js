@@ -24,9 +24,6 @@ export async function info({ commit, dispatch }) {
     const info = (await api.auth.info()).data
     commit('successInfo', info)
   } catch (err) {
-    if (err.response.status === 401) {
-      dispatch('logout', true)
-      // TODO: 登录检测不通过
-    } else commit('failedInfo', err)
+    if (err.response.status !== 401) commit('failedInfo', err)
   }
 }
