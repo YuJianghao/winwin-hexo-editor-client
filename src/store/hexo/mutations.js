@@ -52,7 +52,7 @@ export function successListTags(state, tagsList) {
     const obj = {}
     obj.status = 'ready'
     obj.data = tag
-    state.tags.data[tag._id] = obj
+    Vue.set(state.tags.data, tag._id, obj)
   })
   state.tags.err = ''
 }
@@ -72,7 +72,7 @@ export function successListCategories(state, categoriesList) {
     const obj = {}
     obj.status = 'ready'
     obj.data = category
-    state.categories.data[category._id] = obj
+    Vue.set(state.categories.data, category._id, obj)
   })
   state.categories.err = ''
 }
@@ -143,25 +143,25 @@ export function editPage(state, { id, obj }) {
 //#endregion
 //#region
 export function clear(state) {
-  state.posts = {
+  Vue.set(state, 'posts', {
     loading: false,
     data: {},
     err: ''
-  }
-  state.pages = {
+  })
+  Vue.set(state, 'pages', {
     loading: false,
     data: {},
     err: ''
-  }
-  state.tags = {
+  })
+  Vue.set(state, 'tags', {
     loading: false,
     data: {},
     err: ''
-  }
-  state.categories = {
+  })
+  Vue.set(state, 'categories', {
     loading: false,
     data: {},
     err: ''
-  }
+  })
 }
 //#endregion
