@@ -6,11 +6,12 @@ import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "src/utils/constants"
 import { Logger } from "src/utils/logger"
 const logger = new Logger({ prefix: 'user actions' })
 
-export async function login({ commit }, { name, pass }) {
+export async function login({ commit, dispatch }, { name, pass }) {
   commit('requestLogin')
   try {
     // TODO: 有机会了添加auth service，封装http错误
     await api.auth.login(name, pass)
+    await dispatch('info')
     commit('successLogin')
     Vue.notify({
       title: '登录成功',

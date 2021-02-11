@@ -13,7 +13,7 @@
       />
     </q-toolbar>
     <div class="full-width">
-      <q-item class="text-grey-3 title">
+      <q-item class="title">
         <q-item-section>
           <q-item-label class="ellipsis">操作</q-item-label>
         </q-item-section>
@@ -21,83 +21,83 @@
     </div>
 
     <q-list class="full-width" dense>
-      <nav-part-item
+      <nav-list-item
         icon="local_airport"
         title="部署"
         color="primary"
-      ></nav-part-item>
-      <nav-part-item
+      ></nav-list-item>
+      <nav-list-item
         icon="movie_filter"
         title="生成"
         color="primary"
-      ></nav-part-item>
-      <nav-part-item icon="toys" title="清理" color="red"></nav-part-item>
-      <nav-part-item
+      ></nav-list-item>
+      <nav-list-item icon="toys" title="清理" color="red"></nav-list-item>
+      <nav-list-item
         icon="flight_takeoff"
         title="同步到GIT"
         color="primary"
-      ></nav-part-item>
-      <nav-part-item
+      ></nav-list-item>
+      <nav-list-item
         icon="flight_land"
         title="从GIT同步"
         color="red"
-      ></nav-part-item>
+      ></nav-list-item>
     </q-list>
 
     <q-scroll-area class="col full-width">
-      <q-item class="text-grey-3 text-bold title">
+      <q-item class="text-bold title">
         <q-item-section>
           <q-item-label class="ellipsis">筛选</q-item-label>
         </q-item-section>
       </q-item>
       <q-list dense>
-        <nav-part-item
+        <nav-list-item
           icon="archive"
           title="全部"
           color="green"
           :count="16"
-        ></nav-part-item>
-        <nav-part-item
+        ></nav-list-item>
+        <nav-list-item
           icon="create"
           title="文章"
           color="primary"
           :count="16"
-        ></nav-part-item>
-        <nav-part-item
+        ></nav-list-item>
+        <nav-list-item
           icon="drafts"
           title="草稿"
           color="yellow-8"
           :count="16"
-        ></nav-part-item>
-        <nav-part-item
+        ></nav-list-item>
+        <nav-list-item
           icon="insert_drive_file"
           title="页面"
           color="cyan"
           :count="16"
-        ></nav-part-item>
+        ></nav-list-item>
       </q-list>
-      <q-item class="text-grey-3 text-bold title">
+      <q-item class="text-bold title">
         <q-item-section>
           <q-item-label class="ellipsis">分类</q-item-label>
         </q-item-section>
       </q-item>
       <q-list dense>
-        <nav-part-item
+        <nav-list-item
           icon="folder"
           title="代码"
           color="yellow-6"
           :count="16"
-        ></nav-part-item>
-        <nav-part-item
+        ></nav-list-item>
+        <nav-list-item
           icon="folder"
           title="代码"
           color="yellow-6"
           :count="16"
           :indent="1"
           selected
-        ></nav-part-item>
+        ></nav-list-item>
       </q-list>
-      <q-item class="text-grey-3 text-bold title">
+      <q-item class="text-bold title">
         <q-item-section>
           <q-item-label class="ellipsis">标签云</q-item-label>
         </q-item-section>
@@ -117,10 +117,7 @@
       </div>
     </q-scroll-area>
     <div class="full-width">
-      <q-btn color="primary" icon="logout" label="退出" @click="onClick" />
-    </div>
-    <div class="full-width">
-      <q-item clickable>
+      <q-item clickable @click="onSettings">
         <q-item-section side>
           <q-avatar
             size="32px"
@@ -130,7 +127,9 @@
           />
         </q-item-section>
         <q-item-section>
-          <q-item-label class="text-grey-3 text-bold">Admin</q-item-label>
+          <q-item-label class="text-grey-3 text-bold">{{
+            $store.state.user.info.data.name
+          }}</q-item-label>
           <q-item-label class="text-grey-6" caption>已登录</q-item-label>
         </q-item-section>
         <q-item-section side>
@@ -142,18 +141,30 @@
 </template>
 
 <script>
-import NavPartItem from "./NavPartItem";
+import NavListItem from "./NavListItem";
+import Settings from "./Settings";
 export default {
   name: "NavPart",
   components: {
-    NavPartItem
+    NavListItem
   },
   data() {
     return {};
   },
   methods: {
-    onClick() {
-      this.$store.dispatch("user/logout");
+    onSettings() {
+      this.$q.dialog({
+        component: Settings,
+
+        // optional if you want to have access to
+        // Router, Vuex store, and so on, in your
+        // custom component:
+        parent: this // becomes child of this Vue node
+        // ("this" points to your Vue component)
+        // (prop was called "root" in < 1.1.0 and
+        // still works, but recommending to switch
+        // to the more appropriate "parent" name)
+      });
     }
   }
 };

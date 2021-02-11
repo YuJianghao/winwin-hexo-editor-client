@@ -31,6 +31,7 @@ export function logout(state) {
   state.alive = false
   state.pending = false
   state.err = ''
+  state.info.data = {}
 }
 export function check(state) {
   state.first = false

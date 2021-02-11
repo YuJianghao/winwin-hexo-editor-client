@@ -13,8 +13,7 @@ export default {
   name: "MInput",
   props: {
     value: {
-      type: String,
-      required: true
+      type: String
     },
     type: {
       type: String

@@ -47,6 +47,16 @@
             flat
             rounded
             size="x-small"
+            class="col q-mr-sm"
+            style="height:30px"
+            :ripple="false"
+          />
+          <q-btn
+            color="grey-6"
+            label="帮助"
+            flat
+            rounded
+            size="x-small"
             class="col"
             style="height:30px"
             :ripple="false"

@@ -66,20 +66,16 @@ body{
   sans-serif !important;
   user-select: none;
 }
-.nav-part .q-item.item,
+.nav-part .q-item.title {
+  color: $grey-3;
+}
+  .nav-part .q-item.item,
 .nav-part .q-item.title{
   margin: 2px 4px 2px 16px;
   padding: 0 2px 0 16px;
   border-radius: 6px;
-  color: $grey-3;
 }
-.nav-part .q-list--dense>.q-item,
-.nav-part .q-item--dense{
-  min-height: 28px;
-}
-.nav-part .q-item__section--side{
-  padding-right: 8px;
-}
+
 .list-part{
   .drop-handler{
     &:hover{
