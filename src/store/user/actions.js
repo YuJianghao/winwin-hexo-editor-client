@@ -44,6 +44,7 @@ export async function logout({ commit }, local) {
     LocalStorage.remove(REFRESH_TOKEN_KEY)
     commit('logout')
     commit('hexo/clear', null, { root: true })
+    commit('ui/setFilter', { type: 'all' }, { root: true })
     if (!local) Vue.notify({
       title: '登出成功',
       type: 'success',
