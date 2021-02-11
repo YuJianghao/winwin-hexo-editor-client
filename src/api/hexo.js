@@ -1,16 +1,16 @@
-import { axios } from 'axios'
+import { request } from './request'
 export default {
   listPosts: async () => {
-    return axios.get('/posts')
+    return request.get('/posts')
   },
   listPages: async () => {
-    return axios.get('/pages')
+    return request.get('/pages')
   },
   listTags: async () => {
-    return axios.get('/tags')
+    return request.get('/tags')
   },
   listCategories: async () => {
-    return axios.get('/categories')
+    return request.get('/categories')
   },
   newPostOrPage: async (title, opt = {}) => {
     const { layout, path, slug, replace } = opt
@@ -18,12 +18,12 @@ export default {
     new Array([layout, path, slug, replace]).map(key => {
       if (key !== undefined) { data[key] = key }
     })
-    return axios.post('/new', data)
+    return request.post('/new', data)
   },
   updatePostOrPage: async (id, page, obj) => {
-    return axios.post('/update', { id, page, obj })
+    return request.post('/update', { id, page, obj })
   },
   deletePostOrPage: async (id, page) => {
-    return axios.post('/delete', { id, page })
+    return request.post('/delete', { id, page })
   },
 }

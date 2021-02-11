@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import hexo from './hexo'
+import user from './user'
 // import example from './module-example'
 
 Vue.use(Vuex)
@@ -17,7 +18,8 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      hexo
+      hexo,
+      user,
     },
 
     // enable strict mode (adds overhead!)
