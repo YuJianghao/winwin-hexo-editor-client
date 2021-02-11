@@ -32,3 +32,6 @@ export function logout(state) {
   state.pending = false
   state.err = ''
 }
+export function check(state) {
+  state.first = false
+}

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { LocalStorage } from 'quasar'
 import Store from 'src/store'
+import Router from '../router'
 import { ACCESS_TOKEN_KEY } from 'src/utils/constants'
 import api from '.'
 const BASEURL = process.env.DEV ? '/api' : window.location.origin
@@ -27,6 +28,8 @@ request.interceptors.response.use(res => res, async err => {
       refreshed = true
     } catch (e) {
       Store.dispatch('user/logout', true)
+      if (Router.app.$route.path !== '/login')
+        Router.push('/login')
       // TODO: token刷新失败，跳转路由
       throw err
     }
