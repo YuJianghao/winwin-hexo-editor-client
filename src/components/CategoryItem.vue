@@ -6,6 +6,8 @@
       color="yellow-6"
       :count="node.posts.length"
       :indent="indent"
+      @on-click="setFilter({ type: 'category', id: node._id })"
+      :selected="filter.type === 'category' && filter.id === node._id"
     ></nav-list-item>
     <category-item
       v-for="child in node._child"
@@ -17,6 +19,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
 import NavListItem from "./NavListItem";
 export default {
   name: "CategoryItem",
@@ -34,6 +37,12 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    ...mapState("ui", ["filter"])
+  },
+  methods: {
+    ...mapMutations("ui", ["setFilter"])
   }
 };
 </script>

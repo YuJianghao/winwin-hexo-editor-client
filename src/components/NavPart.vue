@@ -56,24 +56,32 @@
           title="全部"
           color="green"
           :count="totalCount"
+          @on-click="setFilter({ type: 'all' })"
+          :selected="filter.type === 'all'"
         ></nav-list-item>
         <nav-list-item
           icon="create"
           title="文章"
           color="primary"
           :count="postCount"
+          @on-click="setFilter({ type: 'post' })"
+          :selected="filter.type === 'post'"
         ></nav-list-item>
         <nav-list-item
           icon="drafts"
           title="草稿"
           color="yellow-8"
           :count="draftCount"
+          @on-click="setFilter({ type: 'draft' })"
+          :selected="filter.type === 'draft'"
         ></nav-list-item>
         <nav-list-item
           icon="insert_drive_file"
           title="页面"
           color="cyan"
           :count="pageCount"
+          @on-click="setFilter({ type: 'page' })"
+          :selected="filter.type === 'page'"
         ></nav-list-item>
       </q-list>
       <q-item class="text-bold title">
@@ -94,20 +102,12 @@
         </q-item-section>
       </q-item>
       <div class="tags">
-        <q-chip
-          square
-          clickable
-          class="bg-grey-8 text-grey-4"
-          :ripple="false"
-          size="xx-small"
+        <tag-item
           v-for="tag in tagsList"
           :key="tag._id"
-        >
-          <q-avatar color="grey-9" text-color="white" class="q-mr-xs">{{
-            tag.posts.length
-          }}</q-avatar>
-          {{ tag.name }}
-        </q-chip>
+          :tag="tag"
+          :selected="filter.type === 'tag' && filter.id === tag._id"
+        ></tag-item>
       </div>
     </q-scroll-area>
     <div class="full-width">
@@ -135,20 +135,23 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapState, mapGetters, mapMutations } from "vuex";
 import NavListItem from "./NavListItem";
+import TagItem from "./TagItem";
 import CategoryItem from "./CategoryItem";
 import Settings from "./Settings";
 export default {
   name: "NavPart",
   components: {
     NavListItem,
+    TagItem,
     CategoryItem
   },
   data() {
     return {};
   },
   computed: {
+    ...mapState("ui", ["filter"]),
     ...mapGetters("hexo", [
       "categoriesTreeNodes",
       "tagsList",
@@ -159,6 +162,7 @@ export default {
     ])
   },
   methods: {
+    ...mapMutations("ui", ["setFilter"]),
     onSettings() {
       this.$q.dialog({
         component: Settings,

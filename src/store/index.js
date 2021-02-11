@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import common from './common'
 import hexo from './hexo'
 import user from './user'
+import ui from './ui'
 // import example from './module-example'
 
 Vue.use(Vuex)
@@ -21,6 +22,7 @@ const Store = new Vuex.Store({
     common,
     hexo,
     user,
+    ui
   },
 
   // enable strict mode (adds overhead!)
