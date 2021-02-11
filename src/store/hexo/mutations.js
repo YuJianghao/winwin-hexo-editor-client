@@ -141,3 +141,27 @@ export function editPage(state, { id, obj }) {
   Vue.set(state.pages.data[id], 'modify', obj)
 }
 //#endregion
+//#region
+export function clear(state) {
+  state.posts = {
+    loading: false,
+    data: {},
+    err: ''
+  }
+  state.pages = {
+    loading: false,
+    data: {},
+    err: ''
+  }
+  state.tags = {
+    loading: false,
+    data: {},
+    err: ''
+  }
+  state.categories = {
+    loading: false,
+    data: {},
+    err: ''
+  }
+}
+//#endregion

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import common from './common'
 import hexo from './hexo'
 import user from './user'
 // import example from './module-example'
@@ -17,6 +18,7 @@ Vue.use(Vuex)
 
 const Store = new Vuex.Store({
   modules: {
+    common,
     hexo,
     user,
   },

@@ -13,7 +13,7 @@ export default async ({ router, store }) => {
   router.beforeEach(async (to, from, next) => {
     if (store.state.user.first) {
       store.commit('user/check')
-      await store.dispatch("user/info")
+      await store.dispatch("init")
     }
     if (store.state.user.alive) {
       if (to.path === '/login') next(from.path)

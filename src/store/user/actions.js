@@ -11,7 +11,7 @@ export async function login({ commit, dispatch }, { name, pass }) {
   try {
     // TODO: 有机会了添加auth service，封装http错误
     await api.auth.login(name, pass)
-    await dispatch('info')
+    await dispatch('init', null, { root: true })
     commit('successLogin')
     Vue.notify({
       title: '登录成功',
@@ -43,6 +43,7 @@ export async function logout({ commit }, local) {
     LocalStorage.remove(ACCESS_TOKEN_KEY)
     LocalStorage.remove(REFRESH_TOKEN_KEY)
     commit('logout')
+    commit('hexo/clear', null, { root: true })
     if (!local) Vue.notify({
       title: '登出成功',
       type: 'success',
