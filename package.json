@@ -15,6 +15,7 @@
     "core-js": "^3.6.5",
     "crypto-js": "^4.0.0",
     "quasar": "^1.0.0",
+    "view-design": "^4.5.0",
     "vue-i18n": "^8.0.0"
   },
   "devDependencies": {

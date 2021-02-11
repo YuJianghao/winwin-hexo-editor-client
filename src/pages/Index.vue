@@ -3,7 +3,7 @@
     <q-splitter
       v-model="nav"
       unit="px"
-      separator-style="background:#282828"
+      separator-class="bg-dark-3"
       class="split fit"
       :limits="[180, Infinity]"
     >
@@ -14,34 +14,14 @@
         <q-splitter
           v-model="list"
           unit="px"
-          separator-style="background:#323232"
+          separator-class="bg-dark-3"
           class="fit"
           :limits="[250, Infinity]"
         >
           <template v-slot:before
             ><div class="list-part fit column">
               <q-toolbar class="text-white">
-                <div style="border-radius:32px" class="bg-grey-9 col">
-                  <q-input
-                    dense
-                    rounded
-                    borderless
-                    dark
-                    class="q-mx-sm"
-                    style="height:30px"
-                  >
-                    <template v-slot:prepend>
-                      <q-icon name="search" size="medium" />
-                    </template>
-                    <template v-slot:append>
-                      <q-icon
-                        name="close"
-                        size="medium"
-                        class="cursor-pointer"
-                      />
-                    </template>
-                  </q-input>
-                </div>
+                <m-input icon="search" class="col"></m-input>
                 <q-btn
                   color="primary"
                   icon="add"
@@ -189,10 +169,12 @@
 
 <script>
 import NavPart from "../components/NavPart";
+import MInput from "../components/MInput";
 export default {
   name: "PageIndex",
   components: {
-    NavPart
+    NavPart,
+    MInput
   },
   data() {
     return {

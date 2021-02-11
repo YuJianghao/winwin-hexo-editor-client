@@ -117,6 +117,9 @@
       </div>
     </q-scroll-area>
     <div class="full-width">
+      <q-btn color="primary" icon="logout" label="退出" @click="onClick" />
+    </div>
+    <div class="full-width">
       <q-item clickable>
         <q-item-section side>
           <q-avatar
@@ -147,6 +150,11 @@ export default {
   },
   data() {
     return {};
+  },
+  methods: {
+    onClick() {
+      this.$store.dispatch("user/logout");
+    }
   }
 };
 </script>

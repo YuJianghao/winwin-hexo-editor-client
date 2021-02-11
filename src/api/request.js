@@ -30,7 +30,6 @@ request.interceptors.response.use(res => res, async err => {
       Store.dispatch('user/logout', true)
       if (Router.app.$route.path !== '/login')
         Router.push('/login')
-      // TODO: token刷新失败，跳转路由
       throw err
     }
     if (refreshed) {

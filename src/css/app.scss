@@ -2,8 +2,28 @@
 .q-menu{
   transition:.2s !important
 }
+
+.text-dark-1 {
+  color: $dark-1;
+}
+.bg-dark-1 {
+  background-color: $dark-1;
+}
+.text-dark-2 {
+  color: $dark-2;
+}
+.bg-dark-2 {
+  background-color: $dark-2;
+}
+.text-dark-3 {
+  color: $dark-3;
+}
+
+.bg-dark-3 {
+  background-color: $dark-3;
+}
 .split .nav-part {
-  background-color: #1f1f1f;
+  background-color: $dark-1;
 
   .title {
     font-weight: bolder;
@@ -24,11 +44,11 @@
 }
 
 .split .list-part {
-  background-color: #282828;
+  background-color: $dark-2;
 }
 
 .split .view-part {
-  background-color: #323232;
+  background-color: $dark-3;
 }
 body{
   font-family:"PingFang SC",
