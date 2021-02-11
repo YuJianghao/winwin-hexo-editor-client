@@ -133,8 +133,8 @@ module.exports = function (/* ctx */) {
         description: `An online hexo blog editor`,
         display: 'standalone',
         orientation: 'portrait',
-        background_color: '#ffffff',
-        theme_color: '#027be3',
+        background_color: '#323232',
+        theme_color: '#1f1f1f',
         icons: [
           {
             src: 'icons/icon-128x128.png',
