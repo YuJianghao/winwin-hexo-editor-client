@@ -25,7 +25,7 @@
         :class="dark ? 'text-grey-6' : 'text-grey-7'"
         >{{ article._content.slice(0, 100) }}
       </q-item-label>
-      <q-item-label v-if="article.tags.length > 0">
+      <q-item-label v-if="article.tags && article.tags.length > 0">
         <q-badge
           :color="dark ? 'grey-9' : 'grey-4'"
           :text-color="dark ? 'grey-6' : 'grey-8'"

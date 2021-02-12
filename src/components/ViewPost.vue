@@ -32,12 +32,53 @@
       </div>
     </div>
     <template v-else>
-      <div class="fit">
+      <div class="fit column" :class="dark ? 'text-grey-3' : 'text-grey-9'">
+        <q-toolbar>
+          <q-space />
+          <q-btn
+            size="x-small"
+            class="q-ml-sm"
+            icon="edit"
+            color="primary"
+            :ripple="false"
+            flat
+            round
+          />
+          <q-btn
+            size="x-small"
+            class="q-ml-sm"
+            icon="delete"
+            color="negative"
+            :ripple="false"
+            flat
+            round
+          />
+          <q-btn
+            size="x-small"
+            class="q-ml-sm"
+            icon="more_horiz"
+            :ripple="false"
+            flat
+            round
+          />
+        </q-toolbar>
         <q-scroll-area
-          class="fit"
+          class="col viewer"
           :thumb-style="{ width: '6px', borderRadius: '3px' }"
         >
-          {{ post._content }}
+          <div style="padding-bottom:50px">
+            <div class="container">
+              <div class="header">
+                <div class="title">
+                  {{ post.title }}
+                </div>
+                <div class="date">
+                  {{ new Date(post.date).toString() }}
+                </div>
+              </div>
+            </div>
+            <q-markdown :src="post._content" class="container"></q-markdown>
+          </div>
         </q-scroll-area>
       </div>
     </template>
@@ -55,6 +96,9 @@ export default {
     ...mapState("hexo", {
       posts: state => state.posts.data
     }),
+    dark() {
+      return this.$q.dark.isActive;
+    },
     post() {
       const obj = this.posts[this.$route.params.id];
       return obj ? obj.data : null;
@@ -68,3 +112,56 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.viewer,
+.viewer * {
+  user-select: text;
+}
+.container {
+  margin: 0 auto;
+  max-width: 768px;
+}
+.header {
+  margin-bottom: 40px;
+}
+.title {
+  font-size: xx-large;
+}
+.date {
+  margin: 10px 0;
+  color: $primary;
+}
+</style>
+<style lang="scss">
+.q-markdown--note,
+blockquote.q-markdown--note,
+.q-markdown--line-numbers-wrapper,
+.body--dark .q-markdown .q-markdown--note,
+.body--dark .q-markdown blockquote.q-markdown--note,
+.body--dark .q-markdown .q-markdown--line-numbers-wrapper {
+  border: none;
+  border-radius: 6px;
+}
+.q-markdown--link {
+  color: $primary;
+  border-bottom: none;
+}
+.q-markdown .q-markdown--token {
+  border-color: $grey-5;
+}
+.body--dark .q-markdown .q-markdown--token {
+  border-color: $grey-7;
+}
+.q-markdown--table,
+.q-markdown--table thead tr th,
+.q-markdown--table tbody td,
+.q-markdown--table tbody th {
+  border-style: none;
+}
+.footnote-backref,
+.footnote-backref a,
+.footnote-ref,
+.footnote-ref a {
+  color: $primary;
+}
+</style>

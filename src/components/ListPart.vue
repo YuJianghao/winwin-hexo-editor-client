@@ -11,6 +11,7 @@
         color="primary"
         icon="add"
         round
+        :ripple="false"
         size="x-small"
         class="q-ml-sm bg-whtie"
       />

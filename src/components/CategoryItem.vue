@@ -3,7 +3,7 @@
     <nav-list-item
       icon="folder"
       :title="node.name"
-      color="yellow-6"
+      color="yellow-8"
       :count="node.posts.length"
       :indent="indent"
       @on-click="setFilter({ type: 'category', id: node._id })"
