@@ -2,7 +2,12 @@
   <div class="m-input" :class="{ error: error }">
     <div class="row items-center q-px-sm bg-grey-9 text-grey-3 main">
       <q-icon :name="icon" v-if="icon" />
-      <input :type="type" class="col q-mx-xs text-grey-3" v-model="text" />
+      <input
+        :type="type"
+        :placeholder="placeholder"
+        class="col q-mx-xs text-grey-3"
+        v-model="text"
+      />
       <q-icon name="close" class="action" @click="onReset" />
     </div>
   </div>
@@ -13,6 +18,9 @@ export default {
   name: "MInput",
   props: {
     value: {
+      type: String
+    },
+    placeholder: {
       type: String
     },
     type: {

@@ -71,7 +71,7 @@ body{
 }
   .nav-part .q-item.item,
 .nav-part .q-item.title{
-  margin: 2px 4px 2px 16px;
+  margin: 2px 8px 2px 16px;
   padding: 0 2px 0 16px;
   border-radius: 6px;
 }
@@ -80,11 +80,6 @@ body{
   .drop-handler{
     &:hover{
       cursor: pointer;
-    }
-  }
-  .article-list{
-    .q-item{
-      padding: 20px 10px 20px 20px;
     }
   }
 }

@@ -36,7 +36,5 @@ export function totalCount(state) {
 export function draftCount(state) {
   const postsObj = state.posts.data
   const postsList = Object.keys(postsObj).map(key => postsObj[key].data)
-  const pagesObj = state.pages.data
-  const pagesList = Object.keys(pagesObj).map(key => pagesObj[key].data)
-  return postsList.filter(p => !p.published).length + pagesList.filter(p => !p.published).length
+  return postsList.filter(p => !p.published).length
 }
