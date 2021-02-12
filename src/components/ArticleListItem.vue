@@ -75,9 +75,9 @@ export default {
     }),
     selected() {
       if (this.article._id !== this.$route.params.id) return false;
-      if (this.$route.params.type === "page" && this.article.__page === true)
+      if (this.$route.path.includes("page") && this.article.__page === true)
         return true;
-      if (this.$route.params.type === "post" && this.article.__post === true)
+      if (this.$route.path.includes("post") && this.article.__post === true)
         return true;
       return false;
     }
