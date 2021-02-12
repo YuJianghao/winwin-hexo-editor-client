@@ -8,8 +8,8 @@
     @click="setFilter({ type: 'tag', id: tag._id })"
   >
     <q-avatar
-      :color="selected ? 'grey-6' : 'grey-9'"
-      text-color="white"
+      :color="dark ? 'grey-9' : 'grey-5'"
+      :text-color="dark ? 'white' : 'black'"
       class="q-mr-xs"
       >{{ tag.posts.length }}</q-avatar
     >
@@ -35,10 +35,17 @@ export default {
   },
   computed: {
     ...mapState("ui", ["filter"]),
+    dark() {
+      return this.$q.dark.isActive;
+    },
     classes() {
       const classes = this.selected
-        ? ["bg-grey-3"]
-        : ["bg-grey-8", "text-grey-4"];
+        ? this.dark
+          ? ["bg-grey-3", "text-grey-9"]
+          : ["bg-grey-9", "text-grey-3"]
+        : this.dark
+        ? ["bg-grey-8", "text-grey-4"]
+        : ["bg-grey-4", "text-grey-8"];
       return classes;
     }
   },

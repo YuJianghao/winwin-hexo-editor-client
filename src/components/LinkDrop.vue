@@ -1,5 +1,5 @@
 <template>
-  <div style="display:inline-block;" class="drop-handler">
+  <div style="display:inline-block;padding:8px 0" class="drop-handler">
     {{ text }}
     <q-icon name="keyboard_arrow_down" />
     <slot />

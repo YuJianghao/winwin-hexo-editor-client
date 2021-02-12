@@ -1,13 +1,16 @@
 <template>
   <q-item
     clickable
-    :class="selected ? 'bg-dark-3' : ''"
+    :class="selected ? (dark ? 'bg-dark-3' : 'bg-light-1') : ''"
     @click="onClick"
     style="padding: 10px 16px;border-radius:6px"
     class="q-mx-sm q-my-xs"
   >
     <q-item-section>
-      <q-item-label class="text-grey-3 text-bold">
+      <q-item-label
+        class="text-bold"
+        :class="dark ? 'text-grey-3' : 'text-grey-9'"
+      >
         <q-icon
           name="drafts"
           color="yellow-9"
@@ -16,20 +19,23 @@
         <q-icon name="insert_drive_file" color="cyan" v-if="article.__page" />
         {{ article.title }}
       </q-item-label>
-      <q-item-label caption lines="3" class="text-grey-5"
+      <q-item-label
+        caption
+        lines="3"
+        :class="dark ? 'text-grey-6' : 'text-grey-7'"
         >{{ article._content.slice(0, 100) }}
       </q-item-label>
-      <q-item-label>
+      <q-item-label v-if="article.tags.length > 0">
         <q-badge
-          color="grey-9"
-          text-color="grey-6"
+          :color="dark ? 'grey-9' : 'grey-4'"
+          :text-color="dark ? 'grey-6' : 'grey-8'"
           class="q-mr-xs"
           :label="tags[tag].data.name"
           v-for="tag in article.tags"
           :key="tag"
         />
       </q-item-label>
-      <q-item-label class="text-blue q-pt-sm" style="font-size:xx-small">
+      <q-item-label class="text-blue q-pt-xs" style="font-size:xx-small">
         {{ readable(new Date().valueOf() - article.date) }}
       </q-item-label>
     </q-item-section>
@@ -73,6 +79,9 @@ export default {
       tags: state => state.tags.data,
       categories: state => state.categories.data
     }),
+    dark() {
+      return this.$q.dark.isActive;
+    },
     selected() {
       if (this.article._id !== this.$route.params.id) return false;
       if (this.$route.path.includes("page") && this.article.__page === true)

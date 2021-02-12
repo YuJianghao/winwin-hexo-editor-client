@@ -1,6 +1,6 @@
 <template>
   <div class="nav-part fit column overflow-hidden">
-    <q-toolbar class="text-white">
+    <q-toolbar :class="dark ? 'text-white' : 'text-grey-9'">
       <div class="text-h6" style="padding-left:18px">Hexo</div>
       <q-space />
       <q-btn
@@ -9,7 +9,7 @@
         dense
         icon="help_outline"
         size="xx-small"
-        color="grey-5"
+        :color="dark ? 'grey-5' : 'grey-5'"
       />
     </q-toolbar>
     <div class="full-width">
@@ -44,7 +44,10 @@
       ></nav-list-item>
     </q-list>
 
-    <q-scroll-area class="col full-width">
+    <q-scroll-area
+      class="col full-width"
+      :thumb-style="{ width: '6px', borderRadius: '3px' }"
+    >
       <q-item class="text-bold title">
         <q-item-section>
           <q-item-label class="ellipsis">筛选</q-item-label>
@@ -121,9 +124,11 @@
           />
         </q-item-section>
         <q-item-section>
-          <q-item-label class="text-grey-3 text-bold">{{
-            $store.state.user.info.data.name
-          }}</q-item-label>
+          <q-item-label
+            class="text-bold"
+            :class="dark ? 'text-white' : 'text-grey-9'"
+            >{{ $store.state.user.info.data.name }}</q-item-label
+          >
           <q-item-label class="text-grey-6" caption>已登录</q-item-label>
         </q-item-section>
         <q-item-section side>
@@ -159,7 +164,10 @@ export default {
       "pageCount",
       "totalCount",
       "draftCount"
-    ])
+    ]),
+    dark() {
+      return this.$q.dark.isActive;
+    }
   },
   methods: {
     ...mapMutations("ui", ["setFilter"]),
@@ -180,3 +188,41 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.nav-part {
+  .title {
+    font-weight: bolder;
+  }
+  .count {
+    color: $grey-5;
+    font-size: smaller;
+  }
+  .count::before {
+    content: " ";
+  }
+  .tags {
+    margin-left: 28px;
+  }
+  .q-item.item,
+  .q-item.title {
+    margin: 2px 8px 2px 16px;
+    padding: 0 2px 0 16px;
+    border-radius: 6px;
+    color: $grey-9;
+  }
+  .q-item.title {
+    color: $grey-9;
+  }
+}
+.body--dark {
+  .nav-part {
+    .count {
+      color: $grey-5;
+    }
+    .q-item.item,
+    .q-item.title {
+      color: $grey-3;
+    }
+  }
+}
+</style>

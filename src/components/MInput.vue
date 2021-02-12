@@ -1,12 +1,18 @@
 <template>
   <div class="m-input" :class="{ error: error }">
-    <div class="row items-center q-px-sm bg-grey-9 text-grey-3 main">
+    <div
+      class="row items-center q-px-sm main"
+      :class="
+        $q.dark.isActive ? 'bg-grey-9 text-grey-3' : 'bg-light-1 text-grey-9'
+      "
+    >
       <q-icon :name="icon" v-if="icon" />
       <input
         :type="type"
         :placeholder="placeholder"
-        class="col q-mx-xs text-grey-3"
+        class="col q-mx-xs"
         v-model="text"
+        ref="input"
       />
       <q-icon name="close" class="action" @click="onReset" />
     </div>
@@ -64,7 +70,7 @@ export default {
   },
   methods: {
     onReset() {
-      this.$emit("input", "");
+      this.text = "";
       this.$refs.input.focus();
     }
   }
@@ -93,5 +99,7 @@ export default {
     outline: none;
     border: none;
   }
+}
+.body--dark {
 }
 </style>

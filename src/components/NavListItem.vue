@@ -2,7 +2,7 @@
   <q-item
     class="item"
     clickable
-    :class="{ 'bg-grey-9': selected }"
+    :class="{ [dark ? 'bg-grey-9' : 'bg-grey-4']: selected }"
     @click="e => $emit('on-click', e)"
     style="min-height: 28px"
   >
@@ -16,7 +16,7 @@
     </q-item-section>
     <q-item-section>
       <q-item-label class="ellipsis">
-        <span class="text-grey-3">{{ title }}</span>
+        <span>{{ title }}</span>
         <div
           class="text-grey-6"
           style="font-size:smaller;display:inline-block;margin-left:4px"
@@ -58,6 +58,11 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    dark() {
+      return this.$q.dark.isActive;
+    }
   }
 };
 </script>

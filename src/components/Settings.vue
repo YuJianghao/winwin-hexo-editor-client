@@ -5,12 +5,23 @@
     transition-hide="fade"
     transition-show="fade"
   >
-    <q-card class="settings bg-dark-3">
-      <q-splitter v-model="splitter" unit="px" class="fit">
+    <q-card class="settings" :class="dark ? 'bg-dark-3' : 'bg-light-3'">
+      <q-splitter
+        v-model="splitter"
+        unit="px"
+        class="fit"
+        :separator-class="dark ? 'bg-dark-1' : 'bg-light-1'"
+      >
         <template v-slot:before>
-          <div class="fit column">
-            <q-scroll-area class="col bg-dark-1">
-              <q-item class="text-grey-3 text-bold title">
+          <div
+            class="fit column"
+            :class="dark ? 'bg-dark-1 text-white' : 'bg-light-1 text-grey-9'"
+          >
+            <q-scroll-area
+              class="col"
+              :thumb-style="{ width: '6px', borderRadius: '3px' }"
+            >
+              <q-item class="text-bold title">
                 <q-item-section>
                   <q-item-label class="ellipsis">设置</q-item-label>
                 </q-item-section>
@@ -31,8 +42,8 @@
                   :selected="tab === 'security'"
                 ></nav-list-item>
                 <nav-list-item
-                  icon="book"
-                  title="编辑器"
+                  icon="style"
+                  title="样式"
                   color="yellow-8"
                   @on-click="tab = 'editor'"
                   :selected="tab === 'editor'"
@@ -74,7 +85,7 @@
             vertical
             transition-prev="jump-up"
             transition-next="jump-up"
-            class="bg-dark-3 text-grey-3"
+            style="background:none"
           >
             <q-tab-panel name="user">
               <div class="text-h4 q-mb-md">用户</div>
@@ -85,7 +96,10 @@
             </q-tab-panel>
 
             <q-tab-panel name="editor">
-              <div class="text-h4 q-mb-md">编辑器</div>
+              <div class="text-h4 q-mb-md">
+                样式
+                <q-btn color="primary" label="切换" @click="onToggleDark" />
+              </div>
             </q-tab-panel>
 
             <q-tab-panel name="about">
@@ -121,7 +135,15 @@ export default {
   components: {
     NavListItem
   },
+  computed: {
+    dark() {
+      return this.$q.dark.isActive;
+    }
+  },
   methods: {
+    onToggleDark() {
+      this.$q.dark.set(!this.$q.dark.isActive);
+    },
     logout() {
       this.$store.dispatch("user/logout");
       this.hide();

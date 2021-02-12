@@ -1,55 +1,83 @@
 // app global css in SCSS form
 .q-menu{
-  transition:.2s !important
+  transition:.2s !important;
+  border-radius: 3px !important;
+  color: $grey-9;
+  border: 1px solid $grey-4;
+  background-color: $light-3;
+  }
+.q-menu--dark {
+  color: $grey-9;
+  border: 1px solid $grey-9;
+  background-color: $dark-3;
+}
+// 变量
+.text-dark-1 {
+  color: $dark-1 !important;
 }
 
-.text-dark-1 {
-  color: $dark-1;
-}
 .bg-dark-1 {
-  background-color: $dark-1;
+  background-color: $dark-1 !important;
 }
+
 .text-dark-2 {
-  color: $dark-2;
+  color: $dark-2 !important;
 }
+
 .bg-dark-2 {
-  background-color: $dark-2;
+  background-color: $dark-2 !important;
 }
+
 .text-dark-3 {
-  color: $dark-3;
+  color: $dark-3 !important;
 }
 
 .bg-dark-3 {
-  background-color: $dark-3;
+  background-color: $dark-3 !important;
 }
-.split .nav-part {
-  background-color: $dark-1;
-
-  .title {
-    font-weight: bolder;
-  }
-
-  .count {
-    color: $grey-5;
-    font-size: smaller;
-  }
-
-  .count::before {
-    content: " ";
-  }
-
-  .tags {
-    margin-left: 28px;
-  }
+.text-dark-1 {
+  color: $dark-1 !important;
+}
+.bg-dark-1 {
+  background-color: $dark-1 !important;
+}
+.text-dark-2 {
+  color: $dark-2 !important;
+}
+.bg-dark-2 {
+  background-color: $dark-2 !important;
+}
+.text-dark-3 {
+  color: $dark-3 !important;
+}
+.bg-dark-3 {
+  background-color: $dark-3 !important;
 }
 
-.split .list-part {
-  background-color: $dark-2;
+.text-light-1 {
+  color: $light-1 !important;
 }
 
-.split .view-part {
-  background-color: $dark-3;
+.bg-light-1 {
+  background-color: $light-1 !important;
 }
+
+.text-light-2 {
+  color: $light-2 !important;
+}
+
+.bg-light-2 {
+  background-color: $light-2 !important;
+}
+
+.text-light-3 {
+  color: $light-3 !important;
+}
+
+.bg-light-3 {
+  background-color: $light-3 !important;
+}
+// 其他
 body{
   font-family:"PingFang SC",
   "Lantinghei SC",
@@ -66,16 +94,6 @@ body{
   sans-serif !important;
   user-select: none;
 }
-.nav-part .q-item.title {
-  color: $grey-3;
-}
-.nav-part .q-item.item,
-.nav-part .q-item.title{
-  margin: 2px 8px 2px 16px;
-  padding: 0 2px 0 16px;
-  border-radius: 6px;
-}
-
 .list-part{
   .drop-handler{
     &:hover{
