@@ -11,6 +11,9 @@
   border: 1px solid $grey-9;
   background-color: $dark-3;
 }
+.q-chip--clickable:focus{
+  box-shadow: 0 0 0 black !important;
+}
 // 变量
 .text-dark-1 {
   color: $dark-1 !important;

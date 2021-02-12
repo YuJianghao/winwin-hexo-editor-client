@@ -1,7 +1,7 @@
 <template>
   <div class="nav-part fit column overflow-hidden">
     <q-toolbar :class="dark ? 'text-white' : 'text-grey-9'">
-      <div class="text-h6" style="padding-left:18px">Hexo</div>
+      <div class="text-h6" style="padding-left:20px">Hexo</div>
       <q-space />
       <q-btn
         flat
@@ -12,42 +12,42 @@
         :color="dark ? 'grey-5' : 'grey-5'"
       />
     </q-toolbar>
-    <div class="full-width">
-      <q-item class="title">
-        <q-item-section>
-          <q-item-label class="ellipsis">操作</q-item-label>
-        </q-item-section>
-      </q-item>
-    </div>
-
-    <q-list class="full-width" dense>
-      <nav-list-item
-        icon="local_airport"
-        title="部署"
-        color="primary"
-      ></nav-list-item>
-      <nav-list-item
-        icon="movie_filter"
-        title="生成"
-        color="primary"
-      ></nav-list-item>
-      <nav-list-item icon="toys" title="清理" color="red"></nav-list-item>
-      <nav-list-item
-        icon="flight_takeoff"
-        title="同步到GIT"
-        color="primary"
-      ></nav-list-item>
-      <nav-list-item
-        icon="flight_land"
-        title="从GIT同步"
-        color="red"
-      ></nav-list-item>
-    </q-list>
 
     <q-scroll-area
       class="col full-width"
       :thumb-style="{ width: '6px', borderRadius: '3px' }"
     >
+      <div class="full-width">
+        <q-item class="title">
+          <q-item-section>
+            <q-item-label class="ellipsis">操作</q-item-label>
+          </q-item-section>
+        </q-item>
+      </div>
+
+      <q-list class="full-width" dense>
+        <nav-list-item
+          icon="local_airport"
+          title="部署"
+          color="primary"
+        ></nav-list-item>
+        <nav-list-item
+          icon="movie_filter"
+          title="生成"
+          color="primary"
+        ></nav-list-item>
+        <nav-list-item icon="toys" title="清理" color="red"></nav-list-item>
+        <nav-list-item
+          icon="flight_takeoff"
+          title="同步到GIT"
+          color="primary"
+        ></nav-list-item>
+        <nav-list-item
+          icon="flight_land"
+          title="从GIT同步"
+          color="red"
+        ></nav-list-item>
+      </q-list>
       <q-item class="text-bold title">
         <q-item-section>
           <q-item-label class="ellipsis">筛选</q-item-label>
