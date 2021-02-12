@@ -1,7 +1,7 @@
 <template>
   <div class="nav-part fit column overflow-hidden">
     <q-toolbar :class="dark ? 'text-white' : 'text-grey-9'">
-      <div class="text-h6" style="padding-left:20px">Hexo</div>
+      <div class="text-h6" style="padding-left:20px">Hexon</div>
       <q-space />
       <q-btn
         flat

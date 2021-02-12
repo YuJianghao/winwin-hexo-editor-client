@@ -128,8 +128,8 @@ module.exports = function (/* ctx */) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: `winwin-hexo-editor`,
-        short_name: `winwin-hexo-editor`,
+        name: `hexon`,
+        short_name: `hexon`,
         description: `An online hexo blog editor`,
         display: 'standalone',
         orientation: 'portrait',

@@ -9,12 +9,12 @@
       >
         <div>
           <img
-            src="~/assets/logo.png"
+            src="~/assets/logo.svg"
             style="max-width:100px;margin:0 auto;display:block"
           />
         </div>
         <p class="text-grey-6 text-center text-no-wrap" style="font-size:large">
-          登录到 Hexo editor
+          登录到 Hexon
         </p>
         <m-input
           v-model="name"
