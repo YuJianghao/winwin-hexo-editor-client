@@ -38,19 +38,18 @@ export async function login({ commit, dispatch }, { name, pass }) {
 }
 
 export async function logout({ commit }, local) {
+  LocalStorage.remove(ACCESS_TOKEN_KEY)
+  LocalStorage.remove(REFRESH_TOKEN_KEY)
+  commit('logout')
+  commit('hexo/clear', null, { root: true })
+  commit('ui/setFilter', { type: 'all' }, { root: true })
   try {
     if (!local) await api.auth.logout()
-    LocalStorage.remove(ACCESS_TOKEN_KEY)
-    LocalStorage.remove(REFRESH_TOKEN_KEY)
-    commit('logout')
-    commit('hexo/clear', null, { root: true })
-    commit('ui/setFilter', { type: 'all' }, { root: true })
     if (!local) Vue.notify({
       title: '登出成功',
       type: 'success',
       duration: 1000
     })
-    Router.push('/login')
   } catch (e) {
     Vue.notify({
       title: '已登出，但出现了一些错误',
@@ -58,6 +57,8 @@ export async function logout({ commit }, local) {
       type: 'warn',
       duration: 5000
     })
+  } finally {
+    Router.push('/login')
   }
 }
 
