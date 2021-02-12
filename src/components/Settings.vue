@@ -177,7 +177,7 @@ export default {
 
 .settings .q-item.item,
 .settings .q-item.title {
-  margin: 2px 4px 2px 4px;
+  margin: 2px 8px 2px 8px;
   padding: 0 2px 0 16px;
   border-radius: 6px;
 }
