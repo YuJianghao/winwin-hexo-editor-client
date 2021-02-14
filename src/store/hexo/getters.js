@@ -1,9 +1,13 @@
 import LTT from 'list-to-tree'
+import { date } from 'quasar'
+import { DATE_FORMAT } from 'src/utils/constants'
 export function modifiedPost(state) {
   return id => {
     if (!state.posts.data[id]) return null
     const obj = {}
     Object.assign(obj, state.posts.data[id].data)
+    obj.date = date.formatDate(obj.date, DATE_FORMAT)
+    obj.updated = date.formatDate(obj.updated, DATE_FORMAT)
     Object.assign(obj, state.posts.data[id].modify)
     return obj
   }
@@ -13,6 +17,8 @@ export function modifiedPage(state) {
     const obj = {}
     if (!state.pages.data[id]) return null
     Object.assign(obj, state.pages.data[id].data)
+    obj.date = date.formatDate(obj.date, DATE_FORMAT)
+    obj.updated = date.formatDate(obj.updated, DATE_FORMAT)
     Object.assign(obj, state.pages.data[id].modify)
     return obj
   }

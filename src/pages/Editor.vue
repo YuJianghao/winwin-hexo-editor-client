@@ -102,13 +102,35 @@
                         发布于
                       </q-item-label>
                       <q-item-label class="row no-wrap">
-                        <m-input v-model="strdate" class="col"></m-input>
+                        <m-input
+                          v-model="date"
+                          :error="err.date"
+                          class="col"
+                        ></m-input>
                         <q-btn
                           size="x-small"
                           icon="date_range"
                           :ripple="false"
                           round
-                        />
+                        >
+                          <q-menu>
+                            <div class="row">
+                              <q-date
+                                v-model="date"
+                                mask="YYYY-M-D H:mm:ss"
+                                color="primary"
+                                class="no-shadow"
+                              />
+                              <q-time
+                                v-model="date"
+                                mask="YYYY-M-D H:mm:ss"
+                                color="primary"
+                                class="no-shadow"
+                                format24h
+                              />
+                            </div>
+                          </q-menu>
+                        </q-btn>
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -118,13 +140,35 @@
                         更新于
                       </q-item-label>
                       <q-item-label class="row no-wrap">
-                        <m-input v-model="strupdated" class="col"></m-input>
+                        <m-input
+                          v-model="updated"
+                          :error="err.updated"
+                          class="col"
+                        ></m-input>
                         <q-btn
                           size="x-small"
                           icon="date_range"
                           :ripple="false"
                           round
-                        />
+                        >
+                          <q-menu>
+                            <div class="row">
+                              <q-date
+                                v-model="date"
+                                mask="YYYY-M-D H:mm:ss"
+                                color="primary"
+                                class="no-shadow"
+                              />
+                              <q-time
+                                v-model="date"
+                                mask="YYYY-M-D H:mm:ss"
+                                color="primary"
+                                class="no-shadow"
+                                format24h
+                              />
+                            </div>
+                          </q-menu>
+                        </q-btn>
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -239,10 +283,11 @@ export default {
   name: "Editor",
   data() {
     return {
+      err: {
+        date: false,
+        updated: false
+      },
       splitter: 300,
-      title: "",
-      date: new Date().valueOf(),
-      updated: new Date().valueOf() + 1000 * 86400 * 76,
       tags: ["t1", "t2", "t3", "t4", "t5", "t6"],
       categories: [["c11", "c12"], ["c2"], ["c3"]],
       fm: "",
@@ -256,13 +301,52 @@ export default {
     MInput,
     MTextarea
   },
+  watch: {
+    date(v) {
+      this.err.date = this.date && isNaN(new Date(this.date).getTime());
+    },
+    updated(v) {
+      this.err.updated =
+        this.updated && isNaN(new Date(this.updated).getTime());
+    }
+  },
   computed: {
+    date: {
+      get() {
+        return this.post.date;
+      },
+      set(v) {
+        let obj = this.getObj();
+        obj.date = v;
+        this.localUpdate(obj);
+      }
+    },
+    updated: {
+      get() {
+        return this.post.updated;
+      },
+      set(v) {
+        let obj = this.getObj();
+        obj.updated = v;
+        this.localUpdate(obj);
+      }
+    },
+    title: {
+      get() {
+        return this.post.title;
+      },
+      set(v) {
+        const obj = this.getObj();
+        obj.title = v;
+        this.localUpdate(obj);
+      }
+    },
     strdate: {
       get() {
         return this.formatDate(this.date);
       },
       set(v) {
-        return new Date(v).valueOf();
+        this.date = new Date(v).valueOf();
       }
     },
     strupdated: {
@@ -270,10 +354,17 @@ export default {
         return this.formatDate(this.updated);
       },
       set(v) {
-        return new Date(v).valueOf();
+        this.updated = new Date(v).valueOf();
       }
     },
     ...mapGetters("hexo", ["modifiedPost", "modifiedPage"]),
+    modify() {
+      if (this.$route.params.type === "post")
+        return this.$store.state.hexo.posts.data[this.$route.params.id].modify;
+      if (this.$route.params.type === "page")
+        return this.$store.state.hexo.pages.data[this.$route.params.id].modify;
+      return {};
+    },
     post() {
       if (this.$route.params.type === "post")
         return this.modifiedPost(this.$route.params.id);
@@ -283,6 +374,15 @@ export default {
     }
   },
   methods: {
+    localUpdate(obj) {
+      this.$store.commit("hexo/localUpdatePost", { id: this.post._id, obj });
+    },
+    // 获取一个包含原始数据且叠加已更改数据的文章对象
+    getObj() {
+      let obj = Object.assign({}, this.post.fm);
+      obj = Object.assign(obj, this.modify);
+      return obj;
+    },
     addCategory(idx) {
       if (idx === undefined) this.categories.push(["new cate"]);
       else this.categories[idx].push("new cate");

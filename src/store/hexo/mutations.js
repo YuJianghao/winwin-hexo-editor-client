@@ -96,6 +96,9 @@ export function successNewPage(state, page) {
 }
 //#endregion
 //#region update
+export function localUpdatePost(state, { id, obj }) {
+  Vue.set(state.posts.data[id], 'modify', obj)
+}
 export function requestUpdatePost(state, id) {
   state.posts.data[id].status = state.posts.data[id].status === 'edited' ? 'saving' : 'loading'
   state.posts.data[id].err = ''
