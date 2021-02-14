@@ -1,5 +1,5 @@
 <template>
-  <div class="fit">
+  <div class="viewpost fit">
     <div v-if="!post" class="fit column flex-center">
       <svg
         width="150"
@@ -32,7 +32,7 @@
       </div>
     </div>
     <template v-else>
-      <div class="fit column" :class="dark ? 'text-grey-3' : 'text-grey-9'">
+      <div class="main fit column">
         <q-toolbar>
           <q-space />
           <q-btn
@@ -63,7 +63,7 @@
           />
         </q-toolbar>
         <q-scroll-area
-          class="col viewer"
+          class="col content"
           :thumb-style="{ width: '6px', borderRadius: '3px' }"
         >
           <div style="padding-bottom:50px">
@@ -179,8 +179,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 // TODO: 整理下各种CSS吧，太乱了
-.viewer,
-.viewer * {
+.content,
+.content * {
   user-select: text;
 }
 .container {
@@ -196,7 +196,7 @@ export default {
 }
 .info {
   margin: 10px 0;
-  color: $grey-5;
+  color: $l-text-2;
   font-weight: 500;
   align-items: center;
   .icon {
@@ -220,8 +220,26 @@ export default {
     content: "";
   }
 }
+.viewpost .main {
+  color: $grey-9;
+}
+.body--dark {
+  .info {
+    color: $l-text-2;
+  }
+  .viewpost .main {
+    color: $grey-3;
+  }
+}
 </style>
 <style lang="scss">
+// markdown样式覆盖
+.q-markdown {
+  color: $grey-9;
+}
+.body--dark .q-markdown {
+  color: $grey-3;
+}
 .q-markdown--note,
 blockquote.q-markdown--note,
 .q-markdown--line-numbers-wrapper,
