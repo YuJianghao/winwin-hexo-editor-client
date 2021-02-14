@@ -96,82 +96,16 @@
                   </div>
                 </q-toolbar>
                 <q-list class="m-form">
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label caption>
-                        发布于
-                      </q-item-label>
-                      <q-item-label class="row no-wrap">
-                        <m-input
-                          v-model="date"
-                          :error="err.date"
-                          class="col"
-                        ></m-input>
-                        <q-btn
-                          size="x-small"
-                          icon="date_range"
-                          :ripple="false"
-                          round
-                        >
-                          <q-menu>
-                            <div class="row">
-                              <q-date
-                                v-model="date"
-                                mask="YYYY-M-D H:mm:ss"
-                                color="primary"
-                                class="no-shadow"
-                              />
-                              <q-time
-                                v-model="date"
-                                mask="YYYY-M-D H:mm:ss"
-                                color="primary"
-                                class="no-shadow"
-                                format24h
-                              />
-                            </div>
-                          </q-menu>
-                        </q-btn>
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label caption>
-                        更新于
-                      </q-item-label>
-                      <q-item-label class="row no-wrap">
-                        <m-input
-                          v-model="updated"
-                          :error="err.updated"
-                          class="col"
-                        ></m-input>
-                        <q-btn
-                          size="x-small"
-                          icon="date_range"
-                          :ripple="false"
-                          round
-                        >
-                          <q-menu>
-                            <div class="row">
-                              <q-date
-                                v-model="date"
-                                mask="YYYY-M-D H:mm:ss"
-                                color="primary"
-                                class="no-shadow"
-                              />
-                              <q-time
-                                v-model="date"
-                                mask="YYYY-M-D H:mm:ss"
-                                color="primary"
-                                class="no-shadow"
-                                format24h
-                              />
-                            </div>
-                          </q-menu>
-                        </q-btn>
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
+                  <date-editor
+                    :post="post"
+                    :getObj="() => getObj()"
+                    :localUpdate="e => localUpdate(e)"
+                  ></date-editor>
+                  <updated-editor
+                    :post="post"
+                    :getObj="() => getObj()"
+                    :localUpdate="e => localUpdate(e)"
+                  ></updated-editor>
                   <q-item>
                     <q-item-section>
                       <q-item-label caption>
@@ -275,18 +209,15 @@
 import { date } from "quasar";
 import { mapGetters } from "vuex";
 import Article404 from "../components/Article404";
-import MInput from "../components/MInput";
 import MTextarea from "../components/MTextarea";
+import DateEditor from "../components/Editors/DateEditor";
+import UpdatedEditor from "../components/Editors/UpdatedEditor";
 import { DATE_FORMAT } from "src/utils/constants";
 import frontmatter from "src/markdown/helper/frontmatter.md";
 export default {
   name: "Editor",
   data() {
     return {
-      err: {
-        date: false,
-        updated: false
-      },
       splitter: 300,
       tags: ["t1", "t2", "t3", "t4", "t5", "t6"],
       categories: [["c11", "c12"], ["c2"], ["c3"]],
@@ -298,39 +229,11 @@ export default {
   },
   components: {
     Article404,
-    MInput,
-    MTextarea
-  },
-  watch: {
-    date(v) {
-      this.err.date = this.date && isNaN(new Date(this.date).getTime());
-    },
-    updated(v) {
-      this.err.updated =
-        this.updated && isNaN(new Date(this.updated).getTime());
-    }
+    MTextarea,
+    DateEditor,
+    UpdatedEditor
   },
   computed: {
-    date: {
-      get() {
-        return this.post.date;
-      },
-      set(v) {
-        let obj = this.getObj();
-        obj.date = v;
-        this.localUpdate(obj);
-      }
-    },
-    updated: {
-      get() {
-        return this.post.updated;
-      },
-      set(v) {
-        let obj = this.getObj();
-        obj.updated = v;
-        this.localUpdate(obj);
-      }
-    },
     title: {
       get() {
         return this.post.title;
@@ -339,22 +242,6 @@ export default {
         const obj = this.getObj();
         obj.title = v;
         this.localUpdate(obj);
-      }
-    },
-    strdate: {
-      get() {
-        return this.formatDate(this.date);
-      },
-      set(v) {
-        this.date = new Date(v).valueOf();
-      }
-    },
-    strupdated: {
-      get() {
-        return this.formatDate(this.updated);
-      },
-      set(v) {
-        this.updated = new Date(v).valueOf();
       }
     },
     ...mapGetters("hexo", ["modifiedPost", "modifiedPage"]),
