@@ -1,11 +1,6 @@
 <template>
-  <div class="m-input" :class="{ error: error }">
-    <div
-      class="row items-center q-px-sm main"
-      :class="
-        $q.dark.isActive ? 'bg-grey-9 text-grey-3' : 'bg-light-1 text-grey-9'
-      "
-    >
+  <div class="m-input relative-position" :class="{ error: error }">
+    <div class="bg row items-center q-px-sm main">
       <q-icon :name="icon" v-if="icon" />
       <input
         :type="type"
@@ -78,7 +73,6 @@ export default {
 </script>
 <style lang="scss">
 .m-input {
-  position: relative;
   &.error {
     .main {
       border: 1px solid $negative;
@@ -98,8 +92,20 @@ export default {
     background: none;
     outline: none;
     border: none;
+    color: $l-text-1;
+  }
+  .bg {
+    background-color: $light-1;
   }
 }
 .body--dark {
+  .m-input {
+    input {
+      color: $d-text-1;
+    }
+    .bg {
+      background-color: $grey-9;
+    }
+  }
 }
 </style>

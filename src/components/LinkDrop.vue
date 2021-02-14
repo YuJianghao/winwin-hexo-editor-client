@@ -15,3 +15,8 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.drop-handler :hover {
+  cursor: pointer;
+}
+</style>

@@ -1,9 +1,9 @@
 <template>
-  <q-page class="row overflow-hidden" :style-fn="styleFn">
+  <q-page class="index overflow-hidden" :style-fn="styleFn">
     <q-splitter
       v-model="nav"
       unit="px"
-      :separator-class="$q.dark.isActive ? 'bg-dark-1' : 'bg-light-1'"
+      separator-class="separator-1"
       class="fit"
       :limits="[180, Infinity]"
     >
@@ -14,7 +14,7 @@
         <q-splitter
           v-model="list"
           unit="px"
-          :separator-class="$q.dark.isActive ? 'bg-dark-3' : 'bg-light-3'"
+          separator-class="separator-2"
           class="fit"
           :limits="[250, Infinity]"
         >
@@ -64,25 +64,42 @@ export default {
 };
 </script>
 <style lang="scss">
-.nav-part {
-  background-color: $light-1;
-}
-.list-part {
-  background-color: $light-2;
-}
-.view-part {
+.index {
   background-color: $light-3;
-}
-.body--dark {
-  background-color: $dark-3;
+  .separator-1 {
+    background-color: $light-1;
+  }
+  .separator-2 {
+    background-color: $light-3;
+  }
   .nav-part {
-    background-color: $dark-1;
+    background-color: $light-1;
   }
   .list-part {
-    background-color: $dark-2;
+    background-color: $light-2;
   }
   .view-part {
+    background-color: $light-3;
+  }
+}
+.body--dark {
+  .index {
     background-color: $dark-3;
+    .separator-1 {
+      background-color: $dark-1;
+    }
+    .separator-2 {
+      background-color: $dark-3;
+    }
+    .nav-part {
+      background-color: $dark-1;
+    }
+    .list-part {
+      background-color: $dark-2;
+    }
+    .view-part {
+      background-color: $dark-3;
+    }
   }
 }
 </style>

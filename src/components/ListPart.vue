@@ -1,12 +1,7 @@
 <template>
   <div class="list-part fit column">
-    <q-toolbar>
-      <m-input
-        icon="search"
-        class="col"
-        :class="dark ? 'text-white' : 'text-grey-9'"
-        placeholder="搜索"
-      ></m-input>
+    <q-toolbar class="toolbar">
+      <m-input icon="search" class="col" placeholder="搜索"></m-input>
       <q-btn
         color="primary"
         icon="add"
@@ -16,11 +11,7 @@
         class="q-ml-sm bg-whtie"
       />
     </q-toolbar>
-    <div
-      :class="dark ? 'text-grey-5' : 'text-grey-6'"
-      class="row"
-      style="padding:0 20px 0 24px;font-size:smaller"
-    >
+    <div class="options row" style="padding:0 20px 0 24px;font-size:smaller">
       <link-drop text="最新文章">
         <q-menu
           anchor="top middle"
@@ -100,9 +91,6 @@ export default {
     ...mapState("ui", {
       filter: state => state.filter
     }),
-    dark() {
-      return this.$q.dark.isActive;
-    },
     articles() {
       const articles = this.posts.concat(this.pages);
       const result = [];
@@ -123,3 +111,21 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.list-part {
+  .toolbar {
+    color: $l-text-1;
+  }
+  .options {
+    color: $l-text-2;
+  }
+}
+.body--dark .list-part {
+  .toolbar {
+    color: $d-text-1;
+  }
+  .options {
+    color: $d-text-2;
+  }
+}
+</style>

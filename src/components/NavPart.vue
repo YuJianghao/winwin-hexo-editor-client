@@ -1,16 +1,9 @@
 <template>
   <div class="nav-part fit column overflow-hidden">
-    <q-toolbar :class="dark ? 'text-white' : 'text-grey-9'">
+    <q-toolbar class="toolbar">
       <div class="text-h6" style="padding-left:20px">Hexon</div>
       <q-space />
-      <q-btn
-        flat
-        round
-        dense
-        icon="help_outline"
-        size="xx-small"
-        :color="dark ? 'grey-5' : 'grey-5'"
-      />
+      <q-btn flat round dense icon="help_outline" size="xx-small" class="btn" />
     </q-toolbar>
 
     <q-scroll-area
@@ -113,7 +106,7 @@
         ></tag-item>
       </div>
     </q-scroll-area>
-    <div class="full-width">
+    <div class="full-width corner">
       <q-item clickable @click="onSettings">
         <q-item-section side>
           <q-avatar
@@ -124,15 +117,13 @@
           />
         </q-item-section>
         <q-item-section>
-          <q-item-label
-            class="text-bold"
-            :class="dark ? 'text-white' : 'text-grey-9'"
-            >{{ $store.state.user.info.data.name }}</q-item-label
-          >
-          <q-item-label class="text-grey-6" caption>已登录</q-item-label>
+          <q-item-label class="title text-bold">{{
+            $store.state.user.info.data.name
+          }}</q-item-label>
+          <q-item-label class="caption" caption>已登录</q-item-label>
         </q-item-section>
         <q-item-section side>
-          <q-icon name="double_arrow" />
+          <q-icon name="double_arrow" class="icon" />
         </q-item-section>
       </q-item>
     </div>
@@ -164,10 +155,7 @@ export default {
       "pageCount",
       "totalCount",
       "draftCount"
-    ]),
-    dark() {
-      return this.$q.dark.isActive;
-    }
+    ])
   },
   methods: {
     ...mapMutations("ui", ["setFilter"]),
@@ -191,11 +179,27 @@ export default {
 </script>
 <style lang="scss">
 .nav-part {
-  .title {
+  .toolbar {
+    color: $l-text-1;
+    .btn {
+      color: $l-text-2;
+    }
+  }
+  .q-item.item,
+  .q-item.title {
+    margin: 2px 8px 2px 16px;
+    padding: 0 2px 0 16px;
+    border-radius: 6px;
+    color: $l-text-1;
+  }
+  .q-item.title {
     font-weight: bolder;
   }
+  .q-item.item.selected {
+    background-color: $grey-4;
+  }
   .count {
-    color: $grey-5;
+    color: $l-text-2;
     font-size: smaller;
   }
   .count::before {
@@ -204,25 +208,41 @@ export default {
   .tags {
     margin-left: 28px;
   }
-  .q-item.item,
-  .q-item.title {
-    margin: 2px 8px 2px 16px;
-    padding: 0 2px 0 16px;
-    border-radius: 6px;
-    color: $grey-9;
-  }
-  .q-item.title {
-    color: $grey-9;
+  .corner {
+    .title {
+      color: $l-text-1;
+    }
+    .caption,
+    .icon {
+      color: $l-text-2;
+    }
   }
 }
-.body--dark {
-  .nav-part {
-    .count {
-      color: $grey-5;
+.body--dark .nav-part {
+  .toolbar {
+    color: $d-text-1;
+    .btn {
+      color: $d-text-2;
     }
-    .q-item.item,
-    .q-item.title {
-      color: $grey-3;
+  }
+  // 旧的
+  .count {
+    color: $d-text-2;
+  }
+  .q-item.item,
+  .q-item.title {
+    color: $d-text-1;
+  }
+  .q-item.item.selected {
+    background-color: $grey-9;
+  }
+  .corner {
+    .title {
+      color: $d-text-1;
+    }
+    .caption,
+    .icon {
+      color: $d-text-2;
     }
   }
 }

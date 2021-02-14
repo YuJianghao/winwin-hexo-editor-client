@@ -1,16 +1,13 @@
 <template>
   <q-item
     clickable
-    :class="selected ? (dark ? 'bg-dark-3' : 'bg-light-1') : ''"
+    :class="{ selected }"
     @click="onClick"
     style="padding: 10px 16px;border-radius:6px"
-    class="q-mx-sm q-my-xs"
+    class="article-item q-mx-sm q-my-xs"
   >
     <q-item-section>
-      <q-item-label
-        class="text-bold"
-        :class="dark ? 'text-grey-3' : 'text-grey-9'"
-      >
+      <q-item-label class="title text-bold">
         <q-icon
           name="drafts"
           color="yellow-9"
@@ -19,17 +16,12 @@
         <q-icon name="insert_drive_file" color="cyan" v-if="article.__page" />
         {{ article.title }}
       </q-item-label>
-      <q-item-label
-        caption
-        lines="3"
-        :class="dark ? 'text-grey-6' : 'text-grey-7'"
+      <q-item-label caption lines="3" class="brief"
         >{{ article._content.slice(0, 100) }}
       </q-item-label>
       <q-item-label v-if="article.tags && article.tags.length > 0">
         <q-badge
-          :color="dark ? 'grey-9' : 'grey-4'"
-          :text-color="dark ? 'grey-6' : 'grey-8'"
-          class="q-mr-xs"
+          class="tag q-mr-xs"
           :label="tags[tag].data.name"
           v-for="tag in article.tags"
           :key="tag"
@@ -79,9 +71,6 @@ export default {
       tags: state => state.tags.data,
       categories: state => state.categories.data
     }),
-    dark() {
-      return this.$q.dark.isActive;
-    },
     selected() {
       if (this.article._id !== this.$route.params.id) return false;
       if (this.$route.path.includes("page") && this.article.__page === true)
@@ -104,3 +93,35 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.article-item {
+  .title {
+    color: $l-text-1;
+  }
+  &.selected {
+    background-color: $light-1;
+  }
+  .brief {
+    color: $l-text-3;
+  }
+  .tag {
+    color: $l-text-3;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+.body--dark .article-item {
+  .title {
+    color: $d-text-1;
+  }
+  &.selected {
+    background-color: $dark-3;
+  }
+  .brief {
+    color: $d-text-3;
+  }
+  .tag {
+    color: $d-text-3;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+</style>
