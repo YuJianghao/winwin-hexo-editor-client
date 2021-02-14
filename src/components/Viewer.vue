@@ -36,6 +36,16 @@
         <q-toolbar>
           <q-space />
           <q-btn
+            v-if="post.__post && !post.published"
+            size="x-small"
+            class="q-ml-sm"
+            icon="publish"
+            :ripple="false"
+            color="positive"
+            flat
+            round
+          />
+          <q-btn
             size="x-small"
             class="q-ml-sm"
             icon="edit"
@@ -56,6 +66,14 @@
           <q-btn
             size="x-small"
             class="q-ml-sm"
+            icon="code"
+            :ripple="false"
+            flat
+            round
+          />
+          <q-btn
+            size="x-small"
+            class="q-ml-sm"
             icon="more_horiz"
             :ripple="false"
             flat
@@ -64,13 +82,28 @@
         </q-toolbar>
         <q-scroll-area
           class="col content"
-          :thumb-style="{ width: '6px', borderRadius: '3px' }"
+          :thumb-style="{ height: '6px', width: '6px', borderRadius: '3px' }"
         >
-          <div style="padding-bottom:50px">
-            <div class="container">
+          <div class="q-px-xl " style="padding-bottom:50px">
+            <div class="container overflow-hidden">
               <div class="header">
                 <div class="title">
                   {{ post.title }}
+                  <q-icon
+                    name="drafts"
+                    v-if="post.__post && !post.published"
+                    color="yellow-8"
+                    size="large"
+                  />
+                  <q-icon
+                    name="insert_drive_file"
+                    v-if="post.__page"
+                    color="cyan"
+                    size="large"
+                  />
+                </div>
+                <div class="fm" v-if="fm">
+                  <pre class="overflow-auto">{{ fm }}</pre>
                 </div>
                 <div class="info">
                   <span class="date">
@@ -81,7 +114,18 @@
                     />
                     <span>{{ date }}</span>
                   </span>
-                  <span class="categories" v-if="category2d.length > 0">
+                  <span class="date">
+                    <q-icon
+                      name="update"
+                      class="icon"
+                      style="transform:translateY(-1px)"
+                    />
+                    <span>{{ updated }}</span>
+                  </span>
+                  <span
+                    class="categories"
+                    v-if="post.__post && category2d.length > 0"
+                  >
                     <q-icon name="folder" class="icon" />
                     <span
                       v-for="categories in category2d"
@@ -103,7 +147,12 @@
                   </span>
                   <span
                     class="tags"
-                    v-if="post.tags && post.tags.length && post.tags.length > 0"
+                    v-if="
+                      post.__post &&
+                        post.tags &&
+                        post.tags.length &&
+                        post.tags.length > 0
+                    "
                   >
                     <q-icon name="sell" class="icon" />
                     <span v-for="tag in post.tags" :key="tag" class="tag">{{
@@ -111,9 +160,6 @@
                     }}</span>
                   </span>
                 </div>
-                <!-- TODO: 日期，分类，标签 的显示 -->
-                <!-- TODO: frontmatter要显示么 -->
-                <!-- TODO: 草稿和页面标识 -->
               </div>
             </div>
             <q-markdown :src="post._content" class="container"></q-markdown>
@@ -126,6 +172,7 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import yaml from "js-yaml";
 import LTT from "list-to-tree";
 import { date } from "quasar";
 
@@ -141,18 +188,38 @@ export default {
   computed: {
     ...mapState("hexo", {
       posts: state => state.posts.data,
+      pages: state => state.pages.data,
       tags: state => state.tags.data
     }),
     ...mapGetters("hexo", ["categoriesList"]),
     dark() {
       return this.$q.dark.isActive;
     },
+    fm() {
+      const fm = this.post.fm;
+      [
+        "_content",
+        "tags",
+        "category",
+        "categories",
+        "title",
+        "date",
+        "updated"
+      ].map(key => delete fm[key]);
+      const res = yaml.dump(fm);
+      return res.toString() === "{}\n" ? "" : res;
+    },
     post() {
-      const obj = this.posts[this.$route.params.id];
+      const obj = this.$route.meta.ispost
+        ? this.posts[this.$route.params.id]
+        : this.pages[this.$route.params.id];
       return obj ? obj.data : null;
     },
     date() {
       return date.formatDate(this.post.date, "YYYY-M-D H:m:s");
+    },
+    updated() {
+      return date.formatDate(this.post.updated, "YYYY-M-D H:m:s");
     },
     color() {
       return this.$q.dark.isActive ? "#444" : "#eee";
@@ -220,15 +287,24 @@ export default {
     content: "";
   }
 }
+.fm {
+  color: $l-text-2;
+  pre {
+    margin: 0;
+  }
+}
 .viewpost .main {
   color: $grey-9;
 }
 .body--dark {
   .info {
-    color: $l-text-2;
+    color: $d-text-2;
   }
   .viewpost .main {
     color: $grey-3;
+  }
+  .fm {
+    color: $d-text-2;
   }
 }
 </style>
@@ -248,6 +324,7 @@ blockquote.q-markdown--note,
 .body--dark .q-markdown .q-markdown--line-numbers-wrapper {
   border: none;
   border-radius: 6px;
+  padding: 8px;
 }
 .q-markdown--link {
   color: $primary;

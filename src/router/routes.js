@@ -8,10 +8,8 @@ const routes = [
         path: '', component: () => import('pages/Index.vue'),
         children: [
           { path: '', component: () => import('components/WelcomePart.vue') },
-          { path: 'post/:id', component: () => import('components/ViewPost.vue') },
-          { path: 'page/:id', component: () => import('components/ViewPage.vue') },
-          { path: ':type/:id' },
-          { path: ':type/:id/edit' },
+          { path: 'post/:id', component: () => import('components/Viewer.vue'), meta: { ispost: true } },
+          { path: 'page/:id', component: () => import('components/Viewer.vue'), meta: { ispost: false } },
         ]
       },
       {
