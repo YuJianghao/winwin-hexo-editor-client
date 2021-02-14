@@ -172,6 +172,7 @@ export default {
   methods: {
     ...mapMutations("ui", ["setFilter"]),
     onSettings() {
+      // TODO: 以后选项多了，这里要弹出菜单给常用选项，然后菜单里有去设置的选项
       this.$q.dialog({
         component: Settings,
 

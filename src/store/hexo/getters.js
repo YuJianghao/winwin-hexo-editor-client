@@ -7,9 +7,13 @@ export function modifiedPost(state) {
     return obj
   }
 }
-export function categoriesTreeNodes(state) {
+export function categoriesList(state) {
   const obj = state.categories.data
-  const list = Object.keys(obj).map(key => obj[key].data).map(obj => {
+  const list = Object.keys(obj).map(key => obj[key].data)
+  return list
+}
+export function categoriesTreeNodes(state) {
+  const list = categoriesList(state).map(obj => {
     if (obj.parent === undefined) obj.parent = 0
     return obj
   })

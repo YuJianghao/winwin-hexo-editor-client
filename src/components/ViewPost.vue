@@ -72,9 +72,48 @@
                 <div class="title">
                   {{ post.title }}
                 </div>
-                <div class="date">
-                  {{ new Date(post.date).toString() }}
+                <div class="info">
+                  <span class="date">
+                    <q-icon
+                      name="date_range"
+                      class="icon"
+                      style="transform:translateY(-1px)"
+                    />
+                    <span>{{ date }}</span>
+                  </span>
+                  <span class="categories" v-if="category2d.length > 0">
+                    <q-icon name="folder" class="icon" />
+                    <span
+                      v-for="categories in category2d"
+                      :key="'s' + categories.map(c => c._id).join('')"
+                      class="category"
+                    >
+                      <template v-for="(category, idx) in categories">
+                        <span :key="'t' + category._id">{{
+                          category.name
+                        }}</span>
+                        <q-icon
+                          name="chevron_right"
+                          style="margin:0 -2px"
+                          :key="'i' + category._id"
+                          v-if="idx < categories.length - 1"
+                        />
+                      </template>
+                    </span>
+                  </span>
+                  <span
+                    class="tags"
+                    v-if="post.tags && post.tags.length && post.tags.length > 0"
+                  >
+                    <q-icon name="sell" class="icon" />
+                    <span v-for="tag in post.tags" :key="tag" class="tag">{{
+                      tags[tag].data.name
+                    }}</span>
+                  </span>
                 </div>
+                <!-- TODO: 日期，分类，标签 的显示 -->
+                <!-- TODO: frontmatter要显示么 -->
+                <!-- TODO: 草稿和页面标识 -->
               </div>
             </div>
             <q-markdown :src="post._content" class="container"></q-markdown>
@@ -86,7 +125,14 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
+import LTT from "list-to-tree";
+import { date } from "quasar";
+
+function expand(category) {
+  if (!category._child) return [category];
+  return [category].concat(expand(category._child[0]));
+}
 export default {
   name: "ViewPost",
   data() {
@@ -94,8 +140,10 @@ export default {
   },
   computed: {
     ...mapState("hexo", {
-      posts: state => state.posts.data
+      posts: state => state.posts.data,
+      tags: state => state.tags.data
     }),
+    ...mapGetters("hexo", ["categoriesList"]),
     dark() {
       return this.$q.dark.isActive;
     },
@@ -103,16 +151,34 @@ export default {
       const obj = this.posts[this.$route.params.id];
       return obj ? obj.data : null;
     },
+    date() {
+      return date.formatDate(this.post.date, "YYYY-M-D H:m:s");
+    },
     color() {
       return this.$q.dark.isActive ? "#444" : "#eee";
     },
     text() {
       return this.$q.dark.isActive ? "#555" : "#ddd";
+    },
+    category2d() {
+      const list = this.categoriesList
+        .map(obj => {
+          if (obj.parent === undefined) obj.parent = 0;
+          return obj;
+        })
+        .filter(c => this.post.categories.includes(c._id));
+      const ltt = new LTT(list, {
+        key_id: "_id",
+        key_parent: "parent",
+        key_child: "_child"
+      });
+      return (ltt.GetTree() || []).map(expand);
     }
   }
 };
 </script>
 <style lang="scss" scoped>
+// TODO: 整理下各种CSS吧，太乱了
 .viewer,
 .viewer * {
   user-select: text;
@@ -122,14 +188,37 @@ export default {
   max-width: 768px;
 }
 .header {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 .title {
   font-size: xx-large;
+  font-weight: bold;
 }
-.date {
+.info {
   margin: 10px 0;
-  color: $primary;
+  color: $grey-5;
+  font-weight: 500;
+  align-items: center;
+  .icon {
+    margin-right: 4px;
+  }
+  .date,
+  .tags,
+  .categories {
+    margin-right: 8px;
+  }
+  .tags,
+  .categories {
+    display: inline-block;
+  }
+  .tags .tag::after,
+  .categories .category::after {
+    content: ", ";
+  }
+  .tags .tag:last-of-type::after,
+  .categories .category:last-of-type::after {
+    content: "";
+  }
 }
 </style>
 <style lang="scss">
