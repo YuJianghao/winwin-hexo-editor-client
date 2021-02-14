@@ -5,9 +5,10 @@ export function modifiedPost(state) {
   return id => {
     if (!state.posts.data[id]) return null
     const obj = {}
-    Object.assign(obj, state.posts.data[id].data)
-    obj.date = date.formatDate(obj.date, DATE_FORMAT)
-    obj.updated = date.formatDate(obj.updated, DATE_FORMAT)
+    Object.assign(obj, state.posts.data[id].data.fm)
+    if (obj.date) obj.date = date.formatDate(obj.date, DATE_FORMAT)
+    if (obj.updated) obj.updated = date.formatDate(obj.updated, DATE_FORMAT)
+    Object.assign(obj, state.posts.data[id].saved)
     Object.assign(obj, state.posts.data[id].modify)
     return obj
   }
@@ -16,9 +17,10 @@ export function modifiedPage(state) {
   return id => {
     const obj = {}
     if (!state.pages.data[id]) return null
-    Object.assign(obj, state.pages.data[id].data)
-    obj.date = date.formatDate(obj.date, DATE_FORMAT)
-    obj.updated = date.formatDate(obj.updated, DATE_FORMAT)
+    Object.assign(obj, state.pages.data[id].data.fm)
+    if (obj.date) obj.date = date.formatDate(obj.date, DATE_FORMAT)
+    if (obj.updated) obj.updated = date.formatDate(obj.updated, DATE_FORMAT)
+    Object.assign(obj, state.pages.data[id].saved)
     Object.assign(obj, state.pages.data[id].modify)
     return obj
   }

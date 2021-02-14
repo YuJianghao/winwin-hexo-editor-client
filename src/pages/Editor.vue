@@ -54,6 +54,7 @@
                 icon="save"
                 color="primary"
                 :ripple="false"
+                @click="onSave"
                 flat
                 round
               />
@@ -83,7 +84,13 @@
                 round
               />
             </q-toolbar>
-            <div class="col"></div>
+            <div class="col">
+              modify {{ modify }}
+              <hr />
+              saved {{ saved }}
+              <hr />
+              fm {{ post }}
+            </div>
           </div>
         </template>
         <template v-slot:after>
@@ -214,6 +221,7 @@ import DateEditor from "../components/Editors/DateEditor";
 import UpdatedEditor from "../components/Editors/UpdatedEditor";
 import { DATE_FORMAT } from "src/utils/constants";
 import frontmatter from "src/markdown/helper/frontmatter.md";
+import routes from "src/router/routes";
 export default {
   name: "Editor",
   data() {
@@ -252,9 +260,17 @@ export default {
         return this.$store.state.hexo.pages.data[this.$route.params.id].modify;
       return {};
     },
-    post() {
+    saved() {
       if (this.$route.params.type === "post")
+        return this.$store.state.hexo.posts.data[this.$route.params.id].saved;
+      if (this.$route.params.type === "page")
+        return this.$store.state.hexo.pages.data[this.$route.params.id].saved;
+      return {};
+    },
+    post() {
+      if (this.$route.params.type === "post") {
         return this.modifiedPost(this.$route.params.id);
+      }
       if (this.$route.params.type === "page")
         return this.modifiedPage(this.$route.params.id);
       return null;
@@ -262,13 +278,18 @@ export default {
   },
   methods: {
     localUpdate(obj) {
-      this.$store.commit("hexo/localUpdatePost", { id: this.post._id, obj });
+      this.$store.commit(
+        "hexo/localUpdate" +
+          (this.$route.params.type === "post" ? "Post" : "Page"),
+        {
+          id: this.$route.params.id,
+          obj
+        }
+      );
     },
-    // 获取一个包含原始数据且叠加已更改数据的文章对象
+    // 获取一个包含已更改数据的文章对象
     getObj() {
-      let obj = Object.assign({}, this.post.fm);
-      obj = Object.assign(obj, this.modify);
-      return obj;
+      return Object.assign({}, this.modify);
     },
     addCategory(idx) {
       if (idx === undefined) this.categories.push(["new cate"]);
@@ -292,7 +313,15 @@ export default {
     },
     onBack() {
       // TODO: 检查是否需要保存
-      this.$router.push({ name: "view", params: this.$route.params });
+      if (JSON.stringify(this.modify) !== "{}") alert("未保存");
+      else this.$router.push({ name: "view", params: this.$route.params });
+    },
+    onSave(hide) {
+      this.$store.dispatch("hexo/updatePostOrPage", {
+        id: this.$route.params.id,
+        page: this.$route.params.type === "page",
+        hide
+      });
     },
     formatDate(timestramp) {
       return date.formatDate(timestramp, DATE_FORMAT);

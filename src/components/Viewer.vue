@@ -59,7 +59,7 @@
             <div class="container overflow-hidden">
               <div class="header">
                 <div class="title">
-                  {{ post.title }}
+                  {{ post.title || "未命名" }}
                   <q-icon
                     name="drafts"
                     v-if="post.__post && !post.published"
@@ -167,7 +167,7 @@ export default {
       return this.$q.dark.isActive;
     },
     fm() {
-      const fm = this.post.fm;
+      const fm = Object.assign({}, this.post.fm);
       [
         "_content",
         "tags",
@@ -177,6 +177,7 @@ export default {
         "date",
         "updated"
       ].map(key => delete fm[key]);
+      // 如果用delete一定看清楚是不是引用！！
       const res = yaml.dump(fm);
       return res.toString() === "{}\n" ? "" : res;
     },

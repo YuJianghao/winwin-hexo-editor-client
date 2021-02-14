@@ -38,12 +38,10 @@ export default {
   components: {
     MInput
   },
-  data() {
-    return {
-      error: false
-    };
-  },
   computed: {
+    error() {
+      return !!this.date && isNaN(new Date(this.date).getTime());
+    },
     date: {
       get() {
         return this.post.date;
@@ -53,11 +51,6 @@ export default {
         obj.date = v;
         this.localUpdate(obj);
       }
-    }
-  },
-  watch: {
-    date(v) {
-      this.error = this.date && isNaN(new Date(v).getTime());
     }
   }
 };

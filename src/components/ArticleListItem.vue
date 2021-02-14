@@ -14,7 +14,7 @@
           v-if="article.__post && !article.published"
         />
         <q-icon name="insert_drive_file" color="cyan" v-if="article.__page" />
-        {{ article.title }}
+        {{ article.title || "未命名" }}
       </q-item-label>
       <q-item-label caption lines="3" class="brief"
         >{{ article._content.slice(0, 100) }}
@@ -53,7 +53,9 @@ function readable(diff) {
   const minute = Math.floor(remaining / 60);
   remaining -= minute * 60;
   if (minute > 0) return `${minute}分钟前`;
-  return `${remaining}秒前`;
+  remaining = Math.floor(remaining);
+  if (remaining > 10) return `${remaining}秒前`;
+  return "刚刚";
 }
 export default {
   name: "ArticleListItem",

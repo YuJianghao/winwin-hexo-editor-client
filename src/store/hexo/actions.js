@@ -1,10 +1,13 @@
+import Vue from 'vue'
 import services from "src/services"
+import { Loading } from 'quasar'
 export async function listPosts({ commit }) {
   commit('requestListPosts')
   try {
     const postsList = await services.hexo.listPosts()
     commit('successListPosts', postsList)
   } catch (err) {
+    if (process.DEV) console.error(err)
     commit('failedListPosts', err)
   }
 }
@@ -14,6 +17,7 @@ export async function listPages({ commit }) {
     const postsList = await services.hexo.listPages()
     commit('successListPages', postsList)
   } catch (err) {
+    if (process.DEV) console.error(err)
     commit('failedListPages', err)
   }
 }
@@ -23,6 +27,7 @@ export async function listTags({ commit }) {
     const postsList = await services.hexo.listTags()
     commit('successListTags', postsList)
   } catch (err) {
+    if (process.DEV) console.error(err)
     commit('failedListTags', err)
   }
 }
@@ -32,6 +37,7 @@ export async function listCategories({ commit }) {
     const postsList = await services.hexo.listCategories()
     commit('successListCategories', postsList)
   } catch (err) {
+    if (process.DEV) console.error(err)
     commit('failedListCategories', err)
   }
 }
@@ -48,27 +54,40 @@ export async function newPostOrPage({ commit, dispatch }, opt = {}) {
 export async function updatePostOrPage({ state, commit, dispatch }, opt = {}) {
   if (opt.id === undefined) throw new Error('id is required')
   if (opt.page === undefined) throw new Error('page(boolean) is required')
+
+  const status = state[opt.page ? 'pages' : 'posts'].data[opt.id].status
+  if (status === 'saving' || status === 'loading') return
   if (!opt.page) commit('requestUpdatePost', opt.id)
-  else commit('requestUpdatePage'.opt.id)
+  else commit('requestUpdatePage', opt.id)
   try {
     const obj = {}
+    // saved是打算保存的内容，modify用来存储保存过程中产生的更改
     if (!opt.page) {
       Object.assign(obj, state.posts.data[opt.id].data.fm)
-      Object.assign(obj, state.posts.data[opt.id].modify)
+      Object.assign(obj, state.posts.data[opt.id].saved)
     } else {
       Object.assign(obj, state.pages.data[opt.id].data.fm)
-      Object.assign(obj, state.pages.data[opt.id].modify)
+      Object.assign(obj, state.pages.data[opt.id].saved)
     }
     if (opt.obj) Object.assign(obj, opt.obj)
+    if (!opt.hide) Loading.show()
     const res = await services.hexo.updatePostOrPage(opt.id, opt.page, obj)
     if (!opt.page) {
       commit('successUpdatePost', res)
       dispatch('listTags')
       dispatch('listCategories')
     } else commit('successUpdatePage', res)
+    Vue.notify({
+      title: '保存成功',
+      type: 'success',
+      duration: 1000
+    })
   } catch (err) {
+    if (process.DEV) console.error(err)
     if (!opt.page) commit('failedUpdatePost', { id: opt.id, err })
     else commit('failedUpdatePage', { id: opt.id, err })
+  } finally {
+    Loading.hide()
   }
 }
 export async function deletePostOrPage({ commit, dispatch }, opt = {}) {
