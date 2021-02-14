@@ -83,12 +83,11 @@ export default {
   methods: {
     readable: readable,
     onClick() {
-      // TODO: 不能直接导航，要触发事件，后期要涉及到保存文件的问题
-      // TODO: 事件系统要怎么设计，统一用actions么？也不是不行
-      const path =
-        (this.article.__post ? "/post" : "/page") + "/" + this.article._id;
-      if (this.$route.path === path) this.$router.push("/");
-      else this.$router.push(path);
+      const type = this.article.__post ? "post" : "page";
+      const id = this.article._id;
+      if (this.$route.params.id === id && this.$route.params.type === type)
+        this.$router.push("/");
+      else this.$router.push({ name: "view", params: { id, type } });
     }
   }
 };

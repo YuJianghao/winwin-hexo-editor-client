@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 import yaml from "js-yaml";
 import { date } from "quasar";
 import Article404 from "./Article404";
