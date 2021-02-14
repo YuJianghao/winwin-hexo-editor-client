@@ -8,13 +8,11 @@ const routes = [
         path: '', component: () => import('pages/Index.vue'),
         children: [
           { path: '', component: () => import('components/WelcomePart.vue') },
-          { path: 'post/:id', component: () => import('components/Viewer.vue'), meta: { ispost: true } },
-          { path: 'page/:id', component: () => import('components/Viewer.vue'), meta: { ispost: false } },
+          { path: ':type/:id', component: () => import('components/Viewer.vue'), name: 'view' },
         ]
       },
-      {
-        path: 'login', component: () => import('pages/Login.vue'),
-      }
+      { path: ':type/:id/edit', component: () => import('pages/Editor.vue'), name: 'edit' },
+      { path: 'login', component: () => import('pages/Login.vue'), }
     ]
   },
 

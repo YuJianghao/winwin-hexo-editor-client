@@ -1,9 +1,19 @@
 import LTT from 'list-to-tree'
 export function modifiedPost(state) {
   return id => {
+    if (!state.posts.data[id]) return null
     const obj = {}
     Object.assign(obj, state.posts.data[id].data)
     Object.assign(obj, state.posts.data[id].modify)
+    return obj
+  }
+}
+export function modifiedPage(state) {
+  return id => {
+    const obj = {}
+    if (!state.pages.data[id]) return null
+    Object.assign(obj, state.pages.data[id].data)
+    Object.assign(obj, state.pages.data[id].modify)
     return obj
   }
 }

@@ -1,18 +1,70 @@
 // app global css in SCSS form
 .q-menu{
-  transition:.2s !important;
+  transition: opacity .2s !important;
   border-radius: 3px !important;
-  color: $grey-9;
-  border: 1px solid $grey-4;
-  background-color: $light-3;
+  color: $grey-9 !important;
+  border: 1px solid $grey-4 !important;
+  background-color: $light-3 !important;
   }
+.q-menu.pop{
+  border-radius: 6px !important;
+  .q-markdown > *:last-child{
+    margin-bottom: 0;
+  }
+}
 .q-menu--dark {
-  color: $grey-9;
-  border: 1px solid $grey-9;
-  background-color: $dark-3;
+  color: $grey-9 !important;
+  border: 1px solid $grey-9 !important;
+  background-color: $dark-3 !important;
 }
 .q-chip--clickable:focus{
   box-shadow: 0 0 0 black !important;
+}
+// markdown样式覆盖
+.q-markdown {
+  color: $grey-9 !important;
+}
+
+.body--dark .q-markdown {
+  color: $grey-3 !important;
+}
+
+.q-markdown--note,
+blockquote.q-markdown--note,
+.q-markdown--line-numbers-wrapper,
+.body--dark .q-markdown .q-markdown--note,
+.body--dark .q-markdown blockquote.q-markdown--note,
+.body--dark .q-markdown .q-markdown--line-numbers-wrapper {
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 8px !important;
+}
+
+.q-markdown--link {
+  color: $primary !important;
+  border-bottom: none !important;
+}
+
+.q-markdown .q-markdown--token {
+  border-color: $grey-5 !important;
+}
+
+.body--dark .q-markdown .q-markdown--token {
+  border-color: $grey-7 !important;
+}
+
+.q-markdown--table,
+.q-markdown--table thead tr th,
+.q-markdown--table tbody td,
+.q-markdown--table tbody th {
+  border-style: none !important;
+}
+
+.footnote-backref,
+.footnote-backref a,
+.footnote-ref,
+.footnote-ref a {
+  color: $primary !important;
 }
 // 变量
 .text-dark-1 {
@@ -98,3 +150,23 @@ body{
   user-select: none;
 }
 
+.m-form{
+  padding-right: 10px;
+  .q-item__label.q-item__label--caption.text-caption{
+    padding: 4px 12px;
+  }
+  .q-btn.q-btn--round{
+    margin-left: 8px;
+  }
+  .q-chip{
+    background-color: $light-3;
+  }
+}
+.body--dark .m-form {
+  .q-chip {
+    background-color: $dark-3;
+  }
+}
+.m-codearea{
+  font-family: 'Courier New', Courier, monospace;
+}

@@ -38,14 +38,9 @@ export async function login({ commit, dispatch }, { name, pass }) {
 }
 
 export async function logout({ commit }, local) {
-  LocalStorage.remove(ACCESS_TOKEN_KEY)
-  LocalStorage.remove(REFRESH_TOKEN_KEY)
-  commit('logout')
-  commit('hexo/clear', null, { root: true })
-  commit('ui/setFilter', { type: 'all' }, { root: true })
   try {
     if (!local) await api.auth.logout()
-    if (!local) Vue.notify({
+    Vue.notify({
       title: '登出成功',
       type: 'success',
       duration: 1000
@@ -58,6 +53,11 @@ export async function logout({ commit }, local) {
       duration: 5000
     })
   } finally {
+    LocalStorage.remove(ACCESS_TOKEN_KEY)
+    LocalStorage.remove(REFRESH_TOKEN_KEY)
+    commit('logout')
+    commit('hexo/clear', null, { root: true })
+    commit('ui/setFilter', { type: 'all' }, { root: true })
     Router.push('/login')
   }
 }
