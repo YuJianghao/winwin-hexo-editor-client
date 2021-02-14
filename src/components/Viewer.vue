@@ -144,15 +144,10 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import yaml from "js-yaml";
-import LTT from "list-to-tree";
 import { date } from "quasar";
 import Article404 from "./Article404";
 import { DATE_FORMAT } from "src/utils/constants";
 
-function expand(category) {
-  if (!category._child) return [category];
-  return [category].concat(expand(category._child[0]));
-}
 export default {
   name: "Viewer",
   data() {
@@ -165,9 +160,9 @@ export default {
     ...mapState("hexo", {
       posts: state => state.posts.data,
       pages: state => state.pages.data,
-      tags: state => state.tags.data
+      tags: state => state.tags.data,
+      categories: state => state.categories.data
     }),
-    ...mapGetters("hexo", ["categoriesList"]),
     dark() {
       return this.$q.dark.isActive;
     },
@@ -203,18 +198,10 @@ export default {
       return date.formatDate(this.post.updated, DATE_FORMAT);
     },
     category2d() {
-      const list = this.categoriesList
-        .map(obj => {
-          if (obj.parent === undefined) obj.parent = 0;
-          return obj;
-        })
-        .filter(c => this.post.categories.includes(c._id));
-      const ltt = new LTT(list, {
-        key_id: "_id",
-        key_parent: "parent",
-        key_child: "_child"
-      });
-      return (ltt.GetTree() || []).map(expand);
+      if (!this.post.categories) return [[]];
+      return this.post.categories.map(ca =>
+        ca.map(c => this.categories[c].data)
+      );
     }
   },
   methods: {
