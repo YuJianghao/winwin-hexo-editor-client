@@ -1,4 +1,7 @@
 // app global css in SCSS form
+.q-date,.q-time{
+  border-radius: 0 !important;
+}
 .q-menu{
   transition: opacity .2s !important;
   border-radius: 3px !important;
@@ -151,12 +154,11 @@ body{
 }
 
 .m-form{
-  padding-right: 6px;
-  .q-item__label.q-item__label--caption.text-caption{
-    padding: 4px 12px;
-  }
-  .q-btn.q-btn--round{
-    margin-left: 8px;
+  padding:0 8px;
+  .q-item{
+    border-radius: 6px;
+    padding: 8px 16px;
+    margin: 4px 0;
   }
   .q-chip{
     background-color: $light-3;
