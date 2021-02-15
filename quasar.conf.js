@@ -6,6 +6,7 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 module.exports = function (/* ctx */) {
   return {
@@ -73,6 +74,15 @@ module.exports = function (/* ctx */) {
           loader: 'eslint-loader',
           exclude: /node_modules/
         })
+
+        cfg.optimization.splitChunks.cacheGroups.monaco = {
+          test: /monaco/,
+          name: 'monaco'
+        }
+
+        cfg.plugins.push(new MonacoWebpackPlugin({
+          languages: ['markdown']
+        }))
       },
     },
 

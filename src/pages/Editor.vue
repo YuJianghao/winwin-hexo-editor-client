@@ -14,6 +14,7 @@
       <article-404 class="col"></article-404>
     </div>
     <template v-else>
+      <!-- TODO: 侧栏改用layout -->
       <q-splitter
         class="fit"
         v-model="splitter"
@@ -32,12 +33,8 @@
                 rounded
                 @click="onBack"
               />
-              <input
-                class="title col"
-                type="text"
-                v-model="title"
-                placeholder="请输入标题"
-              />
+              <!-- TODO: 帮助按钮markdown的编辑工具栏 -->
+              <q-space />
               <q-btn
                 v-if="post.__post && !post.published"
                 size="x-small"
@@ -84,24 +81,35 @@
                 round
               />
             </q-toolbar>
-            <div class="col">
-              modify {{ modify }}
-              <hr />
-              saved {{ saved }}
-              <hr />
-              fm {{ post }}
+            <div
+              class="col column"
+              style="width:100%;max-width:768px;margin:0 auto"
+            >
+              <input
+                class="title"
+                type="text"
+                v-model="title"
+                placeholder="请输入标题"
+              />
+              <div class="col">
+                <monaco-editor class="fit" v-model="content"></monaco-editor>
+              </div>
             </div>
           </div>
         </template>
         <template v-slot:after>
           <div class="side fit column">
-            <q-scroll-area class="col">
+            <q-scroll-area
+              class="col"
+              :thumb-style="{ width: '6px', borderRadius: '3px' }"
+            >
               <div class="column">
                 <q-toolbar>
                   <div class="text-h6" style="padding-left:16px">
                     Frontmatters
                   </div>
                 </q-toolbar>
+                <!-- TODO 添加layout -->
                 <q-list class="m-form">
                   <date-editor
                     :post="post"
@@ -219,6 +227,7 @@ import Article404 from "../components/Article404";
 import MTextarea from "../components/UI/MTextarea";
 import DateEditor from "../components/Editors/DateEditor";
 import UpdatedEditor from "../components/Editors/UpdatedEditor";
+import MonacoEditor from "../components/Editors/MonacoEditor";
 import { DATE_FORMAT } from "src/utils/constants";
 import frontmatter from "src/markdown/helper/frontmatter.md";
 export default {
@@ -238,9 +247,20 @@ export default {
     Article404,
     MTextarea,
     DateEditor,
-    UpdatedEditor
+    UpdatedEditor,
+    MonacoEditor
   },
   computed: {
+    content: {
+      get() {
+        return this.post._content;
+      },
+      set(v) {
+        const obj = this.getObj();
+        obj._content = v;
+        this.localUpdate(obj);
+      }
+    },
     title: {
       get() {
         return this.post.title;
@@ -299,6 +319,7 @@ export default {
       if (d === 0) this.categories.splice(idx, 1);
       else this.$set(this.categories, idx, this.categories[idx].slice(0, d));
     },
+    // TODO: tags和categories的ui怎么弄
     addTag() {
       this.tags.push("new tag");
     },
@@ -334,8 +355,8 @@ export default {
   input.title {
     border: none;
     outline: none;
-    padding: 0 16px;
-    font-size: large;
+    padding: 16px 10px;
+    font-size: x-large;
     font-weight: bold;
     color: $l-text-1;
     background: none;
