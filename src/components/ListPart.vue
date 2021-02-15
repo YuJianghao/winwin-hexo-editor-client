@@ -1,7 +1,11 @@
 <template>
   <div class="list-part fit column">
     <q-toolbar class="toolbar">
-      <m-input icon="search" class="col" placeholder="搜索"></m-input>
+      <m-input class="col" placeholder="搜索" clearable>
+        <template v-slot:prepend>
+          <q-icon name="search" class="q-mr-sm" />
+        </template>
+      </m-input>
       <q-btn
         color="primary"
         icon="add"
@@ -69,7 +73,7 @@
 </template>
 
 <script>
-import MInput from "../components/MInput";
+import MInput from "../components/UI/MInput";
 import LinkDrop from "../components/LinkDrop";
 import ArticleListItem from "../components/ArticleListItem";
 import { mapState } from "vuex";

@@ -19,15 +19,27 @@
         <m-input
           v-model="name"
           type="text"
+          class="col"
+          placeholder="用户名"
           :error="error"
-          icon="person"
-        ></m-input>
+          clearable
+        >
+          <template v-slot:prepend>
+            <q-icon name="person" class="q-mr-sm" />
+          </template>
+        </m-input>
         <m-input
           v-model="pass"
           type="password"
+          class="col"
+          placeholder="密码"
           :error="error"
-          icon="security"
-        ></m-input>
+          clearable
+        >
+          <template v-slot:prepend>
+            <q-icon name="security" class="q-mr-sm" />
+          </template>
+        </m-input>
         <div class="row">
           <q-btn
             color="primary"
@@ -74,7 +86,7 @@
 </template>
 
 <script>
-import MInput from "../components/MInput";
+import MInput from "../components/UI/MInput";
 import { mapState } from "vuex";
 export default {
   name: "Login",

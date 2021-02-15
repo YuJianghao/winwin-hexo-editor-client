@@ -5,19 +5,25 @@
         发布于
       </q-item-label>
       <q-item-label class="row no-wrap">
-        <m-input v-model="date" :error="error" class="col"></m-input>
+        <m-input
+          v-model="date"
+          :error="error"
+          class="col"
+          mask="####-##-## ##:##:##"
+          clearable
+        ></m-input>
         <q-btn size="x-small" icon="date_range" :ripple="false" round>
           <q-menu>
             <div class="row">
               <q-date
                 v-model="date"
-                mask="YYYY-M-D H:mm:ss"
+                :mask="format"
                 color="primary"
                 class="no-shadow"
               />
               <q-time
                 v-model="date"
-                mask="YYYY-M-D H:mm:ss"
+                :mask="format"
                 color="primary"
                 class="no-shadow"
                 format24h
@@ -31,7 +37,8 @@
 </template>
 
 <script>
-import MInput from "../MInput";
+import { DATE_FORMAT } from "src/utils/constants";
+import MInput from "../UI/MInput";
 export default {
   name: "DateEditor",
   props: ["post", "getObj", "localUpdate"],
@@ -39,6 +46,9 @@ export default {
     MInput
   },
   computed: {
+    format() {
+      return DATE_FORMAT;
+    },
     error() {
       return !!this.date && isNaN(new Date(this.date).getTime());
     },

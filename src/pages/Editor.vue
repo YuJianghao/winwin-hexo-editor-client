@@ -216,12 +216,11 @@
 import { date } from "quasar";
 import { mapGetters } from "vuex";
 import Article404 from "../components/Article404";
-import MTextarea from "../components/MTextarea";
+import MTextarea from "../components/UI/MTextarea";
 import DateEditor from "../components/Editors/DateEditor";
 import UpdatedEditor from "../components/Editors/UpdatedEditor";
 import { DATE_FORMAT } from "src/utils/constants";
 import frontmatter from "src/markdown/helper/frontmatter.md";
-import routes from "src/router/routes";
 export default {
   name: "Editor",
   data() {
@@ -350,6 +349,9 @@ export default {
   .side {
     background-color: $light-1;
   }
+  .m-input {
+    background-color: $light-3;
+  }
 }
 .body--dark .editor {
   color: $d-text-1;
@@ -368,6 +370,9 @@ export default {
     .q-item--dark {
       color: $d-text-1;
     }
+  }
+  .m-input {
+    background-color: $dark-3;
   }
 }
 </style>

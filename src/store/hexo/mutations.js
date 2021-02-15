@@ -7,7 +7,6 @@ export function requestListPosts(state) {
 export function successListPosts(state, postsList) {
   state.posts.loading = false
   postsList.map(post => {
-    console.log(post)
     const obj = {}
     obj.loading = false
     obj.data = post
@@ -100,7 +99,6 @@ export function successNewPage(state, page) {
 //#endregion
 //#region update
 export function localUpdatePost(state, { id, obj }) {
-  console.log({ id, obj })
   Vue.set(state.posts.data[id], 'modify', obj)
 }
 export function requestUpdatePost(state, id) {
