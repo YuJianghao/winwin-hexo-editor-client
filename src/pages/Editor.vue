@@ -35,6 +35,19 @@
               />
               <!-- TODO: 帮助按钮markdown的编辑工具栏 -->
               <q-space />
+              <q-badge
+                color="grey"
+                label="未保存"
+                class="q-ml-sm"
+                rounded
+                v-if="unsaved"
+              />
+              <q-badge
+                label="保存中..."
+                class="q-ml-sm"
+                rounded
+                v-if="saving"
+              />
               <q-btn
                 v-if="post.__post && !post.published"
                 size="x-small"
@@ -272,6 +285,12 @@ export default {
       }
     },
     ...mapGetters("hexo", ["modifiedPost", "modifiedPage"]),
+    unsaved() {
+      return JSON.stringify(this.modify) !== "{}";
+    },
+    saving() {
+      return JSON.stringify(this.saved) !== "{}";
+    },
     modify() {
       if (this.$route.params.type === "post")
         return this.$store.state.hexo.posts.data[this.$route.params.id].modify;
