@@ -6,6 +6,7 @@ export function requestListPosts(state) {
 }
 export function successListPosts(state, postsList) {
   state.posts.loading = false
+  state.posts.data = {}
   postsList.map(post => {
     const obj = {}
     obj.loading = false
@@ -28,6 +29,7 @@ export function requestListPages(state) {
 }
 export function successListPages(state, pagesList) {
   state.pages.loading = false
+  state.pages.data = {}
   pagesList.map(page => {
     const obj = {}
     obj.loading = false
@@ -50,6 +52,7 @@ export function requestListTags(state) {
 }
 export function successListTags(state, tagsList) {
   state.tags.loading = false
+  state.tags.data = {}
   tagsList.map(tag => {
     const obj = {}
     obj.loading = false
@@ -70,6 +73,7 @@ export function requestListCategories(state) {
 }
 export function successListCategories(state, categoriesList) {
   state.categories.loading = false
+  state.categories.data = {}
   categoriesList.map(category => {
     const obj = {}
     obj.loading = false

@@ -134,32 +134,12 @@
                     :getObj="() => getObj()"
                     :localUpdate="e => localUpdate(e)"
                   ></updated-editor>
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label caption>
-                        标签
-                      </q-item-label>
-                      <q-item-label>
-                        <q-chip
-                          :label="tag"
-                          v-for="(tag, idx) in tags"
-                          :key="tag"
-                          removable
-                          clickable
-                          size="x-small"
-                          @remove="removeTag(idx)"
-                          :ripple="false"
-                        />
-                        <q-chip
-                          label="添加"
-                          size="x-small"
-                          clickable
-                          @click="addTag"
-                          :ripple="false"
-                        />
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
+                  <tag-editor
+                    :post="post"
+                    :getObj="() => getObj()"
+                    :localUpdate="e => localUpdate(e)"
+                    :existTags="tagsList.map(t => t.name)"
+                  ></tag-editor>
                   <q-item>
                     <q-item-section>
                       <q-item-label caption>
@@ -240,6 +220,7 @@ import Article404 from "../components/Article404";
 import MTextarea from "../components/UI/MTextarea";
 import DateEditor from "../components/Editors/DateEditor";
 import UpdatedEditor from "../components/Editors/UpdatedEditor";
+import TagEditor from "../components/Editors/TagEditor";
 import MonacoEditor from "../components/Editors/MonacoEditor";
 import { DATE_FORMAT } from "src/utils/constants";
 import frontmatter from "src/markdown/helper/frontmatter.md";
@@ -261,6 +242,7 @@ export default {
     MTextarea,
     DateEditor,
     UpdatedEditor,
+    TagEditor,
     MonacoEditor
   },
   computed: {
@@ -284,7 +266,7 @@ export default {
         this.localUpdate(obj);
       }
     },
-    ...mapGetters("hexo", ["modifiedPost", "modifiedPage"]),
+    ...mapGetters("hexo", ["modifiedPost", "modifiedPage", "tagsList"]),
     unsaved() {
       return JSON.stringify(this.modify) !== "{}";
     },

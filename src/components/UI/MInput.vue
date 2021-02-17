@@ -9,6 +9,9 @@
       :mask="mask"
       :placeholder="placeholder"
       :disable="disable"
+      @compositionstart.native="composition = true"
+      @compositionend.native="composition = false"
+      @keydown="e => $emit('keydown', e)"
       borderless
       dense
       stack-label
@@ -46,7 +49,8 @@ export default {
   },
   data() {
     return {
-      innerValue: this.value
+      innerValue: this.value,
+      composition: false
     };
   },
   watch: {
@@ -60,6 +64,9 @@ export default {
   methods: {
     onClear() {
       this.innerValue = "";
+      this.focus();
+    },
+    focus() {
       this.$refs.input.focus();
     }
   }
