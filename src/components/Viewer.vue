@@ -133,7 +133,14 @@
                 </div>
               </div>
             </div>
-            <q-markdown :src="post._content" class="container"></q-markdown>
+            <!-- TODO 添加目录 -->
+            <q-markdown
+              :src="post._content"
+              class="container"
+              no-heading-anchor-links
+              toc
+              @data="onToc"
+            ></q-markdown>
           </div>
         </q-scroll-area>
       </div>
@@ -151,7 +158,9 @@ import { DATE_FORMAT } from "src/utils/constants";
 export default {
   name: "Viewer",
   data() {
-    return {};
+    return {
+      toc: []
+    };
   },
   components: {
     Article404
@@ -206,6 +215,9 @@ export default {
     }
   },
   methods: {
+    onToc(toc) {
+      this.toc = toc;
+    },
     onEdit() {
       this.$router.push({ name: "edit", params: this.$route.params });
     }
@@ -213,7 +225,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-// TODO: 整理下各种CSS吧，太乱了
 .content,
 .content * {
   user-select: text;

@@ -106,10 +106,10 @@ export default {
         return this.posts.filter(p => !p.published);
       if (this.filter.type === "tag")
         return this.posts.filter(p => p.tags.includes(this.filter.id));
-      if (this.filter.type === "category") {
-        const categories = array2dToArray1d(p.categories);
-        return this.posts.filter(p => categories.includes(this.filter.id));
-      }
+      if (this.filter.type === "category")
+        return this.posts.filter(p =>
+          array2dToArray1d(p.categories).includes(this.filter.id)
+        );
       return result;
     }
   },

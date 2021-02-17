@@ -114,7 +114,6 @@ export function requestUpdatePost(state, id) {
 export function successUpdatePost(state, post) {
   state.posts.data[post._id].loading = false
   state.posts.data[post._id].data = post
-  // TODO: 想清空，但是清空就会清掉用户输入
   Vue.set(state.posts.data[post._id], 'saved', {})
   state.posts.data[post._id].err = ''
 }
@@ -136,7 +135,6 @@ export function requestUpdatePage(state, id) {
 export function successUpdatePage(state, page) {
   state.pages.data[page._id].loading = false
   state.pages.data[page._id].data = page
-  // TODO: 想清空，但是清空就会清掉用户输入
   Vue.set(state.pages.data[page._id], 'saved', {})
   state.pages.data[page._id].err = ''
 }
