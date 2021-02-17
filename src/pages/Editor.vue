@@ -118,7 +118,7 @@
             >
               <div class="column">
                 <q-toolbar>
-                  <div class="text-h6" style="padding-left:16px">
+                  <div class="text-h6" style="padding-left:12px">
                     Frontmatters
                   </div>
                 </q-toolbar>
@@ -140,46 +140,12 @@
                     :localUpdate="e => localUpdate(e)"
                     :existTags="tagsList.map(t => t.name)"
                   ></tag-editor>
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label caption>
-                        分类
-                      </q-item-label>
-                      <q-item-label
-                        v-for="(category, idx) in categories"
-                        :key="category.join('')"
-                      >
-                        <template v-for="(cate, d) in category">
-                          <q-chip
-                            :label="cate"
-                            :key="cate + d"
-                            size="x-small"
-                            removable
-                            clickable
-                            :ripple="false"
-                            @remove="removeCategory(idx, d)"
-                          />
-                          <q-icon name="chevron_right" :key="'i' + cate + d" />
-                        </template>
-                        <q-chip
-                          label="添加"
-                          size="x-small"
-                          clickable
-                          :ripple="false"
-                          @click="addCategory(idx)"
-                        />
-                      </q-item-label>
-                      <q-item-label>
-                        <q-chip
-                          label="添加"
-                          size="x-small"
-                          clickable
-                          :ripple="false"
-                          @click="addCategory()"
-                        />
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
+                  <category-editor
+                    :post="post"
+                    :getObj="() => getObj()"
+                    :localUpdate="e => localUpdate(e)"
+                    :existCategories="categoriesList.map(t => t.name)"
+                  ></category-editor>
                   <q-item>
                     <q-item-section>
                       <q-item-label caption class="row items-center">
@@ -221,6 +187,7 @@ import MTextarea from "../components/UI/MTextarea";
 import DateEditor from "../components/Editors/DateEditor";
 import UpdatedEditor from "../components/Editors/UpdatedEditor";
 import TagEditor from "../components/Editors/TagEditor";
+import CategoryEditor from "../components/Editors/CategoryEditor";
 import MonacoEditor from "../components/Editors/MonacoEditor";
 import { DATE_FORMAT } from "src/utils/constants";
 import frontmatter from "src/markdown/helper/frontmatter.md";
@@ -243,6 +210,7 @@ export default {
     DateEditor,
     UpdatedEditor,
     TagEditor,
+    CategoryEditor,
     MonacoEditor
   },
   computed: {
@@ -266,7 +234,12 @@ export default {
         this.localUpdate(obj);
       }
     },
-    ...mapGetters("hexo", ["modifiedPost", "modifiedPage", "tagsList"]),
+    ...mapGetters("hexo", [
+      "modifiedPost",
+      "modifiedPage",
+      "tagsList",
+      "categoriesList"
+    ]),
     unsaved() {
       return JSON.stringify(this.modify) !== "{}";
     },
