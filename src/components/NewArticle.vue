@@ -8,7 +8,7 @@
     <q-card class="new-article">
       <q-card-section>
         <div class="title text-h6 q-mb-md text-center">
-          新建{{ layout === "page" ? "页面" : "文章" }}
+          新建{{ { page: "页面", draft: "草稿" }[layout] || "文章" }}
         </div>
         <q-form @submit="onAdd" class="q-gutter-md">
           <table class="full-width">
@@ -17,23 +17,34 @@
                 <td>标题</td>
                 <td><m-input v-model="title" ref="title"></m-input></td>
               </tr>
-              <tr v-if="!advance">
-                <td>页面</td>
-                <td class="row items-center">
-                  <q-toggle
-                    :value="layout === 'page'"
-                    @input="v => (layout = v ? 'page' : '')"
-                  /><q-space />
-                  <q-btn
-                    icon="expand_more"
-                    label="高级"
-                    size="x-small"
-                    rounded
-                    flat
-                    @click="advance = true"
-                  />
-                </td>
-              </tr>
+              <template v-if="!advance">
+                <tr>
+                  <td>页面</td>
+                  <td class="row items-center">
+                    <q-toggle
+                      :value="layout === 'page'"
+                      @input="v => (layout = v ? 'page' : '')"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>草稿</td>
+                  <td class="row items-center">
+                    <q-toggle
+                      :value="layout === 'draft'"
+                      @input="v => (layout = v ? 'draft' : '')"
+                    /><q-space />
+                    <q-btn
+                      icon="expand_more"
+                      label="高级"
+                      size="x-small"
+                      rounded
+                      flat
+                      @click="advance = true"
+                    />
+                  </td>
+                </tr>
+              </template>
               <template v-else>
                 <tr>
                   <td>layout</td>
