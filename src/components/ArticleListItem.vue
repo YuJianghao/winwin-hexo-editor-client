@@ -3,6 +3,7 @@
     clickable
     :class="{ selected }"
     @click="onClick"
+    @dblclick="onDBClick"
     style="padding: 10px 16px;border-radius:6px"
     class="article-item q-mx-sm q-my-xs"
   >
@@ -90,6 +91,11 @@ export default {
       if (this.$route.params.id === id && this.$route.params.type === type)
         this.$router.push("/");
       else this.$router.push({ name: "view", params: { id, type } });
+    },
+    onDBClick() {
+      const type = this.article.__post ? "post" : "page";
+      const id = this.article._id;
+      this.$router.push({ name: "edit", params: { id, type } });
     }
   }
 };

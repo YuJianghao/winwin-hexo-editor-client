@@ -1,8 +1,7 @@
 <template>
-  <q-expansion-item class="tag-editor" @show="onShow">
+  <q-expansion-item class="tag-editor" @show="onShow" v-model="expand" dense>
     <template v-slot:header>
-      <!-- <q-item> -->
-      <q-item-section>
+      <q-item-section v-if="!expand">
         <q-item-label caption>
           标签
         </q-item-label>
@@ -13,11 +12,12 @@
           }}</q-badge>
         </q-item-label>
       </q-item-section>
-      <!-- </q-item> -->
+      <q-item-section v-else>
+        <q-item-label> <q-icon name="sell" /> 标签 </q-item-label>
+      </q-item-section>
     </template>
     <q-list dense style="padding:1px 0">
-      <!-- <q-item v-for="tag in allTags" :key="tag" clickable>{{ tag }}</q-item> -->
-      <q-item>
+      <q-item style="padding-top:4px;margin-top:0">
         <q-item-section>
           <q-item-label>
             <q-badge
@@ -68,7 +68,8 @@ export default {
   },
   data() {
     return {
-      newTag: ""
+      newTag: "",
+      expand: false
     };
   },
   methods: {

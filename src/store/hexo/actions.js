@@ -86,6 +86,12 @@ export async function updatePostOrPage({ state, commit, dispatch }, opt = {}) {
     if (process.DEV) console.error(err)
     if (!opt.page) commit('failedUpdatePost', { id: opt.id, err })
     else commit('failedUpdatePage', { id: opt.id, err })
+    Vue.notify({
+      title: '保存失败',
+      type: 'error',
+      text: err.message,
+      duration: 1000
+    })
   } finally {
     Loading.hide()
   }

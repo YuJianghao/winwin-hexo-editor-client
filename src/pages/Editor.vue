@@ -146,22 +146,27 @@
                     :localUpdate="e => localUpdate(e)"
                     :existCategories="categoriesList.map(t => t.name)"
                   ></category-editor>
-                  <q-expansion-item>
+                  <q-expansion-item v-model="layoutExpand" dense>
                     <template v-slot:header>
-                      <q-item-section>
+                      <q-item-section v-if="!layoutExpand">
                         <q-item-label caption>Layout</q-item-label>
                         <q-item-label>
                           {{ layout || "hexo-default" }}
                         </q-item-label>
                       </q-item-section>
+                      <q-item-section v-else>
+                        <q-item-label
+                          ><q-icon name="view_sidebar" /> Layout</q-item-label
+                        >
+                      </q-item-section>
                     </template>
                     <q-list dense style="padding:1px 0">
-                      <q-item style="padding-top:0;;margin-top:0">
+                      <q-item style="padding-top:0;margin-top:0">
                         <q-item-section>
                           <m-input
                             class="q-mt-xs"
                             v-model="layout"
-                            placeholder="布局名称"
+                            placeholder="hexo-default"
                           ></m-input
                         ></q-item-section> </q-item
                     ></q-list>
@@ -195,7 +200,8 @@ export default {
   name: "Editor",
   data() {
     return {
-      splitter: 300
+      splitter: 300,
+      layoutExpand: false
     };
   },
   components: {

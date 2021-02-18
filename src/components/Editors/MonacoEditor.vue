@@ -103,6 +103,7 @@ export default {
     //#region config
     // TODO: 优化主题
     // TODO: 添加暗色主题，支持实时切换
+    // TODO 监控父容器大小变化，实时调整大小
     monaco.editor.defineTheme("myTheme", myTheme);
     monaco.editor.setTheme("myTheme");
 
@@ -148,7 +149,7 @@ export default {
     });
     const extension = new MonacoMarkdown.MonacoMarkdownExtension();
     extension.activate(this.editor);
-    // this.timer = window.setInterval(this.layout, 100);
+    this.timer = window.setInterval(this.layout, 100);
     window.addEventListener("resize", this.layout);
     this.layout();
   },

@@ -55,7 +55,7 @@
           class="col content"
           :thumb-style="{ height: '6px', width: '6px', borderRadius: '3px' }"
         >
-          <div class="q-px-xl " style="padding-bottom:50px">
+          <div class="q-px-xl " style="padding-bottom:50px" @dblclick="onEdit">
             <div class="container overflow-hidden">
               <div class="header">
                 <div class="title">

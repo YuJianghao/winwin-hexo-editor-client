@@ -1,8 +1,14 @@
 <template>
-  <q-expansion-item clickable class="category-editor" @show="onShow">
+  <q-expansion-item
+    clickable
+    class="category-editor"
+    @show="onShow"
+    v-model="expand"
+    dense
+  >
     <!-- TODO 多分类支持，需要编辑原文件 -->
     <template v-slot:header>
-      <q-item-section>
+      <q-item-section v-if="!expand">
         <q-item-label caption>
           分类
         </q-item-label>
@@ -20,9 +26,12 @@
           </template>
         </q-item-label>
       </q-item-section>
+      <q-item-section v-else>
+        <q-item-label><q-icon name="folder" /> 分类</q-item-label>
+      </q-item-section>
     </template>
     <q-list dense style="padding:1px 0">
-      <q-item>
+      <q-item style="padding-top:4px;margin-top:0">
         <q-item-section>
           <q-item-label>
             <span v-if="categories[0].length < 1">无</span>
@@ -91,7 +100,8 @@ export default {
   },
   data() {
     return {
-      newCategory: ""
+      newCategory: "",
+      expand: false
     };
   },
   computed: {
