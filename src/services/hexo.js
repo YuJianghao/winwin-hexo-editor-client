@@ -40,5 +40,16 @@ export default {
   publishPost: async (id) => {
     const res = await api.hexo.publishPost(id)
     return res.data
-  }
+  },
+  //#region actions
+  generate: async () => {
+    await api.hexo.generate()
+  },
+  deploy: async () => {
+    await api.hexo.deploy()
+  },
+  clean: async () => {
+    await api.hexo.clean()
+  },
+  //#endregion
 }

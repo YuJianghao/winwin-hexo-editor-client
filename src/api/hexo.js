@@ -24,4 +24,15 @@ export default {
   publishPost: async (id) => {
     return request.post('/publish', { id })
   },
+  //#region actions
+  generate: async () => {
+    return request.post('/generate')
+  },
+  deploy: async () => {
+    return request.post('/deploy')
+  },
+  clean: async () => {
+    return request.post('/clean')
+  },
+  //#endregion
 }

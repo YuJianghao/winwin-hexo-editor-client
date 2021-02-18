@@ -23,13 +23,20 @@
           icon="local_airport"
           title="部署"
           color="primary"
+          @on-click="deploy"
         ></nav-list-item>
         <nav-list-item
           icon="movie_filter"
           title="生成"
           color="primary"
+          @on-click="generate"
         ></nav-list-item>
-        <nav-list-item icon="toys" title="清理" color="red"></nav-list-item>
+        <nav-list-item
+          icon="toys"
+          title="清理"
+          color="red"
+          @on-click="clean"
+        ></nav-list-item>
         <nav-list-item
           icon="flight_takeoff"
           title="同步到GIT"
@@ -137,6 +144,7 @@ import NavListItem from "./NavListItem";
 import TagItem from "./TagItem";
 import CategoryItem from "./CategoryItem";
 import Settings from "./Settings";
+import services from "src/services";
 export default {
   name: "NavPart",
   components: {
@@ -174,6 +182,70 @@ export default {
         // still works, but recommending to switch
         // to the more appropriate "parent" name)
       });
+    },
+    async generate() {
+      try {
+        this.$q.loading.show();
+        await services.hexo.generate();
+        this.$notify({
+          title: "生成成功",
+          type: "success",
+          duration: 1000
+        });
+      } catch (err) {
+        if (process.env.DEV) console.error(err);
+        this.$notify({
+          title: "生成失败",
+          type: "error",
+          text: err.message,
+          duration: 1000
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
+    },
+    async deploy() {
+      try {
+        this.$q.loading.show();
+        await services.hexo.deploy();
+        this.$notify({
+          title: "部署成功",
+          type: "success",
+          duration: 1000
+        });
+      } catch (err) {
+        if (process.env.DEV) console.error(err);
+        // TODO 检测部署未配置
+        this.$notify({
+          title: "部署失败",
+          type: "error",
+          text: err.message,
+          duration: 1000
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
+    },
+    async clean() {
+      try {
+        this.$q.loading.show();
+        await services.hexo.clean();
+        this.$notify({
+          title: "清理成功",
+          type: "success",
+          duration: 1000
+        });
+      } catch (err) {
+        if (process.env.DEV) console.error(err);
+        this.$notify({
+          title: "清理失败",
+          type: "error",
+          text: err.message,
+          duration: 1000
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
     }
   }
 };
