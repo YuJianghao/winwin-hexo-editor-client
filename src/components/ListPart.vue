@@ -17,7 +17,7 @@
       />
     </q-toolbar>
     <div class="options row" style="padding:0 20px 0 24px;font-size:smaller">
-      <link-drop text="最新文章">
+      <link-drop :text="sortType(sort.key, sort.ascend)">
         <q-menu
           anchor="top middle"
           self="top middle"
@@ -26,31 +26,16 @@
           content-style="border-radius:2px"
         >
           <q-list dense style="font-size:smaller">
-            <q-item clickable v-close-popup>
+            <q-item
+              clickable
+              v-close-popup
+              @click="setSort(item.key, item.ascend)"
+              v-for="item in sortTypesList"
+              :key="item.key + item.ascend"
+            >
               <q-item-section>
                 <q-item-label>
-                  最新文章
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup>
-              <q-item-section>
-                <q-item-label>
-                  最旧文章
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup>
-              <q-item-section>
-                <q-item-label>
-                  按名称 A-Z
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup>
-              <q-item-section>
-                <q-item-label>
-                  按名称 Z-A
+                  {{ sortType(item.key, item.ascend) }}
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -78,8 +63,8 @@ import MInput from "../components/UI/MInput";
 import LinkDrop from "../components/LinkDrop";
 import ArticleListItem from "../components/ArticleListItem";
 import NewArticle from "../components/NewArticle";
-import { mapState } from "vuex";
-import { array2dToArray1d } from "src/utils/common";
+import { mapState, mapMutations } from "vuex";
+import { array2dToArray1d, sortString } from "src/utils/common";
 function obj2list(obj) {
   return Object.keys(obj).map(key => obj[key].data);
 }
@@ -90,32 +75,82 @@ export default {
     LinkDrop,
     ArticleListItem
   },
+  data() {
+    return {
+      sortTypes: {
+        date: { true: "最早创建的文章", false: "最新创建的文章" },
+        updated: { true: "最早修改的文章", false: "最新修改的文章" },
+        title: { true: "按名称 A-Z", false: "按名称 Z-A" }
+      }
+    };
+  },
   computed: {
     ...mapState("hexo", {
       posts: state => obj2list(state.posts.data),
       pages: state => obj2list(state.pages.data)
     }),
     ...mapState("ui", {
-      filter: state => state.filter
+      filter: state => state.filter,
+      sort: state => state.sort
     }),
+    sortTypesList() {
+      return Object.keys(this.sortTypes)
+        .map(key => {
+          return [true, false].map(ascend => {
+            return { key, ascend };
+          });
+        })
+        .reduce((a, b) => a.concat(b), []);
+    },
     articles() {
       const articles = this.posts.concat(this.pages);
-      const result = [];
-      if (this.filter.type === "all") return articles;
-      if (this.filter.type === "post") return this.posts;
-      if (this.filter.type === "page") return this.pages;
-      if (this.filter.type === "draft")
-        return this.posts.filter(p => !p.published);
-      if (this.filter.type === "tag")
-        return this.posts.filter(p => p.tags.includes(this.filter.id));
-      if (this.filter.type === "category")
-        return this.posts.filter(p =>
-          array2dToArray1d(p.categories).includes(this.filter.id)
-        );
+      let result = [];
+      switch (this.filter.type) {
+        case "all":
+          result = articles;
+          break;
+        case "post":
+          result = this.posts;
+          break;
+        case "page":
+          result = this.pages;
+          break;
+        case "draft":
+          result = this.posts.filter(p => !p.published);
+          break;
+        case "tag":
+          result = this.posts.filter(p => p.tags.includes(this.filter.id));
+          break;
+        case "category":
+          result = this.posts.filter(p =>
+            array2dToArray1d(p.categories).includes(this.filter.id)
+          );
+          break;
+      }
+      result.sort((a, b) => {
+        switch (this.sort.key) {
+          case "date":
+            return (this.sort.ascend ? 1 : -1) * (a.date - b.date);
+          case "updated":
+            return (this.sort.ascend ? 1 : -1) * (a.updated - b.updated);
+          case "title":
+            return (this.sort.ascend ? 1 : -1) * sortString(a.title, b.title);
+        }
+        return 1;
+      });
       return result;
     }
   },
   methods: {
+    ...mapMutations("ui", {
+      setSort: (commit, key, ascend) => {
+        commit("setSort", { key, ascend });
+      }
+    }),
+    sortType(key, ascend) {
+      console.log(key, ascend);
+      return this.sortTypes[key][ascend];
+    },
     onNewArticle() {
       this.$q.dialog({
         component: NewArticle,

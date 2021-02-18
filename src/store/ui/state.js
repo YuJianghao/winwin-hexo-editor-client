@@ -3,6 +3,10 @@ export default function () {
     filter: {
       type: 'all',
       id: ''
+    },
+    sort: {
+      key: 'date',
+      ascend: false
     }
   }
 }
