@@ -4,7 +4,7 @@ const logLevelHas = (level) => {
 }
 
 class Logger {
-  constructor ({ level = process.env.NODE_ENV === 'production' ? 'error' : 'debug', prefix }) {
+  constructor({ level = process.env.NODE_ENV === 'production' ? 'error' : 'debug', prefix }) {
     this.level = level
     this.prefix = prefix || level
     this.prefix = `[${this.prefix}]`
@@ -23,10 +23,10 @@ class Logger {
     }
   }
 
-  _print (method, args) {
+  _print(method, args) {
     const styles = [
-  `color: ${this.methodToColorMap[method]}`,
-  'font-weight: bold'
+      `color: ${this.methodToColorMap[method]}`,
+      'font-weight: bold'
     ]
     const logPrefix = ['%c' + this.prefix, styles.join(';')]
     if (this._shouldDo(method)) {
@@ -34,14 +34,14 @@ class Logger {
     }
   }
 
-  setLogLevel (level) {
+  setLogLevel(level) {
     if (!logLevelHas(level)) return false
     else {
       this.level = level
     }
   }
 
-  _shouldDo (method) {
+  _shouldDo(method) {
     if (logLevelHas(method)) {
       return logLevel.indexOf(method) >= logLevel.indexOf(this.level)
     } else {

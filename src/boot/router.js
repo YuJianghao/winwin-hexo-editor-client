@@ -1,85 +1,38 @@
-let isFirst = true
+import api from 'src/api'
+import Router from 'vue-router'
+// https://github.com/vuejs/vue-router/issues/2881
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject)
+    return originalPush.call(this, location, onResolve, onReject)
+  return originalPush.call(this, location).catch(() => { })
+}
 let installed = false
-import { Loading } from 'quasar'
-import DispatcherService from 'src/service/dispatcher_service'
-import { Logger } from 'src/utils/logger'
-import apis from 'src/api'
-
-const logger = new Logger({ prefix: 'Router' })
-
-export default async ({ router, app, store }) => {
-  router.afterEach(() => {
-    Loading.hide()
-    if (isFirst) {
-      const loading = document.getElementById('app-loading')
-      loading.style.opacity = 0
-      window.setTimeout(() => {
-        loading.style.display = 'none'
-      }, 500)
-      isFirst = false
-    }
-  })
+// "async" is optional;
+// more info on params: https://quasar.dev/quasar-cli/boot-files
+export default async ({ router, store }) => {
   router.beforeEach(async (to, from, next) => {
-    logger.log('to', to.fullPath)
-    if (!installed) {
+    //#region install
+    if (!installed)
       try {
-        await apis.install.checkInstalled()
-        installed = false
-      } catch {
-        installed = true
-      }
+        await api.install.check()
+        if (to.path === '/install') next()
+        else next('/install')
+        return
+      } catch (err) { installed = true }
+    //#endregion
+    //#region init
+    if (store.state.user.first) {
+      store.commit('user/check')
+      await store.dispatch("init")
     }
-    const toInstall = to.path === '/install'
-    //                  installed
-    //                  true   false
-    // toinstall true   /      next()
-    //           false  none /install
-    if (installed && toInstall) {
-      next('/')
-      return
-    } else if (!installed && toInstall) {
-      next()
-      return
-    } else if (!installed && !toInstall) {
-      next('/install')
-      return
-    }
-
-    if (!DispatcherService.ready)DispatcherService.setContext(app)
-    if (!isFirst) {
-      Loading.show()
-    }
-    if (!app.store.state.user.inited) {
-      app.store.commit('user/init')
-      try {
-        await app.store.dispatch('user/info')
-      } catch (_) {
-        app.store.commit('user/logout')
-      }
-    }
-    const isLoggedIn = app.store.state.user.isLoggedIn
-    const toLogin = to.path === '/login'
-    // 真值表干的漂亮啊！
-    //                     toLogin
-    //                   true    false
-    // isLoggedIn true   /home   next
-    //            false  next    /login
-    if (isLoggedIn ^ toLogin) {
-      if (isLoggedIn && !DispatcherService.inited) {
-        await DispatcherService.init()
-      }
-      const isEdit = path => /^.*\/edit\/((?:[^/]+?))(?:\/(?=$))?$/i.test(path)
-      const isView = path => /^.*\/view\/((?:[^/]+?))(?:\/(?=$))?$/i.test(path)
-      if (!isEdit(from.path) && !isView(from.path)) {
-        await DispatcherService.closePost()
-      }
-      next()
-    } else if (isLoggedIn && toLogin) {
-      next('/home')
-      Loading.hide()
+    //#endregion
+    if (store.state.user.alive) {
+      if (to.path === '/login') next(from.path)
+      else next()
     } else {
-      next('/login')
-      Loading.hide()
+      if (to.path !== '/login') next('/login')
+      else next()
     }
   })
 }
