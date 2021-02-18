@@ -21,4 +21,7 @@ export default {
   deletePostOrPage: async (id, page) => {
     return request.post('/delete', { id, page })
   },
+  publishPost: async (id) => {
+    return request.post('/publish', { id })
+  },
 }

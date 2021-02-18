@@ -148,7 +148,6 @@ export default {
       }
     }),
     sortType(key, ascend) {
-      console.log(key, ascend);
       return this.sortTypes[key][ascend];
     },
     onNewArticle() {

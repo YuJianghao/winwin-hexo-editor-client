@@ -49,7 +49,7 @@
                 v-if="saving"
               />
               <q-btn
-                v-if="!post.__page && !post.published"
+                v-if="!postinfo.__page && !postinfo.published"
                 size="x-small"
                 class="q-ml-sm"
                 icon="publish"
@@ -57,6 +57,7 @@
                 color="positive"
                 flat
                 round
+                @click="onPublish"
               />
               <q-btn
                 size="x-small"
@@ -187,7 +188,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import Article404 from "../components/Article404";
 import DateEditor from "../components/Editors/DateEditor";
 import UpdatedEditor from "../components/Editors/UpdatedEditor";
@@ -245,6 +246,9 @@ export default {
         this.localUpdate(obj);
       }
     },
+    ...mapState("hexo", {
+      posts: state => state.posts.data
+    }),
     ...mapGetters("hexo", [
       "modifiedPost",
       "modifiedPage",
@@ -277,6 +281,17 @@ export default {
       }
       if (this.$route.params.type === "page")
         return this.modifiedPage(this.$route.params.id);
+      return null;
+    },
+    postinfo() {
+      if (this.$route.params.type === "post") {
+        const res = this.posts[this.$route.params.id];
+        return res ? res.data : null;
+      }
+      if (this.$route.params.type === "page") {
+        const res = this.pages[this.$route.params.id];
+        return res ? res.data : null;
+      }
       return null;
     }
   },
@@ -312,6 +327,40 @@ export default {
         hide
       });
     },
+    onPublish() {
+      this.$q
+        .dialog({
+          title: "你确认要发布么",
+          message: "如需撤销，需要手动操作文件",
+          cancel: true,
+          ok: {
+            label: "发布",
+            color: "primary",
+            rounded: true,
+            size: "x-small"
+          },
+          cancel: {
+            rounded: true,
+            size: "x-small",
+            flat: true
+          },
+          focus: "cancel"
+        })
+        .onOk(() => {
+          this.$store.dispatch("hexo/publishPost", {
+            id: this.$route.params.id,
+            onsuccess: res => {
+              this.$router.push({
+                name: "edit",
+                params: {
+                  id: res._id,
+                  type: "post"
+                }
+              });
+            }
+          });
+        });
+    },
     onDelete() {
       this.$q
         .dialog({
@@ -326,7 +375,8 @@ export default {
           },
           cancel: {
             rounded: true,
-            size: "x-small"
+            size: "x-small",
+            flat: true
           },
           focus: "cancel"
         })

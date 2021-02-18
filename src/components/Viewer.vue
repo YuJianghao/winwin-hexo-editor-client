@@ -14,6 +14,7 @@
             color="positive"
             flat
             round
+            @click="onPublish"
           />
           <q-btn
             size="x-small"
@@ -229,7 +230,8 @@ export default {
           },
           cancel: {
             rounded: true,
-            size: "x-small"
+            size: "x-small",
+            flat: true
           },
           focus: "cancel"
         })
@@ -239,6 +241,40 @@ export default {
             page: this.$route.params.type === "page",
             onsuccess: () => {
               this.$router.push("/");
+            }
+          });
+        });
+    },
+    onPublish() {
+      this.$q
+        .dialog({
+          title: "你确认要发布么",
+          message: "如需撤销，需要手动操作文件",
+          cancel: true,
+          ok: {
+            label: "发布",
+            color: "primary",
+            rounded: true,
+            size: "x-small"
+          },
+          cancel: {
+            rounded: true,
+            size: "x-small",
+            flat: true
+          },
+          focus: "cancel"
+        })
+        .onOk(() => {
+          this.$store.dispatch("hexo/publishPost", {
+            id: this.$route.params.id,
+            onsuccess: res => {
+              this.$router.push({
+                name: "view",
+                params: {
+                  id: res._id,
+                  type: "post"
+                }
+              });
             }
           });
         });

@@ -37,4 +37,8 @@ export default {
     const res = await api.hexo.deletePostOrPage(id, page)
     return res.data
   },
+  publishPost: async (id) => {
+    const res = await api.hexo.publishPost(id)
+    return res.data
+  }
 }

@@ -132,3 +132,30 @@ export async function deletePostOrPage({ commit, dispatch }, opt = {}) {
     })
   }
 }
+export async function publishPost({ commit }, { id, onsuccess }) {
+  try {
+    Loading.show()
+    const res = await services.hexo.publishPost(id)
+    Vue.notify({
+      title: '发布成功',
+      text: id,
+      type: 'success',
+      duration: 1000
+    })
+    // 添加新文章
+    commit('successPublish1', res)
+    if (onsuccess && typeof onsuccess === 'function') await onsuccess(res)
+    // 删除旧文章
+    commit('successPublish2', id)
+  } catch (err) {
+    if (process.env.DEV) console.error(err)
+    Vue.notify({
+      title: '发布失败',
+      type: 'error',
+      text: err.message,
+      duration: 1000
+    })
+  } finally {
+    Loading.hide()
+  }
+}

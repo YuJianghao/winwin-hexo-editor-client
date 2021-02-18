@@ -188,7 +188,20 @@ export function editPage(state, { id, obj }) {
   Vue.set(state.pages.data[id], 'modify', obj)
 }
 //#endregion
-//#region
+//#region publish
+export function successPublish1(state, res) {
+  Vue.set(state.posts.data, res._id, {
+    data: res,
+    loading: false,
+    modify: {},
+    saved: {}
+  })
+}
+export function successPublish2(state, id) {
+  Vue.delete(state.posts.data, id)
+}
+//#endregion
+//#region clear
 export function clear(state) {
   Vue.set(state, 'posts', {
     loading: false,
