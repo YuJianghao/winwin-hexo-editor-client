@@ -12,3 +12,6 @@ export function sortString(a, b) {
 export function array2dToArray1d(arr) {
   return arr.reduce((pre, cur) => pre.concat(cur), [])
 }
+export function fakeId() {
+  return 'fake' + new Date().valueOf()
+}

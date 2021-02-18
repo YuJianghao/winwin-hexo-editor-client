@@ -1,3 +1,4 @@
+import { removeUndefined } from 'src/utils/common'
 import { request } from './request'
 export default {
   listPosts: async () => {
@@ -12,13 +13,8 @@ export default {
   listCategories: async () => {
     return request.get('/categories')
   },
-  newPostOrPage: async (title, opt = {}) => {
-    const { layout, path, slug, replace } = opt
-    const data = { title }
-    new Array([layout, path, slug, replace]).map(key => {
-      if (key !== undefined) { data[key] = key }
-    })
-    return request.post('/new', data)
+  newPostOrPage: async (opt) => {
+    return request.post('/new', opt)
   },
   updatePostOrPage: async (id, page, obj) => {
     return request.post('/update', { id, page, obj })

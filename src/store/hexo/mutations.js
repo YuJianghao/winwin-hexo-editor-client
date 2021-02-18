@@ -88,17 +88,44 @@ export function failedListCategories(state, err) {
 }
 //#endregion
 //#region new
-export function successNewPost(state, post) {
-  state.posts.data[post._id] = {
-    loading: false,
-    data: post
-  }
+export function requestNew(state, { fakeId, opt }) {
+  Vue.set(state.creating, fakeId, {
+    _id: fakeId,
+    opt,
+    loading: true,
+    error: '',
+    trueId: null,
+    page: null
+  })
 }
-export function successNewPage(state, page) {
-  state.pages.data[page._id] = {
+export function successNew(state, { fakeId, trueId, page }) {
+  state.creating[fakeId].trueId = trueId
+  state.creating[fakeId].page = page
+}
+export function failedNew(state, { fakeId, error }) {
+  state.creating[fakeId].loading = false
+  state.creating[fakeId].error = error
+}
+export function clearFake(state, fakeId) {
+  Vue.delete(state.creating, fakeId)
+}
+export function successNewPost(state, { fakeId, post }) {
+  Vue.set(state.posts.data, post._id, {
     loading: false,
-    data: page
-  }
+    data: post,
+    modify: {},
+    saved: {}
+  })
+  successNew(state, { fakeId, trueId: post._id, page: false })
+}
+export function successNewPage(state, { fakeId, page }) {
+  Vue.set(state.pages.data, page._id, {
+    loading: false,
+    data: page,
+    modify: {},
+    saved: {}
+  })
+  successNew(state, { fakeId, trueId: page._id, page: true })
 }
 //#endregion
 //#region update

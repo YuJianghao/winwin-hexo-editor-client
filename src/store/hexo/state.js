@@ -30,5 +30,6 @@ export default function () {
       data: {},
       err: ''
     },
+    creating: {}
   }
 }

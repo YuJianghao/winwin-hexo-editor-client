@@ -7,7 +7,7 @@ export async function listPosts({ commit }) {
     const postsList = await services.hexo.listPosts()
     commit('successListPosts', postsList)
   } catch (err) {
-    if (process.DEV) console.error(err)
+    if (process.env.DEV) console.error(err)
     commit('failedListPosts', err)
   }
 }
@@ -17,7 +17,7 @@ export async function listPages({ commit }) {
     const postsList = await services.hexo.listPages()
     commit('successListPages', postsList)
   } catch (err) {
-    if (process.DEV) console.error(err)
+    if (process.env.DEV) console.error(err)
     commit('failedListPages', err)
   }
 }
@@ -27,7 +27,7 @@ export async function listTags({ commit }) {
     const postsList = await services.hexo.listTags()
     commit('successListTags', postsList)
   } catch (err) {
-    if (process.DEV) console.error(err)
+    if (process.env.DEV) console.error(err)
     commit('failedListTags', err)
   }
 }
@@ -37,19 +37,29 @@ export async function listCategories({ commit }) {
     const postsList = await services.hexo.listCategories()
     commit('successListCategories', postsList)
   } catch (err) {
-    if (process.DEV) console.error(err)
+    if (process.env.DEV) console.error(err)
     commit('failedListCategories', err)
   }
 }
-export async function newPostOrPage({ commit, dispatch }, opt = {}) {
-  // TODO:添加文章的状态管理，fakeID？
+export async function newPostOrPage({ commit, dispatch }, { fakeId, opt }) {
+  // TODO new page 不可用
   if (opt.title === undefined) throw new Error('title is required')
-  const res = await services.hexo.newPostOrPage(opt.title, opt)
-  if (!res.__Page) {
-    commit('successNewPost', res)
-    dispatch('listTags')
-    dispatch('listCategories')
-  } else commit('successNewPage', res)
+  if (fakeId === undefined) throw new Error('fakeId is required')
+  commit('requestNew', { fakeId, opt })
+  Loading.show()
+  try {
+    const res = await services.hexo.newPostOrPage(opt)
+    if (!res.__page) {
+      commit('successNewPost', { fakeId, post: res })
+      dispatch('listTags')
+      dispatch('listCategories')
+    } else commit('successNewPage', { fakeId, page: res })
+  } catch (err) {
+    if (process.env.DEV) console.error(err)
+    commit('failedNew', { fakeId, err })
+  } finally {
+    Loading.hide()
+  }
 }
 export async function updatePostOrPage({ state, commit, dispatch }, opt = {}) {
   if (opt.id === undefined) throw new Error('id is required')
@@ -83,7 +93,7 @@ export async function updatePostOrPage({ state, commit, dispatch }, opt = {}) {
       duration: 1000
     })
   } catch (err) {
-    if (process.DEV) console.error(err)
+    if (process.env.DEV) console.error(err)
     if (!opt.page) commit('failedUpdatePost', { id: opt.id, err })
     else commit('failedUpdatePage', { id: opt.id, err })
     Vue.notify({

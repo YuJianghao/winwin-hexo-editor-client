@@ -16,8 +16,8 @@ export default {
     const res = await api.hexo.listCategories()
     return res.data
   },
-  newPostOrPage: async (title, opt = {}) => {
-    const res = await api.hexo.newPostOrPage(title, opt)
+  newPostOrPage: async (opt) => {
+    const res = await api.hexo.newPostOrPage(opt)
     return res.data
   },
   /**

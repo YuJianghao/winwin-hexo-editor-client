@@ -13,6 +13,7 @@
         :ripple="false"
         size="x-small"
         class="q-ml-sm bg-whtie"
+        @click="onNewArticle"
       />
     </q-toolbar>
     <div class="options row" style="padding:0 20px 0 24px;font-size:smaller">
@@ -76,6 +77,7 @@
 import MInput from "../components/UI/MInput";
 import LinkDrop from "../components/LinkDrop";
 import ArticleListItem from "../components/ArticleListItem";
+import NewArticle from "../components/NewArticle";
 import { mapState } from "vuex";
 import { array2dToArray1d } from "src/utils/common";
 function obj2list(obj) {
@@ -113,8 +115,13 @@ export default {
       return result;
     }
   },
-  data() {
-    return {};
+  methods: {
+    onNewArticle() {
+      this.$q.dialog({
+        component: NewArticle,
+        parent: this
+      });
+    }
   }
 };
 </script>
