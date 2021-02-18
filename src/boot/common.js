@@ -1,4 +1,3 @@
 import Vue from 'vue'
-import apis from 'src/api'
-
-Vue.prototype.$apis = apis
+import Notifications from 'vue-notification'
+Vue.use(Notifications)

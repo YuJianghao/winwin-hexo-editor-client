@@ -1,116 +1,126 @@
 <template>
-  <q-page class="bg-primary row justify-center items-center">
-    <div class="column">
-      <div class="row">
-        <h5 class="text-h5 text-white q-my-md">登录</h5>
-      </div>
-      <div class="row">
-        <q-card
-          square
-          bordered
-          class="q-pa-lg shadow-1"
+  <q-page :style-fn="styleFn" class="bg-dark-2 column overflow-auto no-wrap">
+    <div class="flex flex-center" style="flex:1 0 0">
+      <q-form
+        @submit="onSubmit"
+        @reset="onReset"
+        class="q-gutter-md"
+        style="min-width:250px"
+      >
+        <div>
+          <img
+            src="~/assets/logo.svg"
+            style="max-width:100px;margin:0 auto;display:block"
+          />
+        </div>
+        <p class="text-grey-6 text-center text-no-wrap" style="font-size:large">
+          登录到 Hexon
+        </p>
+        <m-input
+          v-model="name"
+          type="text"
+          class="col"
+          placeholder="用户名"
+          :error="error"
+          clearable
         >
-          <q-card-section>
-            <q-form class="q-gutter-md">
-              <q-input
-                square
-                filled
-                clearable
-                v-model="username"
-                type="text"
-                label="用户名"
-                ref="username"
-                hint="默认: admin"
-                :disable="logging"
-                :rules="[val => !!val || '请填写用户名']"
-                @keydown.enter="onLogin"
-              />
-              <q-input
-                square
-                filled
-                clearable
-                v-model="password"
-                type="password"
-                label="密码"
-                ref="password"
-                hint="默认: admin"
-                :disable="logging"
-                :rules="[val => !!val || '请填写密码']"
-                @keydown.enter="onLogin"
-              />
-            </q-form>
-          </q-card-section>
-          <q-card-actions class="q-px-md">
-            <q-btn
-              unelevated
-              color="primary"
-              size="lg"
-              class="full-width"
-              label="登录"
-              :loading="logging"
-              @keydown.enter="onLogin"
-              @click="onLogin"
-            />
-          </q-card-actions>
-          <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">
-              Login Form Card By
-              <a href="https://gist.github.com/justinatack/39ec7f37064b2e9fa61fbd450cba3826">justinatack</a> STAR HIM ❤
-            </p>
-          </q-card-section>
-        </q-card>
-      </div>
+          <template v-slot:prepend>
+            <q-icon name="person" class="q-mr-sm" />
+          </template>
+        </m-input>
+        <m-input
+          v-model="pass"
+          type="password"
+          class="col"
+          placeholder="密码"
+          :error="error"
+          clearable
+        >
+          <template v-slot:prepend>
+            <q-icon name="security" class="q-mr-sm" />
+          </template>
+        </m-input>
+        <div class="row">
+          <q-btn
+            color="primary"
+            label="登录"
+            rounded
+            size="x-small"
+            class="col"
+            type="submit"
+            style="height:30px"
+            :ripple="false"
+          />
+        </div>
+        <div class="row">
+          <q-btn
+            color="grey-6"
+            label="忘记密码"
+            flat
+            rounded
+            size="x-small"
+            class="col q-mr-sm"
+            style="height:30px"
+            :ripple="false"
+          />
+          <q-btn
+            color="grey-6"
+            label="帮助"
+            flat
+            rounded
+            size="x-small"
+            class="col"
+            style="height:30px"
+            :ripple="false"
+          />
+        </div>
+      </q-form>
+    </div>
+    <div
+      class="text-center text-grey-6 text-h6 text-no-wrap"
+      style="font-size:x-small"
+    >
+      ©️ 2019 ~ {{ year }} winwin_2011
     </div>
   </q-page>
 </template>
 
 <script>
-import message from '../utils/message'
-import * as actionTypes from 'src/store/dispatcher/action-types'
-
+import MInput from "../components/UI/MInput";
+import { mapState } from "vuex";
 export default {
-  name: 'Login',
-  data () {
+  name: "Login",
+  data() {
     return {
-      username: '',
-      password: '',
-      logging: false
-    }
+      name: "",
+      pass: ""
+    };
+  },
+  components: {
+    MInput
+  },
+  computed: {
+    year() {
+      return new Date().getFullYear();
+    },
+    ...mapState("user", {
+      error: state => state.err.indexOf("wrong") >= 0
+      // TODO: 处理详细的错误代码
+    })
   },
   methods: {
-    async onLogin () {
-      this.$refs.username.validate()
-      this.$refs.password.validate()
-      if (this.$refs.username.hasError || this.$refs.password.hasError) {
-        return
-      }
-      try {
-        this.logging = true
-        await this.$store.dispatch(actionTypes.login, {
-          username: this.username,
-          password: this.password
-        })
-        this.$router.push('/')
-      } catch (err) {
-        if (err.status === 401) {
-          message.error({ message: '用户名或密码错误', position: 'top' })
-        } else {
-          message.error({
-            message: '登陆失败',
-            caption: err.message,
-            position: 'top'
-          })
-        }
-      } finally {
-        this.logging = false
-      }
+    styleFn(offset, height) {
+      return {
+        height: height + "px"
+      };
+    },
+    onReset() {},
+    async onSubmit() {
+      await this.$store.dispatch("user/login", {
+        name: this.name,
+        pass: this.pass
+      });
     }
   }
-}
+};
 </script>
-
-<style>
-.q-card {
-  width: 360px;
-}
-</style>
