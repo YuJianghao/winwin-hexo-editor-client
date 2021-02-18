@@ -2,7 +2,7 @@
   "name": "hexon-client",
   "version": "0.0.1",
   "description": "An online hexo blog editor",
-  "productName": "hexon",
+  "productName": "Hexon",
   "author": "winwin_2011 <yjh2011@live.com>",
   "private": true,
   "scripts": {

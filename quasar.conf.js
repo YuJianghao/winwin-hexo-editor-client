@@ -138,12 +138,11 @@ module.exports = function (/* ctx */) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: `hexon`,
-        short_name: `hexon`,
+        name: `Hexon`,
+        short_name: `Hexon`,
         description: `An online hexo blog editor`,
         display: 'standalone',
         orientation: 'portrait',
-        background_color: '#323232',
         theme_color: '#1f1f1f',
         icons: [
           {
