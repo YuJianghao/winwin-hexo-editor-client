@@ -177,7 +177,7 @@ export function successDeletePost(state, id) {
   Vue.delete(state.posts.data, id)
 }
 export function successDeletePage(state, id) {
-  Vue.delete(state.pages.page, id)
+  Vue.delete(state.pages.data, id)
 }
 //#endregion
 //#region edit

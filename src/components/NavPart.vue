@@ -85,6 +85,7 @@
           <q-item-label class="ellipsis">分类</q-item-label>
         </q-item-section>
       </q-item>
+      <!-- TODO 超长分类支持 -->
       <q-list dense>
         <category-item
           v-for="node in categoriesTreeNodes"

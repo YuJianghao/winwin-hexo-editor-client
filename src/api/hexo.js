@@ -1,4 +1,3 @@
-import { removeUndefined } from 'src/utils/common'
 import { request } from './request'
 export default {
   listPosts: async () => {

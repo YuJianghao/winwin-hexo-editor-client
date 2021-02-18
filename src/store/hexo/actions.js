@@ -42,7 +42,6 @@ export async function listCategories({ commit }) {
   }
 }
 export async function newPostOrPage({ commit, dispatch }, { fakeId, opt }) {
-  // TODO new page 不可用
   if (opt.title === undefined) throw new Error('title is required')
   if (fakeId === undefined) throw new Error('fakeId is required')
   commit('requestNew', { fakeId, opt })
@@ -109,10 +108,27 @@ export async function updatePostOrPage({ state, commit, dispatch }, opt = {}) {
 export async function deletePostOrPage({ commit, dispatch }, opt = {}) {
   if (opt.id === undefined) throw new Error('id is required')
   if (opt.page === undefined) throw new Error('page is required')
-  await services.hexo.deletePostOrPage(opt.id, opt.page)
-  if (!opt.page) {
-    commit('successDeletePost', opt.id)
-    dispatch('listTags')
-    dispatch('listCategories')
-  } else commit('successDeletePage', opt.id)
+  try {
+    await services.hexo.deletePostOrPage(opt.id, opt.page)
+    if (!opt.page) {
+      commit('successDeletePost', opt.id)
+      if (opt.onsuccess && typeof opt.onsuccess === 'function') await opt.onsuccess()
+      dispatch('listTags')
+      dispatch('listCategories')
+    } else commit('successDeletePage', opt.id)
+    Vue.notify({
+      title: '删除成功',
+      text: opt.id,
+      type: 'success',
+      duration: 1000
+    })
+  } catch (err) {
+    if (process.env.DEV) console.error(err)
+    Vue.notify({
+      title: '删除失败',
+      type: 'error',
+      text: err.message,
+      duration: 1000
+    })
+  }
 }

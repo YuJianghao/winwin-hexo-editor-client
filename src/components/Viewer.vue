@@ -33,6 +33,7 @@
             :ripple="false"
             flat
             round
+            @click="onDelete"
           />
           <q-btn
             size="x-small"
@@ -95,7 +96,11 @@
                   </span>
                   <span
                     class="categories"
-                    v-if="!post.__page && category2d.length > 0"
+                    v-if="
+                      !post.__page &&
+                        category2d.length > 0 &&
+                        category2d[0].length > 0
+                    "
                   >
                     <q-icon name="folder" class="icon" />
                     <span
@@ -209,6 +214,34 @@ export default {
     },
     onEdit() {
       this.$router.push({ name: "edit", params: this.$route.params });
+    },
+    onDelete() {
+      this.$q
+        .dialog({
+          title: "你确认要删除么",
+          message: "此操作不可撤销",
+          cancel: true,
+          ok: {
+            label: "删除",
+            color: "negative",
+            rounded: true,
+            size: "x-small"
+          },
+          cancel: {
+            rounded: true,
+            size: "x-small"
+          },
+          focus: "cancel"
+        })
+        .onOk(() => {
+          this.$store.dispatch("hexo/deletePostOrPage", {
+            id: this.$route.params.id,
+            page: this.$route.params.type === "page",
+            onsuccess: () => {
+              this.$router.push("/");
+            }
+          });
+        });
     }
   }
 };

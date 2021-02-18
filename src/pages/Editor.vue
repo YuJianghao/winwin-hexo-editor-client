@@ -76,6 +76,7 @@
                 :ripple="false"
                 flat
                 round
+                @click="onDelete"
               />
               <q-btn
                 size="x-small"
@@ -122,7 +123,6 @@
                     Frontmatters
                   </div>
                 </q-toolbar>
-                <!-- TODO 添加layout -->
                 <q-list class="m-form">
                   <date-editor
                     :post="post"
@@ -311,6 +311,34 @@ export default {
         page: this.$route.params.type === "page",
         hide
       });
+    },
+    onDelete() {
+      this.$q
+        .dialog({
+          title: "你确认要删除么",
+          message: "此操作不可撤销",
+          cancel: true,
+          ok: {
+            label: "删除",
+            color: "negative",
+            rounded: true,
+            size: "x-small"
+          },
+          cancel: {
+            rounded: true,
+            size: "x-small"
+          },
+          focus: "cancel"
+        })
+        .onOk(() => {
+          this.$store.dispatch("hexo/deletePostOrPage", {
+            id: this.$route.params.id,
+            page: this.$route.params.type === "page",
+            onsuccess: () => {
+              this.$router.push("/");
+            }
+          });
+        });
     }
   }
 };
