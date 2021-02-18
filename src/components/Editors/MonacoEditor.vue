@@ -84,6 +84,7 @@ export default {
   methods: {
     layout() {
       window.setTimeout(() => {
+        if (this.timer === undefined) return;
         this.rect.height = this.$refs.container.clientHeight;
         this.rect.width = this.$refs.container.clientWidth;
         this.$nextTick(() => {
@@ -155,7 +156,8 @@ export default {
   },
   beforeDestroy() {
     this.editor.dispose();
-    // window.clearInterval(this.timer);
+    window.clearInterval(this.timer);
+    this.timer = undefined;
     window.removeEventListener("resize", this.layout);
   }
 };

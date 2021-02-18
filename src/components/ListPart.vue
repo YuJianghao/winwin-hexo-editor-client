@@ -64,7 +64,7 @@
       <q-list class="article-list">
         <article-list-item
           v-for="article in articles"
-          :key="article._id + article.__post"
+          :key="article._id + article.__page"
           :article="article"
         ></article-list-item>
       </q-list>

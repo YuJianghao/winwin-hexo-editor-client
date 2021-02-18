@@ -49,7 +49,7 @@
                 v-if="saving"
               />
               <q-btn
-                v-if="post.__post && !post.published"
+                v-if="!post.__page && !post.published"
                 size="x-small"
                 class="q-ml-sm"
                 icon="publish"

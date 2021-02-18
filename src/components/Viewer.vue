@@ -6,7 +6,7 @@
         <q-toolbar>
           <q-space />
           <q-btn
-            v-if="post.__post && !post.published"
+            v-if="!post.__page && !post.published"
             size="x-small"
             class="q-ml-sm"
             icon="publish"
@@ -62,7 +62,7 @@
                   {{ post.title || "未命名" }}
                   <q-icon
                     name="drafts"
-                    v-if="post.__post && !post.published"
+                    v-if="!post.__page && !post.published"
                     color="yellow-8"
                     size="large"
                   />
@@ -95,7 +95,7 @@
                   </span>
                   <span
                     class="categories"
-                    v-if="post.__post && category2d.length > 0"
+                    v-if="!post.__page && category2d.length > 0"
                   >
                     <q-icon name="folder" class="icon" />
                     <span
@@ -119,7 +119,7 @@
                   <span
                     class="tags"
                     v-if="
-                      post.__post &&
+                      !post.__page &&
                         post.tags &&
                         post.tags.length &&
                         post.tags.length > 0

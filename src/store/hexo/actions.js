@@ -45,7 +45,7 @@ export async function newPostOrPage({ commit, dispatch }, opt = {}) {
   // TODO:添加文章的状态管理，fakeID？
   if (opt.title === undefined) throw new Error('title is required')
   const res = await services.hexo.newPostOrPage(opt.title, opt)
-  if (res.__post) {
+  if (!res.__Page) {
     commit('successNewPost', res)
     dispatch('listTags')
     dispatch('listCategories')

@@ -12,7 +12,7 @@
         <q-icon
           name="drafts"
           color="yellow-9"
-          v-if="article.__post && !article.published"
+          v-if="!article.__page && !article.published"
         />
         <q-icon name="insert_drive_file" color="cyan" v-if="article.__page" />
         {{ article.title || "未命名" }}
@@ -78,7 +78,7 @@ export default {
       if (this.article._id !== this.$route.params.id) return false;
       if (this.$route.path.includes("page") && this.article.__page === true)
         return true;
-      if (this.$route.path.includes("post") && this.article.__post === true)
+      if (this.$route.path.includes("post") && !this.article.__page === true)
         return true;
       return false;
     }
@@ -86,14 +86,15 @@ export default {
   methods: {
     readable: readable,
     onClick() {
-      const type = this.article.__post ? "post" : "page";
+      const type = !this.article.__page ? "post" : "page";
+      // 没有layout的情况就不会有__post=true,所以改用__page判断
       const id = this.article._id;
       if (this.$route.params.id === id && this.$route.params.type === type)
         this.$router.push("/");
       else this.$router.push({ name: "view", params: { id, type } });
     },
     onDBClick() {
-      const type = this.article.__post ? "post" : "page";
+      const type = !this.article.__page ? "post" : "page";
       const id = this.article._id;
       this.$router.push({ name: "edit", params: { id, type } });
     }
