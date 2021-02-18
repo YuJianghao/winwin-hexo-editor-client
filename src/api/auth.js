@@ -1,4 +1,4 @@
-import { SHA1 } from 'crypto-js'
+import sha1 from 'crypto-js/sha1'
 import { LocalStorage } from 'quasar'
 import { origin, request } from './request'
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from 'src/utils/constants'
@@ -7,7 +7,7 @@ export default {
     const res = await origin.post('/login', undefined, {
       auth: {
         username: name,
-        password: SHA1(pass).toString()
+        password: sha1(pass).toString()
       }
     })
     LocalStorage.set(ACCESS_TOKEN_KEY, res.data.data.accessToken)
