@@ -12,7 +12,8 @@ const routes = [
         ]
       },
       { path: ':type/:id/edit', component: () => import('pages/Editor.vue'), name: 'edit' },
-      { path: 'login', component: () => import('pages/Login.vue'), }
+      { path: 'login', component: () => import('pages/Login.vue') },
+      { path: 'install', component: () => import('pages/Install.vue') }
     ]
   },
 
@@ -20,7 +21,7 @@ const routes = [
   // but you can also remove it
   {
     path: '*',
-    component: () => import('pages/Error404.vue')
+    redirect: '/'
   }
 ]
 
