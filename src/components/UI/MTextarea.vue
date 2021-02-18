@@ -1,18 +1,19 @@
 <template>
-  <div class="m-textarea" ref="parent">
+  <div class="m-textarea" ref="parent" :class="{ error }">
     <textarea
       ref="el"
       class="full-width"
       @input="fitToContent"
       :placeholder="placeholder"
-      v-model="model"
+      v-model="innerValue"
       @keydown="e => $emit('keydown', e)"
+      @blur="e => $emit('on-blur', e)"
     ></textarea>
   </div>
 </template>
 <script>
 export default {
-  name: "TTextarea",
+  name: "MTextarea",
   props: {
     value: {
       type: String,
@@ -22,20 +23,22 @@ export default {
       type: Boolean,
       default: true
     },
-    placeholder: {
-      type: String
-    }
+    error: {
+      type: Boolean,
+      default: false
+    },
+    placeholder: String
   },
   data() {
     return {
-      model: this.value
+      innerValue: this.value
     };
   },
   watch: {
     value(v) {
-      this.model = v;
+      this.innerValue = v;
     },
-    model(v) {
+    innerValue(v) {
       this.$emit("input", v);
     }
   },
@@ -58,6 +61,9 @@ export default {
 
       el.style.height = el.scrollHeight + "px";
       parentStyle.marginBottom = "";
+    },
+    setValue(v) {
+      this.innerValue = v;
     }
   },
   mounted() {
@@ -73,10 +79,13 @@ export default {
     border-radius: 6px;
     padding: 4px 12px;
     margin: 0;
-    border: none;
+    border: 1px solid transparent;
     outline: none;
     min-height: 100px;
     resize: none;
+  }
+  &.error > textarea {
+    border-color: $negative;
   }
 }
 .body--dark .m-textarea textarea {

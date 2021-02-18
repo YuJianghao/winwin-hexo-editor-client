@@ -146,29 +146,31 @@
                     :localUpdate="e => localUpdate(e)"
                     :existCategories="categoriesList.map(t => t.name)"
                   ></category-editor>
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label caption class="row items-center">
-                        其他
-                        <q-icon name="help" class="q-ml-xs cursor-pointer">
-                          <q-menu content-class="q-pa-sm pop">
-                            <q-markdown
-                              :src="helper.frontmatter"
-                              style="max-width:400px"
-                            >
-                            </q-markdown>
-                          </q-menu>
-                        </q-icon>
-                      </q-item-label>
-                      <q-item-label>
-                        <m-textarea
-                          class="m-codearea"
-                          v-model="fm"
-                          :placeholder="'key: value'"
-                        ></m-textarea
-                      ></q-item-label>
-                    </q-item-section>
-                  </q-item>
+                  <q-expansion-item>
+                    <template v-slot:header>
+                      <q-item-section>
+                        <q-item-label caption>Layout</q-item-label>
+                        <q-item-label>
+                          {{ layout || "hexo-default" }}
+                        </q-item-label>
+                      </q-item-section>
+                    </template>
+                    <q-list dense style="padding:1px 0">
+                      <q-item style="padding-top:0;;margin-top:0">
+                        <q-item-section>
+                          <m-input
+                            class="q-mt-xs"
+                            v-model="layout"
+                            placeholder="布局名称"
+                          ></m-input
+                        ></q-item-section> </q-item
+                    ></q-list>
+                  </q-expansion-item>
+                  <fm-editor
+                    :post="post"
+                    :getObj="() => getObj()"
+                    :localUpdate="e => localUpdate(e)"
+                  ></fm-editor>
                 </q-list>
               </div>
             </q-scroll-area>
@@ -180,38 +182,31 @@
 </template>
 
 <script>
-import { date } from "quasar";
 import { mapGetters } from "vuex";
 import Article404 from "../components/Article404";
-import MTextarea from "../components/UI/MTextarea";
 import DateEditor from "../components/Editors/DateEditor";
 import UpdatedEditor from "../components/Editors/UpdatedEditor";
 import TagEditor from "../components/Editors/TagEditor";
 import CategoryEditor from "../components/Editors/CategoryEditor";
+import FmEditor from "../components/Editors/FmEditor";
 import MonacoEditor from "../components/Editors/MonacoEditor";
-import { DATE_FORMAT } from "src/utils/constants";
-import frontmatter from "src/markdown/helper/frontmatter.md";
+import MInput from "../components/UI/MInput";
 export default {
   name: "Editor",
   data() {
     return {
-      splitter: 300,
-      tags: ["t1", "t2", "t3", "t4", "t5", "t6"],
-      categories: [["c11", "c12"], ["c2"], ["c3"]],
-      fm: "",
-      helper: {
-        frontmatter
-      }
+      splitter: 300
     };
   },
   components: {
     Article404,
-    MTextarea,
     DateEditor,
     UpdatedEditor,
     TagEditor,
     CategoryEditor,
-    MonacoEditor
+    FmEditor,
+    MonacoEditor,
+    MInput
   },
   computed: {
     content: {
@@ -231,6 +226,16 @@ export default {
       set(v) {
         const obj = this.getObj();
         obj.title = v;
+        this.localUpdate(obj);
+      }
+    },
+    layout: {
+      get() {
+        return this.post.layout;
+      },
+      set(v) {
+        const obj = this.getObj();
+        obj.layout = v;
         this.localUpdate(obj);
       }
     },
@@ -282,23 +287,7 @@ export default {
     },
     // 获取一个包含已更改数据的文章对象
     getObj() {
-      return Object.assign({}, this.modify);
-    },
-    addCategory(idx) {
-      if (idx === undefined) this.categories.push(["new cate"]);
-      else this.categories[idx].push("new cate");
-    },
-    removeCategory(idx, d) {
-      console.log(idx, d, this.categories[idx]);
-      if (d === 0) this.categories.splice(idx, 1);
-      else this.$set(this.categories, idx, this.categories[idx].slice(0, d));
-    },
-    // TODO: tags和categories的ui怎么弄
-    addTag() {
-      this.tags.push("new tag");
-    },
-    removeTag(idx) {
-      this.tags.splice(idx, 1);
+      return JSON.parse(JSON.stringify(this.modify));
     },
     styleFn(offset, height) {
       return {
@@ -316,9 +305,6 @@ export default {
         page: this.$route.params.type === "page",
         hide
       });
-    },
-    formatDate(timestramp) {
-      return date.formatDate(timestramp, DATE_FORMAT);
     }
   }
 };

@@ -176,18 +176,7 @@ export default {
       return this.$q.dark.isActive;
     },
     fm() {
-      const fm = Object.assign({}, this.post.fm);
-      [
-        "_content",
-        "tags",
-        "category",
-        "categories",
-        "title",
-        "date",
-        "updated"
-      ].map(key => delete fm[key]);
-      // 如果用delete一定看清楚是不是引用！！
-      const res = yaml.dump(fm);
+      const res = yaml.dump(this.post.fm.fm);
       return res.toString() === "{}\n" ? "" : res;
     },
     post() {
