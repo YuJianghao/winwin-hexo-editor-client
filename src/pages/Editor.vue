@@ -247,7 +247,8 @@ export default {
       }
     },
     ...mapState("hexo", {
-      posts: state => state.posts.data
+      posts: state => state.posts.data,
+      pages: state => state.pages.data
     }),
     ...mapGetters("hexo", [
       "modifiedPost",
