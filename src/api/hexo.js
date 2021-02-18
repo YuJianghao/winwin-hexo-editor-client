@@ -35,4 +35,12 @@ export default {
     return request.post('/clean')
   },
   //#endregion
+  //#region git
+  gitSync: async () => {
+    return request.post('/git/sync')
+  },
+  gitSave: async () => {
+    return request.post('/git/save')
+  },
+  //#endregion
 }

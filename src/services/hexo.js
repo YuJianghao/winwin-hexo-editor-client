@@ -42,14 +42,12 @@ export default {
     return res.data
   },
   //#region actions
-  generate: async () => {
-    await api.hexo.generate()
-  },
-  deploy: async () => {
-    await api.hexo.deploy()
-  },
-  clean: async () => {
-    await api.hexo.clean()
-  },
+  generate: async () => { await api.hexo.generate() },
+  deploy: async () => { await api.hexo.deploy() },
+  clean: async () => { await api.hexo.clean() },
+  //#endregion
+  //#region git
+  gitSync: async () => { await api.hexo.gitSync() },
+  gitSave: async () => { await api.hexo.gitSave() },
   //#endregion
 }

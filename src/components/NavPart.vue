@@ -41,11 +41,13 @@
           icon="flight_takeoff"
           title="同步到GIT"
           color="primary"
+          @on-click="gitSave"
         ></nav-list-item>
         <nav-list-item
           icon="flight_land"
           title="从GIT同步"
           color="red"
+          @on-click="gitSync"
         ></nav-list-item>
       </q-list>
       <q-item class="text-bold title">
@@ -183,6 +185,48 @@ export default {
         // to the more appropriate "parent" name)
       });
     },
+    async gitSave() {
+      try {
+        this.$q.loading.show();
+        await services.hexo.gitSave();
+        this.$notify({
+          title: "git提交成功",
+          type: "success",
+          duration: 1000
+        });
+      } catch (err) {
+        if (process.env.DEV) console.error(err);
+        this.$notify({
+          title: "git提交失败",
+          type: "error",
+          text: err.message,
+          duration: 1000
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
+    },
+    async gitSync() {
+      try {
+        this.$q.loading.show();
+        await services.hexo.gitSync();
+        this.$notify({
+          title: "git同步成功",
+          type: "success",
+          duration: 1000
+        });
+      } catch (err) {
+        if (process.env.DEV) console.error(err);
+        this.$notify({
+          title: "git同步失败",
+          type: "error",
+          text: err.message,
+          duration: 1000
+        });
+      } finally {
+        this.$q.loading.hide();
+      }
+    },
     async generate() {
       try {
         this.$q.loading.show();
@@ -215,7 +259,6 @@ export default {
         });
       } catch (err) {
         if (process.env.DEV) console.error(err);
-        // TODO 检测部署未配置
         this.$notify({
           title: "部署失败",
           type: "error",
