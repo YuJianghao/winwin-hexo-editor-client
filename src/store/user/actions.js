@@ -39,12 +39,14 @@ export async function login({ commit, dispatch }, { name, pass }) {
 
 export async function logout({ commit }, local) {
   try {
-    if (!local) await api.auth.logout()
-    Vue.notify({
-      title: '登出成功',
-      type: 'success',
-      duration: 1000
-    })
+    if (!local) {
+      await api.auth.logout()
+      Vue.notify({
+        title: '登出成功',
+        type: 'success',
+        duration: 1000
+      })
+    }
   } catch (e) {
     Vue.notify({
       title: '已登出，但出现了一些错误',

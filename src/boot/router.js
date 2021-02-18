@@ -1,5 +1,4 @@
 import api from 'src/api'
-import install from 'src/api/install'
 import Router from 'vue-router'
 // https://github.com/vuejs/vue-router/issues/2881
 const originalPush = Router.prototype.push
