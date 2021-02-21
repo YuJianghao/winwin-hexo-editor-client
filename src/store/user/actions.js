@@ -4,6 +4,7 @@ import api from "src/api"
 import Router from "src/router"
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "src/utils/constants"
 import { Logger } from "src/utils/logger"
+import { NetworkError } from "src/api/request";
 const logger = new Logger({ prefix: 'user actions' })
 
 export async function login({ commit, dispatch }, { name, pass }) {
@@ -21,19 +22,14 @@ export async function login({ commit, dispatch }, { name, pass }) {
     Router.push('/')
   } catch (err) {
     let message = ''
-    if (err.response && err.response.data && err.response.data.message)
-      message = err.response.data.message
-    else {
-      message = err.message
-      logger.error(err)
-    }
+    commit('failedLogin', message)
     Vue.notify({
       title: '登录失败',
-      text: message,
+      text: err instanceof NetworkError ? err.message : 'unknown error',
       type: 'error',
       duration: 5000
     })
-    commit('failedLogin', message)
+    if (!(err instanceof NetworkError)) throw err
   }
 }
 
@@ -47,13 +43,14 @@ export async function logout({ commit }, local) {
         duration: 1000
       })
     }
-  } catch (e) {
+  } catch (err) {
     Vue.notify({
       title: '已登出，但出现了一些错误',
-      text: e,
+      text: err.message,
       type: 'warn',
       duration: 5000
     })
+    if (!(err instanceof NetworkError)) throw err
   } finally {
     LocalStorage.remove(ACCESS_TOKEN_KEY)
     LocalStorage.remove(REFRESH_TOKEN_KEY)
@@ -70,6 +67,8 @@ export async function info({ commit, dispatch }) {
     const info = (await api.auth.info()).data
     commit('successInfo', info)
   } catch (err) {
-    if (err.response.status !== 401) commit('failedInfo', err)
+    commit('failedInfo', err)
+    if (!(err instanceof NetworkError))
+      console.error(err)
   }
 }

@@ -180,6 +180,7 @@ import api from "src/api";
 import srand from "string-random";
 import MInput from "../components/UI/MInput";
 import sha1 from "crypto-js/sha1";
+import { NetworkError } from "src/api/request";
 export default {
   name: "Install",
   data() {
@@ -226,15 +227,10 @@ export default {
         this.root.status = "pass";
         this.root.error = "";
       } catch (err) {
-        if (
-          err.response &&
-          err.response.status === 400 &&
-          err.response.data &&
-          err.response.data.message
-        )
-          this.root.error = err.response.data.message;
-        else if (process.env.DEV) console.error(err);
         this.root.status = "error";
+        this.root.error =
+          err instanceof NetworkError ? err.message : "unknown error";
+        if (!err instanceof NetworkError) throw err;
       }
     },
     next1() {
@@ -267,7 +263,9 @@ export default {
         this.install.status = "done";
       } catch (err) {
         this.install.status = "error";
-        this.install.error = err;
+        this.install.error =
+          err instanceof NetworkError ? err.message : "unknown error";
+        if (!err instanceof NetworkError) throw err;
       }
     }
   },

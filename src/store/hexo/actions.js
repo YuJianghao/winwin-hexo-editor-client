@@ -1,14 +1,15 @@
 import Vue from 'vue'
 import services from "src/services"
 import { Loading } from 'quasar'
+import { NetworkError } from 'src/api/request'
 export async function listPosts({ commit }) {
   commit('requestListPosts')
   try {
     const postsList = await services.hexo.listPosts()
     commit('successListPosts', postsList)
   } catch (err) {
-    if (process.env.DEV) console.error(err)
     commit('failedListPosts', err)
+    if (!(err instanceof NetworkError)) throw err
   }
 }
 export async function listPages({ commit }) {
@@ -17,8 +18,8 @@ export async function listPages({ commit }) {
     const postsList = await services.hexo.listPages()
     commit('successListPages', postsList)
   } catch (err) {
-    if (process.env.DEV) console.error(err)
     commit('failedListPages', err)
+    if (!(err instanceof NetworkError)) throw err
   }
 }
 export async function listTags({ commit }) {
@@ -27,8 +28,8 @@ export async function listTags({ commit }) {
     const postsList = await services.hexo.listTags()
     commit('successListTags', postsList)
   } catch (err) {
-    if (process.env.DEV) console.error(err)
     commit('failedListTags', err)
+    if (!(err instanceof NetworkError)) throw err
   }
 }
 export async function listCategories({ commit }) {
@@ -37,8 +38,8 @@ export async function listCategories({ commit }) {
     const postsList = await services.hexo.listCategories()
     commit('successListCategories', postsList)
   } catch (err) {
-    if (process.env.DEV) console.error(err)
     commit('failedListCategories', err)
+    if (!(err instanceof NetworkError)) throw err
   }
 }
 export async function newPostOrPage({ commit, dispatch }, { fakeId, opt }) {
@@ -54,8 +55,8 @@ export async function newPostOrPage({ commit, dispatch }, { fakeId, opt }) {
       dispatch('listCategories')
     } else commit('successNewPage', { fakeId, page: res })
   } catch (err) {
-    if (process.env.DEV) console.error(err)
     commit('failedNew', { fakeId, err })
+    if (!(err instanceof NetworkError)) throw err
   } finally {
     Loading.hide()
   }
@@ -92,15 +93,15 @@ export async function updatePostOrPage({ state, commit, dispatch }, opt = {}) {
       duration: 1000
     })
   } catch (err) {
-    if (process.env.DEV) console.error(err)
     if (!opt.page) commit('failedUpdatePost', { id: opt.id, err })
     else commit('failedUpdatePage', { id: opt.id, err })
     Vue.notify({
       title: '保存失败',
       type: 'error',
-      text: err.message,
+      text: err instanceof NetworkError ? err.message : 'unknown error',
       duration: 1000
     })
+    if (!(err instanceof NetworkError)) throw err
   } finally {
     Loading.hide()
   }
@@ -123,13 +124,13 @@ export async function deletePostOrPage({ commit, dispatch }, opt = {}) {
       duration: 1000
     })
   } catch (err) {
-    if (process.env.DEV) console.error(err)
     Vue.notify({
       title: '删除失败',
       type: 'error',
-      text: err.message,
+      text: err instanceof NetworkError ? err.message : 'unknown error',
       duration: 1000
     })
+    if (!(err instanceof NetworkError)) throw err
   }
 }
 export async function publishPost({ commit }, { id, onsuccess }) {
@@ -148,13 +149,13 @@ export async function publishPost({ commit }, { id, onsuccess }) {
     // 删除旧文章
     commit('successPublish2', id)
   } catch (err) {
-    if (process.env.DEV) console.error(err)
     Vue.notify({
       title: '发布失败',
       type: 'error',
-      text: err.message,
+      text: err instanceof NetworkError ? err.message : 'unknown error',
       duration: 1000
     })
+    if (!(err instanceof NetworkError)) throw err
   } finally {
     Loading.hide()
   }
