@@ -1,9 +1,8 @@
 import axios from 'axios'
-import { LocalStorage } from 'quasar'
 import Store from 'src/store'
 import Router from '../router'
-import { ACCESS_TOKEN_KEY } from 'src/utils/constants'
 import api from '.'
+import services from 'src/services'
 class NetworkError extends Error {
   constructor(message) {
     super(message)
@@ -27,7 +26,7 @@ request.defaults.headers['Content-Type'] = 'application/json'
 request.defaults.baseURL = BASEURL
 
 request.interceptors.request.use((config) => {
-  const token = LocalStorage.getItem(ACCESS_TOKEN_KEY)
+  const token = services.auth.getAccessToken()
   token && (config.headers.Authorization = 'Bearer ' + token)
   return config
 })
