@@ -6,3 +6,7 @@ export function setSort(state, { key, ascend }) {
   state.sort.key = key
   state.sort.ascend = ascend
 }
+export function reset(state) {
+  setFilter(state, { type: 'all' })
+  setSort(state, { key: 'date', ascend: false })
+}

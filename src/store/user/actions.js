@@ -54,8 +54,8 @@ export async function logout({ commit }, local) {
   } finally {
     services.auth.destory()
     commit('logout')
-    commit('hexo/clear', null, { root: true })
-    commit('ui/setFilter', { type: 'all' }, { root: true })
+    commit('hexo/reset', null, { root: true })
+    commit('ui/reset', null, { root: true })
     Router.push('/login')
   }
 }
