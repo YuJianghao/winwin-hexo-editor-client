@@ -144,9 +144,25 @@ export default {
     onToggleDark() {
       this.$q.dark.set(!this.$q.dark.isActive);
     },
-    logout() {
-      this.$store.dispatch("user/logout");
-      this.hide();
+    async logout() {
+      try {
+        await this.$store.dispatch("user/logout");
+        this.$notify({
+          title: "登出成功",
+          type: "success",
+          duration: 1000
+        });
+      } catch (err) {
+        this.$notify({
+          title: "已登出，但出现了一些错误",
+          type: "warn",
+          duration: 5000
+        });
+        throw err;
+      } finally {
+        this.hide();
+        this.$router.push("/login");
+      }
     },
     // following method is REQUIRED
     // (don't change its name --> "show")

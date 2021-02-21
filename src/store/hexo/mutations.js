@@ -201,27 +201,11 @@ export function successPublish2(state, id) {
   Vue.delete(state.posts.data, id)
 }
 //#endregion
-//#region clear
-export function clear(state) {
-  Vue.set(state, 'posts', {
-    loading: false,
-    data: {},
-    err: ''
-  })
-  Vue.set(state, 'pages', {
-    loading: false,
-    data: {},
-    err: ''
-  })
-  Vue.set(state, 'tags', {
-    loading: false,
-    data: {},
-    err: ''
-  })
-  Vue.set(state, 'categories', {
-    loading: false,
-    data: {},
-    err: ''
-  })
+//#region reset
+export function reset(state) {
+  successListPosts(state, [])
+  successListPages(state, [])
+  successListTags(state, [])
+  successListCategories(state, [])
 }
 //#endregion

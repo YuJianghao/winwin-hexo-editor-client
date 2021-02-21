@@ -27,10 +27,10 @@ export function failedInfo(state, err) {
   state.info.loading = false
   state.info.err = err
 }
-export function logout(state) {
+export function logout(state, err) {
   state.alive = false
   state.pending = false
-  state.err = ''
+  state.err = err || ''
   state.info.data = {}
 }
 export function check(state) {

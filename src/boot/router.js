@@ -1,4 +1,5 @@
 import api from 'src/api'
+import services from 'src/services'
 import Router from 'vue-router'
 // https://github.com/vuejs/vue-router/issues/2881
 const originalPush = Router.prototype.push
@@ -24,7 +25,11 @@ export default async ({ router, store }) => {
     //#region init
     if (store.state.user.first) {
       store.commit('user/check')
-      await store.dispatch("init")
+      if (services.auth.hasToken()) {
+        await store.dispatch('user/info')
+        if (store.state.user.alive)
+          await store.dispatch("init")
+      }
     }
     //#endregion
     if (store.state.user.alive) {

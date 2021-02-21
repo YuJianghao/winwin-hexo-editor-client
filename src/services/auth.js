@@ -1,7 +1,7 @@
 import { LocalStorage } from "quasar";
 const ACCESS_TOKEN_KEY = 'access-token';
 const REFRESH_TOKEN_KEY = 'refresh-token';
-export default {
+const auth = {
   setAccessToken: (token) => {
     LocalStorage.set(ACCESS_TOKEN_KEY, token)
   },
@@ -21,5 +21,10 @@ export default {
   destory: () => {
     LocalStorage.remove(ACCESS_TOKEN_KEY)
     LocalStorage.remove(REFRESH_TOKEN_KEY)
+  },
+
+  hasToken: () => {
+    return auth.getAccessToken() && auth.getRefreshToken()
   }
 }
+export default auth

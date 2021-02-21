@@ -116,10 +116,28 @@ export default {
     },
     onReset() {},
     async onSubmit() {
-      await this.$store.dispatch("user/login", {
-        name: this.name,
-        pass: this.pass
-      });
+      try {
+        await this.$store.dispatch("user/login", {
+          name: this.name,
+          pass: this.pass
+        });
+        if (this.$store.state.user.alive) {
+          this.$notify({
+            title: "登录成功",
+            type: "success",
+            duration: 1000
+          });
+          this.$router.push("/");
+        } else throw 1;
+      } catch (err) {
+        this.$notify({
+          title: "登录失败",
+          text: this.$store.state.user.err,
+          type: "error",
+          duration: 5000
+        });
+        if (err !== 1) throw err;
+      }
     }
   }
 };
