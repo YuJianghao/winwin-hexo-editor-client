@@ -195,13 +195,13 @@ export default {
           duration: 1000
         });
       } catch (err) {
-        if (process.env.DEV) console.error(err);
         this.$notify({
           title: "git提交失败",
           type: "error",
-          text: err.message,
+          text: err instanceof NetworkError ? err.message : "unknown error",
           duration: 1000
         });
+        if (!(err instanceof NetworkError)) throw err;
       } finally {
         this.$q.loading.hide();
       }
@@ -216,13 +216,13 @@ export default {
           duration: 1000
         });
       } catch (err) {
-        if (process.env.DEV) console.error(err);
         this.$notify({
           title: "git同步失败",
           type: "error",
-          text: err.message,
+          text: err instanceof NetworkError ? err.message : "unknown error",
           duration: 1000
         });
+        if (!(err instanceof NetworkError)) throw err;
       } finally {
         this.$q.loading.hide();
       }
@@ -237,13 +237,13 @@ export default {
           duration: 1000
         });
       } catch (err) {
-        if (process.env.DEV) console.error(err);
         this.$notify({
           title: "生成失败",
           type: "error",
-          text: err.message,
+          text: err instanceof NetworkError ? err.message : "unknown error",
           duration: 1000
         });
+        if (!(err instanceof NetworkError)) throw err;
       } finally {
         this.$q.loading.hide();
       }
@@ -258,13 +258,13 @@ export default {
           duration: 1000
         });
       } catch (err) {
-        if (process.env.DEV) console.error(err);
         this.$notify({
           title: "部署失败",
           type: "error",
-          text: err.message,
+          text: err instanceof NetworkError ? err.message : "unknown error",
           duration: 1000
         });
+        if (!(err instanceof NetworkError)) throw err;
       } finally {
         this.$q.loading.hide();
       }
@@ -279,13 +279,13 @@ export default {
           duration: 1000
         });
       } catch (err) {
-        if (process.env.DEV) console.error(err);
         this.$notify({
           title: "清理失败",
           type: "error",
-          text: err.message,
+          text: err instanceof NetworkError ? err.message : "unknown error",
           duration: 1000
         });
+        if (!(err instanceof NetworkError)) throw err;
       } finally {
         this.$q.loading.hide();
       }

@@ -10,8 +10,8 @@ export default {
         password: sha1(pass).toString()
       }
     })
-    LocalStorage.set(ACCESS_TOKEN_KEY, res.data.data.accessToken)
-    LocalStorage.set(REFRESH_TOKEN_KEY, res.data.data.refreshToken)
+    LocalStorage.set(ACCESS_TOKEN_KEY, res.data.accessToken)
+    LocalStorage.set(REFRESH_TOKEN_KEY, res.data.refreshToken)
     return res.data
   },
   info: async () => {
@@ -26,7 +26,7 @@ export default {
         Authorization: 'Bearer ' + LocalStorage.getItem(REFRESH_TOKEN_KEY)
       }
     })
-    LocalStorage.set(ACCESS_TOKEN_KEY, res.data.data.accessToken)
-    LocalStorage.set(REFRESH_TOKEN_KEY, res.data.data.refreshToken)
+    LocalStorage.set(ACCESS_TOKEN_KEY, res.data.accessToken)
+    LocalStorage.set(REFRESH_TOKEN_KEY, res.data.refreshToken)
   },
 }

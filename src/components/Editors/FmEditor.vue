@@ -80,10 +80,14 @@ export default {
       try {
         res = yaml.load(this.value);
         this.error = "";
-      } catch (e) {
-        if (process.env.DEV) console.error(e);
-        if (e.reason) this.error = e.name + ": " + e.reason;
-        else this.error = "Unknown error";
+      } catch (err) {
+        if (err.reason) {
+          this.error = err.name + ": " + err.reason;
+          if (process.env.DEV) console.error(e);
+        } else {
+          this.error = "Unknown error";
+          throw err;
+        }
       }
       if (!!this.error) return;
       if (typeof res !== "object") {
