@@ -1,8 +1,8 @@
 import axios from 'axios'
-import Store from 'src/store'
-import Router from '../router'
 import api from '.'
 import services from 'src/services'
+import { forceReloadWindow } from 'src/utils/common'
+import { Logger } from 'src/utils/logger'
 class NetworkError extends Error {
   constructor(message) {
     super(message)
@@ -38,10 +38,13 @@ request.interceptors.response.use(res => res, async err => {
       err.config.url = err.config.url.slice(err.config.baseURL.length)
       return request(err.config)
     } catch (e) {
-      Store.dispatch('user/logout', true)
-      if (Router.app.$route.path !== '/login')
-        Router.push('/login')
-      throw err
+      services.auth.destory()
+      if (!window.location.href.includes('login')) {
+        if (process.env.DEV) {
+          new Logger({ prefix: 'Hexon' }).log('dev mode, forceReloadWindow disabled')
+          throw e
+        } else forceReloadWindow()
+      }
     }
   } else throw new NetworkError(err.response.data.message || err.message)
 })
