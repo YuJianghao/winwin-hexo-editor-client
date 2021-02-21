@@ -2,9 +2,9 @@ import { LocalStorage } from "quasar"
 import Vue from "vue";
 import api from "src/api"
 import Router from "src/router"
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "src/utils/constants"
 import { Logger } from "src/utils/logger"
 import { NetworkError } from "src/api/request";
+import services from "src/services";
 const logger = new Logger({ prefix: 'user actions' })
 
 export async function login({ commit, dispatch }, { name, pass }) {
@@ -52,8 +52,7 @@ export async function logout({ commit }, local) {
     })
     if (!(err instanceof NetworkError)) throw err
   } finally {
-    LocalStorage.remove(ACCESS_TOKEN_KEY)
-    LocalStorage.remove(REFRESH_TOKEN_KEY)
+    services.auth.destory()
     commit('logout')
     commit('hexo/clear', null, { root: true })
     commit('ui/setFilter', { type: 'all' }, { root: true })

@@ -1,7 +1,7 @@
 import sha1 from 'crypto-js/sha1'
 import { LocalStorage } from 'quasar'
+import services from 'src/services'
 import { origin, request } from './request'
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from 'src/utils/constants'
 export default {
   login: async (name, pass) => {
     const res = await origin.post('/login', undefined, {
@@ -10,8 +10,8 @@ export default {
         password: sha1(pass).toString()
       }
     })
-    LocalStorage.set(ACCESS_TOKEN_KEY, res.data.accessToken)
-    LocalStorage.set(REFRESH_TOKEN_KEY, res.data.refreshToken)
+    services.auth.setAccessToken(res.data.accessToken)
+    services.auth.setRefreshToken(res.data.refreshToken)
     return res.data
   },
   info: async () => {
@@ -26,7 +26,7 @@ export default {
         Authorization: 'Bearer ' + LocalStorage.getItem(REFRESH_TOKEN_KEY)
       }
     })
-    LocalStorage.set(ACCESS_TOKEN_KEY, res.data.accessToken)
-    LocalStorage.set(REFRESH_TOKEN_KEY, res.data.refreshToken)
+    services.auth.setAccessToken(res.data.accessToken)
+    services.auth.setRefreshToken(res.data.refreshToken)
   },
 }
