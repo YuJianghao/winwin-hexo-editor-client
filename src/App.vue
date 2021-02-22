@@ -31,7 +31,10 @@ export default {
   },
   mounted() {
     const initLoading = document.getElementById("init-loading");
-    document.body.removeChild(initLoading);
+    initLoading.style.opacity = 0;
+    window.setTimeout(() => {
+      document.body.removeChild(initLoading);
+    }, 200);
   }
 };
 </script>
