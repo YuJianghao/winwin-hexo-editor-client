@@ -4,7 +4,7 @@ const logLevelHas = (level) => {
 }
 
 class Logger {
-  constructor({ level = process.env.NODE_ENV === 'production' ? 'error' : 'debug', prefix }) {
+  constructor({ level = process.env.PROD ? 'error' : 'debug', prefix }) {
     this.level = level
     this.prefix = prefix || level
     this.prefix = `[${this.prefix}]`
@@ -30,7 +30,8 @@ class Logger {
     ]
     const logPrefix = ['%c' + this.prefix, styles.join(';')]
     if (this._shouldDo(method)) {
-      console[method](...logPrefix, ...args)
+      if (method === 'debug') console.log(...logPrefix, ...args)
+      else console[method](...logPrefix, ...args)
     }
   }
 

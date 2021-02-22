@@ -24,6 +24,10 @@
           <template v-slot:after>
             <div class="view-part fit">
               <router-view></router-view>
+              <q-inner-loading :showing="indexLoading">
+                <q-spinner-tail size="25px" color="primary" />
+                <!-- <div class="loading-text">正在载入...</div> -->
+              </q-inner-loading>
             </div>
           </template>
         </q-splitter>
@@ -36,6 +40,7 @@
 import { mapGetters } from "vuex";
 import NavPart from "../components/NavPart";
 import ListPart from "../components/ListPart";
+import asyncload from "src/services/asyncload";
 
 export default {
   name: "PageIndex",
@@ -46,13 +51,21 @@ export default {
   data() {
     return {
       nav: 200,
-      list: 320
+      list: 320,
+      asyncload: asyncload.state
     };
   },
   computed: {
     ...mapGetters("hexo", {
       treeNodes: "categoriesTreeNodes"
-    })
+    }),
+    indexLoading() {
+      return (
+        Object.keys(this.asyncload)
+          .map(key => this.asyncload[key])
+          .filter(item => item.meta.index && item.loading).length > 0
+      );
+    }
   },
   methods: {
     styleFn(offset, height) {
