@@ -1,4 +1,3 @@
-import { Dark, Loading, QSpinnerTail } from 'quasar'
 import api from 'src/api'
 import services from 'src/services'
 import Router from 'vue-router'
@@ -9,17 +8,6 @@ Router.prototype.push = function push(location, onResolve, onReject) {
     return originalPush.call(this, location, onResolve, onReject)
   return originalPush.call(this, location).catch(() => { })
 }
-function showLoading(msg) {
-  Loading.show({
-    spinner: QSpinnerTail,
-    spinnerSize: 25,
-    spinnerColor: 'primary',
-    delay: 100,
-    backgroundColor: Dark.isActive ? 'black' : 'white',
-    messageColor: Dark.isActive ? 'white' : 'black',
-    message: msg
-  })
-}
 let installed = false
 // "async" is optional;
 // more info on params: https://quasar.dev/quasar-cli/boot-files
@@ -27,10 +15,10 @@ export default async ({ router, store }) => {
   router.beforeEach(async (to, from, next) => {
     //#region install
     if (!installed) {
-      showLoading("正在初始化...")
+      store.commit('ui/showLoading', "正在初始化...")
       try {
         await api.install.check()
-        Loading.hide()
+        store.commit('ui/hideLoading')
         if (to.path === '/install') next()
         else next('/install')
         return
@@ -40,15 +28,15 @@ export default async ({ router, store }) => {
     //#region init
     if (store.state.user.first) {
       store.commit('user/check')
-      showLoading("正在检查用户状态...")
+      store.commit('ui/showLoading', "正在检查用户状态...")
       if (services.auth.hasToken()) {
         await store.dispatch('user/info')
         if (store.state.user.alive) {
-          showLoading("正在载入数据...")
+          store.commit('ui/showLoading', "正在载入数据...")
           await store.dispatch("init")
         }
       }
-      Loading.hide()
+      store.commit('ui/hideLoading')
     }
     //#endregion
     if (store.state.user.alive) {

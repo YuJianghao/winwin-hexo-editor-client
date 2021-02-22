@@ -2,13 +2,17 @@
   <div id="q-app">
     <router-view />
     <notifications position="bottom right"></notifications>
-    <q-inner-loading :showing="pageLoading">
+    <q-inner-loading
+      :showing="loading"
+      style="backdrop-filter: blur(5px);z-index:9999"
+    >
       <q-spinner-tail size="25px" color="primary" />
-      <div class="loading-text">正在载入页面...</div>
+      <div class="loading-text">{{ text }}</div>
     </q-inner-loading>
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 import asyncload from "src/services/asyncload";
 export default {
   name: "App",
@@ -18,12 +22,22 @@ export default {
     };
   },
   computed: {
+    ...mapState("ui", {
+      loading: state => state.loading.show,
+      text: state => state.loading.text
+    }),
     pageLoading() {
       return (
         Object.keys(this.asyncload)
           .map(key => this.asyncload[key])
           .filter(item => item.meta.page && item.loading).length > 0
       );
+    }
+  },
+  watch: {
+    pageLoading(v) {
+      if (v) this.$store.commit("ui/showLoading", "正在载入页面...");
+      else this.$store.commit("ui/hideLoading");
     }
   },
   created() {

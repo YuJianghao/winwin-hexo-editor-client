@@ -7,6 +7,10 @@ export default function () {
     sort: {
       key: 'date',
       ascend: false
+    },
+    loading: {
+      show: true,
+      text: 'Hexon 正在加载...'
     }
   }
 }
