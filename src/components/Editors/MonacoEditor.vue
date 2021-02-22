@@ -105,6 +105,7 @@ export default {
       wordBasedSuggestions: false,
       highlightActiveIndentGuide: false,
       hideCursorInOverviewRuler: true,
+      automaticLayout: true,
       overviewRulerBorder: false,
       renderLineHighlight: "none",
       scrollbar: {
@@ -134,15 +135,9 @@ export default {
     });
     const extension = new MonacoMarkdown.MonacoMarkdownExtension();
     extension.activate(this.editor);
-    this.timer = window.setInterval(this.layout, 100);
-    window.addEventListener("resize", this.layout);
-    this.layout();
   },
   beforeDestroy() {
     this.editor.dispose();
-    window.clearInterval(this.timer);
-    this.timer = undefined;
-    window.removeEventListener("resize", this.layout);
   }
 };
 </script>
