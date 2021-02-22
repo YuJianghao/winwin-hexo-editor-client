@@ -106,8 +106,12 @@
                 v-model="title"
                 placeholder="请输入标题"
               />
-              <div class="col relative-position">
-                <monaco-editor class="fit" v-model="content"></monaco-editor>
+              <div class="col relative-position columns">
+                <monaco-editor
+                  class="fit"
+                  v-model="content"
+                  style="flex: 1 0 0;"
+                ></monaco-editor>
                 <q-inner-loading :showing="asyncload.monaco.loading">
                   <q-spinner-tail size="25px" color="primary" />
                   <div class="loading-text">正在载入编辑器...</div>

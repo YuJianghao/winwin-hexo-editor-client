@@ -1,14 +1,5 @@
 <template>
-  <div class="overflow-hidden">
-    <div ref="container" class="fit relative-position">
-      <div
-        ref="monaco-editor"
-        :style="style"
-        class="absolute"
-        style="top:0;left:0"
-      ></div>
-    </div>
-  </div>
+  <div ref="monaco-editor" class="overflow-hidden"></div>
 </template>
 
 <script>
@@ -83,14 +74,7 @@ export default {
   },
   methods: {
     layout() {
-      window.setTimeout(() => {
-        if (this.timer === undefined) return;
-        this.rect.height = this.$refs.container.clientHeight;
-        this.rect.width = this.$refs.container.clientWidth;
-        this.$nextTick(() => {
-          this.editor.layout();
-        });
-      }, 50);
+      this.editor.layout();
     }
   },
   computed: {
@@ -121,6 +105,7 @@ export default {
       wordBasedSuggestions: false,
       highlightActiveIndentGuide: false,
       hideCursorInOverviewRuler: true,
+      automaticLayout: true,
       overviewRulerBorder: false,
       renderLineHighlight: "none",
       scrollbar: {
@@ -150,15 +135,9 @@ export default {
     });
     const extension = new MonacoMarkdown.MonacoMarkdownExtension();
     extension.activate(this.editor);
-    this.timer = window.setInterval(this.layout, 100);
-    window.addEventListener("resize", this.layout);
-    this.layout();
   },
   beforeDestroy() {
     this.editor.dispose();
-    window.clearInterval(this.timer);
-    this.timer = undefined;
-    window.removeEventListener("resize", this.layout);
   }
 };
 </script>
