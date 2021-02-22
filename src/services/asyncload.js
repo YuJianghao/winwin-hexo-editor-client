@@ -4,9 +4,11 @@ const logger = new Logger({ prefix: 'async load' })
 const state = {}
 
 /**
- * 异步载入，记录载入状态
- * @param {Promise} imp import('xxx')
- * @param {string} name 随便指定一个名称
+ * 懒加载模块，记录加载状态
+ * @param {Function} fn `()=>import('xxx)`
+ * @param {String} name 随便指定一个名称，需要唯一
+ * @param {Object} meta 附加数据，仅用于描述，不影响懒加载
+ * @param {Number} delay 延时
  */
 function load(fn, name, meta = {}, delay = 200) {
   if (!name) throw new Error('name is required')
