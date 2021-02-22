@@ -2,13 +2,36 @@
   <div id="q-app">
     <router-view />
     <notifications position="bottom right"></notifications>
+    <q-inner-loading :showing="pageLoading">
+      <q-spinner-tail size="25px" color="primary" />
+      <div class="loading-text">正在载入页面...</div>
+    </q-inner-loading>
   </div>
 </template>
 <script>
+import asyncload from "src/services/asyncload";
 export default {
   name: "App",
+  data() {
+    return {
+      asyncload: asyncload.state
+    };
+  },
+  computed: {
+    pageLoading() {
+      return (
+        Object.keys(this.asyncload)
+          .map(key => this.asyncload[key])
+          .filter(item => item.meta.page && item.loading).length > 0
+      );
+    }
+  },
   created() {
     this.$q.dark.set("auto");
+  },
+  mounted() {
+    const initLoading = document.getElementById("init-loading");
+    document.body.removeChild(initLoading);
   }
 };
 </script>

@@ -109,12 +109,8 @@
               <div class="col relative-position">
                 <monaco-editor class="fit" v-model="content"></monaco-editor>
                 <q-inner-loading :showing="asyncload.monaco.loading">
-                  <q-spinner-gears
-                    size="50px"
-                    color="primary"
-                    class="q-mb-md"
-                  />
-                  <span>正在载入编辑器...</span>
+                  <q-spinner-tail size="25px" color="primary" />
+                  <div class="loading-text">正在载入编辑器...</div>
                 </q-inner-loading>
               </div>
             </div>
@@ -223,7 +219,7 @@ export default {
     CategoryEditor,
     FmEditor,
     MonacoEditor: asyncload.load(
-      import("../components/Editors/MonacoEditor"),
+      () => import("../components/Editors/MonacoEditor"),
       "monaco"
     ),
     MInput

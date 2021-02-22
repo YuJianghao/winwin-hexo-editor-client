@@ -1,19 +1,20 @@
+import asyncload from 'src/services/asyncload'
 
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: asyncload.load(() => import('layouts/MainLayout.vue'), 'MainLayout', { page: true }),
     children: [
       {
-        path: '', component: () => import('pages/Index.vue'),
+        path: '', component: asyncload.load(() => import('pages/Index.vue'), 'Index', { page: true }),
         children: [
-          { path: '', component: () => import('components/WelcomePart.vue') },
-          { path: ':type/:id', component: () => import('components/Viewer.vue'), name: 'view' },
+          { path: '', component: asyncload.load(() => import('components/WelcomePart.vue'), 'WelcomePart', { index: true }) },
+          { path: ':type/:id', component: asyncload.load(() => import('components/Viewer.vue'), 'Viewer', { index: true }), name: 'view' },
         ]
       },
-      { path: ':type/:id/edit', component: () => import('pages/Editor.vue'), name: 'edit' },
-      { path: 'login', component: () => import('pages/Login.vue') },
-      { path: 'install', component: () => import('pages/Install.vue') }
+      { path: ':type/:id/edit', component: asyncload.load(() => import('pages/Editor.vue'), 'Editor', { page: true }), name: 'edit' },
+      { path: 'login', component: asyncload.load(() => import('pages/Login.vue'), 'Login', { page: true }) },
+      { path: 'install', component: asyncload.load(() => import('pages/Install.vue'), 'Install', { page: true }) }
     ]
   },
 
