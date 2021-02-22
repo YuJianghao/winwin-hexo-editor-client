@@ -106,8 +106,16 @@
                 v-model="title"
                 placeholder="请输入标题"
               />
-              <div class="col">
+              <div class="col relative-position">
                 <monaco-editor class="fit" v-model="content"></monaco-editor>
+                <q-inner-loading :showing="asyncload.monaco.loading">
+                  <q-spinner-gears
+                    size="50px"
+                    color="primary"
+                    class="q-mb-md"
+                  />
+                  <span>正在载入编辑器...</span>
+                </q-inner-loading>
               </div>
             </div>
           </div>
@@ -195,14 +203,16 @@ import UpdatedEditor from "../components/Editors/UpdatedEditor";
 import TagEditor from "../components/Editors/TagEditor";
 import CategoryEditor from "../components/Editors/CategoryEditor";
 import FmEditor from "../components/Editors/FmEditor";
-import MonacoEditor from "../components/Editors/MonacoEditor";
 import MInput from "../components/UI/MInput";
+import asyncload from "src/services/asyncload";
+
 export default {
   name: "Editor",
   data() {
     return {
       splitter: 300,
-      layoutExpand: false
+      layoutExpand: false,
+      asyncload: asyncload.state
     };
   },
   components: {
@@ -212,7 +222,10 @@ export default {
     TagEditor,
     CategoryEditor,
     FmEditor,
-    MonacoEditor,
+    MonacoEditor: asyncload.load(
+      import("../components/Editors/MonacoEditor"),
+      "monaco"
+    ),
     MInput
   },
   computed: {
