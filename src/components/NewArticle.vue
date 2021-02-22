@@ -10,7 +10,7 @@
         <div class="title text-h6 q-mb-md text-center">
           新建{{ { page: "页面", draft: "草稿" }[layout] || "文章" }}
         </div>
-        <q-form @submit="onAdd" class="q-gutter-md">
+        <q-form @submit="onAdd">
           <table class="full-width">
             <tbody>
               <tr>
@@ -19,21 +19,27 @@
               </tr>
               <template v-if="!advance">
                 <tr>
-                  <td>页面</td>
+                  <td></td>
                   <td class="row items-center">
-                    <q-toggle
+                    <q-checkbox
+                      class="q-mr-sm"
                       :value="layout === 'page'"
                       @input="v => (layout = v ? 'page' : '')"
+                      label="页面"
                     />
+                    <q-checkbox
+                      class="q-mr-sm"
+                      :value="layout === 'draft'"
+                      @input="v => (layout = v ? 'draft' : '')"
+                      label="草稿"
+                    />
+                    <q-checkbox v-model="randomSlug" label="随机slug" />
                   </td>
                 </tr>
                 <tr>
-                  <td>草稿</td>
+                  <td></td>
                   <td class="row items-center">
-                    <q-toggle
-                      :value="layout === 'draft'"
-                      @input="v => (layout = v ? 'draft' : '')"
-                    /><q-space />
+                    <q-space />
                     <q-btn
                       icon="expand_more"
                       label="高级"
@@ -56,7 +62,9 @@
                 </tr>
                 <tr>
                   <td>slug</td>
-                  <td><m-input v-model="slug"></m-input></td>
+                  <td>
+                    <m-input v-model="slug" :disable="randomSlug"></m-input>
+                  </td>
                 </tr>
                 <tr>
                   <td>随机slug</td>
@@ -81,6 +89,7 @@
               </template>
             </tbody>
           </table>
+          <q-btn style="display:none" />
         </q-form>
       </q-card-section>
       <q-card-actions align="right">
@@ -101,6 +110,7 @@
 <script>
 import { fakeId } from "src/utils/common";
 import MInput from "./UI/MInput";
+import stringRandom from "string-random";
 export default {
   props: {
     // ...your custom props
@@ -121,7 +131,12 @@ export default {
       advance: false
     };
   },
-
+  watch: {
+    randomSlug(v) {
+      if (v) this.slug = stringRandom(16);
+      else this.slug = "";
+    }
+  },
   methods: {
     async onAdd() {
       const opt = {};
