@@ -116,7 +116,10 @@ export async function deletePostOrPage({ commit, dispatch }, opt = {}) {
       if (opt.onsuccess && typeof opt.onsuccess === 'function') await opt.onsuccess()
       dispatch('listTags')
       dispatch('listCategories')
-    } else commit('successDeletePage', opt.id)
+    } else {
+      commit('successDeletePage', opt.id)
+      if (opt.onsuccess && typeof opt.onsuccess === 'function') await opt.onsuccess()
+    }
     Vue.notify({
       title: '删除成功',
       text: opt.id,
