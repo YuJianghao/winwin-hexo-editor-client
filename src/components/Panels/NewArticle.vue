@@ -109,7 +109,7 @@
 
 <script>
 import { fakeId } from "src/utils/common";
-import MInput from "./UI/MInput";
+import MInput from "src/components/UI/MInput";
 import stringRandom from "string-random";
 export default {
   props: {

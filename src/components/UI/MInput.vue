@@ -12,6 +12,8 @@
       @compositionstart.native="composition = true"
       @compositionend.native="composition = false"
       @keydown="e => $emit('keydown', e)"
+      @blur="e => $emit('blur', e)"
+      @focus="e => $emit('focus', e)"
       borderless
       dense
       stack-label

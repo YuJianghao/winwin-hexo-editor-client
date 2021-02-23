@@ -7,93 +7,78 @@
     </q-toolbar>
 
     <q-scroll-area
-      class="col full-width"
+      class="col"
       :thumb-style="{ width: '6px', borderRadius: '3px' }"
     >
-      <div class="full-width">
-        <q-item class="title">
-          <q-item-section>
-            <q-item-label class="ellipsis">操作</q-item-label>
-          </q-item-section>
-        </q-item>
-      </div>
-
-      <q-list class="full-width" dense>
-        <nav-list-item
+      <nav-title text="操作"></nav-title>
+      <q-list dense>
+        <nav-item
           icon="local_airport"
           title="部署"
           color="primary"
           @on-click="deploy"
-        ></nav-list-item>
-        <nav-list-item
+        ></nav-item>
+        <nav-item
           icon="movie_filter"
           title="生成"
           color="primary"
           @on-click="generate"
-        ></nav-list-item>
-        <nav-list-item
+        ></nav-item>
+        <nav-item
           icon="toys"
           title="清理"
           color="red"
           @on-click="clean"
-        ></nav-list-item>
-        <nav-list-item
+        ></nav-item>
+        <nav-item
           icon="flight_takeoff"
           title="同步到GIT"
           color="primary"
           @on-click="gitSave"
-        ></nav-list-item>
-        <nav-list-item
+        ></nav-item>
+        <nav-item
           icon="flight_land"
           title="从GIT同步"
           color="red"
           @on-click="gitSync"
-        ></nav-list-item>
+        ></nav-item>
       </q-list>
-      <q-item class="text-bold title">
-        <q-item-section>
-          <q-item-label class="ellipsis">筛选</q-item-label>
-        </q-item-section>
-      </q-item>
+      <nav-title text="筛选"></nav-title>
       <q-list dense>
-        <nav-list-item
+        <nav-item
           icon="archive"
           title="全部"
           color="green"
-          :count="totalCount"
+          :caption="totalCount"
           @on-click="setFilter({ type: 'all' })"
           :selected="filter.type === 'all'"
-        ></nav-list-item>
-        <nav-list-item
+        ></nav-item>
+        <nav-item
           icon="create"
           title="文章"
           color="primary"
-          :count="postCount"
+          :caption="postCount"
           @on-click="setFilter({ type: 'post' })"
           :selected="filter.type === 'post'"
-        ></nav-list-item>
-        <nav-list-item
+        ></nav-item>
+        <nav-item
           icon="drafts"
           title="草稿"
           color="yellow-8"
-          :count="draftCount"
+          :caption="draftCount"
           @on-click="setFilter({ type: 'draft' })"
           :selected="filter.type === 'draft'"
-        ></nav-list-item>
-        <nav-list-item
+        ></nav-item>
+        <nav-item
           icon="insert_drive_file"
           title="页面"
           color="cyan"
-          :count="pageCount"
+          :caption="pageCount"
           @on-click="setFilter({ type: 'page' })"
           :selected="filter.type === 'page'"
-        ></nav-list-item>
+        ></nav-item>
       </q-list>
-      <q-item class="text-bold title">
-        <q-item-section>
-          <q-item-label class="ellipsis">分类</q-item-label>
-        </q-item-section>
-      </q-item>
+      <nav-title text="分类"></nav-title>
       <!-- TODO 超长分类支持 -->
       <q-list dense>
         <category-item
@@ -102,11 +87,7 @@
           :node="node"
         ></category-item>
       </q-list>
-      <q-item class="text-bold title">
-        <q-item-section>
-          <q-item-label class="ellipsis">标签云</q-item-label>
-        </q-item-section>
-      </q-item>
+      <nav-title text="标签云"></nav-title>
       <div class="tags">
         <tag-item
           v-for="tag in tagsList"
@@ -116,7 +97,7 @@
         ></tag-item>
       </div>
     </q-scroll-area>
-    <div class="full-width corner">
+    <div class="corner">
       <q-item clickable @click="onSettings">
         <q-item-section side>
           <q-avatar
@@ -142,15 +123,17 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from "vuex";
-import NavListItem from "./NavListItem";
-import TagItem from "./TagItem";
-import CategoryItem from "./CategoryItem";
-import Settings from "./Settings";
+import NavTitle from "src/components/UI/NavTitle";
+import NavItem from "src/components/UI/NavItem";
+import TagItem from "src/components/TagItem";
+import CategoryItem from "src/components/CategoryItem";
+import Settings from "src/components/Panels/Settings";
 import services from "src/services";
 export default {
   name: "NavPart",
   components: {
-    NavListItem,
+    NavTitle,
+    NavItem,
     TagItem,
     CategoryItem
   },
@@ -301,28 +284,9 @@ export default {
       color: $l-text-2;
     }
   }
-  .q-item.item,
-  .q-item.title {
-    margin: 2px 8px 2px 16px;
-    padding: 0 2px 0 16px;
-    border-radius: 6px;
-    color: $l-text-1;
-  }
-  .q-item.title {
-    font-weight: bolder;
-  }
-  .q-item.item.selected {
-    background-color: $grey-4;
-  }
-  .count {
-    color: $l-text-2;
-    font-size: smaller;
-  }
-  .count::before {
-    content: " ";
-  }
   .tags {
     margin-left: 28px;
+    margin-right: 8px;
   }
   .corner {
     .title {
@@ -340,17 +304,6 @@ export default {
     .btn {
       color: $d-text-2;
     }
-  }
-  // 旧的
-  .count {
-    color: $d-text-2;
-  }
-  .q-item.item,
-  .q-item.title {
-    color: $d-text-1;
-  }
-  .q-item.item.selected {
-    background-color: $grey-9;
   }
   .corner {
     .title {
