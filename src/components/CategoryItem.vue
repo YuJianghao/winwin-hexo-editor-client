@@ -1,14 +1,14 @@
 <template>
   <div>
-    <nav-list-item
+    <nav-item
       icon="folder"
       :title="node.name"
       color="yellow-8"
-      :count="node.posts.length"
+      :caption="node.posts.length"
       :indent="indent"
       @on-click="setFilter({ type: 'category', id: node._id })"
       :selected="filter.type === 'category' && filter.id === node._id"
-    ></nav-list-item>
+    ></nav-item>
     <category-item
       v-for="child in node._child"
       :key="child._id"
@@ -20,7 +20,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import NavListItem from "./NavListItem";
+import NavItem from "src/components/UI/NavItem";
 export default {
   name: "CategoryItem",
   props: {
@@ -33,7 +33,7 @@ export default {
     }
   },
   components: {
-    NavListItem
+    NavItem
   },
   data() {
     return {};

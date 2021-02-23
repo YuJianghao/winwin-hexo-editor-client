@@ -27,41 +27,41 @@
                 </q-item-section>
               </q-item>
               <q-list dense>
-                <nav-list-item
+                <nav-item
                   icon="person"
                   title="用户"
                   color="green"
                   @on-click="tab = 'user'"
                   :selected="tab === 'user'"
-                ></nav-list-item>
-                <nav-list-item
+                ></nav-item>
+                <nav-item
                   icon="security"
                   title="安全"
                   color="primary"
                   @on-click="tab = 'security'"
                   :selected="tab === 'security'"
-                ></nav-list-item>
-                <nav-list-item
+                ></nav-item>
+                <nav-item
                   icon="style"
                   title="样式"
                   color="yellow-8"
                   @on-click="tab = 'editor'"
                   :selected="tab === 'editor'"
-                ></nav-list-item>
-                <nav-list-item
+                ></nav-item>
+                <nav-item
                   icon="info"
                   title="关于"
                   color="grey"
                   @on-click="tab = 'about'"
                   :selected="tab === 'about'"
-                ></nav-list-item>
-                <nav-list-item
+                ></nav-item>
+                <nav-item
                   icon="help"
                   title="帮助"
                   color="grey"
                   @on-click="tab = 'help'"
                   :selected="tab === 'help'"
-                ></nav-list-item>
+                ></nav-item>
               </q-list>
             </q-scroll-area>
             <div class="full-width">
@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import NavListItem from "./NavListItem";
+import NavItem from "src/components/UI/NavItem";
 export default {
   data() {
     return {
@@ -133,7 +133,7 @@ export default {
     // ...your custom props
   },
   components: {
-    NavListItem
+    NavItem
   },
   computed: {
     dark() {
