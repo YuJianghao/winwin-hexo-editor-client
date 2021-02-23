@@ -8,8 +8,8 @@ const routes = [
       {
         path: '', component: asyncload.load(() => import('pages/Index.vue'), 'Index', { page: true }),
         children: [
-          { path: '', component: asyncload.load(() => import('components/WelcomePart.vue'), 'WelcomePart', { index: true }) },
-          { path: ':type/:id', component: asyncload.load(() => import('components/Viewer.vue'), 'Viewer', { index: true }), name: 'view' },
+          { path: '', component: asyncload.load(() => import('components/Panels/WelcomePart.vue'), 'WelcomePart', { index: true }) },
+          { path: ':type/:id', component: asyncload.load(() => import('components/Panels/Viewer.vue'), 'Viewer', { index: true }), name: 'view' },
         ]
       },
       { path: ':type/:id/edit', component: asyncload.load(() => import('pages/Editor.vue'), 'Editor', { page: true }), name: 'edit' },

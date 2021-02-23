@@ -35,7 +35,7 @@
 import MInput from "src/components/UI/MInput";
 import ArticlesControl from "src/components/ArticlesControl";
 import ArticlesList from "src/components/ArticlesList";
-import NewArticle from "src/components/NewArticle";
+import NewArticle from "src/components/Panels/NewArticle";
 import { mapState } from "vuex";
 import { array2dToArray1d, sortString } from "src/utils/common";
 function obj2list(obj) {

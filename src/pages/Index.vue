@@ -38,8 +38,8 @@
 
 <script>
 import { mapGetters } from "vuex";
-import NavPart from "../components/NavPart";
-import ListPart from "../components/ListPart";
+import NavPart from "src/components/Panels/NavPart";
+import ListPart from "src/components/Panels/ListPart";
 import asyncload from "src/services/asyncload";
 
 export default {

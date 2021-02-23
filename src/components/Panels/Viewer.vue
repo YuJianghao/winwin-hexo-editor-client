@@ -158,7 +158,7 @@
 import { mapState } from "vuex";
 import yaml from "js-yaml";
 import { date } from "quasar";
-import Article404 from "./Article404";
+import Article404 from "src/components/Article404";
 import { DATE_FORMAT } from "src/utils/constants";
 
 export default {

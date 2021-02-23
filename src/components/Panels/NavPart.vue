@@ -125,9 +125,9 @@
 import { mapState, mapGetters, mapMutations } from "vuex";
 import NavTitle from "src/components/UI/NavTitle";
 import NavItem from "src/components/UI/NavItem";
-import TagItem from "./TagItem";
-import CategoryItem from "./CategoryItem";
-import Settings from "./Settings";
+import TagItem from "src/components/TagItem";
+import CategoryItem from "src/components/CategoryItem";
+import Settings from "src/components/Panels/Settings";
 import services from "src/services";
 export default {
   name: "NavPart",
